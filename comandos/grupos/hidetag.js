@@ -2,7 +2,7 @@ const {
 
     downloadContentFromMessage
 
-} = require('baileys')
+} = require('@whiskeysockets/baileys')
 
 const isGroupAdmin =
     require('../../src/utils/isAdmin')
