@@ -4,7 +4,6 @@ const {
     default: makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
-    Browsers
 } = require('@whiskeysockets/baileys')
 
 const P = require('pino')
