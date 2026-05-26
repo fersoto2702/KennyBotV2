@@ -4,7 +4,6 @@ const {
     default: makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
-    fetchLatestBaileysVersion
 } = require('@whiskeysockets/baileys')
 
 const P =
@@ -84,22 +83,10 @@ async function startBot() {
         )
 
         // =========================
-        // VERSION
-        // =========================
-
-        const {
-
-            version
-
-        } = await fetchLatestBaileysVersion()
-
-        // =========================
         // SOCKET
         // =========================
 
         let sock = makeWASocket({
-
-            version,
 
             auth: state,
 
