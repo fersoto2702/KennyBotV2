@@ -11,7 +11,7 @@ const {
 
     downloadMediaMessage
 
-} = require('baileys')
+} = require('@whiskeysockets/baileys')
 
 const {
 
