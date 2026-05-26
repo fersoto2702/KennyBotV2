@@ -28,9 +28,7 @@ const logger =
     require('./src/utils/logger')
 
 const {
-
     patchSocket
-
 } = require('./src/system/socketManager')
 
 // =========================
@@ -74,10 +72,8 @@ async function startBot() {
         // =========================
 
         const {
-
             state,
             saveCreds
-
         } = await useMultiFileAuthState(
             './auth_info'
         )
@@ -93,19 +89,13 @@ async function startBot() {
             printQRInTerminal: true,
 
             logger: P({
-
                 level: 'silent'
-
             }),
 
             browser: [
-
                 settings.botName,
-
                 'Chrome',
-
                 '5.0.0'
-
             ],
 
             markOnlineOnConnect: false,
@@ -143,16 +133,7 @@ async function startBot() {
             usePairingCode &&
             !sock.authState.creds.registered
 
-        )
-        
-        const code =
-    await sock.requestPairingCode(
-        phoneNumber
-    )
-
-console.log(`PAIRING CODE: ${code}`)
-
-        {
+        ) {
 
             const phoneNumber =
                 '5266811377982'
@@ -176,11 +157,8 @@ console.log(`PAIRING CODE: ${code}`)
         // =========================
 
         sock.ev.on(
-
             'creds.update',
-
             saveCreds
-
         )
 
         // =========================
@@ -196,18 +174,15 @@ console.log(`PAIRING CODE: ${code}`)
                 try {
 
                     const {
-
                         connection,
                         lastDisconnect,
                         qr
-
                     } = update
 
                     // =========================
                     // QR
                     // =========================
 
-                    
                     if (
 
                         qr &&
@@ -222,15 +197,12 @@ console.log(`PAIRING CODE: ${code}`)
                             qr,
 
                             {
-
                                 small: true
-
                             }
 
                         )
 
                     }
-                    
 
                     // =========================
                     // CONNECTED
@@ -243,9 +215,7 @@ console.log(`PAIRING CODE: ${code}`)
                         reconnecting = false
 
                         logger.success(
-
                             `${settings.botName} conectado`
-
                         )
 
                         logger.statusTable({
@@ -295,9 +265,7 @@ console.log(`PAIRING CODE: ${code}`)
                                 ?.statusCode
 
                         logger.warn(
-
                             `Desconectado: ${reason}`
-
                         )
 
                         // =========================
@@ -328,9 +296,7 @@ console.log(`PAIRING CODE: ${code}`)
                             reconnecting = true
 
                             logger.info(
-
                                 'Reconectando en 5 segundos...'
-
                             )
 
                             setTimeout(async () => {
@@ -358,9 +324,7 @@ console.log(`PAIRING CODE: ${code}`)
                 } catch (err) {
 
                     logger.error(
-
                         `Connection Update Error: ${err.message}`
-
                     )
 
                 }
@@ -382,18 +346,14 @@ console.log(`PAIRING CODE: ${code}`)
                 try {
 
                     await welcomeSystem(
-
                         sock,
                         update
-
                     )
 
                 } catch (err) {
 
                     logger.error(
-
                         `Welcome Event Error: ${err.message}`
-
                     )
 
                 }
@@ -441,15 +401,11 @@ console.log(`PAIRING CODE: ${code}`)
                     // =========================
 
                     const timestamp = Number(
-
                         msg.messageTimestamp
-
                     )
 
                     const now = Math.floor(
-
                         Date.now() / 1000
-
                     )
 
                     if (
@@ -461,18 +417,14 @@ console.log(`PAIRING CODE: ${code}`)
                     // =========================
 
                     await messagesEvent(
-
                         sock,
                         messages
-
                     )
 
                 } catch (err) {
 
                     logger.error(
-
                         `Messages Error: ${err.message}`
-
                     )
 
                 }
@@ -484,9 +436,7 @@ console.log(`PAIRING CODE: ${code}`)
     } catch (err) {
 
         logger.error(
-
             `StartBot Error: ${err.message}`
-
         )
 
         setTimeout(() => {
