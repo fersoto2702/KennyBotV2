@@ -4,13 +4,12 @@ const {
     default: makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
+    Browsers
 } = require('@whiskeysockets/baileys')
 
-const P =
-    require('pino')
+const P = require('pino')
 
-const qrcode =
-    require('qrcode-terminal')
+const qrcode = require('qrcode-terminal')
 
 const welcomeSystem =
     require('./src/system/welcomeSystem')
@@ -35,25 +34,17 @@ const {
 // CONFIG
 // =========================
 
-const usePairingCode =
-    true
+const usePairingCode = true
 
-let cleanupStarted =
-    false
-
-let reconnecting =
-    false
-
-let currentSock =
-    null
+let cleanupStarted = false
+let reconnecting = false
+let currentSock = null
 
 // =========================
 // BANNER
 // =========================
 
-logger.banner(
-    settings.botName
-)
+logger.banner(settings.botName)
 
 logger.info(
     `Iniciando ${settings.botName}...`
@@ -86,34 +77,31 @@ async function startBot() {
 
             auth: state,
 
-            printQRInTerminal: true,
-
             logger: P({
                 level: 'silent'
             }),
 
-            browser: [
-                settings.botName,
-                'ubuntu',
-                'Chrome',
-                '120.0.0'
-            ],
+            printQRInTerminal: !usePairingCode,
+
+            browser: Browsers.macOS('Chrome'),
 
             markOnlineOnConnect: false,
 
             syncFullHistory: false,
 
-            emitOwnEvents: false,
+            fireInitQueries: true,
 
-            fireInitQueries: false,
+            generateHighQualityLinkPreview: true,
 
-            generateHighQualityLinkPreview: false,
+            connectTimeoutMs: 60000,
 
-            connectTimeoutMs: 30000,
+            defaultQueryTimeoutMs: 60000,
 
-            keepAliveIntervalMs: 15000,
+            keepAliveIntervalMs: 10000,
 
-            defaultQueryTimeoutMs: 30000
+            retryRequestDelayMs: 250,
+
+            maxMsgRetryCount: 5
 
         })
 
@@ -130,26 +118,35 @@ async function startBot() {
         // =========================
 
         if (
-
             usePairingCode &&
-            !sock.authState.creds.registered
-
+            !state.creds.registered
         ) {
 
             const phoneNumber =
-                '526681137982'
+                '5216681137982'
 
-            const code =
+            setTimeout(async () => {
 
-                await sock.requestPairingCode(
-                    phoneNumber
-                )
+                try {
 
-            console.log(
+                    const code =
+                        await sock.requestPairingCode(
+                            phoneNumber
+                        )
 
-                `\n📲 Código de vinculación:\n${code}\n`
+                    console.log(
+                        `\n📲 Código de vinculación:\n${code}\n`
+                    )
 
-            )
+                } catch (err) {
+
+                    logger.error(
+                        `Pairing Error: ${err.message}`
+                    )
+
+                }
+
+            }, 3000)
 
         }
 
@@ -167,9 +164,7 @@ async function startBot() {
         // =========================
 
         sock.ev.on(
-
             'connection.update',
-
             async update => {
 
                 try {
@@ -185,22 +180,17 @@ async function startBot() {
                     // =========================
 
                     if (
-
                         qr &&
                         !usePairingCode
-
                     ) {
 
                         logger.qr()
 
                         qrcode.generate(
-
                             qr,
-
                             {
                                 small: true
                             }
-
                         )
 
                     }
@@ -259,7 +249,6 @@ async function startBot() {
                     ) {
 
                         const reason =
-
                             lastDisconnect
                                 ?.error
                                 ?.output
@@ -274,10 +263,8 @@ async function startBot() {
                         // =========================
 
                         if (
-
                             reason ===
                             DisconnectReason.loggedOut
-
                         ) {
 
                             logger.error(
@@ -331,7 +318,6 @@ async function startBot() {
                 }
 
             }
-
         )
 
         // =========================
@@ -339,9 +325,7 @@ async function startBot() {
         // =========================
 
         sock.ev.on(
-
             'group-participants.update',
-
             async update => {
 
                 try {
@@ -360,7 +344,6 @@ async function startBot() {
                 }
 
             }
-
         )
 
         // =========================
@@ -368,9 +351,7 @@ async function startBot() {
         // =========================
 
         sock.ev.on(
-
             'messages.upsert',
-
             async ({ messages }) => {
 
                 try {
@@ -378,28 +359,14 @@ async function startBot() {
                     const msg =
                         messages?.[0]
 
-                    // =========================
-                    // VALIDATE
-                    // =========================
-
                     if (!msg) return
                     if (!msg.message) return
                     if (msg.key.fromMe) return
 
-                    // =========================
-                    // STATUS
-                    // =========================
-
                     if (
-
                         msg.key.remoteJid ===
                         'status@broadcast'
-
                     ) return
-
-                    // =========================
-                    // OLD MSG
-                    // =========================
 
                     const timestamp = Number(
                         msg.messageTimestamp
@@ -412,10 +379,6 @@ async function startBot() {
                     if (
                         now - timestamp > 30
                     ) return
-
-                    // =========================
-                    // EVENT
-                    // =========================
 
                     await messagesEvent(
                         sock,
@@ -431,7 +394,6 @@ async function startBot() {
                 }
 
             }
-
         )
 
     } catch (err) {
