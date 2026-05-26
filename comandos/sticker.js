@@ -4,8 +4,8 @@ const fs =
 const path =
     require('path')
 
-const sharp =
-    require('sharp')
+const jimp =
+    require('jimp')
 
 const {
 
@@ -417,7 +417,7 @@ module.exports = {
 
             if (imageMessage) {
 
-                await sharp(buffer)
+                await jimp(buffer)
 
                     .resize(
 

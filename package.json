@@ -4,80 +4,45 @@
   "description": "KennyBot V2 MultiDevice WhatsApp Bot",
   "main": "index.js",
   "type": "commonjs",
-
   "engines": {
     "node": ">=20"
   },
-
   "scripts": {
-
     "start": "node --max-old-space-size=512 index.js",
-
     "dev": "nodemon index.js",
-
     "termux": "pm2 start index.js --name KennyBot",
-
     "termux-stop": "pm2 stop KennyBot",
-
     "termux-restart": "pm2 restart KennyBot",
-
     "termux-logs": "pm2 logs KennyBot",
-
     "termux-save": "pm2 save",
-
     "termux-startup": "pm2 startup",
-
     "clear-temp": "node ./src/utils/cleanupTemp.js"
-
   },
-
   "keywords": [
     "whatsapp",
     "baileys",
     "bot",
     "kennybot"
   ],
-
   "author": "Kenny",
-
   "license": "ISC",
-
   "dependencies": {
-
     "@hapi/boom": "^10.0.1",
-
     "axios": "^1.16.1",
-
     "baileys": "^7.0.0-rc10",
-
     "chalk": "^4.1.2",
-
     "cheerio": "^1.2.0",
-
     "fs-extra": "^11.3.5",
-
     "google-libphonenumber": "^3.2.44",
-
+    "jimp": "^1.6.1",
     "pino": "^10.3.1",
-
     "qrcode-terminal": "^0.12.0",
-
-    "sharp": "^0.34.5",
-
     "ws": "^8.18.0",
-
     "youtube-dl-exec": "^3.0.24",
-
     "yt-search": "^2.13.1"
-
   },
-
   "devDependencies": {
-
     "chokidar": "^4.0.3",
-
     "nodemon": "^3.1.10"
-
   }
-
 }
