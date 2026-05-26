@@ -5,7 +5,7 @@ const {
     useMultiFileAuthState,
     DisconnectReason,
     fetchLatestBaileysVersion
-} = require('baileys')
+} = require('@whiskeysockets/baileys')
 
 const P =
     require('pino')
@@ -159,7 +159,7 @@ async function startBot() {
         ) {
 
             const phoneNumber =
-                '521TU_NUMERO'
+                '5266811377982'
 
             const code =
 
