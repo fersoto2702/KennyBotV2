@@ -137,7 +137,7 @@ async function startBot() {
         ) {
 
             const phoneNumber =
-                '5266811377982'
+                '526681137982'
 
             const code =
 
