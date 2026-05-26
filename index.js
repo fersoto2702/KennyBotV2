@@ -38,7 +38,7 @@ const {
 // =========================
 
 const usePairingCode =
-    false
+    true
 
 let cleanupStarted =
     false
@@ -143,7 +143,16 @@ async function startBot() {
             usePairingCode &&
             !sock.authState.creds.registered
 
-        ) {
+        )
+        
+        const code =
+    await sock.requestPairingCode(
+        phoneNumber
+    )
+
+console.log(`PAIRING CODE: ${code}`)
+
+        {
 
             const phoneNumber =
                 '5266811377982'
@@ -198,7 +207,7 @@ async function startBot() {
                     // QR
                     // =========================
 
-                    /*
+                    
                     if (
 
                         qr &&
@@ -221,7 +230,7 @@ async function startBot() {
                         )
 
                     }
-                    */
+                    
 
                     // =========================
                     // CONNECTED
