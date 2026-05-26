@@ -94,8 +94,9 @@ async function startBot() {
 
             browser: [
                 settings.botName,
+                'ubuntu',
                 'Chrome',
-                '5.0.0'
+                '120.0.0'
             ],
 
             markOnlineOnConnect: false,
