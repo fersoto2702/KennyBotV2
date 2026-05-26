@@ -198,6 +198,7 @@ async function startBot() {
                     // QR
                     // =========================
 
+                    /*
                     if (
 
                         qr &&
@@ -220,6 +221,7 @@ async function startBot() {
                         )
 
                     }
+                    */
 
                     // =========================
                     // CONNECTED
