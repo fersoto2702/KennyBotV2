@@ -247,10 +247,7 @@ async function startBot() {
 
                             Estado:
                                 'Conectado ✅',
-
-                            WA:
-                                version.join('.')
-
+                                
                         })
 
                         // =========================
