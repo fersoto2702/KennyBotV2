@@ -83,21 +83,25 @@ async function startBot() {
 
             printQRInTerminal: !usePairingCode,
 
-            browser: Browsers.macOS('Chrome'),
+            browser: [
+                'KennyBot',
+                'Chrome',
+                '1.0.0'
+            ],
 
             markOnlineOnConnect: false,
 
             syncFullHistory: false,
 
-            fireInitQueries: true,
+            fireInitQueries: false,
 
-            generateHighQualityLinkPreview: true,
+            generateHighQualityLinkPreview: false,
 
             connectTimeoutMs: 60000,
 
             defaultQueryTimeoutMs: 60000,
 
-            keepAliveIntervalMs: 10000,
+            keepAliveIntervalMs: 30000,
 
             retryRequestDelayMs: 250,
 
