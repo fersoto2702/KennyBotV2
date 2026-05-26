@@ -38,7 +38,7 @@ const {
 // =========================
 
 const usePairingCode =
-    true
+    false
 
 let cleanupStarted =
     false
@@ -247,7 +247,7 @@ async function startBot() {
 
                             Estado:
                                 'Conectado ✅',
-                                
+
                         })
 
                         // =========================
