@@ -90,7 +90,7 @@ async function startBot() {
 
             auth: state,
 
-            printQRInTerminal: false,
+            printQRInTerminal: true,
 
             logger: P({
 
