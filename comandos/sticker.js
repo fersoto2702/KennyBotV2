@@ -4,19 +4,15 @@ const fs =
 const path =
     require('path')
 
-const jimp =
+const Jimp =
     require('jimp')
 
 const {
-
     downloadMediaMessage
-
 } = require('@whiskeysockets/baileys')
 
 const {
-
     isMediaTooLarge
-
 } = require('../src/utils/antiCrash')
 
 const generateTempFile =
@@ -29,10 +25,8 @@ const ui =
     require('../src/utils/ui')
 
 const {
-
     isLimited,
     getRemainingTime
-
 } = require('../src/system/rateLimiter')
 
 // =========================
@@ -417,41 +411,17 @@ module.exports = {
 
             if (imageMessage) {
 
-                await jimp(buffer)
+                const image =
+                    await Jimp.read(buffer)
 
-                    .resize(
+                image.resize(
+                    512,
+                    512
+                )
 
-                        512,
-                        512,
-
-                        {
-
-                            fit: 'contain',
-
-                            background: {
-
-                                r: 0,
-                                g: 0,
-                                b: 0,
-                                alpha: 0
-
-                            }
-
-                        }
-
-                    )
-
-                    .webp({
-
-                        quality: 80,
-
-                        effort: 4
-
-                    })
-
-                    .toFile(
-                        outputPath
-                    )
+                await image.writeAsync(
+                    outputPath
+                )
 
             }
 
