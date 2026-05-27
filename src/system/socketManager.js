@@ -16,15 +16,15 @@ let processing =
 
 const CONFIG = {
 
-    delay: 800,
+    delay: 100,
 
     retries: 3,
 
     retryDelay: 2000,
 
-    burstLimit: 5,
+    burstLimit: 20,
 
-    burstDelay: 4000
+    burstDelay: 500
 
 }
 
