@@ -100,11 +100,7 @@ async function startBot() {
 
             defaultQueryTimeoutMs: 60000,
 
-            keepAliveIntervalMs: 30000,
-
-            retryRequestDelayMs: 250,
-
-            maxMsgRetryCount: 5
+            keepAliveIntervalMs: 30000
 
         })
 
