@@ -126,30 +126,26 @@ async function startBot() {
         ) {
 
             const phoneNumber =
-                '5216681137982'
+                '526681137982'
 
-            setTimeout(async () => {
+            try {
 
-                try {
-
-                    const code =
-                        await sock.requestPairingCode(
-                            phoneNumber
-                        )
-
-                    console.log(
-                        `\n📲 Código de vinculación:\n${code}\n`
+                const code =
+                    await sock.requestPairingCode(
+                        phoneNumber
                     )
 
-                } catch (err) {
+                console.log(
+                    `\n📲 Código de vinculación:\n${code}\n`
+                )
 
-                    logger.error(
-                        `Pairing Error: ${err.message}`
-                    )
+            } catch (err) {
 
-                }
+                logger.error(
+                    `Pairing Error: ${err.message}`
+                )
 
-            }, 3000)
+            }
 
         }
 
