@@ -112,7 +112,7 @@ async function startBot() {
         // PATCH SOCKET
         // =========================
 
-        sock = patchSocket(sock)
+        // sock = patchSocket(sock)
 
         currentSock = sock
 
