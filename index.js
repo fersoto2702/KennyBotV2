@@ -83,9 +83,9 @@ async function startBot() {
             printQRInTerminal: !usePairingCode,
 
             browser: [
-                'KennyBot',
+                'Ubuntu',
                 'Chrome',
-                '1.0.0'
+                '20.0.04'
             ],
 
             markOnlineOnConnect: false,
