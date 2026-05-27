@@ -33,7 +33,7 @@ const {
 // CONFIG
 // =========================
 
-const usePairingCode = true
+const usePairingCode = false
 
 let cleanupStarted = false
 let reconnecting = false
@@ -108,7 +108,7 @@ async function startBot() {
         // PATCH SOCKET
         // =========================
 
-        // sock = patchSocket(sock)
+        sock = patchSocket(sock)
 
         currentSock = sock
 

@@ -1,0 +1,277 @@
+[19:56:41] [OK] UnifiedRateLimiter cargado
+[19:56:41] [OK] Comando cargado: ban
+[19:56:42] [OK] Comando cargado: antilink
+[19:56:42] [OK] Comando cargado: antibot
+[19:56:42] [OK] Comando cargado: antifake
+[19:56:42] [OK] Comando cargado: autolevelup
+[19:56:42] [OK] Comando cargado: nsfw
+[19:56:42] [OK] Comando cargado: facebook
+[19:56:42] [OK] Comando cargado: instagram
+[19:56:42] [ERROR] Error cargando pinterest.js: Cannot find module 'pinterest-scraper'
+Require stack:
+- C:\Users\Ferna\KennyBotV2\comandos\downloads\pinterest.js
+- C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js
+- C:\Users\Ferna\KennyBotV2\eventos\messages.js
+- C:\Users\Ferna\KennyBotV2\index.js
+[19:56:43] [OK] Comando cargado: play
+[19:56:43] [OK] Comando cargado: spotify
+[19:56:43] [OK] Comando cargado: tiktok
+[19:56:43] [OK] Comando cargado: ytmp3
+[19:56:43] [OK] Comando cargado: ytmp4
+[19:56:43] [OK] Comando cargado: balance
+[19:56:43] [OK] Comando cargado: buy
+[19:56:43] [OK] Comando cargado: crime
+[19:56:43] [OK] Comando cargado: daily
+[19:56:43] [OK] Comando cargado: deposit
+[19:56:43] [OK] Comando cargado: gamble
+[19:56:43] [OK] Comando cargado: inventory
+[19:56:43] [OK] Comando cargado: leaderboardmoney
+[19:56:43] [OK] Comando cargado: open
+[19:56:43] [OK] Comando cargado: pay
+[19:56:43] [OK] Comando cargado: rob
+[19:56:43] [OK] Comando cargado: shop
+[19:56:43] [OK] Comando cargado: slots
+[19:56:43] [OK] Comando cargado: withdraw
+[19:56:43] [OK] Comando cargado: work
+[19:56:43] [OK] Comando cargado: inactive
+[19:56:43] [OK] Comando cargado: msgstats
+[19:56:43] [OK] Comando cargado: topmessages
+[19:56:43] [OK] Comando cargado: add
+[19:56:43] [OK] Comando cargado: demote
+[19:56:43] [OK] Comando cargado: hidetag
+[19:56:43] [OK] Comando cargado: kick
+[19:56:43] [OK] Comando cargado: mute
+[19:56:43] [OK] Comando cargado: promote
+[19:56:43] [OK] Comando cargado: tagall
+[19:56:43] [OK] Comando cargado: unwarn
+[19:56:43] [OK] Comando cargado: warn
+[19:56:43] [OK] Comando cargado: warnings
+[19:56:43] [OK] Comando cargado: welcome
+[19:56:43] [OK] Comando cargado: ia
+[19:56:43] [OK] Comando cargado: leaderboard
+[19:56:43] [OK] Comando cargado: level
+[19:56:43] [OK] Comando cargado: rank
+[19:56:43] [OK] Comando cargado: menu
+[19:56:43] [OK] Comando cargado: ping
+[19:56:43] [OK] Comando cargado: addpremium
+[19:56:43] [OK] Comando cargado: delpremium
+[19:56:43] [OK] Comando cargado: premium
+[19:56:43] [OK] Comando cargado: profile
+[19:56:44] [OK] Comando cargado: sticker
+[19:56:44] [OK] Comando cargado: addjoinmsg
+[19:56:44] [OK] Comando cargado: clearjoinmsg
+[19:56:44] [OK] Comando cargado: deljoinmsg
+[19:56:44] [OK] Comando cargado: listjoinmsg
+[19:56:44] [INFO] Iniciando KennyBot...
+[19:56:45] [WARN] Desconectado: 428
+[19:56:45] [INFO] Reconectando en 5 segundos...
+[19:56:50] [WARN] Desconectado: 428
+[19:59:21] [OK] UnifiedRateLimiter cargado
+[19:59:21] [OK] Comando cargado: ban
+[19:59:21] [OK] Comando cargado: antilink
+[19:59:21] [OK] Comando cargado: antibot
+[19:59:21] [OK] Comando cargado: antifake
+[19:59:21] [OK] Comando cargado: autolevelup
+[19:59:21] [OK] Comando cargado: nsfw
+[19:59:21] [OK] Comando cargado: facebook
+[19:59:21] [OK] Comando cargado: instagram
+[19:59:21] [ERROR] Error cargando pinterest.js: Cannot find module 'pinterest-scraper'
+Require stack:
+- C:\Users\Ferna\KennyBotV2\comandos\downloads\pinterest.js
+- C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js
+- C:\Users\Ferna\KennyBotV2\eventos\messages.js
+- C:\Users\Ferna\KennyBotV2\index.js
+[19:59:22] [OK] Comando cargado: play
+[19:59:22] [OK] Comando cargado: spotify
+[19:59:22] [OK] Comando cargado: tiktok
+[19:59:22] [OK] Comando cargado: ytmp3
+[19:59:22] [OK] Comando cargado: ytmp4
+[19:59:22] [OK] Comando cargado: balance
+[19:59:22] [OK] Comando cargado: buy
+[19:59:22] [OK] Comando cargado: crime
+[19:59:22] [OK] Comando cargado: daily
+[19:59:22] [OK] Comando cargado: deposit
+[19:59:22] [OK] Comando cargado: gamble
+[19:59:22] [OK] Comando cargado: inventory
+[19:59:22] [OK] Comando cargado: leaderboardmoney
+[19:59:22] [OK] Comando cargado: open
+[19:59:22] [OK] Comando cargado: pay
+[19:59:22] [OK] Comando cargado: rob
+[19:59:22] [OK] Comando cargado: shop
+[19:59:22] [OK] Comando cargado: slots
+[19:59:22] [OK] Comando cargado: withdraw
+[19:59:22] [OK] Comando cargado: work
+[19:59:22] [OK] Comando cargado: inactive
+[19:59:22] [OK] Comando cargado: msgstats
+[19:59:22] [OK] Comando cargado: topmessages
+[19:59:22] [OK] Comando cargado: add
+[19:59:22] [OK] Comando cargado: demote
+[19:59:22] [OK] Comando cargado: hidetag
+[19:59:22] [OK] Comando cargado: kick
+[19:59:22] [OK] Comando cargado: mute
+[19:59:22] [OK] Comando cargado: promote
+[19:59:22] [OK] Comando cargado: tagall
+[19:59:22] [OK] Comando cargado: unwarn
+[19:59:22] [OK] Comando cargado: warn
+[19:59:22] [OK] Comando cargado: warnings
+[19:59:22] [OK] Comando cargado: welcome
+[19:59:22] [OK] Comando cargado: ia
+[19:59:22] [OK] Comando cargado: leaderboard
+[19:59:22] [OK] Comando cargado: level
+[19:59:22] [OK] Comando cargado: rank
+[19:59:22] [OK] Comando cargado: menu
+[19:59:22] [OK] Comando cargado: ping
+[19:59:22] [OK] Comando cargado: addpremium
+[19:59:22] [OK] Comando cargado: delpremium
+[19:59:22] [OK] Comando cargado: premium
+[19:59:22] [OK] Comando cargado: profile
+[19:59:22] [OK] Comando cargado: sticker
+[19:59:22] [OK] Comando cargado: addjoinmsg
+[19:59:22] [OK] Comando cargado: clearjoinmsg
+[19:59:22] [OK] Comando cargado: deljoinmsg
+[19:59:22] [OK] Comando cargado: listjoinmsg
+[19:59:22] [INFO] Iniciando KennyBot...
+[19:59:23] [ERROR] Pairing Error: Connection Closed
+[19:59:26] [WARN] Desconectado: 401
+[19:59:26] [ERROR] Sesión cerrada.
+[20:10:32] [OK] UnifiedRateLimiter cargado
+[20:10:32] [OK] Comando cargado: ban
+[20:10:32] [OK] Comando cargado: antilink
+[20:10:32] [OK] Comando cargado: antibot
+[20:10:32] [OK] Comando cargado: antifake
+[20:10:32] [OK] Comando cargado: autolevelup
+[20:10:32] [OK] Comando cargado: nsfw
+[20:10:32] [OK] Comando cargado: facebook
+[20:10:32] [OK] Comando cargado: instagram
+[20:10:32] [OK] Comando cargado: pinterest
+[20:10:33] [OK] Comando cargado: play
+[20:10:33] [OK] Comando cargado: spotify
+[20:10:33] [OK] Comando cargado: tiktok
+[20:10:33] [OK] Comando cargado: ytmp3
+[20:10:33] [OK] Comando cargado: ytmp4
+[20:10:33] [OK] Comando cargado: balance
+[20:10:33] [OK] Comando cargado: buy
+[20:10:33] [OK] Comando cargado: crime
+[20:10:33] [OK] Comando cargado: daily
+[20:10:33] [OK] Comando cargado: deposit
+[20:10:33] [OK] Comando cargado: gamble
+[20:10:33] [OK] Comando cargado: inventory
+[20:10:33] [OK] Comando cargado: leaderboardmoney
+[20:10:33] [OK] Comando cargado: open
+[20:10:33] [OK] Comando cargado: pay
+[20:10:33] [OK] Comando cargado: rob
+[20:10:33] [OK] Comando cargado: shop
+[20:10:33] [OK] Comando cargado: slots
+[20:10:33] [OK] Comando cargado: withdraw
+[20:10:33] [OK] Comando cargado: work
+[20:10:33] [OK] Comando cargado: inactive
+[20:10:33] [OK] Comando cargado: msgstats
+[20:10:33] [OK] Comando cargado: topmessages
+[20:10:33] [OK] Comando cargado: add
+[20:10:33] [OK] Comando cargado: demote
+[20:10:33] [OK] Comando cargado: hidetag
+[20:10:33] [OK] Comando cargado: kick
+[20:10:33] [OK] Comando cargado: mute
+[20:10:33] [OK] Comando cargado: promote
+[20:10:33] [OK] Comando cargado: tagall
+[20:10:33] [OK] Comando cargado: unwarn
+[20:10:33] [OK] Comando cargado: warn
+[20:10:33] [OK] Comando cargado: warnings
+[20:10:33] [OK] Comando cargado: welcome
+[20:10:33] [OK] Comando cargado: ia
+[20:10:33] [OK] Comando cargado: leaderboard
+[20:10:33] [OK] Comando cargado: level
+[20:10:33] [OK] Comando cargado: rank
+[20:10:33] [OK] Comando cargado: menu
+[20:10:33] [OK] Comando cargado: ping
+[20:10:33] [OK] Comando cargado: addpremium
+[20:10:33] [OK] Comando cargado: delpremium
+[20:10:33] [OK] Comando cargado: premium
+[20:10:33] [OK] Comando cargado: profile
+[20:10:33] [OK] Comando cargado: sticker
+[20:10:33] [OK] Comando cargado: addjoinmsg
+[20:10:33] [OK] Comando cargado: clearjoinmsg
+[20:10:33] [OK] Comando cargado: deljoinmsg
+[20:10:33] [OK] Comando cargado: listjoinmsg
+[20:10:33] [INFO] Iniciando KennyBot...
+[20:10:51] [WARN] Desconectado: 515
+[20:10:51] [INFO] Reconectando en 5 segundos...
+[20:11:01] [OK] KennyBot conectado
+[20:11:52] [EVENT] 181973939142738 -> .menu
+[20:11:52] [EVENT] PassiveCoins: 181973939142738 +8
+[20:12:03] [EVENT] 181973939142738 -> /menu
+[20:12:34] [EVENT] 181973939142738 -> /menu
+[20:13:10] [EVENT] 181973939142738 -> /menu
+[20:13:10] [EVENT] PassiveCoins: 181973939142738 +7
+[20:16:48] [EVENT] 120363421582961373 -> Te pareces a Xérh..
+
+> Chiara.
+[20:21:28] [EVENT] 266816320491607 -> Ya vine
+[20:22:11] [EVENT] 266816320491607 -> Mjum, sip
+[20:22:41] [EVENT] 120363421582961373 -> Ora, yo soy bel💜
+> ⃟🩷𝗕-𝗘𝗟ۤ⎯ 𝐊̶̾𝐍𝐄𝐙𝐄𝐕𝐈𝐂 𝐇꯭𝐔ۖ𝐍𝐒𝐓𝐓𝐄𝐑 '⭐ۥ  𓈒𓈒𓈒
+[20:22:48] [OK] UnifiedRateLimiter cargado
+[20:22:48] [OK] Comando cargado: ban
+[20:22:48] [OK] Comando cargado: antilink
+[20:22:48] [OK] Comando cargado: antibot
+[20:22:48] [OK] Comando cargado: antifake
+[20:22:48] [OK] Comando cargado: autolevelup
+[20:22:48] [OK] Comando cargado: nsfw
+[20:22:48] [OK] Comando cargado: facebook
+[20:22:48] [OK] Comando cargado: instagram
+[20:22:48] [OK] Comando cargado: pinterest
+[20:22:48] [OK] Comando cargado: play
+[20:22:48] [OK] Comando cargado: spotify
+[20:22:48] [OK] Comando cargado: tiktok
+[20:22:48] [OK] Comando cargado: ytmp3
+[20:22:48] [OK] Comando cargado: ytmp4
+[20:22:48] [OK] Comando cargado: balance
+[20:22:48] [OK] Comando cargado: buy
+[20:22:48] [OK] Comando cargado: crime
+[20:22:48] [OK] Comando cargado: daily
+[20:22:48] [OK] Comando cargado: deposit
+[20:22:48] [OK] Comando cargado: gamble
+[20:22:48] [OK] Comando cargado: inventory
+[20:22:48] [OK] Comando cargado: leaderboardmoney
+[20:22:48] [OK] Comando cargado: open
+[20:22:48] [OK] Comando cargado: pay
+[20:22:48] [OK] Comando cargado: rob
+[20:22:48] [OK] Comando cargado: shop
+[20:22:48] [OK] Comando cargado: slots
+[20:22:48] [OK] Comando cargado: withdraw
+[20:22:48] [OK] Comando cargado: work
+[20:22:48] [OK] Comando cargado: inactive
+[20:22:48] [OK] Comando cargado: msgstats
+[20:22:48] [OK] Comando cargado: topmessages
+[20:22:48] [OK] Comando cargado: add
+[20:22:48] [OK] Comando cargado: demote
+[20:22:48] [OK] Comando cargado: hidetag
+[20:22:48] [OK] Comando cargado: kick
+[20:22:48] [OK] Comando cargado: mute
+[20:22:48] [OK] Comando cargado: promote
+[20:22:48] [OK] Comando cargado: tagall
+[20:22:48] [OK] Comando cargado: unwarn
+[20:22:48] [OK] Comando cargado: warn
+[20:22:48] [OK] Comando cargado: warnings
+[20:22:48] [OK] Comando cargado: welcome
+[20:22:48] [OK] Comando cargado: ia
+[20:22:48] [OK] Comando cargado: leaderboard
+[20:22:48] [OK] Comando cargado: level
+[20:22:48] [OK] Comando cargado: rank
+[20:22:48] [OK] Comando cargado: menu
+[20:22:48] [OK] Comando cargado: ping
+[20:22:49] [OK] Comando cargado: addpremium
+[20:22:49] [OK] Comando cargado: delpremium
+[20:22:49] [OK] Comando cargado: premium
+[20:22:49] [OK] Comando cargado: profile
+[20:22:49] [OK] Comando cargado: sticker
+[20:22:49] [OK] Comando cargado: addjoinmsg
+[20:22:49] [OK] Comando cargado: clearjoinmsg
+[20:22:49] [OK] Comando cargado: deljoinmsg
+[20:22:49] [OK] Comando cargado: listjoinmsg
+[20:22:49] [INFO] Iniciando KennyBot...
+[20:22:49] [OK] SocketManager cargado
+[20:22:51] [OK] KennyBot conectado
+[20:23:05] [EVENT] 181973939142738 -> /menu
+[20:23:05] [EVENT] PassiveCoins: 181973939142738 +7
+[20:23:15] [EVENT] 266816320491607 -> Me dormí en el intento, pero ya se terminó
