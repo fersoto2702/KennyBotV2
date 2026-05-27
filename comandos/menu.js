@@ -418,7 +418,7 @@ module.exports = {
             // SEND
             // =========================
 
-            await sock.safesendMessage(
+            await sock.safeSendMessage(
 
                 from,
 
