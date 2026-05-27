@@ -311,6 +311,7 @@ module.exports = async ({
         // AUTO TYPING
         // =========================
 
+        /*
         try {
 
             await sock.sendPresenceUpdate(
@@ -321,6 +322,7 @@ module.exports = async ({
             )
 
         } catch {}
+        */
 
         // =========================
         // FLOOD

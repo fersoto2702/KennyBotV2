@@ -392,7 +392,7 @@ module.exports = {
                             : ''
 
                     text +=
-`\n│ ✦ ${settings.prefix}${cmd.name}${aliasText}
+`\n│ ✦ /${cmd.name}${aliasText}
 │   ↳ ${cmd.description || 'Sin descripción'}
 │   ↳ ${badges.join(' ') || '—'}
 │`

@@ -303,25 +303,33 @@ module.exports = async (
         // COMMANDS
         // =========================
 
-        if (
+        const prefixes =
 
-            text.startsWith(
-                settings.prefix
-            )
+    settings.prefixes ||
 
-        ) {
+    [settings.prefix || '/']
 
-            await commandHandler({
+const isCommand =
 
-                sock,
-                msg,
-                from,
-                text,
-                settings
+    prefixes.some(
 
-            })
+        p => text.startsWith(p)
 
-        }
+    )
+
+if (isCommand) {
+
+    await commandHandler({
+
+        sock,
+        msg,
+        from,
+        text,
+        settings
+
+    })
+
+}
 
     } catch (err) {
 
