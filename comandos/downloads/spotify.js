@@ -64,10 +64,6 @@ module.exports = {
                 msg.key.participant ||
                 msg.key.remoteJid
 
-            // =========================
-            // COOLDOWN
-            // =========================
-
             const cooldown =
                 checkCooldown(
                     sender,
@@ -94,10 +90,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // URL
-            // =========================
 
             const url =
                 args[0]
@@ -128,10 +120,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // INFO
-            // =========================
-
             await sock.sendMessage(
 
                 from,
@@ -154,10 +142,6 @@ module.exports = {
                 }
 
             )
-
-            // =========================
-            // API
-            // =========================
 
             const response =
                 await axios.get(
@@ -182,10 +166,6 @@ module.exports = {
             const data =
                 response.data
 
-            // =========================
-            // VALIDAR
-            // =========================
-
             if (!data.result) {
 
                 return await sock.sendMessage(
@@ -206,16 +186,8 @@ module.exports = {
 
             }
 
-            // =========================
-            // TITLE
-            // =========================
-
             const title =
                 `${data.result.title} ${data.result.artist}`
-
-            // =========================
-            // SEARCH YT
-            // =========================
 
             await sock.sendMessage(
 
@@ -287,10 +259,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // QUEUE
-            // =========================
-
             const position =
                 getQueueLength() + 1
 
@@ -321,19 +289,11 @@ module.exports = {
 
             )
 
-            // =========================
-            // FILE
-            // =========================
-
             const filePath =
                 generateTempFile(
                     'temp',
                     'audio'
                 )
-
-            // =========================
-            // DOWNLOAD
-            // =========================
 
             await addToQueue(
 
@@ -362,10 +322,6 @@ module.exports = {
 
             )
 
-            // =========================
-            // WAIT
-            // =========================
-
             await new Promise(resolve =>
 
                 setTimeout(
@@ -374,10 +330,6 @@ module.exports = {
                 )
 
             )
-
-            // =========================
-            // FIND FILE
-            // =========================
 
             const files =
                 fs.readdirSync(
@@ -412,16 +364,8 @@ module.exports = {
 
                 )
 
-            // =========================
-            // STATS
-            // =========================
-
             const stats =
                 fs.statSync(finalPath)
-
-            // =========================
-            // ANTI CRASH
-            // =========================
 
             if (
 
@@ -452,10 +396,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // SEND
-            // =========================
-
             await sock.sendMessage(
 
                 from,
@@ -474,10 +414,6 @@ module.exports = {
                 }
 
             )
-
-            // =========================
-            // INFO
-            // =========================
 
             await sock.sendMessage(
 
@@ -503,10 +439,6 @@ module.exports = {
                 }
 
             )
-
-            // =========================
-            // DELETE TEMP
-            // =========================
 
             setTimeout(() => {
 

@@ -42,10 +42,6 @@ module.exports = {
                 msg.key.participant ||
                 msg.key.remoteJid
 
-            // =========================
-            // COOLDOWN
-            // =========================
-
             const cooldown =
                 checkCooldown(
                     sender,
@@ -72,10 +68,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // URL
-            // =========================
 
             const url =
                 args[0]
@@ -109,10 +101,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // LOADING
-            // =========================
-
             await sock.sendMessage(
 
                 from,
@@ -136,10 +124,6 @@ module.exports = {
 
             )
 
-            // =========================
-            // API
-            // =========================
-
             const response =
                 await axios.get(
 
@@ -162,10 +146,6 @@ module.exports = {
 
             const data =
                 response.data
-
-            // =========================
-            // VALIDAR
-            // =========================
 
             if (
 
@@ -192,10 +172,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // VIDEO
-            // =========================
 
             const videoUrl =
 
@@ -224,10 +200,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

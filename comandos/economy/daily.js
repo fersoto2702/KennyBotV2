@@ -19,10 +19,6 @@ const economyPath =
 
     )
 
-// =========================
-// COOLDOWNS
-// =========================
-
 const cooldowns =
     new Map()
 
@@ -54,29 +50,17 @@ module.exports = {
 
         try {
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
 
-            // =========================
-            // TIME
-            // =========================
-
             const now =
                 Date.now()
 
             const cooldownTime =
                 24 * 60 * 60 * 1000
-
-            // =========================
-            // COOLDOWN
-            // =========================
 
             if (
                 cooldowns.has(sender)
@@ -138,10 +122,6 @@ module.exports = {
 
             )
 
-            // =========================
-            // DB
-            // =========================
-
             if (
                 !fs.existsSync(economyPath)
             ) {
@@ -159,10 +139,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
 
@@ -183,10 +159,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // CREATE USER
-            // =========================
-
             if (
                 !economy[sender]
             ) {
@@ -200,10 +172,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // FIX VALUES
-            // =========================
 
             if (
                 typeof economy[sender].coins !== 'number'
@@ -221,10 +189,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // REWARD
-            // =========================
-
             const reward =
 
                 Math.floor(
@@ -233,10 +197,6 @@ module.exports = {
 
             economy[sender].coins +=
                 reward
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -255,10 +215,6 @@ module.exports = {
                 `Daily: ${sender.split('@')[0]} +${reward}`
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

@@ -15,11 +15,8 @@ const ui =
 
 const joinPath =
     path.join(
-
         __dirname,
-
         '../../database/joinMessages.json'
-
     )
 
 module.exports = {
@@ -28,11 +25,9 @@ module.exports = {
         'clearjoinmsg',
 
     aliases: [
-
         'resetjoinmsg',
         'clearwelcome',
         'deletejoinmsg'
-
     ],
 
     description:
@@ -46,114 +41,60 @@ module.exports = {
     groupOnly: true,
 
     async execute({
-
         sock,
         from,
         msg
-
     }) {
 
         try {
 
-            // =========================
-            // GROUP CHECK
-            // =========================
-
-            if (
-                !from.endsWith('@g.us')
-            ) {
+            if (!from.endsWith('@g.us')) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'SOLO GRUPOS',
-
                                 'Este comando solo funciona en grupos.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // ADMIN CHECK
-            // =========================
-
             const sender =
-
                 msg.key.participant ||
-
                 msg.participant
 
             const admin =
-
                 await isGroupAdmin(
-
                     sock,
                     from,
                     sender
-
                 )
 
-            if (
-                !admin
-            ) {
+            if (!admin) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ACCESO DENEGADO',
-
                                 'Solo administradores pueden usar este comando.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // CREATE FILE
-            // =========================
-
-            if (
-                !fs.existsSync(joinPath)
-            ) {
-
+            if (!fs.existsSync(joinPath)) {
                 fs.writeFileSync(
-
                     joinPath,
-
-                    JSON.stringify(
-                        {},
-                        null,
-                        2
-                    )
-
+                    JSON.stringify({}, null, 2)
                 )
-
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let data = {}
 
@@ -161,130 +102,61 @@ module.exports = {
 
                 data =
                     JSON.parse(
-
-                        fs.readFileSync(
-                            joinPath
-                        )
-
+                        fs.readFileSync(joinPath)
                     )
 
-                if (
-                    typeof data !== 'object'
-                ) {
-
+                if (typeof data !== 'object') {
                     data = {}
-
                 }
 
             } catch {
-
                 data = {}
-
             }
 
-            // =========================
-            // GROUP DATA
-            // =========================
-
-            if (
-                !Array.isArray(data[from])
-            ) {
-
+            if (!Array.isArray(data[from])) {
                 data[from] = []
-
             }
 
-            // =========================
-            // EMPTY
-            // =========================
-
-            if (
-                data[from].length === 0
-            ) {
+            if (data[from].length === 0) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'SIN MENSAJES',
-
                                 'No hay mensajes de bienvenida configurados.'
-
                             )
-
                     }
-
                 )
 
             }
-
-            // =========================
-            // DELETE
-            // =========================
 
             const total =
                 data[from].length
 
             delete data[from]
 
-            // =========================
-            // SAVE
-            // =========================
-
             fs.writeFileSync(
-
                 joinPath,
-
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                )
-
+                JSON.stringify(data, null, 2)
             )
 
             logger.event(
-
                 `JoinMsgs eliminados: ${from.split('@')[0]} → ${total}`
-
             )
 
-            // =========================
-            // SEND
-            // =========================
-
             await sock.sendMessage(
-
                 from,
-
                 {
-
                     text:
                         ui.success(
-
                             'MENSAJES ELIMINADOS',
-
                             [
-
-                                [
-
-                                    'Borrados',
-
-                                    `${total} mensaje${total !== 1 ? 's' : ''}`
-
-                                ]
-
+                                ['Borrados', `${total} mensaje${total !== 1 ? 's' : ''}`]
                             ]
-
                         )
-
                 }
-
             )
 
         } catch (err) {

@@ -10,10 +10,8 @@ module.exports = {
         'demote',
 
     aliases: [
-
         'degradar',
         'unadmin'
-
     ],
 
     description:
@@ -27,379 +25,202 @@ module.exports = {
     groupOnly: true,
 
     async execute({
-
         sock,
         from,
         msg
-
     }) {
 
         try {
 
-            // =========================
-            // GROUP CHECK
-            // =========================
-
-            if (
-                !from.endsWith('@g.us')
-            ) {
+            if (!from.endsWith('@g.us')) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'SOLO GRUPOS',
-
                                 'Este comando solo funciona en grupos.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // METADATA
-            // =========================
-
             const metadata =
-
-                await sock.groupMetadata(
-                    from
-                )
+                await sock.groupMetadata(from)
 
             const participants =
                 metadata.participants
 
             const sender =
-
                 msg.key.participant ||
-
                 msg.participant
 
-            // =========================
-            // ADMIN CHECK
-            // =========================
-
             const senderData =
-
                 participants.find(
-
                     p => p.id === sender
-
                 )
 
             const isAdmin =
-
                 senderData?.admin === 'admin' ||
-
                 senderData?.admin === 'superadmin'
 
-            if (
-                !isAdmin
-            ) {
+            if (!isAdmin) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ACCESO DENEGADO',
-
                                 'Solo administradores pueden usar este comando.'
-
                             )
-
                     }
-
                 )
 
             }
-
-            // =========================
-            // BOT ADMIN
-            // =========================
 
             const botId =
                 sock.user.id.split(':')[0]
 
             const botData =
-
                 participants.find(
-
                     p => p.id.includes(botId)
-
                 )
 
             const botAdmin =
-
                 botData?.admin === 'admin' ||
-
                 botData?.admin === 'superadmin'
 
-            if (
-                !botAdmin
-            ) {
+            if (!botAdmin) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'BOT SIN PERMISOS',
-
                                 'El bot necesita ser administrador.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // TARGET
-            // =========================
-
             const target =
-
                 msg.message
                 ?.extendedTextMessage
                 ?.contextInfo
                 ?.mentionedJid?.[0]
 
-            if (
-                !target
-            ) {
+            if (!target) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'USUARIO REQUERIDO',
-
                                 'Uso: /demote @usuario'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // SELF CHECK
-            // =========================
-
-            if (
-                target === sender
-            ) {
+            if (target === sender) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'ACCIÓN INVÁLIDA',
-
                                 'No puedes degradarte a ti mismo.'
-
                             )
-
                     }
-
                 )
 
             }
-
-            // =========================
-            // TARGET DATA
-            // =========================
 
             const targetData =
-
                 participants.find(
-
                     p => p.id === target
-
                 )
 
-            if (
-                !targetData
-            ) {
+            if (!targetData) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'USUARIO NO ENCONTRADO',
-
                                 'Ese usuario no está en el grupo.'
-
                             )
-
                     }
-
                 )
 
             }
 
             const targetAdmin =
-
                 targetData?.admin === 'admin' ||
-
                 targetData?.admin === 'superadmin'
 
-            if (
-                !targetAdmin
-            ) {
+            if (!targetAdmin) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'SIN RANGO',
-
                                 'Ese usuario no es administrador.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // OWNER PROTECTION
-            // =========================
-
-            if (
-                targetData?.admin === 'superadmin'
-            ) {
+            if (targetData?.admin === 'superadmin') {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ACCIÓN INVÁLIDA',
-
                                 'No puedes quitarle rango al creador del grupo.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // DEMOTE
-            // =========================
-
             await sock.groupParticipantsUpdate(
-
                 from,
-
                 [target],
-
                 'demote'
-
             )
 
             logger.event(
-
                 `Demote: ${target.split('@')[0]} degradado en ${from.split('@')[0]}`
-
             )
 
-            // =========================
-            // SEND
-            // =========================
-
             await sock.sendMessage(
-
                 from,
-
                 {
-
                     text:
                         ui.success(
-
                             'USUARIO DEGRADADO',
-
                             [
-
-                                [
-
-                                    'Usuario',
-
-                                    `@${target.split('@')[0]}`
-
-                                ],
-
-                                [
-
-                                    'Nuevo rango',
-
-                                    '○ Miembro'
-
-                                ]
-
+                                ['Usuario', `@${target.split('@')[0]}`],
+                                ['Nuevo rango', '○ Miembro']
                             ]
-
                         ),
-
-                    mentions: [
-
-                        target
-
-                    ]
-
+                    mentions: [target]
                 }
-
             )
 
         } catch (err) {

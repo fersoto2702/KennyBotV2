@@ -50,10 +50,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // TARGET
-            // =========================
-
             const target =
 
                 msg.message
@@ -85,10 +81,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // AMOUNT
-            // =========================
 
             const amount =
                 parseInt(args[1])
@@ -122,19 +114,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // SELF PAY
-            // =========================
 
             if (
                 sender === target
@@ -160,10 +144,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // BOT CHECK
-            // =========================
 
             const botNumber =
                 sock.user.id.split(':')[0] + '@s.whatsapp.net'
@@ -193,10 +173,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // DB
-            // =========================
-
             if (
                 !fs.existsSync(economyPath)
             ) {
@@ -214,10 +190,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
 
@@ -237,10 +209,6 @@ module.exports = {
                 economy = {}
 
             }
-
-            // =========================
-            // CREATE USERS
-            // =========================
 
             if (
                 !economy[sender]
@@ -270,10 +238,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // FIX VALUES
-            // =========================
-
             for (const user of [
 
                 sender,
@@ -298,10 +262,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // CHECK MONEY
-            // =========================
 
             if (
 
@@ -330,19 +290,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // TRANSFER
-            // =========================
-
             economy[sender].coins -=
                 amount
 
             economy[target].coins +=
                 amount
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -361,10 +313,6 @@ module.exports = {
                 `Pay: ${sender.split('@')[0]} → ${target.split('@')[0]} ${amount}`
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

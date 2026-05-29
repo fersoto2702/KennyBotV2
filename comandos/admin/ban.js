@@ -43,10 +43,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // SOLO GRUPOS
-            // =========================
-
             if (
                 !from.endsWith('@g.us')
             ) {
@@ -72,19 +68,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // SENDER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.participant
-
-            // =========================
-            // ADMIN
-            // =========================
 
             const isAdmin =
                 await isGroupAdmin(
@@ -118,10 +106,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // TARGET
-            // =========================
-
             const target =
 
                 msg.message
@@ -152,10 +136,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // EVITAR AUTOBAN
-            // =========================
-
             if (target === sender) {
 
                 return await sock.sendMessage(
@@ -178,10 +158,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // EVITAR BOT
-            // =========================
 
             const botNumber =
                 sock.user.id.split(':')[0] + '@s.whatsapp.net'
@@ -208,10 +184,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // DB
-            // =========================
 
             if (
                 !fs.existsSync(banPath)
@@ -250,10 +222,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // DUPLICADO
-            // =========================
-
             if (
                 data.includes(target)
             ) {
@@ -279,15 +247,7 @@ module.exports = {
 
             }
 
-            // =========================
-            // ADD
-            // =========================
-
             data.push(target)
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -304,10 +264,6 @@ module.exports = {
             logger.event(
                 `Ban aplicado: ${target.split('@')[0]}`
             )
-
-            // =========================
-            // RESPONSE
-            // =========================
 
             await sock.sendMessage(
 

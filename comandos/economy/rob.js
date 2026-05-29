@@ -28,10 +28,6 @@ const inventoryPath =
 
     )
 
-// =========================
-// COOLDOWNS
-// =========================
-
 const cooldowns =
     new Map()
 
@@ -62,10 +58,6 @@ module.exports = {
     }) {
 
         try {
-
-            // =========================
-            // TARGET
-            // =========================
 
             const target =
 
@@ -99,19 +91,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // SELF ROB
-            // =========================
 
             if (
                 sender === target
@@ -137,10 +121,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // BOT CHECK
-            // =========================
 
             const botNumber =
                 sock.user.id.split(':')[0] + '@s.whatsapp.net'
@@ -169,10 +149,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // COOLDOWN
-            // =========================
 
             const now =
                 Date.now()
@@ -227,10 +203,6 @@ module.exports = {
 
             )
 
-            // =========================
-            // CREATE FILES
-            // =========================
-
             for (const file of [
 
                 economyPath,
@@ -257,10 +229,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
             let inventory = {}
@@ -299,10 +267,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // CREATE USERS
-            // =========================
-
             for (const user of [
 
                 sender,
@@ -332,8 +296,6 @@ module.exports = {
 
                 }
 
-                // FIX VALUES
-
                 if (
                     typeof economy[user].coins !== 'number'
                 ) {
@@ -361,10 +323,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // TARGET MONEY
-            // =========================
 
             if (
 
@@ -399,10 +357,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // ITEMS
-            // =========================
-
             const hasVest =
 
                 inventory[target]
@@ -412,10 +366,6 @@ module.exports = {
 
                 inventory[sender]
                 .includes('⚔️ Espada')
-
-            // =========================
-            // CHANCE
-            // =========================
 
             let chance =
 
@@ -434,10 +384,6 @@ module.exports = {
             const success =
                 Math.random() < chance
 
-            // =========================
-            // FAIL
-            // =========================
-
             if (!success) {
 
                 const fine =
@@ -455,8 +401,6 @@ module.exports = {
                         economy[sender].coins - fine
 
                     )
-
-                // SAVE
 
                 fs.writeFileSync(
 
@@ -507,10 +451,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // AMOUNT
-            // =========================
-
             let amount =
 
                 Math.floor(
@@ -534,10 +474,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // TRANSFER
-            // =========================
-
             economy[target].coins =
 
                 Math.max(
@@ -550,10 +486,6 @@ module.exports = {
 
             economy[sender].coins +=
                 amount
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -572,10 +504,6 @@ module.exports = {
                 `Rob exitoso: ${sender.split('@')[0]} → ${target.split('@')[0]} ${amount}`
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

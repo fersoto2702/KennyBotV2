@@ -4,10 +4,6 @@ const {
 
 module.exports = createToggleCommand({
 
-    // =========================
-    // NAME
-    // =========================
-
     name:
         'antifake',
 
@@ -18,23 +14,11 @@ module.exports = createToggleCommand({
 
     ],
 
-    // =========================
-    // DESCRIPTION
-    // =========================
-
     description:
         'Detecta números sospechosos o cuentas fake',
 
-    // =========================
-    // CATEGORY
-    // =========================
-
     category:
         'configuracion',
-
-    // =========================
-    // EMOJI
-    // =========================
 
     emoji:
         '🕵️'

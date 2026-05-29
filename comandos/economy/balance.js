@@ -50,10 +50,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // DB
-            // =========================
-
             if (
                 !fs.existsSync(economyPath)
             ) {
@@ -71,10 +67,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ
-            // =========================
 
             let economy = {}
 
@@ -95,19 +87,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // CREATE USER
-            // =========================
 
             if (
                 !economy[sender]
@@ -122,10 +106,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // FIX VALUES
-            // =========================
 
             if (
                 typeof economy[sender].coins !== 'number'
@@ -143,10 +123,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // VALUES
-            // =========================
-
             const wallet =
                 economy[sender].coins
 
@@ -155,10 +131,6 @@ module.exports = {
 
             const total =
                 wallet + bank
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -171,10 +143,6 @@ module.exports = {
                 )
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

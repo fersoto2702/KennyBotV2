@@ -19,16 +19,8 @@ const economyPath =
 
     )
 
-// =========================
-// COOLDOWNS
-// =========================
-
 const cooldowns =
     new Map()
-
-// =========================
-// SUCCESS
-// =========================
 
 const CRIMES = [
 
@@ -46,10 +38,6 @@ const CRIMES = [
 
 ]
 
-// =========================
-// FAILS
-// =========================
-
 const FAILS = [
 
     'La policía te atrapó 🚓',
@@ -65,10 +53,6 @@ const FAILS = [
     'Activaste una alarma 🚨'
 
 ]
-
-// =========================
-// RANDOM
-// =========================
 
 const rand = arr =>
 
@@ -106,19 +90,11 @@ module.exports = {
 
         try {
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // COOLDOWN
-            // =========================
 
             const now =
                 Date.now()
@@ -173,10 +149,6 @@ module.exports = {
 
             )
 
-            // =========================
-            // DB
-            // =========================
-
             if (
                 !fs.existsSync(economyPath)
             ) {
@@ -194,10 +166,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
 
@@ -218,10 +186,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // CREATE USER
-            // =========================
-
             if (
                 !economy[sender]
             ) {
@@ -236,10 +200,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // FIX VALUES
-            // =========================
-
             if (
                 typeof economy[sender].coins !== 'number'
             ) {
@@ -248,16 +208,8 @@ module.exports = {
 
             }
 
-            // =========================
-            // SUCCESS?
-            // =========================
-
             const success =
                 Math.random() < 0.6
-
-            // =========================
-            // SUCCESS
-            // =========================
 
             if (success) {
 
@@ -269,10 +221,6 @@ module.exports = {
 
                 economy[sender].coins +=
                     amount
-
-                // =========================
-                // SAVE
-                // =========================
 
                 fs.writeFileSync(
 
@@ -339,10 +287,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // FAIL
-            // =========================
-
             const fine =
 
                 Math.floor(
@@ -358,10 +302,6 @@ module.exports = {
                     economy[sender].coins - fine
 
                 )
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -380,10 +320,6 @@ module.exports = {
                 `Crime fallido: ${sender.split('@')[0]} -${fine}`
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

@@ -4,16 +4,8 @@ const {
 
 module.exports = createToggleCommand({
 
-    // =========================
-    // NAME
-    // =========================
-
     name:
         'autolevelup',
-
-    // =========================
-    // ALIASES
-    // =========================
 
     aliases: [
 
@@ -22,24 +14,12 @@ module.exports = createToggleCommand({
 
     ],
 
-    // =========================
-    // DESCRIPTION
-    // =========================
-
     description:
         'Notifica automáticamente cuando un usuario sube de nivel',
 
-    // =========================
-    // CATEGORY
-    // =========================
-
     category:
         'configuracion',
-
-    // =========================
-    // EMOJI
-    // =========================
-
+        
     emoji:
         '⭐'
 

@@ -33,10 +33,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // QUERY
-            // =========================
-
             const query =
                 args.join(' ')
 
@@ -59,10 +55,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // LOADING
-            // =========================
 
             await sock.sendMessage(
 
@@ -87,16 +79,8 @@ module.exports = {
 
             )
 
-            // =========================
-            // SEARCH
-            // =========================
-
             const results =
                 await pinterest(query)
-
-            // =========================
-            // VALIDAR
-            // =========================
 
             if (
 
@@ -124,18 +108,10 @@ module.exports = {
 
             }
 
-            // =========================
-            // RANDOM
-            // =========================
-
             const images =
                 results
                 .sort(() => 0.5 - Math.random())
                 .slice(0, 5)
-
-            // =========================
-            // SEND
-            // =========================
 
             for (const img of images) {
 

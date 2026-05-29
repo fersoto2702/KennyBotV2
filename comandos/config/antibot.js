@@ -4,10 +4,6 @@ const {
 
 module.exports = createToggleCommand({
 
-    // =========================
-    // NAME
-    // =========================
-
     name:
         'antibot',
 
@@ -18,23 +14,11 @@ module.exports = createToggleCommand({
 
     ],
 
-    // =========================
-    // DESCRIPTION
-    // =========================
-
     description:
         'Bloquea bots automáticamente en el grupo',
 
-    // =========================
-    // CATEGORY
-    // =========================
-
     category:
         'configuracion',
-
-    // =========================
-    // EMOJI
-    // =========================
 
     emoji:
         '🤖'

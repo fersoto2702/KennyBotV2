@@ -116,10 +116,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // ITEM ID
-            // =========================
-
             const itemId =
                 parseInt(args[0])
 
@@ -151,19 +147,11 @@ module.exports = {
             const item =
                 items[itemId]
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // CREATE FILES
-            // =========================
 
             for (const file of [
 
@@ -191,10 +179,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
             let inventory = {}
@@ -233,10 +217,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // CREATE USER
-            // =========================
-
             if (
                 !economy[sender]
             ) {
@@ -259,10 +239,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // FIX VALUES
-            // =========================
-
             if (
                 typeof economy[sender].coins !== 'number'
             ) {
@@ -270,10 +246,6 @@ module.exports = {
                 economy[sender].coins = 0
 
             }
-
-            // =========================
-            // MONEY CHECK
-            // =========================
 
             if (
 
@@ -302,20 +274,12 @@ module.exports = {
 
             }
 
-            // =========================
-            // BUY
-            // =========================
-
             economy[sender].coins -=
                 item.price
 
             inventory[sender].push(
                 item.name
             )
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -346,10 +310,6 @@ module.exports = {
                 `Compra: ${sender.split('@')[0]} → ${item.name}`
 
             )
-
-            // =========================
-            // RESPONSE
-            // =========================
 
             await sock.sendMessage(
 

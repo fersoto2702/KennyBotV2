@@ -50,19 +50,11 @@ module.exports = {
 
         try {
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // AMOUNT
-            // =========================
 
             const amount =
                 parseInt(args[0])
@@ -96,10 +88,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // DB
-            // =========================
-
             if (
                 !fs.existsSync(economyPath)
             ) {
@@ -117,10 +105,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
 
@@ -141,10 +125,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // CREATE USER
-            // =========================
-
             if (
                 !economy[sender]
             ) {
@@ -158,10 +138,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // FIX VALUES
-            // =========================
 
             if (
                 typeof economy[sender].coins !== 'number'
@@ -178,10 +154,6 @@ module.exports = {
                 economy[sender].bank = 0
 
             }
-
-            // =========================
-            // CHECK MONEY
-            // =========================
 
             if (
 
@@ -210,25 +182,13 @@ module.exports = {
 
             }
 
-            // =========================
-            // RESULT
-            // =========================
-
             const win =
                 Math.random() < 0.5
-
-            // =========================
-            // WIN
-            // =========================
 
             if (win) {
 
                 economy[sender].coins +=
                     amount
-
-                // =========================
-                // SAVE
-                // =========================
 
                 fs.writeFileSync(
 
@@ -295,16 +255,8 @@ module.exports = {
 
             }
 
-            // =========================
-            // LOSE
-            // =========================
-
             economy[sender].coins -=
                 amount
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -323,10 +275,6 @@ module.exports = {
                 `Gamble: ${sender.split('@')[0]} -${amount}`
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

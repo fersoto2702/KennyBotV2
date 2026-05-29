@@ -58,10 +58,6 @@ module.exports = {
                 msg.key.participant ||
                 msg.key.remoteJid
 
-            // =========================
-            // COOLDOWN
-            // =========================
-
             const cooldown =
                 checkCooldown(
                     sender,
@@ -88,10 +84,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // URL
-            // =========================
 
             const url =
                 args[0]
@@ -125,10 +117,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // QUEUE
-            // =========================
-
             const position =
                 getQueueLength() + 1
 
@@ -157,19 +145,11 @@ module.exports = {
 
             )
 
-            // =========================
-            // FILE
-            // =========================
-
             const filePath =
                 generateTempFile(
                     'temp',
                     'video'
                 )
-
-            // =========================
-            // DOWNLOAD
-            // =========================
 
             await addToQueue(
 
@@ -199,10 +179,6 @@ module.exports = {
 
             )
 
-            // =========================
-            // WAIT
-            // =========================
-
             await new Promise(resolve =>
 
                 setTimeout(
@@ -211,10 +187,6 @@ module.exports = {
                 )
 
             )
-
-            // =========================
-            // FIND FILE
-            // =========================
 
             const files =
                 fs.readdirSync(
@@ -249,16 +221,8 @@ module.exports = {
 
                 )
 
-            // =========================
-            // STATS
-            // =========================
-
             const stats =
                 fs.statSync(finalPath)
-
-            // =========================
-            // ANTI CRASH
-            // =========================
 
             if (
 
@@ -288,10 +252,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 
@@ -324,10 +284,6 @@ module.exports = {
                 }
 
             )
-
-            // =========================
-            // DELETE TEMP
-            // =========================
 
             setTimeout(() => {
 

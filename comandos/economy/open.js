@@ -37,10 +37,6 @@ const levelsPath =
 
     )
 
-// =========================
-// ITEMS
-// =========================
-
 const ITEMS = [
 
     '🛡️ Chaleco',
@@ -50,10 +46,6 @@ const ITEMS = [
     '🚀 XP Boost'
 
 ]
-
-// =========================
-// RANDOM
-// =========================
 
 const random = arr =>
 
@@ -94,19 +86,11 @@ module.exports = {
 
         try {
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // CREATE FILES
-            // =========================
 
             for (const file of [
 
@@ -135,10 +119,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
             let inventory = {}
@@ -195,10 +175,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // CREATE USER
-            // =========================
-
             if (
                 !economy[sender]
             ) {
@@ -235,10 +211,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // FIX VALUES
-            // =========================
-
             if (
                 typeof economy[sender].coins !== 'number'
             ) {
@@ -273,10 +245,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // FIND BOX
-            // =========================
-
             const boxIndex =
 
                 inventory[sender].indexOf(
@@ -308,18 +276,10 @@ module.exports = {
 
             }
 
-            // =========================
-            // REMOVE BOX
-            // =========================
-
             inventory[sender].splice(
                 boxIndex,
                 1
             )
-
-            // =========================
-            // REWARDS
-            // =========================
 
             const rewards = [
 
@@ -333,10 +293,6 @@ module.exports = {
             const reward =
                 random(rewards)
 
-            // =========================
-            // COINS
-            // =========================
-
             if (
                 reward === 'coins'
             ) {
@@ -349,8 +305,6 @@ module.exports = {
 
                 economy[sender].coins +=
                     amount
-
-                // SAVE
 
                 fs.writeFileSync(
 
@@ -413,10 +367,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // XP
-            // =========================
-
             if (
                 reward === 'xp'
             ) {
@@ -429,8 +379,6 @@ module.exports = {
 
                 levels[sender].xp +=
                     amount
-
-                // SAVE
 
                 fs.writeFileSync(
 
@@ -493,10 +441,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // ITEM
-            // =========================
-
             if (
                 reward === 'item'
             ) {
@@ -507,8 +451,6 @@ module.exports = {
                 inventory[sender].push(
                     item
                 )
-
-                // SAVE
 
                 fs.writeFileSync(
 
@@ -558,10 +500,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // NOTHING
-            // =========================
 
             fs.writeFileSync(
 

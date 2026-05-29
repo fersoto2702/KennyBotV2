@@ -50,10 +50,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // DB
-            // =========================
-
             if (
                 !fs.existsSync(inventoryPath)
             ) {
@@ -71,10 +67,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let inventory = {}
 
@@ -95,19 +87,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // CREATE USER
-            // =========================
 
             if (
                 !inventory[sender]
@@ -116,10 +100,6 @@ module.exports = {
                 inventory[sender] = []
 
             }
-
-            // =========================
-            // FIX ARRAY
-            // =========================
 
             if (
                 !Array.isArray(
@@ -133,10 +113,6 @@ module.exports = {
 
             const items =
                 inventory[sender]
-
-            // =========================
-            // EMPTY
-            // =========================
 
             if (
                 items.length === 0
@@ -163,9 +139,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // BUILD LIST
-            // =========================
 
             let list = ''
 
@@ -182,10 +155,6 @@ module.exports = {
                 }
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

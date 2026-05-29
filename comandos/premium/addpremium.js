@@ -12,11 +12,8 @@ const ui =
 
 const premiumPath =
     path.join(
-
         __dirname,
-
         '../../database/premium.json'
-
     )
 
 module.exports = {
@@ -25,11 +22,9 @@ module.exports = {
         'addpremium',
 
     aliases: [
-
         'addprem',
         'givepremium',
         'premadd'
-
     ],
 
     description:
@@ -41,76 +36,40 @@ module.exports = {
     ownerOnly: true,
 
     async execute({
-
         sock,
         from,
         msg
-
     }) {
 
         try {
 
-            // =========================
-            // TARGET
-            // =========================
-
             const target =
-
                 msg.message
                 ?.extendedTextMessage
                 ?.contextInfo
                 ?.mentionedJid?.[0]
 
-            if (
-                !target
-            ) {
+            if (!target) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'USUARIO REQUERIDO',
-
                                 'Uso: /addpremium @usuario'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // CREATE FILE
-            // =========================
-
-            if (
-                !fs.existsSync(premiumPath)
-            ) {
-
+            if (!fs.existsSync(premiumPath)) {
                 fs.writeFileSync(
-
                     premiumPath,
-
-                    JSON.stringify(
-                        [],
-                        null,
-                        2
-                    )
-
+                    JSON.stringify([], null, 2)
                 )
-
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let premium = []
 
@@ -118,135 +77,57 @@ module.exports = {
 
                 premium =
                     JSON.parse(
-
-                        fs.readFileSync(
-                            premiumPath
-                        )
-
+                        fs.readFileSync(premiumPath)
                     )
 
-                if (
-                    !Array.isArray(premium)
-                ) {
-
+                if (!Array.isArray(premium)) {
                     premium = []
-
                 }
 
             } catch {
-
                 premium = []
-
             }
 
-            // =========================
-            // DUPLICATE CHECK
-            // =========================
-
-            if (
-                premium.includes(target)
-            ) {
+            if (premium.includes(target)) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'YA ES PREMIUM',
-
                                 `@${target.split('@')[0]} ya tiene premium.`
-
                             ),
-
-                        mentions: [
-
-                            target
-
-                        ]
-
+                        mentions: [target]
                     }
-
                 )
 
             }
-
-            // =========================
-            // ADD
-            // =========================
 
             premium.push(target)
 
-            // =========================
-            // SAVE
-            // =========================
-
             fs.writeFileSync(
-
                 premiumPath,
-
-                JSON.stringify(
-                    premium,
-                    null,
-                    2
-                )
-
+                JSON.stringify(premium, null, 2)
             )
 
             logger.event(
-
                 `Premium agregado: ${target.split('@')[0]}`
-
             )
 
-            // =========================
-            // SEND
-            // =========================
-
             await sock.sendMessage(
-
                 from,
-
                 {
-
                     text:
                         ui.success(
-
                             'PREMIUM AGREGADO',
-
                             [
-
-                                [
-
-                                    'Usuario',
-
-                                    `@${target.split('@')[0]}`
-
-                                ],
-
-                                [
-
-                                    'Estado',
-
-                                    '💎 PREMIUM'
-
-                                ]
-
+                                ['Usuario', `@${target.split('@')[0]}`],
+                                ['Estado', '💎 PREMIUM']
                             ]
-
                         ),
-
-                    mentions: [
-
-                        target
-
-                    ]
-
+                    mentions: [target]
                 }
-
             )
 
         } catch (err) {

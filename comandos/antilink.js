@@ -15,11 +15,8 @@ const ui =
 
 const dbPath =
     path.join(
-
         __dirname,
-
         '../../database/antilink.json'
-
     )
 
 module.exports = {
@@ -28,11 +25,9 @@ module.exports = {
         'antilink',
 
     aliases: [
-
         'al',
         'antilinks',
         'linkguard'
-
     ],
 
     description:
@@ -46,115 +41,61 @@ module.exports = {
     groupOnly: true,
 
     async execute({
-
         sock,
         from,
         args,
         msg
-
     }) {
 
         try {
 
-            // =========================
-            // GROUP CHECK
-            // =========================
-
-            if (
-                !from.endsWith('@g.us')
-            ) {
+            if (!from.endsWith('@g.us')) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'SOLO GRUPOS',
-
                                 'Este comando solo funciona en grupos.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // ADMIN CHECK
-            // =========================
-
             const sender =
-
                 msg.key.participant ||
-
                 msg.participant
 
             const admin =
-
                 await isGroupAdmin(
-
                     sock,
                     from,
                     sender
-
                 )
 
-            if (
-                !admin
-            ) {
+            if (!admin) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ACCESO DENEGADO',
-
                                 'Solo administradores pueden usar este comando.'
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // CREATE FILE
-            // =========================
-
-            if (
-                !fs.existsSync(dbPath)
-            ) {
-
+            if (!fs.existsSync(dbPath)) {
                 fs.writeFileSync(
-
                     dbPath,
-
-                    JSON.stringify(
-                        [],
-                        null,
-                        2
-                    )
-
+                    JSON.stringify([], null, 2)
                 )
-
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let data = []
 
@@ -162,226 +103,104 @@ module.exports = {
 
                 data =
                     JSON.parse(
-
-                        fs.readFileSync(
-                            dbPath
-                        )
-
+                        fs.readFileSync(dbPath)
                     )
 
-                if (
-                    !Array.isArray(data)
-                ) {
-
+                if (!Array.isArray(data)) {
                     data = []
-
                 }
 
             } catch {
-
                 data = []
-
             }
-
-            // =========================
-            // CLEAN DUPLICATES
-            // =========================
 
             data =
                 [...new Set(data)]
 
-            // =========================
-            // OPTION
-            // =========================
-
             const option =
-
                 args[0]?.toLowerCase()
 
-            // =========================
-            // ENABLE
-            // =========================
+            if (option === 'on') {
 
-            if (
-                option === 'on'
-            ) {
-
-                if (
-                    !data.includes(from)
-                ) {
-
+                if (!data.includes(from)) {
                     data.push(from)
-
                 }
 
                 fs.writeFileSync(
-
                     dbPath,
-
-                    JSON.stringify(
-                        data,
-                        null,
-                        2
-                    )
-
+                    JSON.stringify(data, null, 2)
                 )
 
                 logger.event(
-
                     `AntiLink ON: ${from.split('@')[0]}`
-
                 )
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.success(
-
                                 'ANTILINK ACTIVADO',
-
                                 [
-
-                                    [
-
-                                        'Estado',
-
-                                        '● ACTIVADO'
-
-                                    ],
-
-                                    [
-
-                                        'Protección',
-
-                                        'Links bloqueados'
-
-                                    ]
-
+                                    ['Estado', '● ACTIVADO'],
+                                    ['Protección', 'Links bloqueados']
                                 ]
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // DISABLE
-            // =========================
-
-            if (
-                option === 'off'
-            ) {
+            if (option === 'off') {
 
                 data =
-                    data.filter(
-                        id => id !== from
-                    )
+                    data.filter(id => id !== from)
 
                 fs.writeFileSync(
-
                     dbPath,
-
-                    JSON.stringify(
-                        data,
-                        null,
-                        2
-                    )
-
+                    JSON.stringify(data, null, 2)
                 )
 
                 logger.event(
-
                     `AntiLink OFF: ${from.split('@')[0]}`
-
                 )
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.success(
-
                                 'ANTILINK DESACTIVADO',
-
                                 [
-
-                                    [
-
-                                        'Estado',
-
-                                        '○ DESACTIVADO'
-
-                                    ]
-
+                                    ['Estado', '○ DESACTIVADO']
                                 ]
-
                             )
-
                     }
-
                 )
 
             }
 
-            // =========================
-            // STATUS
-            // =========================
-
             const enabled =
-
                 data.includes(from)
 
             await sock.sendMessage(
-
                 from,
-
                 {
-
                     text:
                         ui.info(
-
                             'ANTILINK',
-
                             [
-
                                 [
-
                                     'Estado',
-
                                     enabled
-
                                         ? '● ACTIVADO'
-
                                         : '○ DESACTIVADO'
-
                                 ],
-
-                                [
-
-                                    'Grupo',
-
-                                    from.split('@')[0]
-
-                                ]
-
+                                ['Grupo', from.split('@')[0]]
                             ],
-
                             'Uso: /antilink on · /antilink off'
-
                         )
-
                 }
-
             )
 
         } catch (err) {

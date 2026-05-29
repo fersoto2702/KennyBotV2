@@ -34,10 +34,6 @@ const {
 
 } = require('../system/rateLimiter')
 
-// =========================
-// PATHS
-// =========================
-
 const mutePath =
 
     path.join(
@@ -48,9 +44,15 @@ const mutePath =
 
     )
 
-// =========================
-// CACHE
-// =========================
+const iconsPath =
+
+    path.join(
+
+        __dirname,
+
+        '../../assets/icons'
+
+    )
 
 const aliasesCache =
     new Map()
@@ -58,9 +60,42 @@ const aliasesCache =
 const cooldowns =
     new Map()
 
-// =========================
-// LOAD COMMANDS
-// =========================
+async function sendIcon(sock, from, commandName) {
+
+    try {
+
+        const iconFile =
+
+            path.join(
+                iconsPath,
+                `${commandName}.png`
+            )
+
+        if (!fs.existsSync(iconFile))
+            return
+
+        await sock.safeSendMessage(
+
+            from,
+
+            {
+
+                image:
+                    fs.readFileSync(iconFile)
+
+            }
+
+        )
+
+    } catch (err) {
+
+        logger.error(
+            `Icon error [${commandName}]: ${err.message}`
+        )
+
+    }
+
+}
 
 function loadCommands(dir) {
 
@@ -75,10 +110,6 @@ function loadCommands(dir) {
         const stat =
             fs.statSync(fullPath)
 
-        // =========================
-        // DIRECTORY
-        // =========================
-
         if (stat.isDirectory()) {
 
             loadCommands(fullPath)
@@ -86,10 +117,6 @@ function loadCommands(dir) {
             continue
 
         }
-
-        // =========================
-        // ONLY JS
-        // =========================
 
         if (!file.endsWith('.js'))
             continue
@@ -103,10 +130,6 @@ function loadCommands(dir) {
             const cmd =
                 require(fullPath)
 
-            // =========================
-            // VALIDATE
-            // =========================
-
             if (!cmd.name) {
 
                 logger.error(
@@ -117,10 +140,6 @@ function loadCommands(dir) {
 
             }
 
-            // =========================
-            // COMMAND
-            // =========================
-
             comandos.set(
                 cmd.name,
                 cmd
@@ -130,10 +149,6 @@ function loadCommands(dir) {
                 cmd.name,
                 cmd
             )
-
-            // =========================
-            // ALIASES
-            // =========================
 
             if (
                 Array.isArray(
@@ -180,10 +195,6 @@ loadCommands(
 
 )
 
-// =========================
-// HELPERS
-// =========================
-
 const ensureMuteDb = () => {
 
     if (
@@ -214,10 +225,6 @@ const isGroup = jid =>
 
     jid.endsWith('@g.us')
 
-// =========================
-// HANDLER
-// =========================
-
 module.exports = async ({
 
     sock,
@@ -230,10 +237,6 @@ module.exports = async ({
 
     try {
 
-        // =========================
-        // VALIDATE
-        // =========================
-
         if (!msg?.message)
             return
 
@@ -242,10 +245,6 @@ module.exports = async ({
 
         if (typeof text !== 'string')
             return
-
-        // =========================
-        // PREFIX
-        // =========================
 
         const prefixes =
 
@@ -265,10 +264,6 @@ module.exports = async ({
         if (!prefix)
             return
 
-        // =========================
-        // ARGS
-        // =========================
-
         const args =
 
             text
@@ -284,10 +279,6 @@ module.exports = async ({
         if (!commandName)
             return
 
-        // =========================
-        // COMMAND
-        // =========================
-
         const command =
 
             aliasesCache.get(
@@ -297,19 +288,11 @@ module.exports = async ({
         if (!command)
             return
 
-        // =========================
-        // SENDER
-        // =========================
-
         const sender =
             getSender(msg)
 
         if (!sender)
             return
-
-        // =========================
-        // AUTO TYPING
-        // =========================
 
         /*
         try {
@@ -323,10 +306,6 @@ module.exports = async ({
 
         } catch {}
         */
-
-        // =========================
-        // FLOOD
-        // =========================
 
         if (
 
@@ -358,10 +337,6 @@ module.exports = async ({
                     Math.max(0, 3 - warns)
                 )
 
-            // =========================
-            // REMOVE
-            // =========================
-
             if (warns >= 3) {
 
                 try {
@@ -384,6 +359,8 @@ module.exports = async ({
                         `Expulsado por flood: ${sender.split('@')[0]}`
 
                     )
+
+                    await sendIcon(sock, from, 'antiflood')
 
                     return await sock.safeSendMessage(
 
@@ -433,6 +410,8 @@ module.exports = async ({
 
             }
 
+            await sendIcon(sock, from, 'antiflood')
+
             return await sock.safeSendMessage(
 
                 from,
@@ -456,11 +435,6 @@ module.exports = async ({
             )
 
         }
-
-        // =========================
-        // MUTE
-        // =========================
-
         ensureMuteDb()
 
         const mutedGroups =
@@ -505,9 +479,6 @@ module.exports = async ({
 
         }
 
-        // =========================
-        // OWNER ONLY
-        // =========================
 
         if (command.ownerOnly) {
 
@@ -548,10 +519,6 @@ module.exports = async ({
 
         }
 
-        // =========================
-        // GROUP ONLY
-        // =========================
-
         if (
 
             command.groupOnly &&
@@ -581,10 +548,6 @@ module.exports = async ({
 
         }
 
-        // =========================
-        // PRIVATE ONLY
-        // =========================
-
         if (
 
             command.privateOnly &&
@@ -613,10 +576,6 @@ module.exports = async ({
             )
 
         }
-
-        // =========================
-        // ADMIN ONLY
-        // =========================
 
         if (command.adminOnly) {
 
@@ -691,10 +650,6 @@ module.exports = async ({
 
         }
 
-        // =========================
-        // PREMIUM
-        // =========================
-
         if (command.premiumOnly) {
 
             try {
@@ -737,10 +692,6 @@ module.exports = async ({
             }
 
         }
-
-        // =========================
-        // COOLDOWN
-        // =========================
 
         const cooldown =
 
@@ -803,98 +754,84 @@ module.exports = async ({
 
         }
 
-        // =========================
-        // LOG
-        // =========================
-
         logger.cmd(
 
             `${command.name} → ${sender.split('@')[0]}`
 
         )
 
-        // =========================
-        // RATE LIMIT
-        // =========================
+        if (
 
-if (
+            isLimited(
+                sender,
+                'commands'
+            )
 
-    isLimited(
-        sender,
-        'commands'
-    )
+        ) {
 
-) {
+            const left =
 
-    const left =
+                getRemainingTime(
 
-        getRemainingTime(
-
-            sender,
-            'commands'
-
-        )
-
-    return await sock.safeSendMessage(
-
-        from,
-
-        {
-
-            text:
-
-                ui.warn(
-
-                    'RATE LIMIT',
-
-                    `Estás usando demasiados comandos.\n\nEspera ${left}s.`
+                    sender,
+                    'commands'
 
                 )
 
-        }
+            return await sock.safeSendMessage(
 
-    )
+                from,
 
-}
+                {
 
-// =========================
-// GROUP LIMIT
-// =========================
+                    text:
 
-if (
+                        ui.warn(
 
-    isGroupLimited(
-        from,
-        'commands'
-    )
+                            'RATE LIMIT',
 
-) {
+                            `Estás usando demasiados comandos.\n\nEspera ${left}s.`
 
-    return await sock.safeSendMessage(
+                        )
 
-        from,
+                }
 
-        {
-
-            text:
-
-                ui.warn(
-
-                    'GRUPO SATURADO',
-
-                    'Demasiados comandos en poco tiempo.'
-
-                )
+            )
 
         }
 
-    )
+        if (
 
-}
+            isGroupLimited(
+                from,
+                'commands'
+            )
 
-        // =========================
-        // EXECUTE
-        // =========================
+        ) {
+
+            return await sock.safeSendMessage(
+
+                from,
+
+                {
+
+                    text:
+
+                        ui.warn(
+
+                            'GRUPO SATURADO',
+
+                            'Demasiados comandos en poco tiempo.'
+
+                        )
+
+                }
+
+            )
+
+        }
+
+        await sendIcon(sock, from, command.name)
 
         try {
 

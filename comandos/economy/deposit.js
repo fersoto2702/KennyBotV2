@@ -50,10 +50,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // AMOUNT
-            // =========================
-
             const amount =
                 parseInt(args[0])
 
@@ -86,19 +82,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // USER
-            // =========================
-
             const sender =
 
                 msg.key.participant ||
 
                 msg.key.remoteJid
-
-            // =========================
-            // DB
-            // =========================
 
             if (
                 !fs.existsSync(economyPath)
@@ -117,10 +105,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
 
@@ -141,10 +125,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // CREATE USER
-            // =========================
-
             if (
                 !economy[sender]
             ) {
@@ -158,10 +138,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // FIX VALUES
-            // =========================
 
             if (
                 typeof economy[sender].coins !== 'number'
@@ -178,10 +154,6 @@ module.exports = {
                 economy[sender].bank = 0
 
             }
-
-            // =========================
-            // CHECK MONEY
-            // =========================
 
             if (
 
@@ -210,19 +182,11 @@ module.exports = {
 
             }
 
-            // =========================
-            // TRANSFER
-            // =========================
-
             economy[sender].coins -=
                 amount
 
             economy[sender].bank +=
                 amount
-
-            // =========================
-            // SAVE
-            // =========================
 
             fs.writeFileSync(
 
@@ -241,10 +205,6 @@ module.exports = {
                 `Deposit: ${sender.split('@')[0]} → ${amount}`
 
             )
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 

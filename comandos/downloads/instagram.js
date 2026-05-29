@@ -42,10 +42,6 @@ module.exports = {
                 msg.key.participant ||
                 msg.key.remoteJid
 
-            // =========================
-            // COOLDOWN
-            // =========================
-
             const cooldown =
                 checkCooldown(
                     sender,
@@ -72,10 +68,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // URL
-            // =========================
 
             const url =
                 args[0]
@@ -106,10 +98,6 @@ module.exports = {
 
             }
 
-            // =========================
-            // LOADING
-            // =========================
-
             await sock.sendMessage(
 
                 from,
@@ -133,10 +121,6 @@ module.exports = {
 
             )
 
-            // =========================
-            // API
-            // =========================
-
             const response =
                 await axios.get(
 
@@ -159,10 +143,6 @@ module.exports = {
 
             const data =
                 response.data
-
-            // =========================
-            // VALIDAR
-            // =========================
 
             if (
 
@@ -194,24 +174,12 @@ module.exports = {
 
             }
 
-            // =========================
-            // LIMIT
-            // =========================
-
             const limitedMedia =
                 data.result.media.slice(0, 10)
-
-            // =========================
-            // SEND MEDIA
-            // =========================
 
             for (const media of limitedMedia) {
 
                 try {
-
-                    // =========================
-                    // VIDEO
-                    // =========================
 
                     if (
                         media.type === 'video'
@@ -252,10 +220,6 @@ module.exports = {
 
                     }
 
-                    // =========================
-                    // IMAGE
-                    // =========================
-
                     else {
 
                         await sock.sendMessage(
@@ -290,10 +254,6 @@ module.exports = {
 
                     }
 
-                    // =========================
-                    // ANTI FLOOD
-                    // =========================
-
                     await new Promise(resolve =>
 
                         setTimeout(
@@ -312,10 +272,6 @@ module.exports = {
                 }
 
             }
-
-            // =========================
-            // SUMMARY
-            // =========================
 
             await sock.sendMessage(
 

@@ -18,11 +18,7 @@ const economyPath =
         '../../database/economy.json'
 
     )
-
-// =========================
-// MEDALS
-// =========================
-
+    
 const MEDALS = [
 
     '🥇',
@@ -62,10 +58,6 @@ module.exports = {
 
         try {
 
-            // =========================
-            // DB
-            // =========================
-
             if (
                 !fs.existsSync(economyPath)
             ) {
@@ -83,10 +75,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // READ DB
-            // =========================
 
             let economy = {}
 
@@ -106,10 +94,6 @@ module.exports = {
                 economy = {}
 
             }
-
-            // =========================
-            // USERS
-            // =========================
 
             const users =
                 Object.entries(economy)
@@ -140,10 +124,6 @@ module.exports = {
                 )
 
             }
-
-            // =========================
-            // FIX VALUES
-            // =========================
 
             const fixedUsers =
 
@@ -190,10 +170,6 @@ module.exports = {
 
                 )
 
-            // =========================
-            // SORT
-            // =========================
-
             fixedUsers.sort(
 
                 (a, b) =>
@@ -203,19 +179,11 @@ module.exports = {
 
             )
 
-            // =========================
-            // TOP
-            // =========================
-
             const top =
                 fixedUsers.slice(0, 10)
 
             const mentions =
                 top.map(([id]) => id)
-
-            // =========================
-            // ROWS
-            // =========================
 
             const rows =
 
@@ -242,10 +210,6 @@ module.exports = {
                     }
 
                 ).join('\n')
-
-            // =========================
-            // SEND
-            // =========================
 
             await sock.sendMessage(
 
