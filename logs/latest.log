@@ -1313,3 +1313,64 @@ Si, mándamelos y ya veo y dime el nombre y así
 [16:05:31] [INFO] Iniciando KennyBot...
 [16:05:31] [OK] SocketManager cargado
 [16:05:33] [OK] KennyBot conectado
+[16:09:20] [OK] UnifiedRateLimiter cargado
+[16:09:20] [OK] Comando cargado: ban
+[16:09:20] [OK] Comando cargado: antilink
+[16:09:20] [OK] Comando cargado: antibot
+[16:09:20] [OK] Comando cargado: antifake
+[16:09:20] [OK] Comando cargado: autolevelup
+[16:09:21] [OK] Comando cargado: facebook
+[16:09:21] [OK] Comando cargado: instagram
+[16:09:21] [OK] Comando cargado: pinterest
+[16:09:21] [OK] Comando cargado: play
+[16:09:21] [OK] Comando cargado: spotify
+[16:09:21] [OK] Comando cargado: tiktok
+[16:09:21] [OK] Comando cargado: ytmp3
+[16:09:21] [OK] Comando cargado: ytmp4
+[16:09:21] [OK] Comando cargado: balance
+[16:09:21] [OK] Comando cargado: buy
+[16:09:21] [OK] Comando cargado: crime
+[16:09:21] [OK] Comando cargado: daily
+[16:09:21] [OK] Comando cargado: deposit
+[16:09:21] [OK] Comando cargado: gamble
+[16:09:21] [OK] Comando cargado: inventory
+[16:09:21] [OK] Comando cargado: leaderboardmoney
+[16:09:21] [OK] Comando cargado: open
+[16:09:21] [OK] Comando cargado: pay
+[16:09:21] [OK] Comando cargado: rob
+[16:09:21] [OK] Comando cargado: shop
+[16:09:21] [OK] Comando cargado: slots
+[16:09:21] [OK] Comando cargado: withdraw
+[16:09:21] [OK] Comando cargado: work
+[16:09:21] [OK] Comando cargado: inactive
+[16:09:21] [OK] Comando cargado: msgstats
+[16:09:21] [OK] Comando cargado: topmessages
+[16:09:21] [OK] Comando cargado: add
+[16:09:21] [OK] Comando cargado: demote
+[16:09:21] [OK] Comando cargado: hidetag
+[16:09:21] [OK] Comando cargado: kick
+[16:09:21] [OK] Comando cargado: mute
+[16:09:21] [OK] Comando cargado: promote
+[16:09:22] [OK] Comando cargado: tagall
+[16:09:22] [OK] Comando cargado: unwarn
+[16:09:22] [OK] Comando cargado: warn
+[16:09:22] [OK] Comando cargado: warnings
+[16:09:22] [OK] Comando cargado: welcome
+[16:09:22] [OK] Comando cargado: ia
+[16:09:22] [OK] Comando cargado: leaderboard
+[16:09:22] [OK] Comando cargado: level
+[16:09:22] [OK] Comando cargado: rank
+[16:09:22] [OK] Comando cargado: menu
+[16:09:22] [OK] Comando cargado: ping
+[16:09:22] [OK] Comando cargado: addpremium
+[16:09:22] [OK] Comando cargado: delpremium
+[16:09:22] [OK] Comando cargado: premium
+[16:09:22] [OK] Comando cargado: profile
+[16:09:22] [OK] Comando cargado: sticker
+[16:09:22] [OK] Comando cargado: addjoinmsg
+[16:09:22] [OK] Comando cargado: clearjoinmsg
+[16:09:22] [OK] Comando cargado: deljoinmsg
+[16:09:22] [OK] Comando cargado: listjoinmsg
+[16:09:22] [INFO] Iniciando KennyBot...
+[16:09:22] [OK] SocketManager cargado
+[16:09:24] [OK] KennyBot conectado
