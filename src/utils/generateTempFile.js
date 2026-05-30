@@ -7,18 +7,10 @@ const path =
 const crypto =
     require('crypto')
 
-// =========================
-// SANITIZE
-// =========================
-
 const sanitize = value =>
 
     String(value || '')
         .replace(/[^a-zA-Z0-9_-]/g, '')
-
-// =========================
-// GENERATE
-// =========================
 
 module.exports = (
 
@@ -27,29 +19,17 @@ module.exports = (
 
 ) => {
 
-    // =========================
-    // CLEAN
-    // =========================
-
     const safeFolder =
         sanitize(folder)
 
     const safeExt =
         sanitize(extension)
 
-    // =========================
-    // DIR
-    // =========================
-
     const dir =
         path.join(
             __dirname,
             `../../${safeFolder}`
         )
-
-    // =========================
-    // CREATE DIR
-    // =========================
 
     if (!fs.existsSync(dir)) {
 
@@ -59,10 +39,6 @@ module.exports = (
 
     }
 
-    // =========================
-    // FILE
-    // =========================
-
     const fileName =
 
         `${Date.now()}-` +
@@ -70,10 +46,6 @@ module.exports = (
         `${crypto.randomUUID()}.` +
 
         safeExt
-
-    // =========================
-    // RETURN
-    // =========================
 
     return path.join(
         dir,

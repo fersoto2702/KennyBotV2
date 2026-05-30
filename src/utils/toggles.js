@@ -7,48 +7,27 @@ const path =
 const logger =
     require('./logger')
 
-// =========================
-// PATH
-// =========================
-
 const togglesPath =
-
     path.join(
-
         __dirname,
-
         '../../database/toggles.json'
-
     )
-
-// =========================
-// INIT
-// =========================
 
 const ensureDb = () => {
 
     try {
 
-        if (
-            !fs.existsSync(togglesPath)
-        ) {
-
+        if (!fs.existsSync(togglesPath)) {
             fs.writeFileSync(
-
                 togglesPath,
-
                 JSON.stringify({}, null, 2)
-
             )
-
         }
 
     } catch (err) {
 
         logger.error(
-
             `Toggle DB Init Error: ${err.message}`
-
         )
 
     }
@@ -57,10 +36,6 @@ const ensureDb = () => {
 
 ensureDb()
 
-// =========================
-// READ
-// =========================
-
 const getToggles = () => {
 
     try {
@@ -68,20 +43,14 @@ const getToggles = () => {
         ensureDb()
 
         const raw =
-
-            fs.readFileSync(
-                togglesPath,
-                'utf8'
-            )
+            fs.readFileSync(togglesPath, 'utf8')
 
         return JSON.parse(raw)
 
     } catch (err) {
 
         logger.error(
-
             `Toggle Read Error: ${err.message}`
-
         )
 
         return {}
@@ -90,24 +59,13 @@ const getToggles = () => {
 
 }
 
-// =========================
-// SAVE
-// =========================
-
 const saveToggles = data => {
 
     try {
 
         fs.writeFileSync(
-
             togglesPath,
-
-            JSON.stringify(
-                data,
-                null,
-                2
-            )
-
+            JSON.stringify(data, null, 2)
         )
 
         return true
@@ -115,9 +73,7 @@ const saveToggles = data => {
     } catch (err) {
 
         logger.error(
-
             `Toggle Save Error: ${err.message}`
-
         )
 
         return false
@@ -126,80 +82,41 @@ const saveToggles = data => {
 
 }
 
-// =========================
-// NORMALIZE
-// =========================
-
 const normalize = value =>
+    String(value || '').trim()
 
-    String(value || '')
-        .trim()
-
-// =========================
-// CHECK
-// =========================
-
-const isEnabled = (
-
-    group,
-    feature
-
-) => {
+const isEnabled = (group, feature) => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
+        const feat = normalize(feature)
 
-        const feat =
-            normalize(feature)
+        if (!gid || !feat) return true
 
-        if (!gid || !feat)
-            return true
-
-        const data =
-            getToggles()
+        const data = getToggles()
 
         return data?.[gid]?.[feat] ?? true
 
     } catch {
-
         return true
-
     }
 
 }
 
-// =========================
-// SET
-// =========================
-
-const setToggle = (
-
-    group,
-    feature,
-    value
-
-) => {
+const setToggle = (group, feature, value) => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
+        const feat = normalize(feature)
 
-        const feat =
-            normalize(feature)
+        if (!gid || !feat) return false
 
-        if (!gid || !feat)
-            return false
-
-        const data =
-            getToggles()
+        const data = getToggles()
 
         if (!data[gid]) {
-
             data[gid] = {}
-
         }
 
         data[gid][feat] =
@@ -210,9 +127,7 @@ const setToggle = (
     } catch (err) {
 
         logger.error(
-
             `Toggle Set Error: ${err.message}`
-
         )
 
         return false
@@ -221,62 +136,35 @@ const setToggle = (
 
 }
 
-// =========================
-// GET GROUP TOGGLES
-// =========================
-
 const getGroupToggles = group => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
 
-        if (!gid)
-            return {}
+        if (!gid) return {}
 
-        const data =
-            getToggles()
+        const data = getToggles()
 
         return data[gid] || {}
 
     } catch {
-
         return {}
-
     }
 
 }
 
-// =========================
-// REMOVE FEATURE
-// =========================
-
-const removeToggle = (
-
-    group,
-    feature
-
-) => {
+const removeToggle = (group, feature) => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
+        const feat = normalize(feature)
 
-        const feat =
-            normalize(feature)
+        const data = getToggles()
 
-        const data =
-            getToggles()
-
-        if (
-            !data[gid] ||
-            !data[gid][feat]
-        ) {
-
+        if (!data[gid] || !data[gid][feat]) {
             return false
-
         }
 
         delete data[gid][feat]
@@ -284,25 +172,14 @@ const removeToggle = (
         return saveToggles(data)
 
     } catch {
-
         return false
-
     }
 
 }
 
-// =========================
-// EXPORTS
-// =========================
-
 module.exports = {
-
     isEnabled,
-
     setToggle,
-
     getGroupToggles,
-
     removeToggle
-
 }

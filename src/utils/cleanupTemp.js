@@ -7,10 +7,6 @@ const path =
 const logger =
     require('./logger')
 
-// =========================
-// CONFIG
-// =========================
-
 const tempDir =
     path.join(
         __dirname,
@@ -20,17 +16,9 @@ const tempDir =
 const MAX_AGE =
     1000 * 60 * 5
 
-// =========================
-// CLEANUP
-// =========================
-
 module.exports = async () => {
 
     try {
-
-        // =========================
-        // EXISTS
-        // =========================
 
         try {
 
@@ -54,10 +42,6 @@ module.exports = async () => {
         let freedSpace =
             0
 
-        // =========================
-        // LOOP
-        // =========================
-
         for (const file of files) {
 
             try {
@@ -71,10 +55,6 @@ module.exports = async () => {
                 const stats =
                     await fs.stat(filePath)
 
-                // =========================
-                // IGNORE DIRS
-                // =========================
-
                 if (
                     !stats.isFile()
                 ) {
@@ -82,10 +62,6 @@ module.exports = async () => {
                     continue
 
                 }
-
-                // =========================
-                // AGE
-                // =========================
 
                 const age =
                     now - stats.mtimeMs
@@ -97,10 +73,6 @@ module.exports = async () => {
                     continue
 
                 }
-
-                // =========================
-                // DELETE
-                // =========================
 
                 await fs.unlink(filePath)
 
@@ -122,10 +94,6 @@ module.exports = async () => {
             }
 
         }
-
-        // =========================
-        // SUMMARY
-        // =========================
 
         if (deleted > 0) {
 

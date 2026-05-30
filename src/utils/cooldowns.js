@@ -1,26 +1,14 @@
 const cooldowns =
     new Map()
 
-// =========================
-// CONFIG
-// =========================
-
 const CLEANUP_INTERVAL =
     60 * 1000
-
-// =========================
-// NORMALIZE
-// =========================
 
 const normalize = jid =>
 
     jid
         ?.split(':')[0]
         ?.trim()
-
-// =========================
-// CLEANUP
-// =========================
 
 setInterval(() => {
 
@@ -38,10 +26,6 @@ setInterval(() => {
     }
 
 }, CLEANUP_INTERVAL)
-
-// =========================
-// COOLDOWN
-// =========================
 
 const checkCooldown = (
 
@@ -83,10 +67,6 @@ const checkCooldown = (
         const expire =
             cooldowns.get(key)
 
-        // =========================
-        // ACTIVE
-        // =========================
-
         if (
             expire &&
             now < expire
@@ -105,10 +85,6 @@ const checkCooldown = (
             }
 
         }
-
-        // =========================
-        // SET
-        // =========================
 
         cooldowns.set(
 
@@ -137,10 +113,6 @@ const checkCooldown = (
     }
 
 }
-
-// =========================
-// EXPORTS
-// =========================
 
 module.exports = {
 

@@ -7,16 +7,8 @@ const {
     'google-libphonenumber'
 )
 
-// =========================
-// INSTANCE
-// =========================
-
 const phoneUtil =
     PhoneNumberUtil.getInstance()
-
-// =========================
-// FLAGS
-// =========================
 
 const flags = {
 
@@ -54,26 +46,14 @@ const flags = {
 
 }
 
-// =========================
-// NORMALIZE
-// =========================
-
 const normalize = number =>
 
     String(number || '')
         .replace(/\D/g, '')
 
-// =========================
-// GET COUNTRY DATA
-// =========================
-
 const getCountryData = number => {
 
     try {
-
-        // =========================
-        // NORMALIZE
-        // =========================
 
         const clean =
             normalize(number)
@@ -93,18 +73,10 @@ const getCountryData = number => {
 
         }
 
-        // =========================
-        // PARSE
-        // =========================
-
         const parsed =
             phoneUtil.parse(
                 `+${clean}`
             )
-
-        // =========================
-        // VALIDATE
-        // =========================
 
         const valid =
             phoneUtil.isValidNumber(
@@ -115,10 +87,6 @@ const getCountryData = number => {
             phoneUtil.getRegionCodeForNumber(
                 parsed
             ) || 'Unknown'
-
-        // =========================
-        // FORMAT
-        // =========================
 
         const international =
             phoneUtil.format(
@@ -137,10 +105,6 @@ const getCountryData = number => {
                 PhoneNumberFormat.NATIONAL
 
             )
-
-        // =========================
-        // RETURN
-        // =========================
 
         return {
 
@@ -176,10 +140,6 @@ const getCountryData = number => {
     }
 
 }
-
-// =========================
-// EXPORTS
-// =========================
 
 module.exports = {
 

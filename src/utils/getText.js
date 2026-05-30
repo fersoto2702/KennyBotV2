@@ -2,19 +2,11 @@ const getText = msg => {
 
     try {
 
-        // =========================
-        // MESSAGE
-        // =========================
-
         const message =
             msg?.message
 
         if (!message)
             return ''
-
-        // =========================
-        // NORMAL
-        // =========================
 
         if (message.conversation) {
 
@@ -23,10 +15,6 @@ const getText = msg => {
             )
 
         }
-
-        // =========================
-        // EXTENDED
-        // =========================
 
         if (
             message.extendedTextMessage?.text
@@ -38,10 +26,6 @@ const getText = msg => {
 
         }
 
-        // =========================
-        // IMAGE
-        // =========================
-
         if (
             message.imageMessage?.caption
         ) {
@@ -51,10 +35,6 @@ const getText = msg => {
             )
 
         }
-
-        // =========================
-        // VIDEO
-        // =========================
 
         if (
             message.videoMessage?.caption
@@ -66,10 +46,6 @@ const getText = msg => {
 
         }
 
-        // =========================
-        // DOCUMENT
-        // =========================
-
         if (
             message.documentMessage?.caption
         ) {
@@ -79,10 +55,6 @@ const getText = msg => {
             )
 
         }
-
-        // =========================
-        // BUTTONS
-        // =========================
 
         if (
             message.buttonsResponseMessage
@@ -97,10 +69,6 @@ const getText = msg => {
             )
 
         }
-
-        // =========================
-        // LISTS
-        // =========================
 
         if (
             message.listResponseMessage
@@ -118,10 +86,6 @@ const getText = msg => {
 
         }
 
-        // =========================
-        // TEMPLATE BUTTON
-        // =========================
-
         if (
             message.templateButtonReplyMessage
                 ?.selectedId
@@ -135,10 +99,6 @@ const getText = msg => {
             )
 
         }
-
-        // =========================
-        // VIEW ONCE
-        // =========================
 
         if (
             message.viewOnceMessage
@@ -154,10 +114,6 @@ const getText = msg => {
             })
 
         }
-
-        // =========================
-        // EPHEMERAL
-        // =========================
 
         if (
             message.ephemeralMessage

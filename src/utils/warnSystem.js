@@ -7,48 +7,27 @@ const path =
 const logger =
     require('./logger')
 
-// =========================
-// PATH
-// =========================
-
 const warnPath =
-
     path.join(
-
         __dirname,
-
         '../../database/warnings.json'
-
     )
-
-// =========================
-// INIT
-// =========================
 
 const ensureDb = () => {
 
     try {
 
-        if (
-            !fs.existsSync(warnPath)
-        ) {
-
+        if (!fs.existsSync(warnPath)) {
             fs.writeFileSync(
-
                 warnPath,
-
                 JSON.stringify({}, null, 2)
-
             )
-
         }
 
     } catch (err) {
 
         logger.error(
-
             `Warn DB Init Error: ${err.message}`
-
         )
 
     }
@@ -57,18 +36,8 @@ const ensureDb = () => {
 
 ensureDb()
 
-// =========================
-// NORMALIZE
-// =========================
-
 const normalize = value =>
-
-    String(value || '')
-        .trim()
-
-// =========================
-// READ
-// =========================
+    String(value || '').trim()
 
 const readWarns = () => {
 
@@ -77,20 +46,14 @@ const readWarns = () => {
         ensureDb()
 
         const raw =
-
-            fs.readFileSync(
-                warnPath,
-                'utf8'
-            )
+            fs.readFileSync(warnPath, 'utf8')
 
         return JSON.parse(raw)
 
     } catch (err) {
 
         logger.error(
-
             `Warn Read Error: ${err.message}`
-
         )
 
         return {}
@@ -99,24 +62,13 @@ const readWarns = () => {
 
 }
 
-// =========================
-// SAVE
-// =========================
-
 const saveWarns = data => {
 
     try {
 
         fs.writeFileSync(
-
             warnPath,
-
-            JSON.stringify(
-                data,
-                null,
-                2
-            )
-
+            JSON.stringify(data, null, 2)
         )
 
         return true
@@ -124,9 +76,7 @@ const saveWarns = data => {
     } catch (err) {
 
         logger.error(
-
             `Warn Save Error: ${err.message}`
-
         )
 
         return false
@@ -135,58 +85,24 @@ const saveWarns = data => {
 
 }
 
-// =========================
-// ADD WARN
-// =========================
-
-const addWarn = (
-
-    group,
-    user
-
-) => {
+const addWarn = (group, user) => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
+        const uid = normalize(user)
 
-        const uid =
-            normalize(user)
+        if (!gid || !uid) return 0
 
-        if (!gid || !uid)
-            return 0
-
-        const data =
-            readWarns()
-
-        // =========================
-        // CREATE GROUP
-        // =========================
+        const data = readWarns()
 
         if (!data[gid]) {
-
             data[gid] = {}
-
         }
 
-        // =========================
-        // CREATE USER
-        // =========================
-
-        if (
-
-            typeof data[gid][uid] !== 'number'
-
-        ) {
-
+        if (typeof data[gid][uid] !== 'number') {
             data[gid][uid] = 0
-
         }
-
-        // =========================
-        // ADD
-        // =========================
 
         data[gid][uid] += 1
 
@@ -197,9 +113,7 @@ const addWarn = (
     } catch (err) {
 
         logger.error(
-
             `Add Warn Error: ${err.message}`
-
         )
 
         return 0
@@ -208,92 +122,42 @@ const addWarn = (
 
 }
 
-// =========================
-// GET WARNS
-// =========================
-
-const getWarns = (
-
-    group,
-    user
-
-) => {
+const getWarns = (group, user) => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
+        const uid = normalize(user)
 
-        const uid =
-            normalize(user)
+        if (!gid || !uid) return 0
 
-        if (!gid || !uid)
-            return 0
+        const data = readWarns()
 
-        const data =
-            readWarns()
-
-        return Number(
-            data?.[gid]?.[uid] || 0
-        )
+        return Number(data?.[gid]?.[uid] || 0)
 
     } catch {
-
         return 0
-
     }
 
 }
 
-// =========================
-// RESET USER WARNS
-// =========================
-
-const resetWarns = (
-
-    group,
-    user
-
-) => {
+const resetWarns = (group, user) => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
+        const uid = normalize(user)
 
-        const uid =
-            normalize(user)
+        if (!gid || !uid) return false
 
-        if (!gid || !uid)
-            return false
+        const data = readWarns()
 
-        const data =
-            readWarns()
-
-        if (
-
-            !data?.[gid]?.[uid]
-
-        ) {
-
-            return false
-
-        }
+        if (!data?.[gid]?.[uid]) return false
 
         delete data[gid][uid]
 
-        // =========================
-        // CLEAN EMPTY GROUP
-        // =========================
-
-        if (
-
-            Object.keys(data[gid]).length === 0
-
-        ) {
-
+        if (Object.keys(data[gid]).length === 0) {
             delete data[gid]
-
         }
 
         saveWarns(data)
@@ -303,9 +167,7 @@ const resetWarns = (
     } catch (err) {
 
         logger.error(
-
             `Reset Warn Error: ${err.message}`
-
         )
 
         return false
@@ -314,25 +176,17 @@ const resetWarns = (
 
 }
 
-// =========================
-// CLEAR GROUP WARNS
-// =========================
-
 const clearGroupWarns = group => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
 
-        if (!gid)
-            return false
+        if (!gid) return false
 
-        const data =
-            readWarns()
+        const data = readWarns()
 
-        if (!data[gid])
-            return false
+        if (!data[gid]) return false
 
         delete data[gid]
 
@@ -341,67 +195,36 @@ const clearGroupWarns = group => {
         return true
 
     } catch {
-
         return false
-
     }
 
 }
 
-// =========================
-// TOP WARNED USERS
-// =========================
-
-const getTopWarns = (
-
-    group,
-    limit = 10
-
-) => {
+const getTopWarns = (group, limit = 10) => {
 
     try {
 
-        const gid =
-            normalize(group)
+        const gid = normalize(group)
 
-        const data =
-            readWarns()
+        const data = readWarns()
 
         const users =
-            Object.entries(
-                data?.[gid] || {}
-            )
+            Object.entries(data?.[gid] || {})
 
         return users
-
-            .sort(
-                (a, b) => b[1] - a[1]
-            )
-
+            .sort((a, b) => b[1] - a[1])
             .slice(0, limit)
 
     } catch {
-
         return []
-
     }
 
 }
 
-// =========================
-// EXPORTS
-// =========================
-
 module.exports = {
-
     addWarn,
-
     getWarns,
-
     resetWarns,
-
     clearGroupWarns,
-
     getTopWarns
-
 }

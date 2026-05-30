@@ -8,26 +8,14 @@ module.exports = async (
 
     try {
 
-        // =========================
-        // NORMALIZE
-        // =========================
-
         const target =
 
             user
                 ?.split(':')[0]
                 ?.trim()
 
-        // =========================
-        // GROUP
-        // =========================
-
         const metadata =
             await sock.groupMetadata(from)
-
-        // =========================
-        // CHECK
-        // =========================
 
         return metadata.participants.some(
 

@@ -1,26 +1,14 @@
 const floodMap =
     new Map()
 
-// =========================
-// CONFIG
-// =========================
-
 const CLEANUP_TIME =
     60 * 1000
-
-// =========================
-// NORMALIZE
-// =========================
 
 const normalize = user =>
 
     user
         ?.split(':')[0]
         ?.trim()
-
-// =========================
-// CLEANUP
-// =========================
 
 setInterval(() => {
 
@@ -47,10 +35,6 @@ setInterval(() => {
     }
 
 }, CLEANUP_TIME)
-
-// =========================
-// FLOOD
-// =========================
 
 const isFlooding = (
 
@@ -93,10 +77,6 @@ const isFlooding = (
 
 }
 
-// =========================
-// RESET
-// =========================
-
 const resetFlood = user => {
 
     const id =
@@ -108,10 +88,6 @@ const resetFlood = user => {
     floodMap.delete(id)
 
 }
-
-// =========================
-// COUNT
-// =========================
 
 const getFloodCount = (
 
@@ -137,10 +113,6 @@ const getFloodCount = (
     ).length
 
 }
-
-// =========================
-// EXPORTS
-// =========================
 
 module.exports = {
 

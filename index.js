@@ -29,19 +29,11 @@ const {
     patchSocket
 } = require('./src/system/socketManager')
 
-// =========================
-// CONFIG
-// =========================
-
 const usePairingCode = false
 
 let cleanupStarted = false
 let reconnecting = false
 let currentSock = null
-
-// =========================
-// BANNER
-// =========================
 
 logger.banner(settings.botName)
 
@@ -49,77 +41,34 @@ logger.info(
     `Iniciando ${settings.botName}...`
 )
 
-// =========================
-// START BOT
-// =========================
-
 async function startBot() {
 
     try {
 
-        // =========================
-        // AUTH
-        // =========================
-
         const {
             state,
             saveCreds
-        } = await useMultiFileAuthState(
-            './auth_info'
-        )
-
-        // =========================
-        // SOCKET
-        // =========================
+        } = await useMultiFileAuthState('./auth_info')
 
         let sock = makeWASocket({
-
             auth: state,
-
-            logger: P({
-                level: 'silent'
-            }),
-
+            logger: P({ level: 'silent' }),
             printQRInTerminal: !usePairingCode,
-
-            browser: [
-                'Ubuntu',
-                'Chrome',
-                '20.0.04'
-            ],
-
+            browser: ['Ubuntu', 'Chrome', '20.0.04'],
             markOnlineOnConnect: false,
-
             syncFullHistory: false,
-
             fireInitQueries: false,
-
             generateHighQualityLinkPreview: false,
-
             connectTimeoutMs: 60000,
-
             defaultQueryTimeoutMs: 60000,
-
             keepAliveIntervalMs: 30000
-
         })
-
-        // =========================
-        // PATCH SOCKET
-        // =========================
 
         sock = patchSocket(sock)
 
         currentSock = sock
 
-        // =========================
-        // PAIRING CODE
-        // =========================
-
-        if (
-            usePairingCode &&
-            !state.creds.registered
-        ) {
+        if (usePairingCode && !state.creds.registered) {
 
             const phoneNumber =
                 '6681137982'
@@ -127,9 +76,7 @@ async function startBot() {
             try {
 
                 const code =
-                    await sock.requestPairingCode(
-                        phoneNumber
-                    )
+                    await sock.requestPairingCode(phoneNumber)
 
                 console.log(
                     `\n📲 Código de vinculación:\n${code}\n`
@@ -145,18 +92,10 @@ async function startBot() {
 
         }
 
-        // =========================
-        // SAVE CREDS
-        // =========================
-
         sock.ev.on(
             'creds.update',
             saveCreds
         )
-
-        // =========================
-        // CONNECTION
-        // =========================
 
         sock.ev.on(
             'connection.update',
@@ -170,33 +109,15 @@ async function startBot() {
                         qr
                     } = update
 
-                    // =========================
-                    // QR
-                    // =========================
-
-                    if (
-                        qr &&
-                        !usePairingCode
-                    ) {
+                    if (qr && !usePairingCode) {
 
                         logger.qr()
 
-                        qrcode.generate(
-                            qr,
-                            {
-                                small: true
-                            }
-                        )
+                        qrcode.generate(qr, { small: true })
 
                     }
 
-                    // =========================
-                    // CONNECTED
-                    // =========================
-
-                    if (
-                        connection === 'open'
-                    ) {
+                    if (connection === 'open') {
 
                         reconnecting = false
 
@@ -205,43 +126,24 @@ async function startBot() {
                         )
 
                         logger.statusTable({
-
-                            Bot:
-                                settings.botName,
-
-                            Owner:
-                                settings.ownerNumber[0],
-
-                            Estado:
-                                'Conectado ✅',
-
+                            Bot: settings.botName,
+                            Owner: settings.ownerNumber[0],
+                            Estado: 'Conectado ✅',
                         })
-
-                        // =========================
-                        // CLEAN TEMP
-                        // =========================
 
                         if (!cleanupStarted) {
 
                             cleanupStarted = true
 
                             setInterval(() => {
-
                                 cleanupTemp()
-
                             }, 1000 * 60)
 
                         }
 
                     }
 
-                    // =========================
-                    // DISCONNECTED
-                    // =========================
-
-                    if (
-                        connection === 'close'
-                    ) {
+                    if (connection === 'close') {
 
                         const reason =
                             lastDisconnect
@@ -253,26 +155,13 @@ async function startBot() {
                             `Desconectado: ${reason}`
                         )
 
-                        // =========================
-                        // LOGGED OUT
-                        // =========================
+                        if (reason === DisconnectReason.loggedOut) {
 
-                        if (
-                            reason ===
-                            DisconnectReason.loggedOut
-                        ) {
-
-                            logger.error(
-                                'Sesión cerrada.'
-                            )
+                            logger.error('Sesión cerrada.')
 
                             return
 
                         }
-
-                        // =========================
-                        // RECONNECT
-                        // =========================
 
                         if (!reconnecting) {
 
@@ -287,11 +176,8 @@ async function startBot() {
                                 try {
 
                                     if (currentSock) {
-
                                         currentSock.ev.removeAllListeners()
-
                                         currentSock.ws?.close()
-
                                     }
 
                                 } catch {}
@@ -315,20 +201,13 @@ async function startBot() {
             }
         )
 
-        // =========================
-        // GROUP EVENTS
-        // =========================
-
         sock.ev.on(
             'group-participants.update',
             async update => {
 
                 try {
 
-                    await welcomeSystem(
-                        sock,
-                        update
-                    )
+                    await welcomeSystem(sock, update)
 
                 } catch (err) {
 
@@ -340,10 +219,6 @@ async function startBot() {
 
             }
         )
-
-        // =========================
-        // MESSAGES
-        // =========================
 
         sock.ev.on(
             'messages.upsert',
@@ -371,14 +246,9 @@ async function startBot() {
                         Date.now() / 1000
                     )
 
-                    if (
-                        now - timestamp > 30
-                    ) return
+                    if (now - timestamp > 30) return
 
-                    await messagesEvent(
-                        sock,
-                        messages
-                    )
+                    await messagesEvent(sock, messages)
 
                 } catch (err) {
 
@@ -398,17 +268,11 @@ async function startBot() {
         )
 
         setTimeout(() => {
-
             startBot()
-
         }, 5000)
 
     }
 
 }
-
-// =========================
-// START
-// =========================
 
 startBot()

@@ -1,29 +1,17 @@
 const logger =
     require('../utils/logger')
 
-// =========================
-// CACHE
-// =========================
-
 const cache =
     new Map()
 
 const CACHE_TIME =
     60 * 1000
 
-// =========================
-// NORMALIZE
-// =========================
-
 const normalize = jid =>
 
     jid
         ?.split(':')[0]
         ?.split('@')[0]
-
-// =========================
-// EXPORT
-// =========================
 
 module.exports = async (
     sock,
@@ -39,10 +27,6 @@ module.exports = async (
             cache.get(from)
 
         let participants
-
-        // =========================
-        // CACHE
-        // =========================
 
         if (
             cached &&
@@ -70,10 +54,6 @@ module.exports = async (
 
         }
 
-        // =========================
-        // BOT
-        // =========================
-
         const botId =
             normalize(sock.user.id)
 
@@ -83,10 +63,6 @@ module.exports = async (
                     normalize(p.id) ===
                     botId
             )
-
-        // =========================
-        // ADMIN
-        // =========================
 
         return (
 

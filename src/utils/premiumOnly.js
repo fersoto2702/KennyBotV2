@@ -14,19 +14,11 @@ module.exports = async (
 
     try {
 
-        // =========================
-        // CHECK
-        // =========================
-
         const premium =
             await isPremium(sender)
 
         if (premium)
             return true
-
-        // =========================
-        // MESSAGE
-        // =========================
 
         await sock.sendMessage(from, {
 

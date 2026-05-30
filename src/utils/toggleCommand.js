@@ -1,8 +1,6 @@
 const {
-
     isEnabled,
     setToggle
-
 } = require('./toggles')
 
 const isGroupAdmin =
@@ -14,30 +12,16 @@ const logger =
 const ui =
     require('./ui')
 
-// =========================
-// CREATE TOGGLE
-// =========================
-
 function createToggleCommand({
-
     name,
     description,
     emoji,
     category = 'configuración',
     aliases = []
-
 }) {
 
-    // =========================
-    // VALIDATE
-    // =========================
-
     if (!name) {
-
-        throw new Error(
-            'Toggle command requiere name'
-        )
-
+        throw new Error('Toggle command requiere name')
     }
 
     return {
@@ -56,236 +40,117 @@ function createToggleCommand({
 
         cooldown: 3,
 
-        // =========================
-        // EXECUTE
-        // =========================
-
         async execute({
-
             sock,
             from,
             args,
             msg
-
         }) {
 
             try {
 
-                // =========================
-                // GROUP
-                // =========================
-
-                if (
-                    !from ||
-                    !from.endsWith('@g.us')
-                ) {
+                if (!from || !from.endsWith('@g.us')) {
 
                     return await sock.sendMessage(from, {
-
                         text: ui.error(
-
                             'SOLO GRUPOS',
-
                             'Este comando solo funciona en grupos.'
-
                         )
-
                     })
 
                 }
 
-                // =========================
-                // USER
-                // =========================
-
                 const sender =
-
                     msg.key.participant ||
-
                     msg.participant ||
-
                     msg.key.remoteJid
-
-                // =========================
-                // ADMIN
-                // =========================
 
                 const admin =
                     await isGroupAdmin(
-
                         sock,
                         from,
                         sender
-
                     )
 
                 if (!admin) {
 
                     return await sock.sendMessage(from, {
-
                         text: ui.error(
-
                             'ACCESO DENEGADO',
-
                             'Solo administradores pueden usar este comando.'
-
                         )
-
                     })
 
                 }
-
-                // =========================
-                // OPTION
-                // =========================
 
                 const option =
-
-                    String(
-                        args?.[0] || ''
-                    )
-
+                    String(args?.[0] || '')
                     .toLowerCase()
-
                     .trim()
 
-                // =========================
-                // STATUS
-                // =========================
-
-                if (
-
-                    option !== 'on' &&
-
-                    option !== 'off'
-
-                ) {
+                if (option !== 'on' && option !== 'off') {
 
                     const enabled =
-                        isEnabled(
-                            from,
-                            name
-                        )
+                        isEnabled(from, name)
 
                     return await sock.sendMessage(from, {
-
                         text: ui.info(
-
                             `${emoji || '⚙️'} ${name.toUpperCase()}`,
-
                             [
-
                                 [
-
                                     'Estado',
-
                                     enabled
-
                                         ? '● ACTIVADO'
-
                                         : '○ DESACTIVADO'
-
                                 ]
-
                             ],
-
                             `Uso: /${name} on · /${name} off`
-
                         )
-
                     })
 
                 }
-
-                // =========================
-                // VALUE
-                // =========================
 
                 const enabled =
                     option === 'on'
 
-                // =========================
-                // SAVE
-                // =========================
-
-                setToggle(
-
-                    from,
-                    name,
-                    enabled
-
-                )
-
-                // =========================
-                // LOG
-                // =========================
+                setToggle(from, name, enabled)
 
                 logger.event(
-
                     `${name} ${enabled ? 'activado' : 'desactivado'} → ${from.split('@')[0]}`
-
                 )
 
-                // =========================
-                // RESPONSE
-                // =========================
-
                 await sock.sendMessage(from, {
-
                     text: ui.success(
-
                         `${emoji || '⚙️'} ${name.toUpperCase()}`,
-
                         [
-
                             [
-
                                 'Estado',
-
                                 enabled
-
                                     ? '● ACTIVADO'
-
                                     : '○ DESACTIVADO'
-
                             ],
-
                             [
-
                                 'Modificado por',
-
                                 `@${sender.split('@')[0]}`
-
                             ]
-
                         ]
-
                     ),
-
                     mentions: [sender]
-
                 })
 
             } catch (err) {
 
                 logger.error(
-
                     `Toggle Error (${name}): ${err.message}`
-
                 )
 
                 try {
 
                     await sock.sendMessage(from, {
-
                         text: ui.error(
-
                             'ERROR',
-
                             `No se pudo actualizar ${name}.`
-
                         )
-
                     })
 
                 } catch {}
@@ -298,12 +163,6 @@ function createToggleCommand({
 
 }
 
-// =========================
-// EXPORTS
-// =========================
-
 module.exports = {
-
     createToggleCommand
-
 }

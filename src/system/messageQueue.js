@@ -1,28 +1,16 @@
 const logger =
     require('../utils/logger')
 
-// =========================
-// QUEUES
-// =========================
-
 const textQueue  = []
 const mediaQueue = []
 
 let processingText  = false
 let processingMedia = false
 
-// =========================
-// CONFIG
-// =========================
-
 const TEXT_DELAY  = 350
 const MEDIA_DELAY = 1200
 
 const MAX_RETRIES = 3
-
-// =========================
-// WAIT
-// =========================
 
 const wait = ms =>
 
@@ -37,10 +25,6 @@ const wait = ms =>
 
     )
 
-// =========================
-// IS MEDIA
-// =========================
-
 const isMediaMessage = content => {
 
     return (
@@ -54,10 +38,6 @@ const isMediaMessage = content => {
     )
 
 }
-
-// =========================
-// PROCESS TEXT
-// =========================
 
 const processTextQueue = async () => {
 
@@ -97,10 +77,6 @@ const processTextQueue = async () => {
 
 }
 
-// =========================
-// PROCESS MEDIA
-// =========================
-
 const processMediaQueue = async () => {
 
     if (
@@ -138,10 +114,6 @@ const processMediaQueue = async () => {
     processMediaQueue()
 
 }
-
-// =========================
-// ADD
-// =========================
 
 const addToQueue = (
 
@@ -183,10 +155,6 @@ const addToQueue = (
     )
 
 }
-
-// =========================
-// PATCH SOCKET
-// =========================
 
 const patchSocket = sock => {
 
@@ -267,10 +235,6 @@ const patchSocket = sock => {
     )
 
 }
-
-// =========================
-// STATS
-// =========================
 
 const getQueueStats = () => {
 

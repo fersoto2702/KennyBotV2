@@ -1,36 +1,20 @@
 const logger =
     require('./logger')
 
-// =========================
-// QUEUE
-// =========================
-
 const queue =
     []
 
 let processing =
     false
 
-// =========================
-// CONFIG
-// =========================
-
 const TASK_TIMEOUT =
     1000 * 60 * 5
-
-// =========================
-// STATS
-// =========================
 
 let completed =
     0
 
 let failed =
     0
-
-// =========================
-// TIMEOUT WRAPPER
-// =========================
 
 const withTimeout = promise =>
 
@@ -53,10 +37,6 @@ const withTimeout = promise =>
         )
 
     ])
-
-// =========================
-// PROCESS
-// =========================
 
 const processQueue = async () => {
 
@@ -99,10 +79,6 @@ const processQueue = async () => {
 
 }
 
-// =========================
-// ADD
-// =========================
-
 const addToQueue = task =>
 
     new Promise((resolve, reject) => {
@@ -119,10 +95,6 @@ const addToQueue = task =>
 
     })
 
-// =========================
-// INFO
-// =========================
-
 const getQueueLength = () =>
     queue.length
 
@@ -138,10 +110,6 @@ const getQueueStats = () => ({
     failed
 
 })
-
-// =========================
-// EXPORTS
-// =========================
 
 module.exports = {
 

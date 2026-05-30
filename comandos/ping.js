@@ -7,10 +7,6 @@ const logger =
 const ui =
     require('../src/utils/ui')
 
-// =========================
-// FORMAT UPTIME
-// =========================
-
 const formatUptime = seconds => {
 
     const d =
@@ -30,12 +26,10 @@ const formatUptime = seconds => {
         Math.floor(seconds % 60)
 
     return [
-
         d ? `${d}d` : '',
         h ? `${h}h` : '',
         m ? `${m}m` : '',
         `${s}s`
-
     ].filter(Boolean).join(' ')
 
 }
@@ -46,11 +40,9 @@ module.exports = {
         'ping',
 
     aliases: [
-
         'p',
         'speed',
         'latency'
-
     ],
 
     description:
@@ -62,24 +54,14 @@ module.exports = {
     cooldown: 2,
 
     async execute({
-
         sock,
         from
-
     }) {
 
         try {
 
-            // =========================
-            // START
-            // =========================
-
             const start =
                 performance.now()
-
-            // =========================
-            // CALCULATE
-            // =========================
 
             const end =
                 performance.now()
@@ -87,25 +69,12 @@ module.exports = {
             const ms =
                 Math.floor(end - start)
 
-            // =========================
-            // STATUS
-            // =========================
-
             const status =
-
                 ms < 150
-
                     ? '🟢 Excelente'
-
-                    : ms < 400
-
-                        ? '🟡 Estable'
-
-                        : '🔴 Lento'
-
-            // =========================
-            // SYSTEM
-            // =========================
+                : ms < 400
+                    ? '🟡 Estable'
+                    : '🔴 Lento'
 
             const uptime =
                 formatUptime(
@@ -113,98 +82,36 @@ module.exports = {
                 )
 
             const ram =
-
                 (
                     process.memoryUsage()
                         .heapUsed /
-
                     1024 /
-
                     1024
                 ).toFixed(2)
 
             const platform =
                 `${os.platform()} ${os.arch()}`
 
-            // =========================
-            // LOGGER
-            // =========================
-
             logger.event(
                 `Ping ejecutado → ${ms}ms`
             )
 
-            // =========================
-            // SEND
-            // =========================
-
             await sock.sendMessage(
-
                 from,
-
                 {
-
                     text:
                         ui.success(
-
                             'PONG',
-
                             [
-
-                                [
-
-                                    'Velocidad',
-
-                                    `${ms}ms`
-
-                                ],
-
-                                [
-
-                                    'Estado',
-
-                                    status
-
-                                ],
-
-                                [
-
-                                    'Uptime',
-
-                                    uptime
-
-                                ],
-
-                                [
-
-                                    'RAM',
-
-                                    `${ram} MB`
-
-                                ],
-
-                                [
-
-                                    'NodeJS',
-
-                                    process.version
-
-                                ],
-
-                                [
-
-                                    'Plataforma',
-
-                                    platform
-
-                                ]
-
+                                ['Velocidad', `${ms}ms`],
+                                ['Estado', status],
+                                ['Uptime', uptime],
+                                ['RAM', `${ram} MB`],
+                                ['NodeJS', process.version],
+                                ['Plataforma', platform]
                             ]
-
                         )
-
                 }
-
             )
 
         } catch (err) {
@@ -214,22 +121,14 @@ module.exports = {
             )
 
             await sock.sendMessage(
-
                 from,
-
                 {
-
                     text:
                         ui.error(
-
                             'ERROR',
-
                             'No se pudo medir el ping.'
-
                         )
-
                 }
-
             )
 
         }

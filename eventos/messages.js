@@ -31,88 +31,37 @@ const logger =
 const ui =
     require('../src/utils/ui')
 
-// =========================
-// MESSAGE CACHE
-// =========================
-
 const processedMessages =
     new Set()
-
-// =========================
-// CLEANUP CACHE
-// =========================
 
 setInterval(() => {
 
     try {
-
         processedMessages.clear()
-
     } catch {}
 
 }, 1000 * 60 * 5)
 
-// =========================
-// EXPORT
-// =========================
-
-module.exports = async (
-
-    sock,
-    messages
-
-) => {
+module.exports = async (sock, messages) => {
 
     try {
-
-        // =========================
-        // MESSAGE
-        // =========================
 
         const msg =
             messages?.[0]
 
-        // =========================
-        // VALIDATE
-        // =========================
-
-        if (!msg)
-            return
-
-        if (!msg.message)
-            return
-
-        // =========================
-        // IGNORE SELF
-        // =========================
-
-        if (msg.key?.fromMe)
-            return
-
-        // =========================
-        // IGNORE STATUS
-        // =========================
+        if (!msg) return
+        if (!msg.message) return
+        if (msg.key?.fromMe) return
 
         if (
-
             msg.key?.remoteJid ===
             'status@broadcast'
-
         ) return
-
-        // =========================
-        // CHAT
-        // =========================
 
         const from =
             msg.key?.remoteJid
 
-        if (!from)
-            return
-
-        // =========================
-        // TIMESTAMP
-        // =========================
+        if (!from) return
 
         const timestamp = Number(
             msg.messageTimestamp || 0
@@ -122,94 +71,43 @@ module.exports = async (
             Date.now() / 1000
         )
 
-        // =========================
-        // OLD MESSAGE
-        // =========================
-
         if (
-
             timestamp &&
             now - timestamp > 15
-
         ) return
-
-        // =========================
-        // MESSAGE ID
-        // =========================
 
         const messageId =
             msg.key?.id
 
-        if (!messageId)
-            return
+        if (!messageId) return
 
-        // =========================
-        // DUPLICATE
-        // =========================
+        if (processedMessages.has(messageId)) return
 
-        if (
-
-            processedMessages.has(
-                messageId
-            )
-
-        ) return
-
-        processedMessages.add(
-            messageId
-        )
+        processedMessages.add(messageId)
 
         setTimeout(() => {
-
-            processedMessages.delete(
-                messageId
-            )
-
+            processedMessages.delete(messageId)
         }, 30000)
-
-        // =========================
-        // TEXT
-        // =========================
 
         const text =
             getText(msg)?.trim()
 
-        // =========================
-        // EMPTY
-        // =========================
-
-        if (!text)
-            return
-
-        // =========================
-        // LOG
-        // =========================
+        if (!text) return
 
         const sender =
-
             msg.key.participant ||
-
             msg.participant ||
-
             msg.key.remoteJid
 
         logger.event(
-
             `${sender?.split('@')[0]} -> ${text}`
-
         )
-
-        // =========================
-        // SPAM
-        // =========================
 
         const isSpam =
             await spamHandler(
-
                 sock,
                 msg,
                 from
-
             )
 
         if (isSpam) {
@@ -219,124 +117,52 @@ module.exports = async (
             )
 
             return await sock.sendMessage(
-
                 from,
-
                 {
-
                     text: ui.warn(
-
                         'SPAM DETECTADO',
-
                         'Estás enviando mensajes demasiado rápido.\n\nEspera un momento antes de continuar.'
-
                     )
-
                 }
-
             )
 
         }
 
-        // =========================
-        // MESSAGE STATS
-        // =========================
+        await messageStatsHandler(sock, msg, from)
 
-        await messageStatsHandler(
+        await antiLinkHandler(sock, msg, from, text)
 
-            sock,
-            msg,
-            from
+        await levelHandler(sock, msg, from)
 
-        )
+        await economyHandler(sock, msg, from)
 
-        // =========================
-        // ANTILINK
-        // =========================
-
-        await antiLinkHandler(
-
-            sock,
-            msg,
-            from,
-            text
-
-        )
-
-        // =========================
-        // LEVELS
-        // =========================
-
-        await levelHandler(
-
-            sock,
-            msg,
-            from
-
-        )
-
-        // =========================
-        // ECONOMY
-        // =========================
-
-        await economyHandler(
-
-            sock,
-            msg,
-            from
-
-        )
-
-        // =========================
-        // BADGES
-        // =========================
-
-        await badgeHandler(
-
-            sock,
-            msg,
-            from
-
-        )
-
-        // =========================
-        // COMMANDS
-        // =========================
+        await badgeHandler(sock, msg, from)
 
         const prefixes =
+            settings.prefixes ||
+            [settings.prefix || '/']
 
-    settings.prefixes ||
+        const isCommand =
+            prefixes.some(
+                p => text.startsWith(p)
+            )
 
-    [settings.prefix || '/']
+        if (isCommand) {
 
-const isCommand =
+            await commandHandler({
+                sock,
+                msg,
+                from,
+                text,
+                settings
+            })
 
-    prefixes.some(
-
-        p => text.startsWith(p)
-
-    )
-
-if (isCommand) {
-
-    await commandHandler({
-
-        sock,
-        msg,
-        from,
-        text,
-        settings
-
-    })
-
-}
+        }
 
     } catch (err) {
 
         logger.error(
-
             `Messages Event Error: ${err.message}`
-
         )
 
     }

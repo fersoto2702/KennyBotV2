@@ -10,16 +10,8 @@ const economyPath =
         '../../database/economy.json'
     )
 
-// =========================
-// COOLDOWN
-// =========================
-
 const passiveCooldown =
     new Map()
-
-// =========================
-// HANDLER
-// =========================
 
 module.exports = async (
     sock,
@@ -29,16 +21,8 @@ module.exports = async (
 
     try {
 
-        // =========================
-        // SOLO GRUPOS
-        // =========================
-
         if (!from.endsWith('@g.us'))
             return
-
-        // =========================
-        // DB
-        // =========================
 
         if (!fs.existsSync(economyPath)) {
 
@@ -54,17 +38,9 @@ module.exports = async (
                 fs.readFileSync(economyPath)
             )
 
-        // =========================
-        // USER
-        // =========================
-
         const sender =
             msg.key.participant ||
             msg.key.remoteJid
-
-        // =========================
-        // CREAR USER
-        // =========================
 
         if (!economy[sender]) {
 
@@ -77,7 +53,6 @@ module.exports = async (
 
         }
 
-        // Fix users viejos
         if (
             economy[sender].bank === undefined
         ) {
@@ -85,10 +60,6 @@ module.exports = async (
             economy[sender].bank = 0
 
         }
-
-        // =========================
-        // COOLDOWN
-        // =========================
 
         const now =
             Date.now()
@@ -113,20 +84,12 @@ module.exports = async (
             now + cooldown
         )
 
-        // =========================
-        // MONEDAS
-        // =========================
-
         const amount =
             Math.floor(
                 Math.random() * 10
             ) + 1
 
         economy[sender].coins += amount
-
-        // =========================
-        // GUARDAR
-        // =========================
 
         fs.writeFileSync(
 
