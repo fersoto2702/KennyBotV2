@@ -258,7 +258,7 @@ module.exports = async ({
                     logger.event(
                         `Expulsado por flood: ${sender.split('@')[0]}`
                     )
-
+                    
                     await sendIcon(sock, from, 'antiflood')
 
                     return await sock.safeSendMessage(
@@ -540,8 +540,10 @@ module.exports = async ({
 
         }
 
+        /*
         await sendIcon(sock, from, command.name)
-
+        */
+       
         try {
 
             await command.execute({

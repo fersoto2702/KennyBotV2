@@ -265,50 +265,59 @@ module.exports = {
                 `Ban aplicado: ${target.split('@')[0]}`
             )
 
-            await sock.sendMessage(
+           const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/ban.jpeg'
+    )
 
-                from,
+await sock.sendMessage(
 
-                {
+    from,
 
-                    text:
-                        ui.success(
+    {
 
-                            'BAN EJECUTADO',
+        image:
+            fs.readFileSync(iconPath),
 
-                            [
+        caption:
+            ui.success(
 
-                                [
-                                    'Usuario',
-                                    `@${target.split('@')[0]}`
-                                ],
+                'BAN EJECUTADO',
 
-                                [
-                                    'Estado',
-                                    'BANEADO'
-                                ],
+                [
 
-                                [
-                                    'Por',
-                                    `@${sender.split('@')[0]}`
-                                ]
+                    [
+                        'Usuario',
+                        `@${target.split('@')[0]}`
+                    ],
 
-                            ],
+                    [
+                        'Estado',
+                        'BANEADO'
+                    ],
 
-                            'Este usuario ya no puede usar los comandos del bot.'
-
-                        ),
-
-                    mentions: [
-
-                        target,
-                        sender
-
+                    [
+                        'Por',
+                        `@${sender.split('@')[0]}`
                     ]
 
-                }
+                ],
 
-            )
+                'Este usuario ya no puede usar los comandos del bot.'
+
+            ),
+
+        mentions: [
+
+            target,
+            sender
+
+        ]
+
+    }
+
+)
 
         } catch (err) {
 

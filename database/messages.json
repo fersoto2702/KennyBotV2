@@ -1,8 +1,8 @@
 {
   "120363425530676036@g.us": {
     "181973939142738@lid": {
-      "messages": 24,
-      "lastMessage": 1780183329093
+      "messages": 28,
+      "lastMessage": 1780198896160
     }
   },
   "120363427172130968@g.us": {
@@ -11,18 +11,104 @@
       "lastMessage": 1779854393000
     },
     "40261744857339@lid": {
-      "messages": 1,
-      "lastMessage": 1779853713980
+      "messages": 13,
+      "lastMessage": 1780201621475
     },
     "266816320491607@lid": {
+      "messages": 66,
+      "lastMessage": 1780202222710
+    },
+    "53979568406548@lid": {
+      "messages": 50,
+      "lastMessage": 1780201874549
+    },
+    "75158320595188@lid": {
+      "messages": 19,
+      "lastMessage": 1780201603118
+    },
+    "6258438500556@lid": {
+      "messages": 91,
+      "lastMessage": 1780202238912
+    },
+    "147154857361573@lid": {
+      "messages": 65,
+      "lastMessage": 1780201225468
+    },
+    "70850384507065@lid": {
+      "messages": 72,
+      "lastMessage": 1780201263443
+    },
+    "29652991135838@lid": {
+      "messages": 21,
+      "lastMessage": 1780197550268
+    },
+    "213297269874835@lid": {
+      "messages": 27,
+      "lastMessage": 1780198894261
+    },
+    "223592457498686@lid": {
+      "messages": 15,
+      "lastMessage": 1780202064857
+    },
+    "226916711833796@lid": {
+      "messages": 9,
+      "lastMessage": 1780199358862
+    },
+    "103913210556575@lid": {
+      "messages": 62,
+      "lastMessage": 1780201280655
+    },
+    "1211784810572@lid": {
+      "messages": 5,
+      "lastMessage": 1780199003349
+    },
+    "34317560459391@lid": {
       "messages": 1,
-      "lastMessage": 1779854168883
+      "lastMessage": 1780202116371
     }
   },
   "120363425759426708@g.us": {
     "179109397282834@lid": {
       "messages": 3,
       "lastMessage": 1779860187151
+    },
+    "61165166149685@lid": {
+      "messages": 1,
+      "lastMessage": 1780204553507
+    },
+    "243847321891010@lid": {
+      "messages": 4,
+      "lastMessage": 1780206764816
+    }
+  },
+  "120363406616107289@g.us": {
+    "266816320491607@lid": {
+      "messages": 25,
+      "lastMessage": 1780200939272
+    },
+    "170982748766424@lid": {
+      "messages": 3,
+      "lastMessage": 1780199925233
+    },
+    "213297269874835@lid": {
+      "messages": 14,
+      "lastMessage": 1780199451619
+    }
+  },
+  "120363328888685690@g.us": {
+    "68883239186611@lid": {
+      "messages": 2,
+      "lastMessage": 1780200031695
+    }
+  },
+  "120363406107922188@g.us": {
+    "63673460650076@lid": {
+      "messages": 2,
+      "lastMessage": 1780200444503
+    },
+    "57033441202313@lid": {
+      "messages": 2,
+      "lastMessage": 1780200892581
     }
   }
 }

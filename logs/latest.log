@@ -1440,3 +1440,1053 @@ Si, mándamelos y ya veo y dime el nombre y así
 [16:21:36] [CMD] menu → 181973939142738
 [16:22:09] [EVENT] 181973939142738 -> .play
 [16:22:09] [CMD] play → 181973939142738
+[19:54:24] [OK] UnifiedRateLimiter cargado
+[19:54:24] [OK] Comando cargado: ban
+[19:54:24] [OK] Comando cargado: antilink
+[19:54:24] [OK] Comando cargado: antibot
+[19:54:24] [OK] Comando cargado: antifake
+[19:54:24] [OK] Comando cargado: autolevelup
+[19:54:24] [OK] Comando cargado: facebook
+[19:54:24] [OK] Comando cargado: instagram
+[19:54:24] [OK] Comando cargado: pinterest
+[19:54:25] [OK] Comando cargado: play
+[19:54:25] [OK] Comando cargado: spotify
+[19:54:25] [OK] Comando cargado: tiktok
+[19:54:25] [OK] Comando cargado: ytmp3
+[19:54:25] [OK] Comando cargado: ytmp4
+[19:54:25] [OK] Comando cargado: balance
+[19:54:25] [OK] Comando cargado: buy
+[19:54:25] [OK] Comando cargado: crime
+[19:54:25] [OK] Comando cargado: daily
+[19:54:25] [OK] Comando cargado: deposit
+[19:54:25] [OK] Comando cargado: gamble
+[19:54:25] [OK] Comando cargado: inventory
+[19:54:25] [OK] Comando cargado: leaderboardmoney
+[19:54:25] [OK] Comando cargado: open
+[19:54:25] [OK] Comando cargado: pay
+[19:54:25] [OK] Comando cargado: rob
+[19:54:25] [OK] Comando cargado: shop
+[19:54:25] [OK] Comando cargado: slots
+[19:54:25] [OK] Comando cargado: withdraw
+[19:54:25] [OK] Comando cargado: work
+[19:54:25] [OK] Comando cargado: inactive
+[19:54:25] [OK] Comando cargado: msgstats
+[19:54:25] [OK] Comando cargado: topmessages
+[19:54:25] [OK] Comando cargado: add
+[19:54:25] [OK] Comando cargado: demote
+[19:54:25] [OK] Comando cargado: hidetag
+[19:54:25] [OK] Comando cargado: kick
+[19:54:25] [OK] Comando cargado: mute
+[19:54:25] [OK] Comando cargado: promote
+[19:54:25] [OK] Comando cargado: tagall
+[19:54:25] [OK] Comando cargado: unwarn
+[19:54:25] [OK] Comando cargado: warn
+[19:54:25] [OK] Comando cargado: warnings
+[19:54:25] [OK] Comando cargado: welcome
+[19:54:25] [OK] Comando cargado: ia
+[19:54:25] [OK] Comando cargado: leaderboard
+[19:54:25] [OK] Comando cargado: level
+[19:54:25] [OK] Comando cargado: rank
+[19:54:25] [OK] Comando cargado: menu
+[19:54:25] [OK] Comando cargado: ping
+[19:54:25] [OK] Comando cargado: addpremium
+[19:54:25] [OK] Comando cargado: delpremium
+[19:54:25] [OK] Comando cargado: premium
+[19:54:25] [OK] Comando cargado: profile
+[19:54:25] [OK] Comando cargado: sticker
+[19:54:25] [OK] Comando cargado: addjoinmsg
+[19:54:25] [OK] Comando cargado: clearjoinmsg
+[19:54:25] [OK] Comando cargado: deljoinmsg
+[19:54:25] [OK] Comando cargado: listjoinmsg
+[19:54:25] [INFO] Iniciando KennyBot...
+[19:54:26] [OK] SocketManager cargado
+[19:54:27] [OK] KennyBot conectado
+[19:55:54] [EVENT] 181973939142738 -> .menu
+[19:55:54] [EVENT] PassiveCoins: 181973939142738 +6
+[19:55:54] [CMD] menu → 181973939142738
+[20:03:13] [EVENT] 53979568406548 -> Fúnalo
+[20:03:13] [EVENT] PassiveCoins: 53979568406548 +5
+[20:03:38] [EVENT] 75158320595188 -> JAJAJA ok
+[20:03:38] [EVENT] PassiveCoins: 75158320595188 +3
+[20:03:46] [EVENT] 266816320491607 -> Ya lo funamos en el canal de Zevdio'.
+[20:03:46] [EVENT] PassiveCoins: 266816320491607 +10
+[20:04:07] [EVENT] 53979568406548 -> Ay sí, k riko
+[20:04:08] [EVENT] 53979568406548 -> Oigan
+[20:04:18] [EVENT] 53979568406548 -> Raideé una sala de Among Us
+[20:04:18] [EVENT] PassiveCoins: 53979568406548 +4
+[20:04:29] [EVENT] 53979568406548 -> Porque el dueño me dijo noob
+[20:04:33] [EVENT] 53979568406548 -> Y me los volví a encontrar
+[20:05:20] [EVENT] 266816320491607 -> Am qué.
+[20:05:20] [EVENT] PassiveCoins: 266816320491607 +7
+[20:05:30] [EVENT] 6258438500556 -> Oztras.
+[20:05:30] [EVENT] PassiveCoins: 6258438500556 +9
+[20:06:01] [EVENT] 147154857361573 -> aparezco.
+[20:06:01] [EVENT] PassiveCoins: 147154857361573 +7
+[20:06:11] [EVENT] 75158320595188 -> ¿Te parece gracioso ser raider?
+[20:06:11] [EVENT] PassiveCoins: 75158320595188 +10
+[20:06:14] [EVENT] 147154857361573 -> ese qué.
+[20:06:21] [EVENT] 6258438500556 -> Ese que o que.
+[20:06:22] [EVENT] 75158320595188 -> Hola mami,¿cómo estás?
+[20:06:22] [EVENT] 266816320491607 -> ESO MISMO DIGO.
+[20:06:22] [EVENT] PassiveCoins: 266816320491607 +7
+[20:06:37] [EVENT] 6258438500556 -> MI BEBÉ.
+[20:06:37] [EVENT] PassiveCoins: 6258438500556 +9
+[20:06:51] [EVENT] 70850384507065 -> quiere salir liso de la situación.
+[20:06:51] [EVENT] PassiveCoins: 70850384507065 +3
+[20:06:56] [EVENT] 6258438500556 -> .
+[20:07:00] [EVENT] 70850384507065 -> y no le va a salir, lamentablemente. 🫡
+[20:07:16] [EVENT] 6258438500556 -> Se está arrepintiendo después de haberle llamado puta.
+[20:07:16] [EVENT] 147154857361573 -> LAYAYAYAYAYAYA.
+[20:07:16] [EVENT] PassiveCoins: 147154857361573 +9
+[20:07:25] [EVENT] 147154857361573 -> ke se tire de un quinto.
+[20:07:32] [EVENT] 147154857361573 -> MI VIDA.
+[20:07:36] [EVENT] 75158320595188 -> ¿Cómo estás,Keke?
+[20:07:36] [EVENT] PassiveCoins: 75158320595188 +7
+[20:07:40] [EVENT] 266816320491607 -> .
+[20:07:40] [EVENT] PassiveCoins: 266816320491607 +9
+[20:07:42] [EVENT] 147154857361573 -> a mí también me vino.
+[20:07:53] [EVENT] 6258438500556 -> BEBÉ, MI CIELITO.
+[20:07:53] [EVENT] PassiveCoins: 6258438500556 +10
+[20:07:54] [EVENT] 147154857361573 -> !!!
+[20:07:55] [EVENT] 75158320595188 -> ...
+[20:08:02] [EVENT] 75158320595188 -> Doble moralista
+[20:08:10] [EVENT] 6258438500556 -> Epa, me le prendo a ese mlp.
+[20:08:10] [EVENT] 266816320491607 -> .
+[20:08:14] [EVENT] 6258438500556 -> Que hipócrita.
+[20:08:18] [EVENT] 147154857361573 -> y qué nos importa. 💜
+[20:08:18] [EVENT] PassiveCoins: 147154857361573 +4
+[20:08:25] [EVENT] 75158320595188 -> Dios,que mal nene.
+[20:08:26] [EVENT] 147154857361573 -> MI VIDA.
+[20:08:30] [EVENT] 266816320491607 -> Que regrese la Valentina, total no le hace un favor al mundo.
+[20:08:34] [EVENT] 29652991135838 -> MAMI.
+[20:08:34] [EVENT] PassiveCoins: 29652991135838 +2
+[20:08:35] [EVENT] 266816320491607 -> Nadie la quiere aquí.
+[20:08:37] [EVENT] 70850384507065 -> y que venga, aquí la espero con tenedores.
+[20:08:37] [EVENT] PassiveCoins: 70850384507065 +10
+[20:08:40] [EVENT] 70850384507065 -> la voy a ponchar.
+[20:08:43] [EVENT] 70850384507065 -> gorda asquerosa.
+[20:08:47] [EVENT] 6258438500556 -> A nadie le importa si regresa o no, más bien, no le hace un favor a nadie.
+[20:08:49] [EVENT] 266816320491607 -> Te aamo
+[20:08:49] [EVENT] 53979568406548 -> Tan siquiera lo hago siempre, lo de hoy fue la primera vez en años. No me considero raider, pero como estaba con un grupo de amigos, tocó. Esas cosas se aplican con la gente tóxica, normal.
+[20:08:49] [EVENT] PassiveCoins: 53979568406548 +10
+[20:09:02] [EVENT] 6258438500556 -> HEY.
+[20:09:02] [EVENT] PassiveCoins: 6258438500556 +8
+[20:09:02] [EVENT] 53979568406548 -> Que regrese, que la van a volver a sacar
+[20:09:04] [EVENT] 75158320595188 -> Mhm.
+[20:09:04] [EVENT] PassiveCoins: 75158320595188 +3
+[20:09:24] [EVENT] 266816320491607 -> Sintió la presión.
+[20:09:24] [EVENT] PassiveCoins: 266816320491607 +10
+[20:09:33] [EVENT] 266816320491607 -> Ven, por eso no se tienen que meter con nosotros.
+[20:09:35] [EVENT] 6258438500556 -> ¿Que fue?
+[20:09:41] [EVENT] 6258438500556 -> .
+[20:09:43] [EVENT] 70850384507065 -> bueno, voy a prepararme para pedir mi deseo.
+[20:09:43] [EVENT] PassiveCoins: 70850384507065 +4
+[20:09:49] [EVENT] 70850384507065 -> ¿alguien quiere que le pida algo?
+[20:09:52] [EVENT] 6258438500556 -> Okei.
+[20:10:01] [EVENT] 53979568406548 -> Que Valentina aprenda a escribir "en serio" y no escriba "encerio"
+[20:10:01] [EVENT] PassiveCoins: 53979568406548 +5
+[20:10:04] [EVENT] 53979568406548 -> Por favor.
+[20:10:19] [EVENT] 6258438500556 -> Que Valentina no vuelva al fk.
+[20:10:19] [EVENT] PassiveCoins: 6258438500556 +9
+[20:10:20] [EVENT] 6258438500556 -> Gracias.
+[20:10:28] [EVENT] 53979568406548 -> También.
+[20:10:40] [EVENT] 6258438500556 -> Anda
+[20:10:43] [EVENT] 147154857361573 -> lloró y gritó, no irónicamente.
+[20:10:43] [EVENT] PassiveCoins: 147154857361573 +4
+[20:10:44] [EVENT] 266816320491607 -> Lo deseo con toda mí vida, mí nene
+[20:10:49] [EVENT] 29652991135838 -> HOLA, ¿CÓMO ESTÁS?
+[20:10:49] [EVENT] PassiveCoins: 29652991135838 +6
+[20:10:54] [EVENT] 6258438500556 -> Posta?
+[20:10:59] [EVENT] 266816320491607 -> JAJAJAJAJA, eso.
+[20:10:59] [EVENT] PassiveCoins: 266816320491607 +7
+[20:11:03] [EVENT] 6258438500556 -> Bien, bien, ¿vos?
+[20:11:04] [EVENT] 147154857361573 -> que me toque la lotería.
+[20:11:13] [EVENT] 6258438500556 -> .
+[20:11:15] [EVENT] 29652991135838 -> Me alegra muchísimo que sea así, estoy muy bien, gracias.
+[20:11:22] [EVENT] 6258438500556 -> También, necesito money.
+[20:11:22] [EVENT] PassiveCoins: 6258438500556 +7
+[20:11:24] [EVENT] 147154857361573 -> TE AMO, SABÍAS.
+[20:11:36] [EVENT] 266816320491607 -> Que mí macho viva conmigo.
+[20:11:40] [EVENT] 266816320491607 -> Gracias. 🙌🏻
+[20:11:41] [EVENT] 6258438500556 -> No hace falta agradecer.
+[20:11:45] [EVENT] 70850384507065 -> deseos pendejos.
+[20:11:45] [EVENT] PassiveCoins: 70850384507065 +2
+[20:11:50] [EVENT] 29652991135838 -> Se me olvidó cómo se llama la Chama que me dijo Eleonor para que le hiciera stickers.
+[20:11:50] [EVENT] PassiveCoins: 29652991135838 +10
+[20:11:52] [EVENT] 6258438500556 -> OAUKSJAQK
+[20:11:55] [EVENT] 53979568406548 -> YA TE OLVIDÉ
+[20:11:55] [EVENT] PassiveCoins: 53979568406548 +5
+[20:11:59] [EVENT] 70850384507065 -> no hablé en modo sarcástico, tengo el poder de la manifestación con las horas espejo.
+[20:12:02] [EVENT] 6258438500556 -> TE AMO MÁS.
+[20:12:04] [EVENT] 53979568406548 -> ¿Me haces a mí? Yo te amo
+[20:12:05] [EVENT] 147154857361573 -> mamoi, ¿terminaste los stickers?
+[20:12:05] [EVENT] PassiveCoins: 147154857361573 +4
+[20:12:07] [EVENT] 70850384507065 -> la próxima no les doy el poder de dejar que me pidan algo.
+[20:12:07] [EVENT] 29652991135838 -> Gracias.
+[20:12:09] [EVENT] 266816320491607 -> Y que Akira consiga sus animales de Adopt me.
+[20:12:09] [EVENT] PassiveCoins: 266816320491607 +1
+[20:12:11] [EVENT] 53979568406548 -> Pues que Valentina se muera.
+[20:12:16] [EVENT] 29652991135838 -> ¿Cuáles?
+[20:12:17] [EVENT] 53979568406548 -> .
+[20:12:18] [EVENT] 6258438500556 -> De nada.
+[20:12:24] [EVENT] 266816320491607 -> Soy yoo.
+[20:12:28] [EVENT] 29652991135838 -> Dime de quién.
+[20:12:36] [EVENT] 147154857361573 -> en el momento que nos involucramos con Volkov, empezamos a pasar pena.
+[20:12:40] [EVENT] 147154857361573 -> por algún casual.
+[20:12:42] [EVENT] 70850384507065 -> 😭
+[20:12:42] [EVENT] 29652991135838 -> Le decía gracias otra vez.
+[20:12:44] [EVENT] 29652991135838 -> KWJEJWLWJWKWJ.
+[20:12:53] [EVENT] 266816320491607 -> Ganas no nos faltan. 🤗💜
+[20:12:54] [EVENT] 29652991135838 -> Dame el nombre de la muchacha que querías para stickers.
+[20:12:54] [EVENT] PassiveCoins: 29652991135838 +10
+[20:13:10] [EVENT] 266816320491607 -> Amanda Seyfried, amor.
+[20:13:10] [EVENT] PassiveCoins: 266816320491607 +2
+[20:13:10] [EVENT] 70850384507065 -> dile de mi parte que no sea hipócrita.
+[20:13:10] [EVENT] PassiveCoins: 70850384507065 +7
+[20:13:13] [EVENT] 29652991135838 -> Y por qué ahora la odia si se supone que es su hijo y tal.
+[20:13:16] [EVENT] 70850384507065 -> cuando vuelva lo bajamos a él, y a ella también.
+[20:13:23] [EVENT] 70850384507065 -> que nos avise, d1.
+[20:13:25] [EVENT] 29652991135838 -> Y la Valentina hasta lo defendió.
+[20:13:27] [EVENT] 6258438500556 -> Ya amor, no intentes quedar bien después de la mierda que hiciste.
+[20:13:27] [EVENT] PassiveCoins: 6258438500556 +2
+[20:13:32] [EVENT] 53979568406548 -> De Fiona Gallagher en la versión de Shameless EEUU, por favor.
+[20:13:32] [EVENT] PassiveCoins: 53979568406548 +9
+[20:13:40] [EVENT] 6258438500556 -> OAUSJAJAK
+[20:13:40] [EVENT] 29652991135838 -> Mierda.
+[20:13:46] [EVENT] 29652991135838 -> Okey.
+[20:14:01] [EVENT] 29652991135838 -> IWKSJSLWJWLWJSLSJSKS.
+[20:14:01] [EVENT] PassiveCoins: 29652991135838 +2
+[20:14:06] [EVENT] 6258438500556 -> LASJAKAJAKAKAK
+[20:14:11] [EVENT] 70850384507065 -> amor, sí. Lo supe desde que ví que lo estábamos defendiendo y él no decía nada, como si el problema fuera nuestro. 🫡
+[20:14:11] [EVENT] PassiveCoins: 70850384507065 +9
+[20:14:18] [EVENT] 213297269874835 -> Oda
+[20:14:18] [EVENT] PassiveCoins: 213297269874835 +10
+[20:14:20] [EVENT] 29652991135838 -> JWKEJWLWJWLWJWKWJD
+[20:14:21] [EVENT] 6258438500556 -> .
+[20:14:21] [EVENT] 70850384507065 -> no puedes pasarle la papa caliente a nadie con tu propio problema.
+[20:14:27] [EVENT] 70850384507065 -> involucrate, qsyo.
+[20:14:28] [EVENT] 6258438500556 -> .
+[20:14:28] [EVENT] PassiveCoins: 6258438500556 +2
+[20:14:30] [EVENT] 6258438500556 -> ESO.
+[20:14:38] [EVENT] 6258438500556 -> EITHAN.
+[20:14:47] [EVENT] 6258438500556 -> PAJSKAJAKAKA
+[20:14:59] [EVENT] 213297269874835 -> Holaap, ¿Nos conocemos corazón?
+[20:15:23] [EVENT] 6258438500556 -> Digamos, soy hefesto, ahora me llamo Wyleric.
+[20:15:28] [EVENT] 266816320491607 -> SI A TODO, SI A TODO WIDJSISNSKA
+[20:15:29] [EVENT] 120363421582961373 -> SDLR se puede decir que es azul.
+[20:15:35] [EVENT] 70850384507065 -> Por qué hablas como gay.
+[20:15:35] [EVENT] PassiveCoins: 70850384507065 +4
+[20:15:49] [EVENT] 266816320491607 -> AJAJAJJJJAAJAJAJAJAJAJAJAAJAJAJAJAJAJJAAJJJAJAJAJAJAJAJAJAJAJAJAAJA
+[20:15:49] [EVENT] PassiveCoins: 266816320491607 +6
+[20:15:52] [EVENT] 266816320491607 -> 🤣🤣🤣🤣🤣🤣🤣🤣🤣🤣
+[20:15:55] [EVENT] 213297269874835 -> AHHHH HEFESTO
+[20:15:55] [EVENT] PassiveCoins: 213297269874835 +7
+[20:16:00] [EVENT] 213297269874835 -> Omg
+[20:16:06] [EVENT] 213297269874835 -> A veces se me sale
+[20:16:14] [EVENT] 29652991135838 -> Dios.
+[20:16:14] [EVENT] PassiveCoins: 29652991135838 +4
+[20:16:20] [EVENT] 6258438500556 -> OAUSKSJAKAKS.
+[20:16:20] [EVENT] PassiveCoins: 6258438500556 +3
+[20:16:21] [EVENT] 70850384507065 -> soy homofóbica, disimula.
+[20:16:24] [EVENT] 70850384507065 -> #humorrrrrr.
+[20:16:26] [EVENT] 6258438500556 -> HOLA, CHIQUITO.
+[20:16:27] [EVENT] 70850384507065 -> #sarcasmoooo.
+[20:16:27] [EVENT] 266816320491607 -> Mmh.. Ya veo.
+[20:16:29] [EVENT] 70850384507065 -> #######
+[20:16:40] [EVENT] 29652991135838 -> @266816320491607 Me la pusiste bien difícil.
+[20:16:46] [EVENT] 147154857361573 -> por bocón, te vuelvo a mandar a quemar codes a ti.
+[20:16:46] [EVENT] PassiveCoins: 147154857361573 +9
+[20:16:48] [EVENT] 266816320491607 -> Si entendí la vibra.
+[20:16:50] [EVENT] 6258438500556 -> DISQUE, TREMENDO MLP.
+[20:16:56] [EVENT] 181973939142738 -> .menu
+[20:16:56] [EVENT] PassiveCoins: 181973939142738 +9
+[20:16:56] [CMD] menu → 181973939142738
+[20:16:56] [EVENT] 266816320491607 -> ES AMANDA SEYFRIED.
+[20:16:56] [EVENT] PassiveCoins: 266816320491607 +8
+[20:16:58] [EVENT] 213297269874835 -> okei Aki
+[20:16:58] [EVENT] PassiveCoins: 213297269874835 +4
+[20:17:09] [EVENT] 70850384507065 -> te amo yo.
+[20:17:09] [EVENT] PassiveCoins: 70850384507065 +1
+[20:17:18] [EVENT] 29652991135838 -> Por eso, no hay tantos clips de ella.
+[20:17:18] [EVENT] PassiveCoins: 29652991135838 +8
+[20:17:19] [EVENT] 266816320491607 -> O sino de Brianne Howey.
+[20:17:33] [EVENT] 147154857361573 -> ¿la gorda también le puso una pistola en la cabeza para llamarte puta?
+[20:17:37] [EVENT] 266816320491607 -> Eso me pasa por tener caritas originales.
+[20:17:39] [EVENT] 266816320491607 -> 🤗
+[20:18:12] [EVENT] 147154857361573 -> THANNIE.
+[20:18:12] [EVENT] PassiveCoins: 147154857361573 +7
+[20:18:15] [EVENT] 147154857361573 -> 😭😭😭😭😭
+[20:18:28] [EVENT] 266816320491607 -> Eso le pregunté.
+[20:18:28] [EVENT] PassiveCoins: 266816320491607 +3
+[20:18:37] [EVENT] 29652991135838 -> Ella haya dicho tal cosa, haya cometido tal error, no debes hablar de ella pq en el momento te defendió, además, te hace ver muy hipócrita de tu parte tirarle después de todo. Deja una mala imagen sobre ti y nadie querrá hablarte.
+[20:18:37] [EVENT] PassiveCoins: 29652991135838 +8
+[20:18:38] [EVENT] 70850384507065 -> no puede ser que todo el mundo en fakeland me caiga mal.
+[20:18:38] [EVENT] PassiveCoins: 70850384507065 +3
+[20:18:38] [EVENT] 6258438500556 -> ¿Cómo te va?
+[20:18:38] [EVENT] PassiveCoins: 6258438500556 +8
+[20:18:43] [EVENT] 53979568406548 -> Tenemos que jugar Among Us.
+[20:18:43] [EVENT] PassiveCoins: 53979568406548 +4
+[20:18:47] [EVENT] 70850384507065 -> parece chiste.
+[20:18:55] [EVENT] 147154857361573 -> EN FA.
+[20:19:08] [EVENT] 266816320491607 -> No tengo memoria...
+[20:19:10] [EVENT] 29652991135838 -> JAJAJAJAJA, haré lo posible, muñecota.
+[20:19:13] [EVENT] 6258438500556 -> fíjate, hasta eso.
+[20:19:16] [EVENT] 147154857361573 -> a mí me caen todos mal, menos ustedes.
+[20:19:16] [EVENT] PassiveCoins: 147154857361573 +4
+[20:19:22] [EVENT] 53979568406548 -> Pues consigue. 🙄💜🔥
+[20:19:22] [EVENT] 213297269874835 -> Maso, tú?
+[20:19:22] [EVENT] PassiveCoins: 213297269874835 +10
+[20:19:28] [EVENT] 213297269874835 -> Hola mi mai
+[20:19:30] [EVENT] 53979568406548 -> Creen sala
+[20:19:35] [EVENT] 147154857361573 -> hola, mamor.
+[20:19:42] [EVENT] 147154857361573 -> veida que Thannie también es mi hijo.
+[20:19:53] [EVENT] 213297269874835 -> ....
+[20:19:53] [EVENT] 6258438500556 -> ¿Por qué, mí cielo?, muy bien.
+[20:19:53] [EVENT] PassiveCoins: 6258438500556 +9
+[20:19:54] [EVENT] 213297269874835 -> Que
+[20:19:55] [EVENT] 213297269874835 -> Hijo?
+[20:20:09] [EVENT] 6258438500556 -> Oztras.
+[20:20:10] [EVENT] 147154857361573 -> ¿no quedamos en eso la última vez? 😭
+[20:20:27] [EVENT] 213297269874835 -> Pues no es nada importante. Ya estoy mejor. Me alegra que estés bien
+[20:20:27] [EVENT] PassiveCoins: 213297269874835 +6
+[20:20:28] [EVENT] 147154857361573 -> me vai a volvei loca tú.
+[20:20:28] [EVENT] PassiveCoins: 147154857361573 +3
+[20:20:28] [EVENT] 266816320491607 -> Amor, me encantaría que me tengas así
+[20:20:38] [EVENT] 213297269874835 -> Te dije mamá de humor porque me estabas regañando 😭
+[20:20:40] [EVENT] 147154857361573 -> QUÉ TRAES, KIMA.
+[20:20:51] [OK] UnifiedRateLimiter cargado
+[20:20:51] [OK] Comando cargado: ban
+[20:20:51] [OK] Comando cargado: antilink
+[20:20:51] [OK] Comando cargado: antibot
+[20:20:51] [OK] Comando cargado: antifake
+[20:20:51] [OK] Comando cargado: autolevelup
+[20:20:51] [OK] Comando cargado: facebook
+[20:20:51] [OK] Comando cargado: instagram
+[20:20:51] [OK] Comando cargado: pinterest
+[20:20:52] [OK] Comando cargado: play
+[20:20:52] [OK] Comando cargado: spotify
+[20:20:52] [OK] Comando cargado: tiktok
+[20:20:52] [OK] Comando cargado: ytmp3
+[20:20:52] [OK] Comando cargado: ytmp4
+[20:20:52] [OK] Comando cargado: balance
+[20:20:52] [OK] Comando cargado: buy
+[20:20:52] [OK] Comando cargado: crime
+[20:20:52] [OK] Comando cargado: daily
+[20:20:52] [OK] Comando cargado: deposit
+[20:20:52] [OK] Comando cargado: gamble
+[20:20:52] [OK] Comando cargado: inventory
+[20:20:52] [OK] Comando cargado: leaderboardmoney
+[20:20:52] [OK] Comando cargado: open
+[20:20:52] [OK] Comando cargado: pay
+[20:20:52] [OK] Comando cargado: rob
+[20:20:52] [OK] Comando cargado: shop
+[20:20:52] [OK] Comando cargado: slots
+[20:20:52] [OK] Comando cargado: withdraw
+[20:20:52] [OK] Comando cargado: work
+[20:20:52] [OK] Comando cargado: inactive
+[20:20:52] [OK] Comando cargado: msgstats
+[20:20:52] [OK] Comando cargado: topmessages
+[20:20:52] [OK] Comando cargado: add
+[20:20:52] [OK] Comando cargado: demote
+[20:20:52] [OK] Comando cargado: hidetag
+[20:20:52] [OK] Comando cargado: kick
+[20:20:52] [OK] Comando cargado: mute
+[20:20:52] [OK] Comando cargado: promote
+[20:20:52] [OK] Comando cargado: tagall
+[20:20:52] [OK] Comando cargado: unwarn
+[20:20:52] [OK] Comando cargado: warn
+[20:20:52] [OK] Comando cargado: warnings
+[20:20:52] [OK] Comando cargado: welcome
+[20:20:52] [OK] Comando cargado: ia
+[20:20:52] [OK] Comando cargado: leaderboard
+[20:20:53] [OK] Comando cargado: level
+[20:20:53] [OK] Comando cargado: rank
+[20:20:53] [OK] Comando cargado: menu
+[20:20:53] [OK] Comando cargado: ping
+[20:20:53] [OK] Comando cargado: addpremium
+[20:20:53] [OK] Comando cargado: delpremium
+[20:20:53] [OK] Comando cargado: premium
+[20:20:53] [OK] Comando cargado: profile
+[20:20:53] [OK] Comando cargado: sticker
+[20:20:53] [OK] Comando cargado: addjoinmsg
+[20:20:53] [OK] Comando cargado: clearjoinmsg
+[20:20:53] [OK] Comando cargado: deljoinmsg
+[20:20:53] [OK] Comando cargado: listjoinmsg
+[20:20:53] [INFO] Iniciando KennyBot...
+[20:20:53] [OK] SocketManager cargado
+[20:20:54] [OK] KennyBot conectado
+[20:20:56] [EVENT] 147154857361573 -> me rompes el corazón.
+[20:20:56] [EVENT] PassiveCoins: 147154857361573 +1
+[20:20:59] [EVENT] 181973939142738 -> .menu
+[20:20:59] [EVENT] PassiveCoins: 181973939142738 +8
+[20:20:59] [CMD] menu → 181973939142738
+[20:21:05] [EVENT] 213297269874835 -> Pregúntale al pendejo de Keyron.
+[20:21:05] [EVENT] PassiveCoins: 213297269874835 +9
+[20:21:06] [EVENT] 147154857361573 -> TENGO NOVIO, SABÍAS.
+[20:21:17] [EVENT] 213297269874835 -> Pues me enteré por ahí, no me dijiste nada
+[20:21:17] [EVENT] 147154857361573 -> hola, mamor.
+[20:21:22] [EVENT] 213297269874835 -> 😭😭😭😭
+[20:21:27] [EVENT] 147154857361573 -> pero si me lo pidió aquí.
+[20:21:31] [EVENT] 70850384507065 -> hola, goida.
+[20:21:31] [EVENT] PassiveCoins: 70850384507065 +10
+[20:21:31] [EVENT] 6258438500556 -> ¿Seguro?, está bien, gracias.
+[20:21:31] [EVENT] PassiveCoins: 6258438500556 +2
+[20:21:35] [EVENT] 70850384507065 -> llegó mi novio.
+[20:21:40] [EVENT] 6258438500556 -> OA
+[20:21:43] [EVENT] 147154857361573 -> TE AMO.
+[20:22:07] [EVENT] 213297269874835 -> Yo no ví nadaaa
+[20:22:07] [EVENT] PassiveCoins: 213297269874835 +5
+[20:22:18] [EVENT] 6258438500556 -> Espérate, ¿aquí?
+[20:22:19] [EVENT] 213297269874835 -> Claro coraaa
+[20:22:25] [EVENT] 147154857361573 -> AAAAAAIDEN.
+[20:22:25] [EVENT] PassiveCoins: 147154857361573 +7
+[20:22:34] [EVENT] 6258438500556 -> Heyy.
+[20:22:34] [EVENT] PassiveCoins: 6258438500556 +3
+[20:22:38] [EVENT] 147154857361573 -> 😭😭😭😭😭
+[20:22:47] [EVENT] 147154857361573 -> sí, mi vida.
+[20:22:48] [EVENT] 70850384507065 -> Oña.
+[20:22:48] [EVENT] PassiveCoins: 70850384507065 +4
+[20:22:52] [EVENT] 147154857361573 -> así con un textote.
+[20:22:53] [EVENT] 223592457498686 -> Probablemente pierda este número
+[20:22:53] [EVENT] PassiveCoins: 223592457498686 +5
+[20:22:57] [EVENT] 70850384507065 -> lo amo. 😞
+[20:23:00] [EVENT] 147154857361573 -> POR QUÉ.
+[20:23:05] [EVENT] 70850384507065 -> me dijo que me va a hacer llamadita mientras se baña.
+[20:23:05] [EVENT] 6258438500556 -> NO VI OYE😭
+[20:23:07] [EVENT] 70850384507065 -> eso e amor.
+[20:23:09] [EVENT] 70850384507065 -> 🥹
+[20:23:17] [EVENT] 6258438500556 -> Ola
+[20:23:32] [EVENT] 70850384507065 -> se puso a pelear, seguro. 😭
+[20:23:37] [EVENT] 70850384507065 -> JWJEMQMQJAJAJAJAJAJAJAJA
+[20:23:40] [EVENT] 223592457498686 -> +967 778 407 317
+
++33 6 16 66 53 37
+[20:23:55] [EVENT] 223592457498686 -> Me ando peleando con una bestia de canal 800k
+[20:23:55] [EVENT] PassiveCoins: 223592457498686 +6
+[20:24:01] [EVENT] 147154857361573 -> 😭😭😭😭😭
+[20:24:01] [EVENT] PassiveCoins: 147154857361573 +7
+[20:24:07] [EVENT] 223592457498686 -> Cualquier cosa me buscan ahí
+[20:24:08] [EVENT] 147154857361573 -> yo jugaba al tomodachi.
+[20:24:11] [EVENT] 147154857361573 -> la veida.
+[20:24:20] [EVENT] 223592457498686 -> Igual me la van a mascar
+[20:24:28] [EVENT] 6258438500556 -> Chikos, me duelen las piernas.
+[20:24:28] [EVENT] PassiveCoins: 6258438500556 +2
+[20:24:33] [EVENT] 213297269874835 -> Quien es el wey?
+[20:24:33] [EVENT] PassiveCoins: 213297269874835 +2
+[20:24:45] [EVENT] 213297269874835 -> Ayer no te estabas quejando
+[20:24:47] [EVENT] 213297269874835 -> JAJAJAJA
+[20:24:55] [EVENT] 70850384507065 -> estoy.
+[20:24:55] [EVENT] PassiveCoins: 70850384507065 +8
+[20:24:57] [EVENT] 223592457498686 -> .play min games
+[20:24:57] [EVENT] PassiveCoins: 223592457498686 +6
+[20:24:57] [CMD] play → 223592457498686
+[20:24:58] [EVENT] 70850384507065 -> enamorada.
+[20:25:01] [EVENT] 226916711833796 -> ╭━━━━━━━━━━━━━━━━╮
+   ❦ 𝑳𝑨 𝑺𝑼𝑲𝑰 𝑩𝑶𝑻 ❦
+╰━━━━━━━━━━━━━━━━╯
+
+━━━━━━━━━━━━━━━━━
+ *📥 CÓMO DESCARGAR*
+━━━━━━━━━━━━━━━━━━
+
+🟢 *OPCIÓN 1 — Menú de Botones*
+Toca el botón *📥 Menú de descarga* abajo del mensaje. Se abrirá una lista con todas las opciones de audio y video en distintas calidades.
+
+━━━━━━━━━━━━━━━━━
+🤖 *La Suki Bot*
+━━━━━━━━━━━━━━━━━
+[20:25:01] [EVENT] PassiveCoins: 226916711833796 +2
+[20:25:04] [EVENT] 226916711833796 -> ⏳ Descargando audio (mp3)...
+[20:25:13] [EVENT] 147154857361573 -> ¿los pingüinos?
+[20:25:13] [EVENT] PassiveCoins: 147154857361573 +9
+[20:25:24] [EVENT] 223592457498686 -> Eso
+[20:25:29] [EVENT] 226916711833796 -> ╭━━━━━━━━━━━━━━━━━━╮
+   🎵 𝗔𝗨𝗗𝗜𝗢 𝗗𝗘𝗦𝗖𝗔𝗥𝗚𝗔𝗗𝗢
+╰━━━━━━━━━━━━━━━━━━╯
+
+📝 *Título:* Sickick - Mind Games (Audio)
+👤 *Autor:* SickickMusic
+⏱️ *Duración:* 4:22
+👁️ *Vistas:* 28,827,729
+📦 *Formato:* Audio MP3
+💾 *Tamaño:* 3.99 MB
+
+━━━━━━━━━━━━━━━━━━━━
+🤖 *Bot:* La Suki Bot
+🔗 *API:* Neoxr API
+━━━━━━━━━━━━━━━━━━━━
+[20:25:39] [INFO] Temp eliminado: 1780197900857-909b3325-d37c-4b4b-9f38-4a3e0c6fc1cc.audio.webm
+[20:25:39] [EVENT] 6258438500556 -> No, no me queje
+[20:25:39] [EVENT] PassiveCoins: 6258438500556 +1
+[20:25:49] [EVENT] 6258438500556 -> JAJAJAJAJA
+[20:26:07] [EVENT] 70850384507065 -> @53979568406548 tu marido anda de culo arriba con otro, ve
+[20:26:07] [EVENT] PassiveCoins: 70850384507065 +1
+[20:26:07] [EVENT] 147154857361573 -> .play the emptiness machine
+[20:26:07] [CMD] play → 147154857361573
+[20:26:10] [EVENT] 226916711833796 -> ╭━━━━━━━━━━━━━━━━╮
+   ❦ 𝑳𝑨 𝑺𝑼𝑲𝑰 𝑩𝑶𝑻 ❦
+╰━━━━━━━━━━━━━━━━╯
+
+━━━━━━━━━━━━━━━━━
+ *📥 CÓMO DESCARGAR*
+━━━━━━━━━━━━━━━━━━
+
+🟢 *OPCIÓN 1 — Menú de Botones*
+Toca el botón *📥 Menú de descarga* abajo del mensaje. Se abrirá una lista con todas las opciones de audio y video en distintas calidades.
+
+━━━━━━━━━━━━━━━━━
+🤖 *La Suki Bot*
+━━━━━━━━━━━━━━━━━
+[20:26:10] [EVENT] PassiveCoins: 226916711833796 +9
+[20:26:23] [EVENT] 147154857361573 -> 1
+[20:26:23] [EVENT] PassiveCoins: 147154857361573 +7
+[20:26:25] [EVENT] 226916711833796 -> 🎶 Descargando audio (mp3)...
+[20:26:27] [EVENT] 6258438500556 -> PERO, QUÉ
+[20:26:27] [EVENT] 70850384507065 -> @53979568406548 cachona
+[20:26:45] [INFO] Temp eliminado: 1780197970433-96bf7238-650d-4da6-96f8-2d936eac89df.audio.webm
+[20:26:52] [EVENT] 226916711833796 -> ╭━━━━━━━━━━━━━━━━━━╮
+   🎵 𝗔𝗨𝗗𝗜𝗢 𝗗𝗘𝗦𝗖𝗔𝗥𝗚𝗔𝗗𝗢
+╰━━━━━━━━━━━━━━━━━━╯
+
+📝 *Título:* The Emptiness Machine (Official Music Video) - Linkin Park
+👤 *Autor:* Linkin Park
+⏱️ *Duración:* 3:21
+👁️ *Vistas:* 209,467,340
+📦 *Formato:* Audio MP3
+💾 *Tamaño:* 3.06 MB
+
+━━━━━━━━━━━━━━━━━━━━
+🤖 *Bot:* La Suki Bot
+🔗 *API:* Neoxr API
+━━━━━━━━━━━━━━━━━━━━
+[20:26:53] [EVENT] 213297269874835 -> KSKSKSKSKJDJDJDD OMG SI BEBA
+[20:26:53] [EVENT] PassiveCoins: 213297269874835 +1
+[20:27:07] [EVENT] 6258438500556 -> JAISSIAJAKAKA
+[20:27:07] [EVENT] PassiveCoins: 6258438500556 +10
+[20:27:16] [EVENT] 213297269874835 -> Pon la de desnúdate remix
+[20:27:17] [EVENT] 147154857361573 -> JAUDLRBSLANAKSBSLSK
+[20:27:17] [EVENT] 6258438500556 -> Osh.
+[20:27:39] [EVENT] 147154857361573 -> wy ayer en la noche:
+[20:27:39] [EVENT] PassiveCoins: 147154857361573 +9
+[20:27:46] [EVENT] 147154857361573 -> ISLEJWLANFLEBQLDJLSJSLAJAKA.
+[20:27:48] [EVENT] 266816320491607 -> Solo tengo algo para decir:  A H R E
+[20:27:48] [EVENT] PassiveCoins: 266816320491607 +9
+[20:27:53] [EVENT] 6258438500556 -> Si
+[20:27:54] [EVENT] 213297269874835 -> JAJAJAJAJAJJAJAAJJAA
+[20:27:54] [EVENT] PassiveCoins: 213297269874835 +9
+[20:27:54] [EVENT] 6258438500556 -> ahre
+[20:27:57] [EVENT] 6258438500556 -> JAJAJAJAJAJA
+[20:28:13] [EVENT] 70850384507065 -> Zaid le ve potencial a todo el mundo, y to el mundo le termina saliendo como Dante.
+[20:28:13] [EVENT] PassiveCoins: 70850384507065 +3
+[20:28:13] [EVENT] 147154857361573 -> el potencial son los amigos que hicimos en el camino.
+[20:28:19] [EVENT] 70850384507065 -> lo dije
+[20:28:21] [EVENT] 70850384507065 -> lo dije
+[20:28:28] [EVENT] 6258438500556 -> .
+[20:28:28] [EVENT] PassiveCoins: 6258438500556 +1
+[20:28:32] [EVENT] 147154857361573 -> ya hablo yo con mi papá.
+[20:28:34] [EVENT] 266816320491607 -> Zaid es la misma mierda que Valentina.
+[20:28:35] [EVENT] 147154857361573 -> está chiquito.
+[20:28:37] [EVENT] 147154857361573 -> poetito.
+[20:28:50] [EVENT] 70850384507065 -> okei amor.
+[20:28:53] [EVENT] 266816320491607 -> EL ME FUNÓ CUANDO YO ME DEFENDÍ DE LA PUTA.
+[20:28:53] [EVENT] PassiveCoins: 266816320491607 +1
+[20:28:59] [EVENT] 147154857361573 -> EH, EH, EH.
+[20:28:59] [EVENT] PassiveCoins: 147154857361573 +3
+[20:28:59] [EVENT] 6258438500556 -> Pero.
+[20:29:04] [EVENT] 147154857361573 -> QUW TE METO UN TROMPO.
+[20:29:05] [EVENT] 266816320491607 -> Y yo le dije DATE CUENTA PELOTUDO.
+[20:29:15] [EVENT] 266816320491607 -> Que bronca.
+[20:29:36] [EVENT] 147154857361573 -> pero si tuvo él la idea del grupo pa’ defendernos.
+[20:29:49] [EVENT] 266816320491607 -> Pero fue en ese tiempo, oki.
+[20:29:52] [EVENT] 103913210556575 -> Bueeenas nochess
+[20:29:52] [EVENT] PassiveCoins: 103913210556575 +1
+[20:29:58] [EVENT] 266816320491607 -> Cuando andaba full a madrazos con la gorda.
+[20:29:58] [EVENT] PassiveCoins: 266816320491607 +3
+[20:29:58] [EVENT] 147154857361573 -> MARINOOOOOOOOOOOO.
+[20:29:58] [EVENT] 70850384507065 -> #kic
+[20:29:58] [EVENT] PassiveCoins: 70850384507065 +10
+[20:30:05] [EVENT] 70850384507065 -> k
+[20:30:07] [EVENT] 103913210556575 -> LIGEA
+[20:30:14] [EVENT] 266816320491607 -> Malaaaas nochess.
+[20:30:16] [EVENT] 103913210556575 -> .kick
+[20:30:16] [CMD] kick → 103913210556575
+[20:30:18] [EVENT] 6258438500556 -> HOLA.
+[20:30:18] [EVENT] PassiveCoins: 6258438500556 +5
+[20:30:18] [EVENT] 226916711833796 -> ❌ *Error al expulsar a @19394918610.*
+[20:30:18] [EVENT] PassiveCoins: 226916711833796 +8
+[20:30:19] [EVENT] 147154857361573 -> MI VIFA
+[20:30:19] [EVENT] PassiveCoins: 147154857361573 +3
+[20:30:23] [EVENT] 103913210556575 -> OOOOOH
+[20:30:25] [EVENT] 103913210556575 -> Listo
+[20:30:28] [EVENT] 103913210556575 -> Bot de mierda
+[20:30:29] [EVENT] 70850384507065 -> @147154857361573 míralo.
+[20:30:35] [EVENT] 147154857361573 -> 😭😭😭😭
+[20:30:40] [EVENT] 147154857361573 -> PAJELEBQLFBELWJQJ KENNY
+[20:30:49] [EVENT] 103913210556575 -> Negra, qué te picó a vos
+[20:30:51] [EVENT] 70850384507065 -> toma, fracasado.
+[20:30:51] [EVENT] 147154857361573 -> PERO SÍ E’ ADMIN
+[20:30:56] [EVENT] 147154857361573 -> AILEE LO HDKSBSKAJKDKWLJXLbskdjsk
+[20:30:58] [EVENT] 103913210556575 -> Hey, ¿todo bien?
+[20:30:58] [EVENT] PassiveCoins: 103913210556575 +10
+[20:31:05] [EVENT] 103913210556575 -> ENANA 🤏🏻
+[20:31:12] [EVENT] 6258438500556 -> Así es, ¿que hay de vos?
+[20:31:14] [EVENT] 103913210556575 -> Qué tiene que ver
+[20:31:15] [EVENT] 147154857361573 -> TE AMO
+[20:31:17] [EVENT] 266816320491607 -> Mí novio. 😳😳
+[20:31:17] [EVENT] PassiveCoins: 266816320491607 +5
+[20:31:19] [EVENT] 266816320491607 -> Mentira.
+[20:31:28] [EVENT] 103913210556575 -> Buenas noches.
+[20:31:28] [EVENT] 70850384507065 -> TÚ NO.
+[20:31:28] [EVENT] PassiveCoins: 70850384507065 +7
+[20:31:33] [EVENT] 70850384507065 -> EL ASHER.
+[20:31:34] [EVENT] 266816320491607 -> HOLA, ASHERCITOOOOOOOOOOOOOOO
+[20:31:34] [EVENT] 147154857361573 -> NOMBR
+[20:31:34] [EVENT] PassiveCoins: 147154857361573 +6
+[20:31:39] [EVENT] 103913210556575 -> VES
+[20:31:43] [EVENT] 70850384507065 -> TÚ NO, GORDITO. 😭
+[20:31:45] [EVENT] 266816320491607 -> HOLA AMORCITOOOOOOOOOOOOOOO
+[20:31:47] [EVENT] 103913210556575 -> Tiene algo contra mí
+[20:32:05] [EVENT] 103913210556575 -> Qué bueno. Todo para el culo, pero la remo
+[20:32:05] [EVENT] PassiveCoins: 103913210556575 +7
+[20:32:15] [EVENT] 103913210556575 -> Nada que no se pueda arreglar con unas buenas funas
+[20:32:20] [EVENT] 103913210556575 -> YO MÁS
+[20:32:24] [EVENT] 103913210556575 -> Tengo que hablarte de algo
+[20:32:30] [EVENT] 103913210556575 -> Qué asco
+[20:32:33] [EVENT] 103913210556575 -> Tomate el palo
+[20:32:34] [EVENT] 223592457498686 -> Holis
+[20:32:34] [EVENT] PassiveCoins: 223592457498686 +5
+[20:32:39] [EVENT] 6258438500556 -> Uy, espero todo mejore.
+[20:32:39] [EVENT] PassiveCoins: 6258438500556 +3
+[20:32:43] [EVENT] 103913210556575 -> JAAAAAAJAJAJAJAJAJAJAJAJAJAJAJAJAJA
+[20:32:47] [EVENT] 147154857361573 -> otei
+[20:32:47] [EVENT] PassiveCoins: 147154857361573 +7
+[20:32:52] [EVENT] 147154857361573 -> nomás deja me llega la hamburguesa
+[20:32:57] [EVENT] 103913210556575 -> HOLA, ELEANOOOOORRR
+[20:33:05] [EVENT] 266816320491607 -> Bue, que gil, sos un negr envidioso.
+[20:33:05] [EVENT] PassiveCoins: 266816320491607 +9
+[20:33:14] [EVENT] 103913210556575 -> ¿Te metés conmigo?
+[20:33:14] [EVENT] PassiveCoins: 103913210556575 +3
+[20:33:25] [EVENT] 103913210556575 -> ¿Cómo estás?
+[20:33:33] [EVENT] 103913210556575 -> Gracias, eh.
+[20:33:37] [EVENT] 103913210556575 -> ¿Cómo te llamás?
+[20:33:42] [EVENT] 40261744857339 -> Eres hombres Y precisamente ahora estoy odiándolos.
+[20:33:42] [EVENT] PassiveCoins: 40261744857339 +1
+[20:33:43] [EVENT] 103913210556575 -> Dale
+[20:33:44] [EVENT] 6258438500556 -> Wyleric.
+[20:33:44] [EVENT] PassiveCoins: 6258438500556 +10
+[20:33:45] [EVENT] 103913210556575 -> Avisame
+[20:33:52] [EVENT] 6258438500556 -> No es nada.
+[20:34:04] [EVENT] 6258438500556 -> HOLA.
+[20:34:04] [EVENT] 266816320491607 -> Hi, Mizu.
+[20:34:13] [EVENT] 103913210556575 -> Soy más blanco que vos, qué hablás
+[20:34:20] [EVENT] 223592457498686 -> Me vine a relajar un rato
+[20:34:20] [EVENT] PassiveCoins: 223592457498686 +5
+[20:34:24] [EVENT] 103913210556575 -> Y quién te va a tener envidia, villera
+[20:34:24] [EVENT] PassiveCoins: 103913210556575 +2
+[20:34:31] [EVENT] 266816320491607 -> El jura
+[20:34:31] [EVENT] PassiveCoins: 266816320491607 +7
+[20:34:51] [EVENT] 103913210556575 -> Te estaba diciendo si querés que funemos a alguien juntos, no que si querías pelear conmigo
+[20:34:55] [EVENT] 103913210556575 -> Pero bueno, ya entendí.
+[20:35:03] [EVENT] 103913210556575 -> Uh
+[20:35:07] [EVENT] 103913210556575 -> Rarísimo
+[20:35:08] [EVENT] 40261744857339 -> Dale, a quien. Bebé.
+[20:35:08] [EVENT] PassiveCoins: 40261744857339 +1
+[20:35:13] [EVENT] 70850384507065 -> mi novio dijo hace 12 minutos que iba a matar a una cucaracha.
+[20:35:13] [EVENT] PassiveCoins: 70850384507065 +7
+[20:35:19] [EVENT] 103913210556575 -> Soy Asher, mucho gusto, Wyleric
+[20:35:20] [EVENT] 70850384507065 -> se lo comió la cucaracha, mepa.
+[20:35:24] [EVENT] 103913210556575 -> En un momento te agrego.
+[20:35:24] [EVENT] PassiveCoins: 103913210556575 +6
+[20:35:34] [EVENT] 6258438500556 -> Todo un placer.
+[20:35:34] [EVENT] PassiveCoins: 6258438500556 +2
+[20:35:41] [EVENT] 266816320491607 -> Amigo, yo vengo del barrio St. José de San Martín y the neighborhood La Alameda
+[20:35:41] [EVENT] PassiveCoins: 266816320491607 +6
+[20:35:44] [EVENT] 103913210556575 -> Acá andamos todos con un humor de mierda
+[20:35:45] [EVENT] 103913210556575 -> Cuidao
+[20:35:46] [EVENT] 266816320491607 -> Super internacional.
+[20:35:52] [EVENT] 103913210556575 -> Juro
+[20:36:05] [EVENT] 266816320491607 -> Y prejura.
+[20:36:13] [EVENT] 103913210556575 -> Sacá ese apodo asqueroso de tu boca
+[20:36:17] [EVENT] 103913210556575 -> Ya te voy a decir al priv
+[20:36:29] [EVENT] 103913210556575 -> JAJAJAJAJAJAJAJA
+[20:36:29] [EVENT] PassiveCoins: 103913210556575 +6
+[20:36:32] [EVENT] 103913210556575 -> Se volvió una, dice
+[20:36:36] [EVENT] 70850384507065 -> y a mí.
+[20:36:36] [EVENT] PassiveCoins: 70850384507065 +1
+[20:36:39] [EVENT] 103913210556575 -> Le agarró cariño
+[20:36:49] [EVENT] 70850384507065 -> la adoptó.
+[20:36:56] [EVENT] 70850384507065 -> le estará haciendo la cama.
+[20:36:56] [EVENT] 213297269874835 -> Soy famoso
+[20:36:56] [EVENT] PassiveCoins: 213297269874835 +7
+[20:37:05] [EVENT] 40261744857339 -> Oki.
+[20:37:05] [EVENT] PassiveCoins: 40261744857339 +1
+[20:37:07] [EVENT] 170982748766424 -> Holii.
+[20:37:07] [EVENT] PassiveCoins: 170982748766424 +9
+[20:37:07] [EVENT] 70850384507065 -> pendejo
+[20:37:09] [EVENT] 103913210556575 -> Me recordás a alguien de Harry Potter, vos sabés
+[20:37:14] [EVENT] 170982748766424 -> Holi winni.
+[20:37:20] [EVENT] 103913210556575 -> Será que alguien se llamaba así o estoy fumadazo?
+[20:37:21] [EVENT] 70850384507065 -> AJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJJAAJAJAJAJAJAJJAJAJQJQJQBQJJQ
+[20:37:23] [EVENT] 70850384507065 -> QUÉ ERA.
+[20:37:27] [EVENT] 40261744857339 -> Súper yo.
+[20:37:28] [EVENT] 6258438500556 -> PERO
+[20:37:28] [EVENT] PassiveCoins: 6258438500556 +3
+[20:37:29] [EVENT] 213297269874835 -> gracias
+[20:37:31] [EVENT] 266816320491607 -> ¿Cómo vas?
+[20:37:31] [EVENT] PassiveCoins: 266816320491607 +10
+[20:37:37] [EVENT] 103913210556575 -> El monte everest tiene todo en contra de vos
+[20:37:37] [EVENT] PassiveCoins: 103913210556575 +2
+[20:37:37] [EVENT] 70850384507065 -> te adoro yo. 🥹
+[20:37:37] [EVENT] PassiveCoins: 70850384507065 +4
+[20:37:39] [EVENT] 213297269874835 -> Hola
+[20:37:44] [EVENT] 266816320491607 -> AJJAJAJAJAJAJA
+[20:37:50] [EVENT] 266816320491607 -> 🤣🤣🤣🤣🤣🤣🤣
+[20:37:52] [EVENT] 6258438500556 -> A nadie le impoita
+[20:37:53] [EVENT] 266816320491607 -> LPM
+[20:37:56] [EVENT] 103913210556575 -> Aprendé a escribir bien y después hablamos
+[20:37:57] [EVENT] 266816320491607 -> Estoy tentadisima.
+[20:38:00] [EVENT] 213297269874835 -> Se nota mucho 😭
+[20:38:00] [EVENT] PassiveCoins: 213297269874835 +2
+[20:38:03] [EVENT] 103913210556575 -> A vos para qué
+[20:38:05] [EVENT] 213297269874835 -> okei
+[20:38:08] [EVENT] 70850384507065 -> AJAJAJAJAJAJAJJAJAJAJAJAJAJAJAJAJAJ
+[20:38:08] [EVENT] 103913210556575 -> Me vas a tirar a mí
+[20:38:14] [EVENT] 70850384507065 -> no, io te ayudo.
+[20:38:21] [EVENT] 70850384507065 -> dale gordi, contame.
+[20:38:23] [EVENT] 266816320491607 -> Dale, Asher, yo te amo
+[20:38:24] [EVENT] 6258438500556 -> Es broma, amol
+[20:38:25] [EVENT] 103913210556575 -> ¿O se lo está haciendo en la cama?
+[20:38:26] [EVENT] 70850384507065 -> contame, gordi.
+[20:38:43] [EVENT] 103913210556575 -> Naaaah
+[20:38:43] [EVENT] PassiveCoins: 103913210556575 +4
+[20:38:47] [EVENT] 103913210556575 -> Qué texto, guaso
+[20:39:01] [EVENT] 103913210556575 -> Ya voy, me agarró paja.
+[20:39:14] [EVENT] 103913210556575 -> Lo sacaste de ahí?
+[20:39:15] [EVENT] 266816320491607 -> Órale, un viejote.
+[20:39:15] [EVENT] PassiveCoins: 266816320491607 +3
+[20:39:20] [EVENT] 266816320491607 -> Than, holi.
+[20:39:25] [EVENT] 103913210556575 -> Destentate
+[20:39:28] [EVENT] 6258438500556 -> No, se me vino a la mente.
+[20:39:28] [EVENT] PassiveCoins: 6258438500556 +3
+[20:39:37] [EVENT] 103913210556575 -> Bueno.
+[20:39:45] [EVENT] 103913210556575 -> Yo no.
+[20:39:45] [EVENT] PassiveCoins: 103913210556575 +5
+[20:39:49] [EVENT] 147154857361573 -> yo lo fui. 💔
+[20:39:49] [EVENT] PassiveCoins: 147154857361573 +4
+[20:39:49] [EVENT] 103913210556575 -> Amo a mi novio nomás.
+[20:40:05] [EVENT] 6258438500556 -> OHHH MACK
+[20:40:23] [EVENT] 223592457498686 -> Créeme que ando piola,
+[20:40:23] [EVENT] PassiveCoins: 223592457498686 +5
+[20:40:26] [EVENT] 213297269874835 -> JAJAJA ORA
+[20:40:26] [EVENT] PassiveCoins: 213297269874835 +5
+[20:40:33] [EVENT] 103913210556575 -> Está bueno, entonces
+[20:40:35] [EVENT] 147154857361573 -> 😭😭😭😭😭
+[20:40:39] [EVENT] 213297269874835 -> Hola corazón, ¿Me conoces?
+[20:40:39] [EVENT] 1211784810572 -> Wenas
+[20:40:39] [EVENT] PassiveCoins: 1211784810572 +7
+[20:40:43] [EVENT] 70850384507065 -> AMOR
+[20:40:43] [EVENT] PassiveCoins: 70850384507065 +2
+[20:40:47] [EVENT] 266816320491607 -> Si eres, Ethan y no lo niegues...
+[20:40:47] [EVENT] PassiveCoins: 266816320491607 +10
+[20:40:47] [EVENT] 213297269874835 -> Me encanta que tu familia sea de Alemania
+[20:41:04] [EVENT] 213297269874835 -> Eithan amor, Eithan 😭
+[20:41:05] [EVENT] 1211784810572 -> Cariño mío
+[20:41:09] [EVENT] 266816320491607 -> Soy hija de Mackeznie, bebo.
+[20:41:17] [EVENT] 6258438500556 -> HEY
+[20:41:17] [EVENT] PassiveCoins: 6258438500556 +7
+[20:41:18] [EVENT] 103913210556575 -> 80,000 likes y 14 comentarios
+[20:41:18] [EVENT] PassiveCoins: 103913210556575 +7
+[20:41:28] [EVENT] 266816320491607 -> La costumbre de que mí papá y tú, tengan la misma similitud de nombres...
+[20:41:29] [EVENT] 103913210556575 -> Te creo
+[20:41:30] [EVENT] 1211784810572 -> Mamor
+[20:41:34] [EVENT] 213297269874835 -> 2023 ya no cuenta 😭
+[20:41:34] [EVENT] PassiveCoins: 213297269874835 +10
+[20:41:35] [EVENT] 266816320491607 -> SI VISTE.
+[20:41:36] [EVENT] 181973939142738 -> .ban @81819697463406
+[20:41:36] [EVENT] PassiveCoins: 181973939142738 +6
+[20:41:36] [CMD] ban → 181973939142738
+[20:41:36] [EVENT] Ban aplicado: 81819697463406
+[20:41:39] [EVENT] 266816320491607 -> El icon lo da todo
+[20:41:42] [EVENT] 6258438500556 -> HOLAA.
+[20:41:53] [EVENT] 266816320491607 -> JAJAJAJAJAAJJA
+[20:41:53] [EVENT] PassiveCoins: 266816320491607 +10
+[20:41:53] [EVENT] 1211784810572 -> Cómo estás??
+[20:41:53] [EVENT] PassiveCoins: 1211784810572 +9
+[20:42:07] [EVENT] 213297269874835 -> Omg, mi sobrinaa
+[20:42:14] [EVENT] 6258438500556 -> Me duelen las piernas, pero bien. ¿Que me cuentas vos?
+[20:42:29] [EVENT] 213297269874835 -> Pero yo soy único y detergente
+[20:42:34] [EVENT] 213297269874835 -> Yes baby
+[20:42:34] [EVENT] PassiveCoins: 213297269874835 +9
+[20:42:40] [EVENT] 223592457498686 -> Ziiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+[20:42:40] [EVENT] PassiveCoins: 223592457498686 +5
+[20:43:06] [EVENT] 266816320491607 -> Ayuda.
+[20:43:06] [EVENT] PassiveCoins: 266816320491607 +8
+[20:43:10] [EVENT] 266816320491607 -> Que buena soy.
+[20:43:23] [EVENT] 1211784810572 -> Y eso? Me alegro corazón, pues ahí
+[20:43:23] [EVENT] PassiveCoins: 1211784810572 +7
+[20:43:53] [EVENT] 266816320491607 -> ¿Apoco soy sobrina del fundador de Schneider?
+[20:43:54] [EVENT] 6258438500556 -> Con despedida y todo.
+[20:43:54] [EVENT] PassiveCoins: 6258438500556 +8
+[20:43:57] [EVENT] 266816320491607 -> OH SI, BEBÉ.
+[20:44:14] [EVENT] 266816320491607 -> Me cagué de risa.
+[20:44:14] [EVENT] PassiveCoins: 266816320491607 +9
+[20:44:24] [EVENT] 6258438500556 -> PAISKSJAKAKAKALALSJ
+[20:44:27] [EVENT] 6258438500556 -> HOLA
+[20:44:40] [EVENT] 266816320491607 -> Corte Valentina defendiéndolo a más no poder y el bruto este, aprovechándose de ella solo para obtener lo que quería.
+[20:44:41] [EVENT] 223592457498686 -> Holis
+[20:44:41] [EVENT] PassiveCoins: 223592457498686 +9
+[20:45:10] [EVENT] 213297269874835 -> AYYYYY
+[20:45:10] [EVENT] PassiveCoins: 213297269874835 +5
+[20:45:14] [EVENT] 213297269874835 -> Tan linda
+[20:45:14] [EVENT] 6258438500556 -> 🫷🏻🫷🏻
+[20:45:14] [EVENT] PassiveCoins: 6258438500556 +8
+[20:45:18] [EVENT] 6258438500556 -> Dioo'
+[20:45:38] [EVENT] 266816320491607 -> Es que amo Schneider.
+[20:45:38] [EVENT] PassiveCoins: 266816320491607 +5
+[20:45:57] [EVENT] 266816320491607 -> A 10293829293828 metros de distancia.
+[20:46:48] [EVENT] 213297269874835 -> En serio? Cómo es que nunca te he visto ahí?
+[20:46:48] [EVENT] PassiveCoins: 213297269874835 +8
+[20:46:52] [EVENT] 6258438500556 -> ESO.
+[20:46:52] [EVENT] PassiveCoins: 6258438500556 +5
+[20:47:13] [EVENT] 266816320491607 -> Conseguí el otro número de Valentina. 💜🙌🏻
+[20:47:13] [EVENT] PassiveCoins: 266816320491607 +10
+[20:47:21] [EVENT] 266816320491607 -> Bueno, todos.
+[20:48:03] [EVENT] 6258438500556 -> HEY.
+[20:48:03] [EVENT] PassiveCoins: 6258438500556 +8
+[20:48:07] [EVENT] 6258438500556 -> wow.
+[20:48:12] [EVENT] 40261744857339 -> Dime.
+[20:48:12] [EVENT] PassiveCoins: 40261744857339 +5
+[20:48:26] [EVENT] 53979568406548 -> De mí no anden hablando
+[20:48:26] [EVENT] PassiveCoins: 53979568406548 +7
+[20:48:31] [EVENT] 6258438500556 -> Era un saludo.
+[20:48:31] [EVENT] 53979568406548 -> Que Wyleric no me queire
+[20:48:47] [EVENT] 266816320491607 -> Nunca pude tener la oportunidad de estar ahí.
+[20:48:47] [EVENT] LevelUp: 266816320491607 +1
+[20:48:47] [EVENT] PassiveCoins: 266816320491607 +10
+[20:48:50] [EVENT] 53979568406548 -> .play What I've Done Linkin Park
+[20:48:50] [CMD] play → 53979568406548
+[20:48:52] [EVENT] 226916711833796 -> ╭━━━━━━━━━━━━━━━━╮
+   ❦ 𝑳𝑨 𝑺𝑼𝑲𝑰 𝑩𝑶𝑻 ❦
+╰━━━━━━━━━━━━━━━━╯
+
+━━━━━━━━━━━━━━━━━
+ *📥 CÓMO DESCARGAR*
+━━━━━━━━━━━━━━━━━━
+
+🟢 *OPCIÓN 1 — Menú de Botones*
+Toca el botón *📥 Menú de descarga* abajo del mensaje. Se abrirá una lista con todas las opciones de audio y video en distintas calidades.
+
+━━━━━━━━━━━━━━━━━
+🤖 *La Suki Bot*
+━━━━━━━━━━━━━━━━━
+[20:48:52] [EVENT] PassiveCoins: 226916711833796 +10
+[20:48:55] [EVENT] 266816320491607 -> Ora, amor.
+[20:49:02] [EVENT] 53979568406548 -> ¿Miento o no?
+[20:49:07] [EVENT] 213297269874835 -> Intentaste audición?
+[20:49:07] [EVENT] PassiveCoins: 213297269874835 +10
+[20:49:16] [EVENT] 53979568406548 -> .play Star Wars intro theme
+[20:49:16] [CMD] play → 53979568406548
+[20:49:18] [INFO] Temp eliminado: 1780199332523-a9a40b82-fa50-46b8-ab10-0794bd5b302a.audio.webm
+[20:49:18] [EVENT] 226916711833796 -> ╭━━━━━━━━━━━━━━━━╮
+   ❦ 𝑳𝑨 𝑺𝑼𝑲𝑰 𝑩𝑶𝑻 ❦
+╰━━━━━━━━━━━━━━━━╯
+
+━━━━━━━━━━━━━━━━━
+ *📥 CÓMO DESCARGAR*
+━━━━━━━━━━━━━━━━━━
+
+🟢 *OPCIÓN 1 — Menú de Botones*
+Toca el botón *📥 Menú de descarga* abajo del mensaje. Se abrirá una lista con todas las opciones de audio y video en distintas calidades.
+
+━━━━━━━━━━━━━━━━━
+🤖 *La Suki Bot*
+━━━━━━━━━━━━━━━━━
+[20:49:30] [EVENT] 266816320491607 -> Aunque no me lo creas, nunca localicé el link de la audición.
+[20:49:47] [INFO] Temp eliminado: 1780199358941-bf52e75c-3560-4888-84a3-0a0b5449415a.audio.webm
+[20:49:47] [EVENT] 266816320491607 -> Pero si quise, pero me estrese tanto, que dejé de buscar.
+[20:50:11] [EVENT] 53979568406548 -> Mi canción
+[20:50:11] [EVENT] PassiveCoins: 53979568406548 +4
+[20:50:24] [EVENT] 6258438500556 -> Yo empecé a escuchar linkin park por macky.
+[20:50:24] [EVENT] PassiveCoins: 6258438500556 +9
+[20:50:38] [EVENT] 213297269874835 -> Oh mi vidasa
+[20:50:38] [EVENT] PassiveCoins: 213297269874835 +8
+[20:50:40] [EVENT] 53979568406548 -> Ay, que bonita historia. ¿Quiere que llore o qué?
+[20:50:43] [EVENT] 53979568406548 -> BAJAJAJ 😭
+[20:50:51] [EVENT] 213297269874835 -> Te diría que te uno a Schneider, pero está cerrada
+[20:50:51] [EVENT] 6258438500556 -> Osh.
+[20:50:58] [EVENT] 53979568406548 -> Te amo.
+[20:51:05] [EVENT] 6258438500556 -> Sacate.
+[20:51:11] [EVENT] 53979568406548 -> ...
+[20:51:11] [EVENT] 6258438500556 -> Oa
+[20:51:14] [EVENT] 53979568406548 -> Ohhh...
+[20:51:14] [EVENT] PassiveCoins: 53979568406548 +1
+[20:51:18] [EVENT] 266816320491607 -> Eso ya lo sabía, me dolió hasta el alma.
+[20:51:18] [EVENT] PassiveCoins: 266816320491607 +3
+[20:51:27] [EVENT] 53979568406548 -> Con que no puedes responder un día y te tratan así
+[20:51:28] [EVENT] 53979568406548 -> Siok
+[20:52:21] [EVENT] 266816320491607 -> Así me hacía a mí.
+[20:52:21] [EVENT] PassiveCoins: 266816320491607 +10
+[20:52:29] [EVENT] 6258438500556 -> ¿Yo?
+[20:52:29] [EVENT] PassiveCoins: 6258438500556 +8
+[20:52:37] [EVENT] 266816320491607 -> No, ella, bárbaro.
+[20:52:46] [EVENT] 266816320491607 -> (No lo dije con sarcasmo)
+[20:52:50] [EVENT] 266816320491607 -> Aclaro.
+[20:53:00] [EVENT] 6258438500556 -> Dios.
+[20:53:08] [EVENT] 6258438500556 -> Yo nunca te trate así.
+[20:53:11] [EVENT] 6258438500556 -> Yo soy amor.
+[20:53:13] [EVENT] 53979568406548 -> Fue solamente una vez
+[20:53:13] [EVENT] PassiveCoins: 53979568406548 +10
+[20:53:23] [EVENT] 53979568406548 -> Es que tú también
+[20:53:30] [EVENT] 53979568406548 -> Qué hacías haciéndome chistes rancios
+[20:53:34] [EVENT] 266816320491607 -> 2 incluso 3 veces intentaste conquistarme.
+[20:53:34] [EVENT] PassiveCoins: 266816320491607 +8
+[20:53:44] [EVENT] 266816320491607 -> ESTÁBAN BUENÍSIMO.
+[20:54:03] [EVENT] 53979568406548 -> Ay, sí fui
+[20:54:07] [EVENT] 53979568406548 -> AJÁ, AJÁ
+[20:54:12] [EVENT] 53979568406548 -> Por esos chistes se murió mi abuelo
+[20:54:14] [EVENT] 53979568406548 -> Checa eso plis
+[20:54:14] [EVENT] PassiveCoins: 53979568406548 +1
+[20:54:32] [EVENT] 266816320491607 -> De la risa que le dió, lo sé
+[20:55:07] [EVENT] 53979568406548 -> BAJAJAJA
+[20:57:27] [EVENT] 53979568406548 -> A
+[20:57:27] [EVENT] PassiveCoins: 53979568406548 +5
+[20:57:28] [EVENT] 53979568406548 -> B
+[20:57:32] [EVENT] 53979568406548 -> Easy as
+[20:57:34] [EVENT] 53979568406548 -> 1
+[20:57:36] [EVENT] 53979568406548 -> 2
+[20:57:37] [EVENT] 53979568406548 -> 3
+[20:57:37] [WARN] Spam detectado: 53979568406548
+[20:57:37] [WARN] Spam detectado: 53979568406548
+[20:57:39] [EVENT] 53979568406548 -> As simple as
+[20:57:43] [EVENT] 53979568406548 -> Do
+[20:57:44] [EVENT] 53979568406548 -> Re
+[20:57:45] [EVENT] 53979568406548 -> Mi
+[20:58:05] [EVENT] 266816320491607 -> MÍ NILO
+[20:58:05] [EVENT] PassiveCoins: 266816320491607 +8
+[20:58:11] [EVENT] 266816320491607 -> Ora, río nilo
+[20:58:21] [EVENT] 266816320491607 -> JAJAJAJAJAJAJAJAJAJAJA
+[20:58:32] [EVENT] 266816320491607 -> Y YO TE AMO A VOS
+[20:58:45] [EVENT] 170982748766424 -> Mal y vos?
+[20:58:45] [EVENT] PassiveCoins: 170982748766424 +10
+[20:58:56] [EVENT] 266816320491607 -> ¿Qué pasó?
+[21:00:22] [EVENT] 68883239186611 -> Me alegro mucho, igual todo biem
+[21:00:22] [EVENT] PassiveCoins: 68883239186611 +5
+[21:00:31] [EVENT] 68883239186611 -> Jeoou
+[21:06:31] [EVENT] 63673460650076 -> ㅤㅤ
+ㅤㅤㅤ
+ㅤㅤ█▓▒   ㅤ᪺      𝖆𝖕𝖔𝖗𝖙𝖊𝖘.    ㅤ᪺   ㅤ᳛  ㅤ  𒆍
+ ㅤ   𝖉꯭𝖊.        𓐋𓐋      ㅤּ ㅤ    ￭￭ㅤ ㅤ𝖘𝖙𝖎𝖈𝖐𝖊𝖗𝖘.ㅤㅤ
+ㅤ   ㅤ   ㅤㅤ  ㅤ[   𝖇𝖆𝖓𝖌𝖈𝖍𝖆𝖓.  ]ㅤ
+ㅤ   ㅤ   ㅤ   ㅤㅤㅤ
+ㅤㅤㅤㅤㅤㅤㅤ
+[21:06:31] [EVENT] PassiveCoins: 63673460650076 +3
+[21:07:24] [EVENT] 63673460650076 -> ㅤㅤ
+ㅤ
+
+ㅤ𒐑𒐑ㅤㅤּㅤㅤ𝖈𝖊𝖗𝖗𝖆𝖓𝖉𝖔ㅤּㅤㅤ𒐑𒐑ㅤㅤ
+ㅤ𒃵𒃵ㅤㅤ𖣐𖣐ㅤּㅤ𝖆𝖕𝖔𝖗𝖙𝖊𝖘.ㅤㅤ𒃵𒃵ㅤㅤ
+ㅤㅤㅤㅤㅤ
+ㅤ
+ㅤㅤ
+[21:14:49] [EVENT] 57033441202313 -> AYAYYAYAYAYAY
+[21:14:49] [EVENT] PassiveCoins: 57033441202313 +3
+[21:14:52] [EVENT] 57033441202313 -> DIVIS
+[21:15:32] [EVENT] 266816320491607 -> IDKDISKSKSKAIANAAAAAA
+[21:15:32] [EVENT] PassiveCoins: 266816320491607 +7
+[21:15:37] [EVENT] 266816320491607 -> Te amo mucho
+[21:15:39] [EVENT] 266816320491607 -> Muchísimo
+[21:15:51] [EVENT] 75158320595188 -> Enseña
+[21:15:51] [EVENT] PassiveCoins: 75158320595188 +10
+[21:17:18] [EVENT] 70850384507065 -> no es nada cientifico. 😭
+[21:17:18] [EVENT] PassiveCoins: 70850384507065 +6
+[21:17:24] [EVENT] 70850384507065 -> nomás m dí cuenta un día y abuso de eso.
+[21:18:17] [EVENT] 75158320595188 -> Pero como es?
+[21:18:17] [EVENT] PassiveCoins: 75158320595188 +4
+[21:18:50] [EVENT] 70850384507065 -> pues nada, pido mi deseo y pasa.
+[21:18:50] [EVENT] PassiveCoins: 70850384507065 +2
+[21:18:56] [EVENT] 70850384507065 -> y ya, así simple.
+[21:19:13] [EVENT] 75158320595188 -> Frente al espejo?
+[21:19:21] [EVENT] 70850384507065 -> no.
+[21:19:25] [EVENT] 70850384507065 -> lo pido en voz baja.
+[21:19:38] [EVENT] 75158320595188 -> Explícame bien
+[21:19:38] [EVENT] PassiveCoins: 75158320595188 +4
+[21:19:39] [EVENT] 40261744857339 -> Madeline. Desearle la muerte a alguien es más de lo que el universo puede darte, puedes tener el poder de manifestar.. pero todo tiene su consecuencia, si no la usas adecuadamente y al momento de pedirle algo al universo lo haces con un sentimiento negativo *créeme* que no saldrá bien. *nunca* le desees la muerte a alguien.
+[21:19:39] [EVENT] PassiveCoins: 40261744857339 +10
+[21:19:53] [EVENT] 147154857361573 -> @all ; DULCES SUEÑOS, ROJITOS MÍOS.
+[21:19:53] [EVENT] PassiveCoins: 147154857361573 +7
+[21:20:15] [EVENT] 40261744857339 -> Dulces sueños.
+[21:20:21] [EVENT] 147154857361573 -> te amo yo.
+[21:20:25] [EVENT] 147154857361573 -> un montón, mi vida.
+[21:20:35] [EVENT] 70850384507065 -> que no es nada cientifico. 🤬
+[21:20:35] [EVENT] PassiveCoins: 70850384507065 +4
+[21:20:36] [EVENT] 40261744857339 -> Yo también te amo muchototom.
+[21:20:38] [EVENT] 75158320595188 -> Lo peor es que no se hará a la parte contraria,si no para los que la rodean o quien lo desea.
+[21:20:38] [EVENT] PassiveCoins: 75158320595188 +10
+[21:20:40] [EVENT] 70850384507065 -> pides el deseo en voz baja y ya.
+[21:20:44] [EVENT] 75158320595188 -> Explica
+[21:20:46] [EVENT] 75158320595188 -> JAJAJA
+[21:20:54] [EVENT] 75158320595188 -> Bromita
+[21:21:03] [EVENT] 70850384507065 -> ESE NO
+[21:21:07] [EVENT] 40261744857339 -> Exacto. Lo malo de lo negativo es que siempre se te devuelve como karma.
+[21:21:07] [EVENT] PassiveCoins: 40261744857339 +6
+[21:21:12] [EVENT] 75158320595188 -> Eso
+[21:21:20] [EVENT] 103913210556575 -> Descansá, Ligea.
+[21:21:20] [EVENT] PassiveCoins: 103913210556575 +2
+[21:21:47] [EVENT] 6258438500556 -> Descansa, nena.
+[21:21:47] [EVENT] PassiveCoins: 6258438500556 +7
+[21:24:00] [EVENT] 40261744857339 -> Básicamente se trata de que ej :
+
+Ay, hoy *quiero*/*deseo* que mis notas al menos suban más de lo adecuado. Pero tienes que pedir eso en una hora espejo, ¿que me refiero con eso?, las horas espejo mayormente son horas ‘pares’; tienen muchos significados, pero akira tiene especificamente el de *manifestar* en una hora ‘par’ ejemplo:
+
+Son las 12:12 (hora espejo) a esa hora tienes más o menos que pedir lo que queres o lo que deseas. ¿Me hago entender?
+[21:24:00] [EVENT] PassiveCoins: 40261744857339 +10
+[21:24:12] [EVENT] 82833477488805 -> ㅤ▉▉       𝐄ۣ𝐌ۜ𝐏⃨𝐈ۜ𝐑⃨𝚵 ㅤㅤ𓈃ㅤㅤ. ◖🇷🇺⒛     𝐕꯭ۜ𝐎꯭ۣ𝐋꯭ۜ䎥꯭𝐊꯭𐇽ۜ𝐎꯭ۜ𝐕ㅤㅤㅤ㐮㏥ㅤㅤ
+
+
+> PASE VIP HASTA EL 4 DE JUNIO
+
+https://chat.whatsapp.com/FFrGcCm1I72HCF1IXD4fki?s=cl&p=a&ilr=0
+
+
+﹟⵿🇷🇺̸̶         𝕷.    ＼      𝐄𝗍𝗁𝖺𝗇𝗇𝗂𝖾𝗌 Volkov
+[21:24:12] [EVENT] 82833477488805 -> > Difusión vvs.
+[21:25:11] [EVENT] 40261744857339 -> Para que la manifestación se concrete tienes que creer que lo hará.
+[21:25:11] [EVENT] PassiveCoins: 40261744857339 +8
+[21:26:39] [EVENT] 75158320595188 -> Ya
+[21:26:39] [EVENT] PassiveCoins: 75158320595188 +1
+[21:26:43] [EVENT] 75158320595188 -> Gracias
+[21:27:01] [EVENT] 40261744857339 -> De nada, neni.
+[21:27:01] [EVENT] PassiveCoins: 40261744857339 +2
+[21:31:14] [EVENT] 53979568406548 -> Prefiero morirme también. Pero eso sí, no vengan a decirme a mí que Valentina no se merece lo que desea, porque les recuerdo que también se le ha funado por hacer exactamente lo mismo.
+[21:31:14] [EVENT] PassiveCoins: 53979568406548 +8
+[21:34:05] [EVENT] 223592457498686 -> Eso sí
+[21:34:05] [EVENT] PassiveCoins: 223592457498686 +9
+[21:34:12] [EVENT] 223592457498686 -> Ya son dos ocasiones
+[21:34:24] [EVENT] 223592457498686 -> La macheteamos y la defienden los mismos que la querían machetear
+[21:35:16] [EVENT] 34317560459391 -> Descansa, princesa
+[21:35:16] [EVENT] PassiveCoins: 34317560459391 +2
+[21:36:59] [EVENT] 266816320491607 -> No dale.
+[21:36:59] [EVENT] PassiveCoins: 266816320491607 +8
+[21:37:02] [EVENT] 266816320491607 -> LPM.
+[21:37:18] [EVENT] 6258438500556 -> PERO
+[21:37:18] [EVENT] PassiveCoins: 6258438500556 +5
+[21:37:50] [EVENT] 266816320491607 -> Amor
+[21:37:55] [EVENT] 266816320491607 -> Ni me di cuenta que
+[21:37:59] [EVENT] 266816320491607 -> Tenía mensajes tuyos
+[21:38:03] [EVENT] 266816320491607 -> Perdoname la vida
+[21:38:09] [EVENT] 266816320491607 -> Te amo con toda mí vida
+[21:38:20] [EVENT] 266816320491607 -> Perdón
+[21:38:27] [EVENT] 266816320491607 -> Ohh, okei, mí amorcito
+[22:14:29] [EVENT] 266816320491607 -> Te amo con todo lo que dsoy
+[22:14:30] [EVENT] 266816320491607 -> Soy
+[22:14:31] [EVENT] 266816320491607 -> Eso
+[22:14:40] [EVENT] 266816320491607 -> Me ando dirmiendo
+[22:15:53] [EVENT] 61165166149685 -> Kenny se cambió la ft de perfil?
+[22:15:53] [EVENT] PassiveCoins: 61165166149685 +1
+[22:18:51] [EVENT] 243847321891010 -> No se bebita
+[22:18:51] [EVENT] PassiveCoins: 243847321891010 +1
+[22:43:49] [EVENT] 266816320491607 -> Ti, amorcito
+[22:52:24] [EVENT] 243847321891010 -> Jeje, no
+[22:52:24] [EVENT] PassiveCoins: 243847321891010 +9
+[22:52:41] [EVENT] 243847321891010 -> Yo estoy sola
+[22:52:44] [EVENT] 243847321891010 -> Loba solitaria
