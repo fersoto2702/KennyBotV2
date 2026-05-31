@@ -50,13 +50,33 @@ async function sendIcon(sock, from, commandName) {
 
     try {
 
-        const iconFile =
-            path.join(
-                iconsPath,
-                `${commandName}.png`
-            )
+        const extensions = [
+            '.png',
+            '.jpg',
+            '.jpeg',
+            '.webp'
+        ]
 
-        if (!fs.existsSync(iconFile)) return
+        let iconFile = null
+
+        for (const ext of extensions) {
+
+            const testFile =
+                path.join(
+                    iconsPath,
+                    `${commandName}${ext}`
+                )
+
+            if (fs.existsSync(testFile)) {
+
+                iconFile = testFile
+                break
+
+            }
+
+        }
+
+        if (!iconFile) return
 
         await sock.safeSendMessage(
             from,
