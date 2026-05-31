@@ -271,6 +271,9 @@ module.exports = {
         '../../assets/icons/ban.jpeg'
     )
 
+    console.log('BAN ICON:', iconPath)
+    console.log('EXISTS:', fs.existsSync(iconPath))
+
 await sock.sendMessage(
 
     from,
@@ -278,7 +281,7 @@ await sock.sendMessage(
     {
 
         image:
-            fs.readFileSync(iconPath),
+            { url: iconPath },
 
         caption:
             ui.success(

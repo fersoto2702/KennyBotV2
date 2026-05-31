@@ -2490,3 +2490,221 @@ https://chat.whatsapp.com/FFrGcCm1I72HCF1IXD4fki?s=cl&p=a&ilr=0
 [22:52:24] [EVENT] PassiveCoins: 243847321891010 +9
 [22:52:41] [EVENT] 243847321891010 -> Yo estoy sola
 [22:52:44] [EVENT] 243847321891010 -> Loba solitaria
+[22:57:06] [OK] UnifiedRateLimiter cargado
+[22:57:06] [OK] Comando cargado: ban
+[22:57:06] [OK] Comando cargado: antilink
+[22:57:06] [OK] Comando cargado: antibot
+[22:57:06] [OK] Comando cargado: antifake
+[22:57:06] [OK] Comando cargado: autolevelup
+[22:57:06] [OK] Comando cargado: facebook
+[22:57:06] [OK] Comando cargado: instagram
+[22:57:06] [OK] Comando cargado: pinterest
+[22:57:07] [OK] Comando cargado: play
+[22:57:07] [OK] Comando cargado: spotify
+[22:57:07] [OK] Comando cargado: tiktok
+[22:57:07] [OK] Comando cargado: ytmp3
+[22:57:07] [OK] Comando cargado: ytmp4
+[22:57:07] [OK] Comando cargado: balance
+[22:57:07] [OK] Comando cargado: buy
+[22:57:07] [OK] Comando cargado: crime
+[22:57:07] [OK] Comando cargado: daily
+[22:57:07] [OK] Comando cargado: deposit
+[22:57:07] [OK] Comando cargado: gamble
+[22:57:07] [OK] Comando cargado: inventory
+[22:57:07] [OK] Comando cargado: leaderboardmoney
+[22:57:07] [OK] Comando cargado: open
+[22:57:07] [OK] Comando cargado: pay
+[22:57:07] [OK] Comando cargado: rob
+[22:57:07] [OK] Comando cargado: shop
+[22:57:07] [OK] Comando cargado: slots
+[22:57:07] [OK] Comando cargado: withdraw
+[22:57:07] [OK] Comando cargado: work
+[22:57:07] [OK] Comando cargado: inactive
+[22:57:07] [OK] Comando cargado: msgstats
+[22:57:07] [OK] Comando cargado: topmessages
+[22:57:07] [OK] Comando cargado: add
+[22:57:07] [OK] Comando cargado: demote
+[22:57:07] [OK] Comando cargado: hidetag
+[22:57:07] [OK] Comando cargado: kick
+[22:57:07] [OK] Comando cargado: mute
+[22:57:07] [OK] Comando cargado: promote
+[22:57:07] [OK] Comando cargado: tagall
+[22:57:07] [OK] Comando cargado: unwarn
+[22:57:07] [OK] Comando cargado: warn
+[22:57:07] [OK] Comando cargado: warnings
+[22:57:07] [OK] Comando cargado: welcome
+[22:57:07] [OK] Comando cargado: ia
+[22:57:07] [OK] Comando cargado: leaderboard
+[22:57:07] [OK] Comando cargado: level
+[22:57:07] [OK] Comando cargado: rank
+[22:57:07] [OK] Comando cargado: menu
+[22:57:07] [OK] Comando cargado: ping
+[22:57:07] [OK] Comando cargado: addpremium
+[22:57:07] [OK] Comando cargado: delpremium
+[22:57:07] [OK] Comando cargado: premium
+[22:57:07] [OK] Comando cargado: profile
+[22:57:07] [OK] Comando cargado: sticker
+[22:57:07] [OK] Comando cargado: addjoinmsg
+[22:57:07] [OK] Comando cargado: clearjoinmsg
+[22:57:07] [OK] Comando cargado: deljoinmsg
+[22:57:07] [OK] Comando cargado: listjoinmsg
+[22:57:07] [INFO] Iniciando KennyBot...
+[22:57:07] [OK] SocketManager cargado
+[22:57:08] [OK] KennyBot conectado
+[22:57:24] [EVENT] 181973939142738 -> .antibot
+[22:57:24] [EVENT] PassiveCoins: 181973939142738 +4
+[22:57:24] [CMD] antibot → 181973939142738
+[23:00:51] [EVENT] 181973939142738 -> .antilink
+[23:00:51] [EVENT] PassiveCoins: 181973939142738 +4
+[23:00:51] [CMD] antilink → 181973939142738
+[23:00:51] [ERROR] Error antilink: ENOENT: no such file or directory, open 'C:\Users\Ferna\database\antilink.json'
+[23:00:53] [EVENT] 266816320491607 -> Sí, mí niño precioso
+[23:01:05] [EVENT] 181973939142738 -> .antifake
+[23:01:05] [CMD] antifake → 181973939142738
+[23:01:13] [EVENT] 181973939142738 -> .antilink
+[23:01:13] [CMD] antilink → 181973939142738
+[23:01:13] [ERROR] Error antilink: ENOENT: no such file or directory, open 'C:\Users\Ferna\database\antilink.json'
+[23:01:25] [EVENT] 181973939142738 -> .autolevelup
+[23:01:25] [CMD] autolevelup → 181973939142738
+[23:01:35] [EVENT] 181973939142738 -> .welcome
+[23:01:35] [CMD] welcome → 181973939142738
+[23:01:46] [EVENT] 181973939142738 -> .antilink
+[23:01:46] [CMD] antilink → 181973939142738
+[23:01:46] [ERROR] Error antilink: ENOENT: no such file or directory, open 'C:\Users\Ferna\database\antilink.json'
+[23:05:14] [EVENT] 266816320491607 -> Sí, amorcito
+[23:05:19] [EVENT] 266816320491607 -> Ya me ando durmiendl
+[23:07:04] [OK] UnifiedRateLimiter cargado
+[23:07:04] [OK] Comando cargado: ban
+[23:07:04] [OK] Comando cargado: antilink
+[23:07:04] [OK] Comando cargado: antibot
+[23:07:04] [OK] Comando cargado: antifake
+[23:07:04] [OK] Comando cargado: autolevelup
+[23:07:05] [OK] Comando cargado: facebook
+[23:07:05] [OK] Comando cargado: instagram
+[23:07:05] [OK] Comando cargado: pinterest
+[23:07:05] [OK] Comando cargado: play
+[23:07:05] [OK] Comando cargado: spotify
+[23:07:05] [OK] Comando cargado: tiktok
+[23:07:05] [OK] Comando cargado: ytmp3
+[23:07:05] [OK] Comando cargado: ytmp4
+[23:07:05] [OK] Comando cargado: balance
+[23:07:05] [OK] Comando cargado: buy
+[23:07:05] [OK] Comando cargado: crime
+[23:07:05] [OK] Comando cargado: daily
+[23:07:05] [OK] Comando cargado: deposit
+[23:07:05] [OK] Comando cargado: gamble
+[23:07:05] [OK] Comando cargado: inventory
+[23:07:05] [OK] Comando cargado: leaderboardmoney
+[23:07:05] [OK] Comando cargado: open
+[23:07:05] [OK] Comando cargado: pay
+[23:07:05] [OK] Comando cargado: rob
+[23:07:05] [OK] Comando cargado: shop
+[23:07:05] [OK] Comando cargado: slots
+[23:07:05] [OK] Comando cargado: withdraw
+[23:07:05] [OK] Comando cargado: work
+[23:07:05] [OK] Comando cargado: inactive
+[23:07:05] [OK] Comando cargado: msgstats
+[23:07:05] [OK] Comando cargado: topmessages
+[23:07:05] [OK] Comando cargado: add
+[23:07:05] [OK] Comando cargado: demote
+[23:07:05] [OK] Comando cargado: hidetag
+[23:07:05] [OK] Comando cargado: kick
+[23:07:05] [OK] Comando cargado: mute
+[23:07:05] [OK] Comando cargado: promote
+[23:07:05] [OK] Comando cargado: tagall
+[23:07:05] [OK] Comando cargado: unwarn
+[23:07:05] [OK] Comando cargado: warn
+[23:07:05] [OK] Comando cargado: warnings
+[23:07:05] [OK] Comando cargado: welcome
+[23:07:05] [OK] Comando cargado: ia
+[23:07:05] [OK] Comando cargado: leaderboard
+[23:07:05] [OK] Comando cargado: level
+[23:07:05] [OK] Comando cargado: rank
+[23:07:05] [OK] Comando cargado: menu
+[23:07:05] [OK] Comando cargado: ping
+[23:07:05] [OK] Comando cargado: addpremium
+[23:07:05] [OK] Comando cargado: delpremium
+[23:07:05] [OK] Comando cargado: premium
+[23:07:05] [OK] Comando cargado: profile
+[23:07:06] [OK] Comando cargado: sticker
+[23:07:06] [OK] Comando cargado: addjoinmsg
+[23:07:06] [OK] Comando cargado: clearjoinmsg
+[23:07:06] [OK] Comando cargado: deljoinmsg
+[23:07:06] [OK] Comando cargado: listjoinmsg
+[23:07:06] [INFO] Iniciando KennyBot...
+[23:07:06] [OK] SocketManager cargado
+[23:07:07] [OK] KennyBot conectado
+[23:07:20] [EVENT] 181973939142738 -> .unban @81819697463406
+[23:07:20] [EVENT] PassiveCoins: 181973939142738 +9
+[23:07:42] [EVENT] 181973939142738 -> .ban @81819697463406
+[23:07:42] [CMD] ban → 181973939142738
+[23:13:01] [EVENT] 181973939142738 -> .unban
+[23:13:01] [EVENT] PassiveCoins: 181973939142738 +1
+[23:15:22] [OK] UnifiedRateLimiter cargado
+[23:15:22] [OK] Comando cargado: ban
+[23:15:22] [OK] Comando cargado: antilink
+[23:15:22] [OK] Comando cargado: antibot
+[23:15:22] [OK] Comando cargado: antifake
+[23:15:22] [OK] Comando cargado: autolevelup
+[23:15:22] [OK] Comando cargado: facebook
+[23:15:22] [OK] Comando cargado: instagram
+[23:15:22] [OK] Comando cargado: pinterest
+[23:15:23] [OK] Comando cargado: play
+[23:15:23] [OK] Comando cargado: spotify
+[23:15:23] [OK] Comando cargado: tiktok
+[23:15:23] [OK] Comando cargado: ytmp3
+[23:15:23] [OK] Comando cargado: ytmp4
+[23:15:23] [OK] Comando cargado: balance
+[23:15:23] [OK] Comando cargado: buy
+[23:15:23] [OK] Comando cargado: crime
+[23:15:23] [OK] Comando cargado: daily
+[23:15:23] [OK] Comando cargado: deposit
+[23:15:23] [OK] Comando cargado: gamble
+[23:15:23] [OK] Comando cargado: inventory
+[23:15:23] [OK] Comando cargado: leaderboardmoney
+[23:15:23] [OK] Comando cargado: open
+[23:15:23] [OK] Comando cargado: pay
+[23:15:23] [OK] Comando cargado: rob
+[23:15:23] [OK] Comando cargado: shop
+[23:15:23] [OK] Comando cargado: slots
+[23:15:23] [OK] Comando cargado: withdraw
+[23:15:23] [OK] Comando cargado: work
+[23:15:23] [OK] Comando cargado: inactive
+[23:15:23] [OK] Comando cargado: msgstats
+[23:15:23] [OK] Comando cargado: topmessages
+[23:15:23] [OK] Comando cargado: add
+[23:15:23] [OK] Comando cargado: demote
+[23:15:23] [OK] Comando cargado: hidetag
+[23:15:23] [OK] Comando cargado: kick
+[23:15:23] [OK] Comando cargado: mute
+[23:15:23] [OK] Comando cargado: promote
+[23:15:23] [OK] Comando cargado: tagall
+[23:15:23] [OK] Comando cargado: unwarn
+[23:15:23] [OK] Comando cargado: warn
+[23:15:23] [OK] Comando cargado: warnings
+[23:15:23] [OK] Comando cargado: welcome
+[23:15:23] [OK] Comando cargado: ia
+[23:15:23] [OK] Comando cargado: leaderboard
+[23:15:23] [OK] Comando cargado: level
+[23:15:23] [OK] Comando cargado: rank
+[23:15:23] [OK] Comando cargado: menu
+[23:15:23] [OK] Comando cargado: ping
+[23:15:23] [OK] Comando cargado: addpremium
+[23:15:23] [OK] Comando cargado: delpremium
+[23:15:23] [OK] Comando cargado: premium
+[23:15:23] [OK] Comando cargado: profile
+[23:15:23] [OK] Comando cargado: sticker
+[23:15:23] [OK] Comando cargado: addjoinmsg
+[23:15:23] [OK] Comando cargado: clearjoinmsg
+[23:15:23] [OK] Comando cargado: deljoinmsg
+[23:15:23] [OK] Comando cargado: listjoinmsg
+[23:15:23] [INFO] Iniciando KennyBot...
+[23:15:24] [OK] SocketManager cargado
+[23:15:25] [OK] KennyBot conectado
+[23:16:06] [EVENT] 181973939142738 -> .ban @usuario
+[23:16:06] [EVENT] PassiveCoins: 181973939142738 +6
+[23:16:06] [CMD] ban → 181973939142738
+[23:17:54] [EVENT] 181973939142738 -> .ban @81819697463406
+[23:17:54] [EVENT] PassiveCoins: 181973939142738 +6
+[23:17:54] [CMD] ban → 181973939142738
+[23:17:54] [EVENT] Ban aplicado: 81819697463406
