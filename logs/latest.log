@@ -2770,3 +2770,72 @@ https://chat.whatsapp.com/FFrGcCm1I72HCF1IXD4fki?s=cl&p=a&ilr=0
 [23:23:54] [INFO] Iniciando KennyBot...
 [23:23:54] [OK] SocketManager cargado
 [23:23:56] [OK] KennyBot conectado
+[23:30:22] [OK] UnifiedRateLimiter cargado
+[23:30:22] [OK] Comando cargado: ban
+[23:30:22] [OK] Comando cargado: unban
+[23:30:22] [OK] Comando cargado: antilink
+[23:30:22] [OK] Comando cargado: antibot
+[23:30:22] [OK] Comando cargado: antifake
+[23:30:22] [OK] Comando cargado: autolevelup
+[23:30:22] [OK] Comando cargado: facebook
+[23:30:22] [OK] Comando cargado: instagram
+[23:30:22] [OK] Comando cargado: pinterest
+[23:30:23] [OK] Comando cargado: play
+[23:30:23] [OK] Comando cargado: spotify
+[23:30:23] [OK] Comando cargado: tiktok
+[23:30:23] [OK] Comando cargado: ytmp3
+[23:30:23] [OK] Comando cargado: ytmp4
+[23:30:23] [OK] Comando cargado: balance
+[23:30:23] [OK] Comando cargado: buy
+[23:30:23] [OK] Comando cargado: crime
+[23:30:23] [OK] Comando cargado: daily
+[23:30:23] [OK] Comando cargado: deposit
+[23:30:23] [OK] Comando cargado: gamble
+[23:30:23] [OK] Comando cargado: inventory
+[23:30:23] [OK] Comando cargado: leaderboardmoney
+[23:30:23] [OK] Comando cargado: open
+[23:30:23] [OK] Comando cargado: pay
+[23:30:23] [OK] Comando cargado: rob
+[23:30:23] [OK] Comando cargado: shop
+[23:30:23] [OK] Comando cargado: slots
+[23:30:23] [OK] Comando cargado: withdraw
+[23:30:23] [OK] Comando cargado: work
+[23:30:23] [OK] Comando cargado: inactive
+[23:30:23] [OK] Comando cargado: msgstats
+[23:30:23] [OK] Comando cargado: topmessages
+[23:30:23] [OK] Comando cargado: add
+[23:30:23] [OK] Comando cargado: demote
+[23:30:23] [OK] Comando cargado: hidetag
+[23:30:23] [OK] Comando cargado: kick
+[23:30:23] [OK] Comando cargado: mute
+[23:30:23] [OK] Comando cargado: promote
+[23:30:23] [OK] Comando cargado: tagall
+[23:30:23] [OK] Comando cargado: unwarn
+[23:30:23] [OK] Comando cargado: warn
+[23:30:23] [OK] Comando cargado: warnings
+[23:30:23] [OK] Comando cargado: welcome
+[23:30:23] [OK] Comando cargado: ia
+[23:30:23] [OK] Comando cargado: leaderboard
+[23:30:23] [OK] Comando cargado: level
+[23:30:23] [OK] Comando cargado: rank
+[23:30:23] [OK] Comando cargado: menu
+[23:30:23] [OK] Comando cargado: ping
+[23:30:23] [OK] Comando cargado: addpremium
+[23:30:23] [OK] Comando cargado: delpremium
+[23:30:23] [OK] Comando cargado: premium
+[23:30:23] [OK] Comando cargado: profile
+[23:30:24] [OK] Comando cargado: sticker
+[23:30:24] [OK] Comando cargado: addjoinmsg
+[23:30:24] [OK] Comando cargado: clearjoinmsg
+[23:30:24] [OK] Comando cargado: deljoinmsg
+[23:30:24] [OK] Comando cargado: listjoinmsg
+[23:30:24] [INFO] Iniciando KennyBot...
+[23:30:24] [OK] SocketManager cargado
+[23:30:26] [OK] KennyBot conectado
+[23:30:46] [EVENT] 181973939142738 -> .unban @81819697463406
+[23:30:46] [EVENT] PassiveCoins: 181973939142738 +1
+[23:30:46] [CMD] unban → 181973939142738
+[23:30:46] [EVENT] Unban aplicado: 81819697463406
+[23:40:28] [EVENT] 2113862160534 -> https://chat.whatsapp.com/LkSxGvM4ZAYHjwwQCa15rY?mode=gi_t
+[23:40:28] [EVENT] PassiveCoins: 2113862160534 +6
+[23:40:29] [EVENT] 2113862160534 -> https://chat.whatsapp.com/LkSxGvM4ZAYHjwwQCa15rY?mode=gi_t

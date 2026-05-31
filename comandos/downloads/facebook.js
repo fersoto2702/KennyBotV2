@@ -1,3 +1,9 @@
+const fs =
+    require('fs')
+
+const path =
+    require('path')
+
 const axios =
     require('axios')
 
@@ -101,29 +107,58 @@ module.exports = {
 
             }
 
-            await sock.sendMessage(
+            const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/facebook.jpeg'
+    )
 
-                from,
+const caption =
+    ui.info(
 
-                {
+        'DESCARGANDO',
 
-                    text:
-                        ui.info(
+        [
 
-                            'DESCARGANDO',
+            ['Fuente', 'Facebook']
 
-                            [
+        ]
 
-                                ['Fuente', 'Facebook']
+    )
 
-                            ]
+if (fs.existsSync(iconPath)) {
 
-                        )
+    await sock.sendMessage(
 
-                }
+        from,
 
-            )
+        {
 
+            image: {
+                url: iconPath
+            },
+
+            caption
+
+        }
+
+    )
+
+} else {
+
+    await sock.sendMessage(
+
+        from,
+
+        {
+
+            text: caption
+
+        }
+
+    )
+
+}
             const response =
                 await axios.get(
 
