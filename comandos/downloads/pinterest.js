@@ -1,11 +1,52 @@
 const logger =
     require('../../src/utils/logger')
 
+const fs =
+    require('fs')
+
+const path =
+    require('path')
+
 const ui =
     require('../../src/utils/ui')
 
 const pinterest =
     require('pinterest-scraper')
+
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/pinterest.jpeg'
+    )
+
+async function sendPinterestMessage(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
 
 module.exports = {
 
@@ -38,46 +79,27 @@ module.exports = {
 
             if (!query) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'BÚSQUEDA REQUERIDA',
-                                'Uso: /pinterest búsqueda'
-                            )
-
-                    }
-
-                )
+                return await sendPinterestMessage(
+    sock,
+    from,
+    ui.warn(
+        'BÚSQUEDA REQUERIDA',
+        'Uso: /pinterest búsqueda'
+    )
+)
 
             }
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'BUSCANDO',
-
-                            [
-
-                                ['Pinterest', query]
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendPinterestMessage(
+    sock,
+    from,
+    ui.info(
+        'BUSCANDO',
+        [
+            ['Pinterest', query]
+        ]
+    )
+)
 
             const results =
                 await pinterest(query)
@@ -90,21 +112,14 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'SIN RESULTADOS',
-                                'No se encontraron imágenes.'
-                            )
-
-                    }
-
-                )
+                return await sendPinterestMessage(
+    sock,
+    from,
+    ui.error(
+        'SIN RESULTADOS',
+        'No se encontraron imágenes.'
+    )
+)
 
             }
 
@@ -114,6 +129,18 @@ module.exports = {
                 .slice(0, 5)
 
             for (const img of images) {
+
+                await sendPinterestMessage(
+    sock,
+    from,
+    ui.success(
+        'BÚSQUEDA COMPLETADA',
+        [
+            ['Imágenes', `${images.length}`],
+            ['Consulta', query]
+        ]
+    )
+)
 
                 try {
 
@@ -162,22 +189,14 @@ module.exports = {
                 `Error pinterest: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo obtener imágenes.'
-                        )
-
-                }
-
-            )
-
+            await sendPinterestMessage(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo obtener imágenes.'
+    )
+)
         }
 
     }

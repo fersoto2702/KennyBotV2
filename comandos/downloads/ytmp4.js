@@ -27,6 +27,41 @@ const ui =
 const youtubedl =
     require('youtube-dl-exec')
 
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/ytmp4.jpeg'
+    )
+
+async function sendYtmp4Message(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
+
 module.exports = {
 
     name: 'ytmp4',
@@ -67,21 +102,14 @@ module.exports = {
 
             if (cooldown.active) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${cooldown.left}s antes de usar este comando.`
-                            )
-
-                    }
-
-                )
+                return await sendYtmp4Message(
+    sock,
+    from,
+    ui.warn(
+        'COOLDOWN ACTIVO',
+        `Espera ${cooldown.left}s antes de usar este comando.`
+    )
+)
 
             }
 
@@ -99,51 +127,30 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'URL INVÁLIDA',
-                                'Uso: /ytmp4 link'
-                            )
-
-                    }
-
-                )
-
+                return await sendYtmp4Message(
+    sock,
+    from,
+    ui.warn(
+        'URL INVÁLIDA',
+        'Uso: /ytmp4 link'
+    )
+)
             }
 
             const position =
                 getQueueLength() + 1
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'COLA DE DESCARGA',
-
-                            [
-
-                                ['Formato', 'Video'],
-
-                                ['Posición', `#${position}`]
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendYtmp4Message(
+    sock,
+    from,
+    ui.info(
+        'COLA DE DESCARGA',
+        [
+            ['Formato', 'Video'],
+            ['Posición', `#${position}`]
+        ]
+    )
+)
 
             const filePath =
                 generateTempFile(
@@ -235,55 +242,25 @@ module.exports = {
 
                 fs.unlinkSync(finalPath)
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'ARCHIVO MUY PESADO',
-                                `Peso: ${getFileSizeMB(stats.size)} MB`
-                            )
-
-                    }
-
-                )
+                return await sendYtmp4Message(
+    sock,
+    from,
+    ui.error(
+        'ARCHIVO MUY PESADO',
+        `Peso: ${getFileSizeMB(stats.size)} MB`
+    )
+)
 
             }
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    video: {
-                        url: finalPath
-                    },
-
-                    mimetype:
-                        'video/mp4',
-
-                    caption:
-                        ui.success(
-
-                            'VIDEO ENVIADO',
-
-                            [
-
-                                ['Formato', 'Video'],
-
-                                ['Estado', 'Completado']
-
-                            ]
-
-                        )
-
-                }
-
-            )
+           caption:
+    ui.success(
+        'VIDEO ENVIADO',
+        [
+            ['Formato', 'Video'],
+            ['Estado', 'Completado']
+        ]
+    )
 
             setTimeout(() => {
 
@@ -317,21 +294,14 @@ module.exports = {
                 `Error ytmp4: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo descargar el video.'
-                        )
-
-                }
-
-            )
+            await sendYtmp4Message(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo descargar el video.'
+    )
+)
 
         }
 

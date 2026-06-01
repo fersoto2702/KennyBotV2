@@ -1,316 +1,83 @@
-const fs =
-    require('fs')
+const fs = require('fs')
+const path = require('path')
+const logger = require('../../src/utils/logger')
+const ui = require('../../src/utils/ui')
 
-const path =
-    require('path')
-
-const logger =
-    require('../../src/utils/logger')
-
-const ui =
-    require('../../src/utils/ui')
-
-const economyPath =
-    path.join(
-
-        __dirname,
-
-        '../../database/economy.json'
-
-    )
+const economyPath = path.join(__dirname, '../../database/economy.json')
+const iconPath = path.join(__dirname, '../../assets/icons/gamble.png')
 
 module.exports = {
 
-    name:
-        'gamble',
-
-    aliases: [
-
-        'bet',
-        'apostar'
-
-    ],
-
-    description:
-        'Apuesta tus monedas al azar',
-
-    category:
-        'economia',
-
+    name: 'gamble',
+    aliases: ['bet', 'apostar'],
+    description: 'Apuesta tus monedas al azar',
+    category: 'economia',
     cooldown: 10,
 
-    async execute({
-
-        sock,
-        from,
-        msg,
-        args
-
-    }) {
+    async execute({ sock, from, msg, args }) {
 
         try {
 
-            const sender =
+            const sender = msg.key.participant || msg.key.remoteJid
+            const amount = parseInt(args[0])
 
-                msg.key.participant ||
+            if (isNaN(amount) || amount <= 0)
+                return await sock.sendMessage(from, {
+                    image: fs.readFileSync(iconPath),
+                    caption: ui.warn('CANTIDAD INVÁLIDA', 'Uso: /gamble cantidad')
+                })
 
-                msg.key.remoteJid
-
-            const amount =
-                parseInt(args[0])
-
-            if (
-
-                isNaN(amount) ||
-
-                amount <= 0
-
-            ) {
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-
-                                'CANTIDAD INVÁLIDA',
-
-                                'Uso: /gamble cantidad'
-
-                            )
-
-                    }
-
-                )
-
-            }
-
-            if (
-                !fs.existsSync(economyPath)
-            ) {
-
-                fs.writeFileSync(
-
-                    economyPath,
-
-                    JSON.stringify(
-                        {},
-                        null,
-                        2
-                    )
-
-                )
-
-            }
+            if (!fs.existsSync(economyPath))
+                fs.writeFileSync(economyPath, JSON.stringify({}, null, 2))
 
             let economy = {}
+            try { economy = JSON.parse(fs.readFileSync(economyPath)) } catch { economy = {} }
 
-            try {
+            if (!economy[sender]) economy[sender] = { coins: 0, bank: 0 }
+            if (typeof economy[sender].coins !== 'number') economy[sender].coins = 0
+            if (typeof economy[sender].bank !== 'number') economy[sender].bank = 0
 
-                economy =
-                    JSON.parse(
+            if (economy[sender].coins < amount)
+                return await sock.sendMessage(from, {
+                    image: fs.readFileSync(iconPath),
+                    caption: ui.error('FONDOS INSUFICIENTES', 'No tienes suficientes monedas.')
+                })
 
-                        fs.readFileSync(
-                            economyPath
-                        )
-
-                    )
-
-            } catch {
-
-                economy = {}
-
-            }
-
-            if (
-                !economy[sender]
-            ) {
-
-                economy[sender] = {
-
-                    coins: 0,
-
-                    bank: 0
-
-                }
-
-            }
-
-            if (
-                typeof economy[sender].coins !== 'number'
-            ) {
-
-                economy[sender].coins = 0
-
-            }
-
-            if (
-                typeof economy[sender].bank !== 'number'
-            ) {
-
-                economy[sender].bank = 0
-
-            }
-
-            if (
-
-                economy[sender].coins < amount
-
-            ) {
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-
-                                'FONDOS INSUFICIENTES',
-
-                                'No tienes suficientes monedas.'
-
-                            )
-
-                    }
-
-                )
-
-            }
-
-            const win =
-                Math.random() < 0.5
+            const win = Math.random() < 0.5
 
             if (win) {
 
-                economy[sender].coins +=
-                    amount
+                economy[sender].coins += amount
+                fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2))
+                logger.event(`Gamble: ${sender.split('@')[0]} +${amount}`)
 
-                fs.writeFileSync(
-
-                    economyPath,
-
-                    JSON.stringify(
-                        economy,
-                        null,
-                        2
-                    )
-
-                )
-
-                logger.event(
-
-                    `Gamble: ${sender.split('@')[0]} +${amount}`
-
-                )
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.success(
-
-                                'GAMBLE',
-
-                                [
-
-                                    [
-
-                                        'Resultado',
-
-                                        '🟢 GANASTE'
-
-                                    ],
-
-                                    [
-
-                                        'Premio',
-
-                                        `🪙 +${amount.toLocaleString()}`
-
-                                    ],
-
-                                    [
-
-                                        'Wallet',
-
-                                        `🪙 ${economy[sender].coins.toLocaleString()}`
-
-                                    ]
-
-                                ]
-
-                            )
-
-                    }
-
-                )
+                return await sock.sendMessage(from, {
+                    image: fs.readFileSync(iconPath),
+                    caption: ui.success('GAMBLE', [
+                        ['Resultado', '🟢 GANASTE'],
+                        ['Premio', `🪙 +${amount.toLocaleString()}`],
+                        ['Wallet', `🪙 ${economy[sender].coins.toLocaleString()}`]
+                    ])
+                })
 
             }
 
-            economy[sender].coins -=
-                amount
+            economy[sender].coins -= amount
+            fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2))
+            logger.event(`Gamble: ${sender.split('@')[0]} -${amount}`)
 
-            fs.writeFileSync(
-
-                economyPath,
-
-                JSON.stringify(
-                    economy,
-                    null,
-                    2
-                )
-
-            )
-
-            logger.event(
-
-                `Gamble: ${sender.split('@')[0]} -${amount}`
-
-            )
-
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-
-                            'GAMBLE',
-
-                            [
-
-                                '🔴 PERDISTE',
-
-                                ui.divider,
-
-                                `Perdiste 🪙 -${amount.toLocaleString()}`,
-
-                                `Wallet   🪙 ${economy[sender].coins.toLocaleString()}`
-
-                            ].join('\n')
-
-                        )
-
-                }
-
-            )
+            await sock.sendMessage(from, {
+                image: fs.readFileSync(iconPath),
+                caption: ui.error('GAMBLE', [
+                    '🔴 PERDISTE',
+                    ui.divider,
+                    `Perdiste 🪙 -${amount.toLocaleString()}`,
+                    `Wallet   🪙 ${economy[sender].coins.toLocaleString()}`
+                ].join('\n'))
+            })
 
         } catch (err) {
-
-            logger.error(
-                `Error gamble: ${err.message}`
-            )
-
+            logger.error(`Error gamble: ${err.message}`)
         }
 
     }

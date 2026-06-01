@@ -1,6 +1,12 @@
 const axios =
     require('axios')
 
+const fs =
+    require('fs')
+
+const path =
+    require('path')
+
 const {
     checkCooldown
 } = require('../../src/utils/cooldowns')
@@ -10,6 +16,41 @@ const logger =
 
 const ui =
     require('../../src/utils/ui')
+
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/tiktok.jpeg'
+    )
+
+async function sendTikTokMessage(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
 
 module.exports = {
 
@@ -51,21 +92,14 @@ module.exports = {
 
             if (cooldown.active) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${cooldown.left}s antes de usar este comando.`
-                            )
-
-                    }
-
-                )
+                return await sendTikTokMessage(
+    sock,
+    from,
+    ui.warn(
+        'COOLDOWN ACTIVO',
+        `Espera ${cooldown.left}s antes de usar este comando.`
+    )
+)
 
             }
 
@@ -80,46 +114,27 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'URL INVÁLIDA',
-                                'Uso: /tiktok link'
-                            )
-
-                    }
-
-                )
+                return await sendTikTokMessage(
+    sock,
+    from,
+    ui.warn(
+        'URL INVÁLIDA',
+        'Uso: /tiktok link'
+    )
+)
 
             }
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'DESCARGANDO',
-
-                            [
-
-                                ['Fuente', 'TikTok']
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendTikTokMessage(
+    sock,
+    from,
+    ui.info(
+        'DESCARGANDO',
+        [
+            ['Fuente', 'TikTok']
+        ]
+    )
+)
 
             const response =
                 await axios.get(
@@ -154,21 +169,14 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'DESCARGA FALLIDA',
-                                'No se pudo obtener el video.'
-                            )
-
-                    }
-
-                )
+                return await sendTikTokMessage(
+    sock,
+    from,
+    ui.error(
+        'DESCARGA FALLIDA',
+        'No se pudo obtener el video.'
+    )
+)
 
             }
 
@@ -223,6 +231,19 @@ module.exports = {
 
             )
 
+            await sendTikTokMessage(
+    sock,
+    from,
+    ui.success(
+        'DESCARGA COMPLETADA',
+        [
+            ['Autor', author],
+            ['Título', title],
+            ['Likes', likes]
+        ]
+    )
+)
+
             if (data.music) {
 
                 try {
@@ -265,21 +286,14 @@ module.exports = {
                 `Error tiktok: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo descargar el video de TikTok.'
-                        )
-
-                }
-
-            )
+            await sendTikTokMessage(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo descargar el video de TikTok.'
+    )
+)
 
         }
 

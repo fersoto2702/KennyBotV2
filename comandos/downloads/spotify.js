@@ -33,6 +33,41 @@ const yts =
 const youtubedl =
     require('youtube-dl-exec')
 
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/spotify.jpeg'
+    )
+
+async function sendSpotifyMessage(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
+
 module.exports = {
 
     name: 'spotify',
@@ -73,21 +108,14 @@ module.exports = {
 
             if (cooldown.active) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${cooldown.left}s antes de usar este comando.`
-                            )
-
-                    }
-
-                )
+                return await sendSpotifyMessage(
+    sock,
+    from,
+    ui.warn(
+        'COOLDOWN ACTIVO',
+        `Espera ${cooldown.left}s antes de usar este comando.`
+    )
+)
 
             }
 
@@ -102,46 +130,27 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'URL INVÁLIDA',
-                                'Uso: /spotify link'
-                            )
-
-                    }
-
-                )
+                return await sendSpotifyMessage(
+    sock,
+    from,
+    ui.warn(
+        'URL INVÁLIDA',
+        'Uso: /spotify link'
+    )
+)
 
             }
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'OBTENIENDO CANCIÓN',
-
-                            [
-
-                                ['Fuente', 'Spotify']
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendSpotifyMessage(
+    sock,
+    from,
+    ui.info(
+        'OBTENIENDO CANCIÓN',
+        [
+            ['Fuente', 'Spotify']
+        ]
+    )
+)
 
             const response =
                 await axios.get(
@@ -168,49 +177,30 @@ module.exports = {
 
             if (!data.result) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'SIN INFORMACIÓN',
-                                'No se pudo obtener los datos de Spotify.'
-                            )
-
-                    }
-
-                )
+                return await sendSpotifyMessage(
+    sock,
+    from,
+    ui.error(
+        'SIN INFORMACIÓN',
+        'No se pudo obtener los datos de Spotify.'
+    )
+)
 
             }
 
             const title =
                 `${data.result.title} ${data.result.artist}`
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'BUSCANDO AUDIO',
-
-                            [
-
-                                ['Canción', data.result.title]
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendSpotifyMessage(
+    sock,
+    from,
+    ui.info(
+        'BUSCANDO AUDIO',
+        [
+            ['Canción', data.result.title]
+        ]
+    )
+)
 
             const search =
                 await yts(title)
@@ -241,53 +231,32 @@ module.exports = {
 
             if (!video) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'SIN RESULTADOS',
-                                'No se encontró el audio.'
-                            )
-
-                    }
-
-                )
+                return await sendSpotifyMessage(
+    sock,
+    from,
+    ui.error(
+        'SIN RESULTADOS',
+        'No se encontró el audio.'
+    )
+)
 
             }
 
             const position =
                 getQueueLength() + 1
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'COLA DE DESCARGA',
-
-                            [
-
-                                ['Canción', data.result.title],
-
-                                ['Artista', data.result.artist],
-
-                                ['Posición', `#${position}`]
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendSpotifyMessage(
+    sock,
+    from,
+    ui.info(
+        'COLA DE DESCARGA',
+        [
+            ['Canción', data.result.title],
+            ['Artista', data.result.artist],
+            ['Posición', `#${position}`]
+        ]
+    )
+)
 
             const filePath =
                 generateTempFile(
@@ -378,21 +347,14 @@ module.exports = {
 
                 fs.unlinkSync(finalPath)
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'ARCHIVO MUY PESADO',
-                                `Peso: ${getFileSizeMB(stats.size)} MB`
-                            )
-
-                    }
-
-                )
+                return await sendSpotifyMessage(
+    sock,
+    from,
+    ui.error(
+        'ARCHIVO MUY PESADO',
+        `Peso: ${getFileSizeMB(stats.size)} MB`
+    )
+)
 
             }
 
@@ -415,31 +377,17 @@ module.exports = {
 
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.success(
-
-                            'SPOTIFY',
-
-                            [
-
-                                ['Título', data.result.title],
-
-                                ['Artista', data.result.artist]
-
-                            ]
-
-                        )
-
-                }
-
-            )
-
+            await sendSpotifyMessage(
+    sock,
+    from,
+    ui.success(
+        'SPOTIFY',
+        [
+            ['Título', data.result.title],
+            ['Artista', data.result.artist]
+        ]
+    )
+)
             setTimeout(() => {
 
                 try {
@@ -472,21 +420,14 @@ module.exports = {
                 `Error spotify: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo descargar la canción.'
-                        )
-
-                }
-
-            )
+            await sendSpotifyMessage(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo descargar la canción.'
+    )
+)
 
         }
 

@@ -17,6 +17,41 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/facebook.jpeg'
+    )
+
+async function sendFacebookMessage(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
+
 module.exports = {
 
     name: 'facebook',
@@ -57,21 +92,14 @@ module.exports = {
 
             if (cooldown.active) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${cooldown.left}s antes de usar este comando.`
-                            )
-
-                    }
-
-                )
+                return await sendFacebookMessage(
+    sock,
+    from,
+    ui.warn(
+        'COOLDOWN ACTIVO',
+        `Espera ${cooldown.left}s antes de usar este comando.`
+    )
+)
 
             }
 
@@ -89,21 +117,14 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'URL INVÁLIDA',
-                                'Uso: /facebook link'
-                            )
-
-                    }
-
-                )
+                return await sendFacebookMessage(
+    sock,
+    from,
+    ui.warn(
+        'URL INVÁLIDA',
+        'Uso: /facebook link'
+    )
+)
 
             }
 
@@ -190,21 +211,14 @@ if (fs.existsSync(iconPath)) {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'DESCARGA FALLIDA',
-                                'No se pudo obtener el video.'
-                            )
-
-                    }
-
-                )
+                return await sendFacebookMessage(
+    sock,
+    from,
+    ui.error(
+        'DESCARGA FALLIDA',
+        'No se pudo obtener el video.'
+    )
+)
 
             }
 
@@ -218,21 +232,14 @@ if (fs.existsSync(iconPath)) {
 
             if (!videoUrl) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'VIDEO NO DISPONIBLE',
-                                'El video no está accesible.'
-                            )
-
-                    }
-
-                )
+                return await sendFacebookMessage(
+    sock,
+    from,
+    ui.error(
+        'VIDEO NO DISPONIBLE',
+        'El video no está accesible.'
+    )
+)
 
             }
 
@@ -277,21 +284,14 @@ if (fs.existsSync(iconPath)) {
                 `Error facebook: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo descargar el video de Facebook.'
-                        )
-
-                }
-
-            )
+            await sendFacebookMessage(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo descargar el video de Facebook.'
+    )
+)
 
         }
 

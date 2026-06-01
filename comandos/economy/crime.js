@@ -1,361 +1,107 @@
-const fs =
-    require('fs')
+const fs = require('fs')
+const path = require('path')
+const logger = require('../../src/utils/logger')
+const ui = require('../../src/utils/ui')
 
-const path =
-    require('path')
+const economyPath = path.join(__dirname, '../../database/economy.json')
+const iconPath = path.join(__dirname, '../../assets/icons/crime.png')
 
-const logger =
-    require('../../src/utils/logger')
-
-const ui =
-    require('../../src/utils/ui')
-
-const economyPath =
-    path.join(
-
-        __dirname,
-
-        '../../database/economy.json'
-
-    )
-
-const cooldowns =
-    new Map()
+const cooldowns = new Map()
 
 const CRIMES = [
-
     'Robaste un banco 🏦',
-
     'Hackeaste una empresa 💻',
-
     'Vendiste información secreta 🕵️',
-
     'Asaltaste un casino 🎰',
-
     'Robaste joyas 💎',
-
     'Interceptaste una transferencia 💳'
-
 ]
 
 const FAILS = [
-
     'La policía te atrapó 🚓',
-
     'Te hackearon de vuelta 💀',
-
     'Fallaste el robo 🔒',
-
     'Te descubrieron 🕵️',
-
     'Terminaste en prisión ⛓️',
-
     'Activaste una alarma 🚨'
-
 ]
 
-const rand = arr =>
-
-    arr[
-        Math.floor(
-            Math.random() * arr.length
-        )
-    ]
+const rand = arr => arr[Math.floor(Math.random() * arr.length)]
 
 module.exports = {
 
-    name:
-        'crime',
+    name: 'crime',
+    aliases: ['crimen', 'robo'],
+    description: 'Intenta cometer un crimen para ganar monedas',
+    category: 'economia',
 
-    aliases: [
-
-        'crimen',
-        'robo'
-
-    ],
-
-    description:
-        'Intenta cometer un crimen para ganar monedas',
-
-    category:
-        'economia',
-
-    async execute({
-
-        sock,
-        from,
-        msg
-
-    }) {
+    async execute({ sock, from, msg }) {
 
         try {
 
-            const sender =
+            const sender = msg.key.participant || msg.key.remoteJid
+            const now = Date.now()
+            const cooldownTime = 15 * 60 * 1000
 
-                msg.key.participant ||
-
-                msg.key.remoteJid
-
-            const now =
-                Date.now()
-
-            const cooldownTime =
-                15 * 60 * 1000
-
-            if (
-                cooldowns.has(sender)
-            ) {
-
-                const expires =
-                    cooldowns.get(sender)
-
-                if (
-                    now < expires
-                ) {
-
-                    const mins =
-                        Math.ceil(
-                            (expires - now) / 60000
-                        )
-
-                    return await sock.sendMessage(
-
-                        from,
-
-                        {
-
-                            text:
-                                ui.warn(
-
-                                    'COOLDOWN ACTIVO',
-
-                                    `Espera ${mins} minutos para volver a intentarlo.`
-
-                                )
-
-                        }
-
-                    )
-
+            if (cooldowns.has(sender)) {
+                const expires = cooldowns.get(sender)
+                if (now < expires) {
+                    const mins = Math.ceil((expires - now) / 60000)
+                    return await sock.sendMessage(from, {
+                        image: fs.readFileSync(iconPath),
+                        caption: ui.warn('COOLDOWN ACTIVO', `Espera ${mins} minutos para volver a intentarlo.`)
+                    })
                 }
-
             }
 
-            cooldowns.set(
+            cooldowns.set(sender, now + cooldownTime)
 
-                sender,
-
-                now + cooldownTime
-
-            )
-
-            if (
-                !fs.existsSync(economyPath)
-            ) {
-
-                fs.writeFileSync(
-
-                    economyPath,
-
-                    JSON.stringify(
-                        {},
-                        null,
-                        2
-                    )
-
-                )
-
-            }
+            if (!fs.existsSync(economyPath))
+                fs.writeFileSync(economyPath, JSON.stringify({}, null, 2))
 
             let economy = {}
+            try { economy = JSON.parse(fs.readFileSync(economyPath)) } catch { economy = {} }
 
-            try {
+            if (!economy[sender]) economy[sender] = { coins: 0, bank: 0 }
+            if (typeof economy[sender].coins !== 'number') economy[sender].coins = 0
 
-                economy =
-                    JSON.parse(
-
-                        fs.readFileSync(
-                            economyPath
-                        )
-
-                    )
-
-            } catch {
-
-                economy = {}
-
-            }
-
-            if (
-                !economy[sender]
-            ) {
-
-                economy[sender] = {
-
-                    coins: 0,
-
-                    bank: 0
-
-                }
-
-            }
-
-            if (
-                typeof economy[sender].coins !== 'number'
-            ) {
-
-                economy[sender].coins = 0
-
-            }
-
-            const success =
-                Math.random() < 0.6
+            const success = Math.random() < 0.6
 
             if (success) {
 
-                const amount =
+                const amount = Math.floor(Math.random() * 2500) + 500
+                economy[sender].coins += amount
+                fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2))
+                logger.event(`Crime exitoso: ${sender.split('@')[0]} +${amount}`)
 
-                    Math.floor(
-                        Math.random() * 2500
-                    ) + 500
-
-                economy[sender].coins +=
-                    amount
-
-                fs.writeFileSync(
-
-                    economyPath,
-
-                    JSON.stringify(
-                        economy,
-                        null,
-                        2
-                    )
-
-                )
-
-                logger.event(
-
-                    `Crime exitoso: ${sender.split('@')[0]} +${amount}`
-
-                )
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.success(
-
-                                'CRIMEN EXITOSO',
-
-                                [
-
-                                    [
-
-                                        'Acción',
-
-                                        rand(CRIMES)
-
-                                    ],
-
-                                    [
-
-                                        'Ganancia',
-
-                                        `🪙 +${amount.toLocaleString()}`
-
-                                    ],
-
-                                    [
-
-                                        'Wallet',
-
-                                        `🪙 ${economy[sender].coins.toLocaleString()}`
-
-                                    ]
-
-                                ]
-
-                            )
-
-                    }
-
-                )
+                return await sock.sendMessage(from, {
+                    image: fs.readFileSync(iconPath),
+                    caption: ui.success('CRIMEN EXITOSO', [
+                        ['Acción', rand(CRIMES)],
+                        ['Ganancia', `🪙 +${amount.toLocaleString()}`],
+                        ['Wallet', `🪙 ${economy[sender].coins.toLocaleString()}`]
+                    ])
+                })
 
             }
 
-            const fine =
+            const fine = Math.floor(Math.random() * 1000) + 200
+            economy[sender].coins = Math.max(0, economy[sender].coins - fine)
+            fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2))
+            logger.event(`Crime fallido: ${sender.split('@')[0]} -${fine}`)
 
-                Math.floor(
-                    Math.random() * 1000
-                ) + 200
-
-            economy[sender].coins =
-
-                Math.max(
-
-                    0,
-
-                    economy[sender].coins - fine
-
-                )
-
-            fs.writeFileSync(
-
-                economyPath,
-
-                JSON.stringify(
-                    economy,
-                    null,
-                    2
-                )
-
-            )
-
-            logger.event(
-
-                `Crime fallido: ${sender.split('@')[0]} -${fine}`
-
-            )
-
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-
-                            'CRIMEN FALLIDO',
-
-                            [
-
-                                rand(FAILS),
-
-                                ui.divider,
-
-                                `Multa    🪙 -${fine.toLocaleString()}`,
-
-                                `Wallet   🪙 ${economy[sender].coins.toLocaleString()}`
-
-                            ].join('\n')
-
-                        )
-
-                }
-
-            )
+            await sock.sendMessage(from, {
+                image: fs.readFileSync(iconPath),
+                caption: ui.error('CRIMEN FALLIDO', [
+                    rand(FAILS),
+                    ui.divider,
+                    `Multa    🪙 -${fine.toLocaleString()}`,
+                    `Wallet   🪙 ${economy[sender].coins.toLocaleString()}`
+                ].join('\n'))
+            })
 
         } catch (err) {
-
-            logger.error(
-                `Error crime: ${err.message}`
-            )
-
+            logger.error(`Error crime: ${err.message}`)
         }
 
     }

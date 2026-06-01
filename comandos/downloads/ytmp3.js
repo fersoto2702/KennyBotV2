@@ -27,6 +27,41 @@ const ui =
 const youtubedl =
     require('youtube-dl-exec')
 
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/ytmp3.jpeg'
+    )
+
+async function sendYtmp3Message(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
+
 module.exports = {
 
     name: 'ytmp3',
@@ -67,21 +102,14 @@ module.exports = {
 
             if (cooldown.active) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${cooldown.left}s antes de usar este comando.`
-                            )
-
-                    }
-
-                )
+                return await sendYtmp3Message(
+    sock,
+    from,
+    ui.warn(
+        'COOLDOWN ACTIVO',
+        `Espera ${cooldown.left}s antes de usar este comando.`
+    )
+)
 
             }
 
@@ -99,51 +127,31 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'URL INVÁLIDA',
-                                'Uso: /ytmp3 link'
-                            )
-
-                    }
-
-                )
+                return await sendYtmp3Message(
+    sock,
+    from,
+    ui.warn(
+        'URL INVÁLIDA',
+        'Uso: /ytmp3 link'
+    )
+)
 
             }
 
             const position =
                 getQueueLength() + 1
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'COLA DE DESCARGA',
-
-                            [
-
-                                ['Formato', 'Audio'],
-
-                                ['Posición', `#${position}`]
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendYtmp3Message(
+    sock,
+    from,
+    ui.info(
+        'COLA DE DESCARGA',
+        [
+            ['Formato', 'Audio'],
+            ['Posición', `#${position}`]
+        ]
+    )
+)
 
             const filePath =
                 generateTempFile(
@@ -234,21 +242,14 @@ module.exports = {
 
                 fs.unlinkSync(finalPath)
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'ARCHIVO MUY PESADO',
-                                `Peso: ${getFileSizeMB(stats.size)} MB`
-                            )
-
-                    }
-
-                )
+                return await sendYtmp3Message(
+    sock,
+    from,
+    ui.error(
+        'ARCHIVO MUY PESADO',
+        `Peso: ${getFileSizeMB(stats.size)} MB`
+    )
+)
 
             }
 
@@ -272,30 +273,18 @@ module.exports = {
             )
 
             await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.success(
-
-                            'AUDIO ENVIADO',
-
-                            [
-
-                                ['Formato', 'Audio'],
-
-                                ['Estado', 'Completado']
-
-                            ]
-
-                        )
-
-                }
-
+    from,
+    {
+        text:
+            ui.success(
+                'AUDIO ENVIADO',
+                [
+                    ['Formato', 'Audio'],
+                    ['Estado', 'Completado']
+                ]
             )
-
+    }
+)
             setTimeout(() => {
 
                 try {
@@ -328,21 +317,14 @@ module.exports = {
                 `Error ytmp3: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo descargar el audio.'
-                        )
-
-                }
-
-            )
+            await sendYtmp3Message(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo descargar el audio.'
+    )
+)
 
         }
 

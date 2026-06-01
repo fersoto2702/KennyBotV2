@@ -1,6 +1,12 @@
 const axios =
     require('axios')
 
+const fs =
+    require('fs')
+
+const path =
+    require('path')
+
 const {
     checkCooldown
 } = require('../../src/utils/cooldowns')
@@ -10,6 +16,41 @@ const logger =
 
 const ui =
     require('../../src/utils/ui')
+
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/instagram.jpeg'
+    )
+
+async function sendInstagramMessage(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
 
 module.exports = {
 
@@ -51,21 +92,14 @@ module.exports = {
 
             if (cooldown.active) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${cooldown.left}s antes de usar este comando.`
-                            )
-
-                    }
-
-                )
+                return await sendInstagramMessage(
+    sock,
+    from,
+    ui.warn(
+        'COOLDOWN ACTIVO',
+        `Espera ${cooldown.left}s antes de usar este comando.`
+    )
+)
 
             }
 
@@ -80,46 +114,27 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'URL INVÁLIDA',
-                                'Uso: /instagram link'
-                            )
-
-                    }
-
-                )
+                return await sendInstagramMessage(
+    sock,
+    from,
+    ui.warn(
+        'URL INVÁLIDA',
+        'Uso: /instagram link'
+    )
+)
 
             }
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'DESCARGANDO',
-
-                            [
-
-                                ['Fuente', 'Instagram']
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendInstagramMessage(
+    sock,
+    from,
+    ui.info(
+        'DESCARGANDO',
+        [
+            ['Fuente', 'Instagram']
+        ]
+    )
+)
 
             const response =
                 await axios.get(
@@ -156,22 +171,14 @@ module.exports = {
 
             ) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'DESCARGA FALLIDA',
-                                'No se pudo obtener el contenido.'
-                            )
-
-                    }
-
-                )
-
+                return await sendInstagramMessage(
+    sock,
+    from,
+    ui.error(
+        'DESCARGA FALLIDA',
+        'No se pudo obtener el contenido.'
+    )
+)
             }
 
             const limitedMedia =
@@ -273,30 +280,17 @@ module.exports = {
 
             }
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.success(
-
-                            'DESCARGA COMPLETADA',
-
-                            [
-
-                                ['Archivos', `${limitedMedia.length}`],
-
-                                ['Estado', 'Enviado']
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendInstagramMessage(
+    sock,
+    from,
+    ui.success(
+        'DESCARGA COMPLETADA',
+        [
+            ['Archivos', `${limitedMedia.length}`],
+            ['Estado', 'Enviado']
+        ]
+    )
+)
 
         } catch (err) {
 
@@ -304,21 +298,14 @@ module.exports = {
                 `Error instagram: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo descargar el contenido de Instagram.'
-                        )
-
-                }
-
-            )
+            await sendInstagramMessage(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo descargar el contenido de Instagram.'
+    )
+)
 
         }
 

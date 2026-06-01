@@ -30,6 +30,41 @@ const yts =
 const youtubedl =
     require('youtube-dl-exec')
 
+const iconPath =
+    path.join(
+        __dirname,
+        '../../assets/icons/play.jpeg'
+    )
+
+async function sendPlayMessage(
+    sock,
+    from,
+    caption
+) {
+
+    if (fs.existsSync(iconPath)) {
+
+        return await sock.sendMessage(
+            from,
+            {
+                image: {
+                    url: iconPath
+                },
+                caption
+            }
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        {
+            text: caption
+        }
+    )
+
+}
+
 module.exports = {
 
     name: 'play',
@@ -70,21 +105,14 @@ module.exports = {
 
             if (cooldown.active) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${cooldown.left}s antes de usar este comando.`
-                            )
-
-                    }
-
-                )
+                return await sendPlayMessage(
+    sock,
+    from,
+    ui.warn(
+        'COOLDOWN ACTIVO',
+        `Espera ${cooldown.left}s antes de usar este comando.`
+    )
+)
 
             }
 
@@ -93,39 +121,26 @@ module.exports = {
 
             if (!query) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-                                'BÚSQUEDA REQUERIDA',
-                                'Uso: /play canción'
-                            )
-
-                    }
-
-                )
-
+                return await sendPlayMessage(
+    sock,
+    from,
+    ui.warn(
+        'BÚSQUEDA REQUERIDA',
+        'Uso: /play canción'
+    )
+)
             }
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-                            'BUSCANDO',
-                            [['Canción', query]]
-                        )
-
-                }
-
-            )
+            await sendPlayMessage(
+    sock,
+    from,
+    ui.info(
+        'BUSCANDO',
+        [
+            ['Canción', query]
+        ]
+    )
+)
 
             const search =
                 await yts(query)
@@ -156,51 +171,31 @@ module.exports = {
 
             if (!video) {
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'SIN RESULTADOS',
-                                'No se encontró ninguna canción.'
-                            )
-
-                    }
-
-                )
+                return await sendPlayMessage(
+    sock,
+    from,
+    ui.error(
+        'SIN RESULTADOS',
+        'No se encontró ninguna canción.'
+    )
+)
 
             }
 
             const position =
                 getQueueLength() + 1
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.info(
-
-                            'COLA DE DESCARGA',
-
-                            [
-
-                                ['Canción', video.title],
-
-                                ['Posición', `#${position}`]
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendPlayMessage(
+    sock,
+    from,
+    ui.info(
+        'COLA DE DESCARGA',
+        [
+            ['Canción', video.title],
+            ['Posición', `#${position}`]
+        ]
+    )
+)
 
             const filePath =
                 generateTempFile(
@@ -291,21 +286,14 @@ module.exports = {
 
                 fs.unlinkSync(finalPath)
 
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-                                'ARCHIVO MUY PESADO',
-                                `Peso: ${getFileSizeMB(stats.size)} MB`
-                            )
-
-                    }
-
-                )
+                return await sendPlayMessage(
+    sock,
+    from,
+    ui.error(
+        'ARCHIVO MUY PESADO',
+        `Peso: ${getFileSizeMB(stats.size)} MB`
+    )
+)
 
             }
 
@@ -328,34 +316,19 @@ module.exports = {
 
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.success(
-
-                            'DESCARGA COMPLETADA',
-
-                            [
-
-                                ['Título', video.title],
-
-                                ['Duración', video.timestamp],
-
-                                ['Vistas', Number(video.views).toLocaleString()],
-
-                                ['Link', video.url]
-
-                            ]
-
-                        )
-
-                }
-
-            )
+            await sendPlayMessage(
+    sock,
+    from,
+    ui.success(
+        'DESCARGA COMPLETADA',
+        [
+            ['Título', video.title],
+            ['Duración', video.timestamp],
+            ['Vistas', Number(video.views).toLocaleString()],
+            ['Link', video.url]
+        ]
+    )
+)
 
             setTimeout(() => {
 
@@ -389,22 +362,14 @@ module.exports = {
                 `Error play: ${err.message}`
             )
 
-            await sock.sendMessage(
-
-                from,
-
-                {
-
-                    text:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo descargar la música.'
-                        )
-
-                }
-
-            )
-
+            await sendPlayMessage(
+    sock,
+    from,
+    ui.error(
+        'ERROR',
+        'No se pudo descargar la música.'
+    )
+)
         }
 
     }
