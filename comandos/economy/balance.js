@@ -14,7 +14,7 @@ const economyPath =
     path.join(__dirname, '../../database/economy.json')
 
 const iconPath =
-    path.join(__dirname, '../../assets/icons/balance.png')
+    path.join(__dirname, '../../assets/icons/balance.jpeg')
 
 module.exports = {
 

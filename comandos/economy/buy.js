@@ -5,7 +5,7 @@ const ui = require('../../src/utils/ui')
 
 const economyPath = path.join(__dirname, '../../database/economy.json')
 const inventoryPath = path.join(__dirname, '../../database/inventory.json')
-const iconPath = path.join(__dirname, '../../assets/icons/buy.png')
+const iconPath = path.join(__dirname, '../../assets/icons/buy.jpeg')
 
 const items = {
     1: { name: '🛡️ Chaleco', price: 800 },

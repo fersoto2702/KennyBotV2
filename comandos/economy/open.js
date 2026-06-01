@@ -6,7 +6,7 @@ const ui = require('../../src/utils/ui')
 const economyPath = path.join(__dirname, '../../database/economy.json')
 const inventoryPath = path.join(__dirname, '../../database/inventory.json')
 const levelsPath = path.join(__dirname, '../../database/levels.json')
-const iconPath = path.join(__dirname, '../../assets/icons/open.png')
+const iconPath = path.join(__dirname, '../../assets/icons/open.jpeg')
 
 const ITEMS = ['🛡️ Chaleco', '⚔️ Espada', '🚀 XP Boost']
 const random = arr => arr[Math.floor(Math.random() * arr.length)]

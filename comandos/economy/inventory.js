@@ -4,7 +4,7 @@ const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
 const inventoryPath = path.join(__dirname, '../../database/inventory.json')
-const iconPath = path.join(__dirname, '../../assets/icons/inventory.png')
+const iconPath = path.join(__dirname, '../../assets/icons/inventory.jpeg')
 
 module.exports = {
 

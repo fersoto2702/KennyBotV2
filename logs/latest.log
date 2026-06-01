@@ -6515,3 +6515,80 @@ Les deseo una excelente noche.
 [22:26:44] [EVENT] 266816320491607 -> No te eches la culpa
 [22:26:47] [EVENT] 266816320491607 -> Ti?
 [22:31:34] [EVENT] 266816320491607 -> No la tienes, amor, enserio te lo digo
+[22:50:58] [OK] UnifiedRateLimiter cargado
+[22:50:58] [OK] Comando cargado: ban
+[22:50:58] [OK] Comando cargado: unban
+[22:50:58] [OK] Comando cargado: antilink
+[22:50:58] [OK] Comando cargado: antibot
+[22:50:58] [OK] Comando cargado: antifake
+[22:50:58] [OK] Comando cargado: autolevelup
+[22:50:58] [OK] Comando cargado: facebook
+[22:50:59] [OK] Comando cargado: instagram
+[22:50:59] [OK] Comando cargado: pinterest
+[22:50:59] [OK] Comando cargado: play
+[22:50:59] [OK] Comando cargado: spotify
+[22:50:59] [OK] Comando cargado: tiktok
+[22:50:59] [OK] Comando cargado: ytmp3
+[22:50:59] [OK] Comando cargado: ytmp4
+[22:50:59] [OK] Comando cargado: balance
+[22:50:59] [OK] Comando cargado: buy
+[22:50:59] [OK] Comando cargado: crime
+[22:50:59] [OK] Comando cargado: daily
+[22:50:59] [OK] Comando cargado: deposit
+[22:50:59] [OK] Comando cargado: gamble
+[22:50:59] [OK] Comando cargado: inventory
+[22:50:59] [OK] Comando cargado: leaderboardmoney
+[22:50:59] [OK] Comando cargado: open
+[22:50:59] [OK] Comando cargado: pay
+[22:50:59] [OK] Comando cargado: rob
+[22:50:59] [OK] Comando cargado: shop
+[22:50:59] [OK] Comando cargado: slots
+[22:50:59] [OK] Comando cargado: withdraw
+[22:50:59] [OK] Comando cargado: work
+[22:50:59] [OK] Comando cargado: inactive
+[22:50:59] [OK] Comando cargado: msgstats
+[22:50:59] [OK] Comando cargado: topmessages
+[22:50:59] [OK] Comando cargado: add
+[22:50:59] [OK] Comando cargado: demote
+[22:50:59] [OK] Comando cargado: hidetag
+[22:50:59] [OK] Comando cargado: kick
+[22:50:59] [OK] Comando cargado: mute
+[22:50:59] [OK] Comando cargado: promote
+[22:50:59] [OK] Comando cargado: tagall
+[22:50:59] [OK] Comando cargado: unwarn
+[22:50:59] [OK] Comando cargado: warn
+[22:50:59] [OK] Comando cargado: warnings
+[22:50:59] [OK] Comando cargado: welcome
+[22:50:59] [OK] Comando cargado: ia
+[22:50:59] [OK] Comando cargado: leaderboard
+[22:50:59] [OK] Comando cargado: level
+[22:50:59] [OK] Comando cargado: rank
+[22:50:59] [OK] Comando cargado: menu
+[22:50:59] [OK] Comando cargado: ping
+[22:50:59] [OK] Comando cargado: addpremium
+[22:50:59] [OK] Comando cargado: delpremium
+[22:50:59] [OK] Comando cargado: premium
+[22:50:59] [OK] Comando cargado: profile
+[22:51:00] [OK] Comando cargado: sticker
+[22:51:00] [OK] Comando cargado: addjoinmsg
+[22:51:00] [OK] Comando cargado: clearjoinmsg
+[22:51:00] [OK] Comando cargado: deljoinmsg
+[22:51:00] [OK] Comando cargado: listjoinmsg
+[22:51:00] [INFO] Iniciando KennyBot...
+[22:51:00] [OK] SocketManager cargado
+[22:51:02] [OK] KennyBot conectado
+[22:51:24] [EVENT] 181973939142738 -> .balance
+[22:51:24] [EVENT] PassiveCoins: 181973939142738 +6
+[22:51:24] [CMD] balance → 181973939142738
+[22:51:24] [ERROR] Error balance: ENOENT: no such file or directory, open 'C:\Users\Ferna\KennyBotV2\assets\icons\balance.png'
+[22:53:46] [EVENT] 266816320491607 -> Yo te hice una amor, mira
+[22:54:12] [EVENT] 266816320491607 -> 𝖡𝗎𝖾𝗇𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌, 𝗆𝗂́ 𝖻𝖾𝖻𝖾́ 𝗁𝖾𝗋𝗆𝗈𝗌𝗈. 𝖧𝗈𝗒, 𝖾𝗇 𝖾𝗌𝗍𝖾 𝖽𝗂́𝖺 𝖾𝗌𝗉𝖾𝖼𝗂𝖺𝗅, 𝗍𝖺𝗇𝗍𝗈 𝗉𝖺𝗋𝖺 𝗍𝗂́ 𝖼𝗈𝗆𝗈 𝗉𝖺𝗋𝖺 𝗆𝗂́, 𝗏𝖾𝗇𝗀𝗈 𝖺 𝖾𝗑𝗉𝗋𝖾𝗌𝖺𝗋𝗍𝖾 𝗆𝗂́𝗌 𝖿𝖾𝗅𝗂𝖼𝗂𝖽𝖺𝖽𝖾𝗌, 𝗉𝗈𝗋 𝗍𝗎́ 𝖼𝗎𝗆𝗉𝗅𝖾𝖺𝗇̃𝗈𝗌.
+𝖯𝗋𝗂𝗆𝖾𝗋𝗈, 𝗏𝗈𝗒 𝖺 𝖾𝗆𝗉𝖾𝗓𝖺𝗋 𝖺 𝖾𝗑𝗉𝗋𝖾𝗌𝖺𝗋 𝗅𝗈 𝗆𝗎𝖼𝗁𝗈 𝗊𝗎𝖾 𝗍𝖾 𝖺𝗀𝗋𝖺𝖽𝖾𝗓𝖼𝗈 𝗉𝗈𝗋 𝗁𝖺𝖻𝖾𝗋𝗍𝖾 𝗆𝖺𝗇𝗍𝖾𝗇𝗂𝖽𝗈 𝖿𝗂𝗋𝗆𝖾 𝖼𝗈𝗇𝗆𝗂𝗀𝗈, 𝗉𝗈𝗋 𝗁𝖺𝖼𝖾𝗋𝗆𝖾 𝗌𝖾𝗇𝗍𝗂𝗋 𝖺𝗆𝖺𝖽𝖺, 𝗌𝗂𝗇 𝗋𝖾𝗉𝗋𝗈𝖼𝗁𝖾𝗌, 𝗌𝗂𝗇 𝗂𝗇𝖼𝖾𝗋𝗍𝗂𝖽𝗎𝗆𝖻𝗋𝖾 𝖾𝗇𝗍𝗋𝖾 𝗇𝗈𝗌𝗈𝗍𝗋𝗈𝗌 𝗒 𝗌𝗈𝗅𝗈 𝖼𝗈𝗇 𝖼𝖾𝗋𝗍𝖾𝗓𝖺, 𝗁𝗈𝗇𝖾𝗌𝗍𝗂𝖽𝖺𝖽, 𝗌𝗂𝗇𝖼𝖾𝗋𝗂𝖽𝖺𝖽 𝗒 𝗌𝗈𝖻𝗋𝖾 𝗍𝗈𝖽𝗈, 𝗊𝗎𝖾 𝖾𝗌 𝗅𝗈 𝗆𝖺́𝗌 𝗂𝗆𝗉𝗈𝗋𝗍𝖺𝗇𝗍𝖾 𝖽𝖾 𝗍𝗈𝖽𝗈, 𝗔𝗠𝗢𝗥. 
+𝖦𝗋𝖺𝖼𝗂𝖺𝗌 𝗉𝗈𝗋 𝗅𝗅𝖾𝗀𝖺𝗋 𝖺 𝗆𝗂́ 𝗏𝗂𝖽𝖺, 𝖼𝗈𝗆𝗈 𝗎𝗇𝖺 𝗌𝖾𝗆𝗂𝗅𝗅𝖺 𝖽𝖾 𝖽𝗂𝖾𝗇𝗍𝖾 𝖽𝖾 𝗅𝖾́𝗈𝗇, 𝖼𝗈𝗇 𝖾𝗅 𝗏𝗂𝖾𝗇𝗍𝗈 𝗒 𝖽𝖾 𝗆𝖺𝗇𝖾𝗋𝖺 𝗋𝖾𝗉𝖾𝗇𝗍𝗂𝗇𝖺. 𝖭𝗈 𝗌𝖾́ 𝖾𝗇 𝗊𝗎𝖾́ 𝗆𝗈𝗆𝖾𝗇𝗍𝗈 𝖼𝗈𝗂𝗇𝖼𝗂𝖽𝗂𝗆𝗈𝗌 𝗍𝖺𝗇𝗍𝗈 𝗉𝖾𝗋𝗈 𝗌𝖾 𝗊𝗎𝖾 , 𝖾𝗌𝗍𝗈 𝗅𝗈 𝗊𝗎𝖾 𝗌𝗂𝖾𝗇𝗍𝗈 𝗉𝗈𝗋 𝗍𝗂́, 𝗇𝗈 𝗅𝗈 𝖼𝖺𝗆𝖻𝗂𝗈 𝗉𝗈𝗋 𝗇𝖺𝖽𝖺 𝖾𝗇 𝖾𝗅 𝗆𝗎𝗇𝖽𝗈. 
+𝖬𝗂́ 𝖻𝖾𝖻𝗂𝗍𝗈, 𝗁𝗈𝗒 𝟬𝟭/𝟬𝟲, 𝖿𝖾𝗌𝗍𝖾𝗃𝗈 𝗍𝗎́ 𝗉𝗋𝗂𝗆𝖾𝗋 𝖼𝗎𝗆𝗉𝗅𝖾𝖺𝗇̃𝗈𝗌 𝗃𝗎𝗇𝗍𝗈 𝖺 𝗍𝗂, 𝖺𝗆𝖺́𝗇𝖽𝗈𝗍𝖾 𝗒 𝖿𝖾𝗅𝗂𝖼𝗂𝗍𝖺́𝗇𝖽𝗈𝗍𝖾, 𝗉𝗈𝗋 𝗁𝖺𝖻𝖾𝗋 𝗅𝗅𝖾𝗀𝖺𝖽𝗈 𝖺 𝖾𝗌𝗍𝖺 𝖾𝖽𝖺𝖽. 𝖣𝗈𝗇𝖽𝖾 𝗇𝗈 𝗌𝗈𝗅𝗈 𝗎𝗇 𝗇𝗎́𝗆𝖾𝗋𝗈 𝖼𝖺𝗆𝖻𝗂𝖺, 𝗌𝗂𝗇𝗈 𝖽𝗈𝗇𝖽𝖾 𝖼𝗈𝗆𝗂𝖾𝗇𝗓𝖺 𝗎𝗇𝖺 𝗇𝗎𝖾𝗏𝖺 𝖾𝗍𝖺𝗉𝖺 𝗉𝖺𝗋𝖺 𝗍𝗎 𝗏𝗂𝖽𝖺. 𝖧𝗈𝗒, 𝗆𝖺́𝗌 𝗊𝗎𝖾 𝗇𝖺𝖽𝖺, 𝗍𝖾 𝖺𝗉𝗅𝖺𝗎𝖽𝗈 𝖿𝗎𝖾𝗋𝗍𝖾𝗆𝖾𝗇𝗍𝖾. 𝖯𝗈𝗋𝗊𝗎𝖾 𝖺𝗉𝖾𝗌𝖺𝗋 𝖽𝖾 𝗍𝗎𝗌 𝖺𝗅𝗍𝖺𝗌 𝗒 𝖻𝖺𝗃𝖺𝗌, 𝗌𝗂𝖾𝗆𝗉𝗋𝖾 𝗍𝖾 𝗆𝖺𝗇𝗍𝗂𝖾𝗇𝖾𝗌 𝖿𝗂𝗋𝗆𝖾 𝗒 𝖾𝗌𝗈, 𝗁𝖺𝖻𝗅𝖺 𝗆𝗎𝖼𝗁𝗈 𝖽𝖾 𝗏𝗈𝗌. 
+
+𝖥𝖤𝖫𝖨𝖹 𝖢𝖴𝖬𝖯𝖫𝖤𝖠𝖭̃𝖮𝖲, 𝖠𝖬𝖮𝖱𝖢𝖨𝖳𝖮, 𝗇̃𝖺𝗆.💞
+[22:54:50] [EVENT] 181973939142738 -> .balance
+[22:54:51] [EVENT] PassiveCoins: 181973939142738 +7
+[22:54:51] [CMD] balance → 181973939142738
+[22:54:51] [ERROR] Error balance: ENOENT: no such file or directory, open 'C:\Users\Ferna\KennyBotV2\assets\icons\balance.png'

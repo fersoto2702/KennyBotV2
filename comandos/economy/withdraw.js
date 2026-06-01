@@ -4,7 +4,7 @@ const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
 const economyPath = path.join(__dirname, '../../database/economy.json')
-const iconPath = path.join(__dirname, '../../assets/icons/withdraw.png')
+const iconPath = path.join(__dirname, '../../assets/icons/withdraw.jpeg')
 
 module.exports = {
 

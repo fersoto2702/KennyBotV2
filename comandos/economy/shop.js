@@ -3,7 +3,7 @@ const path = require('path')
 const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
-const iconPath = path.join(__dirname, '../../assets/icons/shop.png')
+const iconPath = path.join(__dirname, '../../assets/icons/shop.jpeg')
 
 const ITEMS = [
     { id: 1, name: '🛡️ Chaleco', desc: 'Protege de robos', price: 800 },
