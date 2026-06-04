@@ -4,7 +4,7 @@ const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
 const mutePath = path.join(__dirname, '../../database/mute.json')
-const iconPath = path.join(__dirname, '../../assets/icons/mute.png')
+const iconPath = path.join(__dirname, '../../assets/icons/mute.jpeg')
 
 module.exports = {
 

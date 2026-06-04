@@ -4,7 +4,7 @@ const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
 const warnsPath = path.join(__dirname, '../../database/warns.json')
-const iconPath = path.join(__dirname, '../../assets/icons/warnings.png')
+const iconPath = path.join(__dirname, '../../assets/icons/warnings.jpeg')
 
 module.exports = {
 

@@ -5,7 +5,7 @@ const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
 const welcomePath = path.join(__dirname, '../../database/welcome.json')
-const iconPath = path.join(__dirname, '../../assets/icons/welcome.png')
+const iconPath = path.join(__dirname, '../../assets/icons/welcome.jpeg')
 
 module.exports = {
 

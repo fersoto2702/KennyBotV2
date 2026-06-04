@@ -3,7 +3,7 @@ const path = require('path')
 const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
-const iconPath = path.join(__dirname, '../../assets/icons/add.png')
+const iconPath = path.join(__dirname, '../../assets/icons/add.jpeg')
 
 module.exports = {
 

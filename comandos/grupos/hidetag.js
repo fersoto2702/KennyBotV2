@@ -5,7 +5,7 @@ const isGroupAdmin = require('../../src/utils/isAdmin')
 const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
 
-const iconPath = path.join(__dirname, '../../assets/icons/hidetag.png')
+const iconPath = path.join(__dirname, '../../assets/icons/hidetag.jpeg')
 
 const MAX_MENTIONS = 200
 const MAX_MEDIA_MB = 15
