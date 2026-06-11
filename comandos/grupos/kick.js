@@ -17,6 +17,11 @@ module.exports = {
 
     async execute({ sock, from, msg }) {
 
+        console.log('====================')
+        console.log('SOCK USER')
+        console.log(sock.user)
+        console.log('====================')
+
         try {
 
             const sender = msg.key.participant || msg.participant
@@ -30,9 +35,33 @@ module.exports = {
 
             const metadata = await sock.groupMetadata(from)
             const participants = metadata.participants
-            const botId = sock.user.id.split(':')[0]
-            const botData = participants.find(p => p.id.includes(botId))
-            const botAdmin = botData?.admin === 'admin' || botData?.admin === 'superadmin'
+            console.log('====================')
+            console.log('BOT ID:')
+            console.log(sock.user.id)
+
+            console.log('====================')
+            console.log('PARTICIPANTS:')
+
+for (const p of participants) {
+
+    console.log({
+        id: p.id,
+        admin: p.admin
+    })
+
+}
+            const botLid =
+            sock.user.lid
+            ?.split(':')[0] + '@lid'
+
+            const botData =
+            participants.find(
+            p => p.id === botLid
+        )
+
+            const botAdmin =
+            botData?.admin === 'admin' ||
+            botData?.admin === 'superadmin'
 
             if (!botAdmin)
                 return await sock.sendMessage(from, {
