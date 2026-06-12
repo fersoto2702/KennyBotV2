@@ -1,119 +1,59 @@
-const fs =
-    require('fs')
+const fs = require('fs')
+const path = require('path')
+const logger = require('../../src/utils/logger')
+const ui = require('../../src/utils/ui')
+const { getTopMessages } = require('../../src/database/mysql')
 
-const path =
-    require('path')
+const iconPath = path.join(__dirname, '../../assets/icons/topmessages.jpeg')
 
-const logger =
-    require('../../src/utils/logger')
-
-const ui =
-    require('../../src/utils/ui')
-
-const statsPath =
-    path.join(
-        __dirname,
-        '../../database/messages.json'
-    )
-
-const MEDALS = [
-    '🥇',
-    '🥈',
-    '🥉'
-]
+const MEDALS = ['🥇', '🥈', '🥉']
 
 module.exports = {
 
     name: 'topmessages',
-
-    aliases: [
-        'topmsg',
-        'activostop'
-    ],
-
+    aliases: ['topmsg', 'activostop'],
     description: 'Muestra los usuarios más activos',
-
     category: 'general',
-
     cooldown: 10,
 
-    async execute({
-        sock,
-        from
-    }) {
+    async execute({ sock, from, args }) {
 
         try {
 
-            if (!from.endsWith('@g.us')) {
-
+            if (!from.endsWith('@g.us'))
                 return await sock.sendMessage(from, {
-                    text: ui.error(
-                        'SOLO GRUPOS',
-                        'Este comando solo funciona en grupos.'
-                    )
+                    image: fs.readFileSync(iconPath),
+                    caption: ui.error('SOLO GRUPOS', 'Este comando solo funciona en grupos.')
                 })
 
-            }
+            const days = parseInt(args[0]) || 7
 
-            if (!fs.existsSync(statsPath)) {
-                fs.writeFileSync(
-                    statsPath,
-                    JSON.stringify({}, null, 2)
-                )
-            }
-
-            const data = JSON.parse(
-                fs.readFileSync(statsPath)
-            )
-
-            const group =
-                data[from]
-
-            if (
-                !group ||
-                Object.keys(group).length === 0
-            ) {
-
+            if (days < 1 || days > 365)
                 return await sock.sendMessage(from, {
-                    text: ui.warn(
-                        'SIN DATOS',
-                        'No hay estadísticas todavía.'
-                    )
+                    image: fs.readFileSync(iconPath),
+                    caption: ui.warn('DÍAS INVÁLIDOS', 'Usa un número entre 1 y 365.\nEjemplo: /topmessages 30')
                 })
 
-            }
+            const users = await getTopMessages(from, days, 10)
 
-            const users =
-                Object.entries(group)
-                    .sort(
-                        (a, b) =>
-                            b[1].messages -
-                            a[1].messages
-                    )
-                    .slice(0, 10)
+            if (!users || users.length === 0)
+                return await sock.sendMessage(from, {
+                    image: fs.readFileSync(iconPath),
+                    caption: ui.warn('SIN DATOS', `No hay estadísticas de los últimos ${days} días.`)
+                })
 
-            const mentions =
-                users.map(([id]) => id)
+            const mentions = users.map(u => u.usuario)
 
-            const rows =
-                users.map(
-                    ([id, data], i) => {
-
-                        const medal =
-                            MEDALS[i] ||
-                            `${i + 1}.`
-
-                        return (
-                            `${medal} @${id.split('@')[0]}\n` +
-                            `│ 💬 ${data.messages.toLocaleString()} mensajes`
-                        )
-
-                    }
-                ).join('\n' + ui.divider + '\n')
+            const rows = users.map((u, i) => {
+                const medal = MEDALS[i] || `${i + 1}.`
+                return `${medal} @${u.usuario.split('@')[0]}\n│ 💬 ${Number(u.total).toLocaleString()} mensajes`
+            }).join('\n' + ui.divider + '\n')
 
             await sock.sendMessage(from, {
-                text: [
-                    '⟨ USUARIOS MÁS ACTIVOS ⟩',
+                image: fs.readFileSync(iconPath),
+                caption: [
+                    `⟨ USUARIOS MÁS ACTIVOS ⟩`,
+                    `📅 Últimos ${days} días`,
                     ui.divider,
                     rows,
                     ui.divider
@@ -122,11 +62,7 @@ module.exports = {
             })
 
         } catch (err) {
-
-            logger.error(
-                `TopMessages Error: ${err.message}`
-            )
-
+            logger.error(`TopMessages Error: ${err.message}`)
         }
 
     }

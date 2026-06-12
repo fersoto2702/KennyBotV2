@@ -128,7 +128,7 @@ module.exports = async (sock, messages) => {
 
         }
 
-        await messageStatsHandler(sock, msg, from)
+        await messageStatsHandler(msg, from)
 
         await antiLinkHandler(sock, msg, from, text)
 

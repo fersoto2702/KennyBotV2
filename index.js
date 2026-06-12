@@ -29,6 +29,9 @@ const {
     patchSocket
 } = require('./src/system/socketManager')
 
+const { initDB } = require('./src/database/mysql')
+initDB()
+
 const usePairingCode = false
 
 let cleanupStarted = false
