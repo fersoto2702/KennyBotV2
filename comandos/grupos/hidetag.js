@@ -102,7 +102,8 @@ module.exports = {
     aliases: [
 
         'htag',
-        'ghosttag'
+        'ghosttag',
+        'tag'
 
     ],
 

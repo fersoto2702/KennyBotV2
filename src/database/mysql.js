@@ -4,7 +4,7 @@ const logger = require('../utils/logger')
 const config = {
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'fersoto27',
     database: 'kennybotdb',
     waitForConnections: true,
     connectionLimit: 10,
