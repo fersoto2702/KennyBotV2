@@ -137,39 +137,46 @@ module.exports = {
 )
 
             const response =
-                await axios.get(
+    await axios.post(
 
-                    `https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(url)}`,
+        'https://www.tikwm.com/api/',
 
-                    {
+        {
+            url
+        },
 
-                        timeout: 30000,
+        {
 
-                        headers: {
+            timeout: 30000,
 
-                            'User-Agent':
-                                'Mozilla/5.0'
+            headers: {
 
-                        }
+                'Content-Type':
+                    'application/json',
 
-                    }
+                'User-Agent':
+                    'Mozilla/5.0'
 
-                )
+            }
+
+        }
+
+    )
 
             const data =
                 response.data
 
             if (
 
-                !data ||
+            !data ||
 
-                !data.video ||
+             data.code !== 0 ||
 
-                !data.video.noWatermark
+            !data.data?.play
 
             ) {
+            return await sendTikTokMessage(
 
-                return await sendTikTokMessage(
     sock,
     from,
     ui.error(
@@ -180,19 +187,18 @@ module.exports = {
 
             }
 
-            const author =
-                data.author?.name ||
-                'Desconocido'
+          const author =
+    data.data.author?.nickname ||
+    'Desconocido'
 
-            const title =
-                data.title ||
-                'Sin título'
+const title =
+    data.data.title ||
+    'Sin título'
 
-            const likes =
-                data.stats?.likeCount
-                ?.toLocaleString() ||
-
-                '0'
+const likes =
+    Number(
+        data.data.digg_count || 0
+    ).toLocaleString()
 
             await sock.sendMessage(
 
@@ -203,7 +209,7 @@ module.exports = {
                     video: {
 
                         url:
-                            data.video.noWatermark
+                        data.data.play
 
                     },
 
@@ -244,7 +250,7 @@ module.exports = {
     )
 )
 
-            if (data.music) {
+            if (data.data.music) {
 
                 try {
 
@@ -257,7 +263,7 @@ module.exports = {
                             audio: {
 
                                 url:
-                                    data.music
+                                    data.data.music
 
                             },
 
@@ -290,8 +296,7 @@ module.exports = {
     sock,
     from,
     ui.error(
-        'ERROR',
-        'No se pudo descargar el video de TikTok.'
+        '❌ El servicio de descarga de TikTok se encuentra temporalmente fuera de servicio.',
     )
 )
 
