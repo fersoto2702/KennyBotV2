@@ -5,9 +5,15 @@ module.exports = async ({ msg, from }) => {
 
     try {
 
+        if (!from) return
+
+        if (typeof from !== 'string') return
+
         if (!from.endsWith('@g.us')) return
 
         if (!msg?.message) return
+
+        if (msg.key.fromMe) return
 
         const sender =
             msg.key.participant ||
@@ -15,8 +21,6 @@ module.exports = async ({ msg, from }) => {
             msg.key.remoteJid
 
         if (!sender) return
-
-        if (msg.key.fromMe) return
 
         await registerMessage(from, sender)
 

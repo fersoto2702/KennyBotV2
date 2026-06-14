@@ -115256,3 +115256,78 @@ Utilizar whatsapp o business clon, multispace o clone app pro
 [21:24:50] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
 [21:25:23] [EVENT] 120363406317761199 -> Gran parte, zedrick y su pareja saben muy bien lo que hacen, están concientes y si ellos deciden arreglarlo es rollo de ellos.
 [21:25:23] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:25:49] [OK] UnifiedRateLimiter cargado
+[21:25:49] [OK] Comando cargado: ban
+[21:25:49] [OK] Comando cargado: unban
+[21:25:49] [OK] Comando cargado: antilink
+[21:25:49] [OK] Comando cargado: antibot
+[21:25:49] [OK] Comando cargado: antifake
+[21:25:49] [OK] Comando cargado: autolevelup
+[21:25:49] [OK] Comando cargado: crush
+[21:25:49] [OK] Comando cargado: fusion
+[21:25:49] [OK] Comando cargado: qc
+[21:25:49] [OK] Comando cargado: rate
+[21:25:49] [OK] Comando cargado: ship
+[21:25:49] [OK] Comando cargado: facebook
+[21:25:49] [OK] Comando cargado: instagram
+[21:25:49] [OK] Comando cargado: pinterest
+[21:25:50] [OK] Comando cargado: play
+[21:25:50] [OK] Comando cargado: spotify
+[21:25:50] [OK] Comando cargado: tiktok
+[21:25:50] [OK] Comando cargado: ytmp3
+[21:25:50] [OK] Comando cargado: ytmp4
+[21:25:50] [OK] Comando cargado: balance
+[21:25:50] [OK] Comando cargado: buy
+[21:25:50] [OK] Comando cargado: crime
+[21:25:50] [OK] Comando cargado: daily
+[21:25:50] [OK] Comando cargado: deposit
+[21:25:50] [OK] Comando cargado: gamble
+[21:25:50] [OK] Comando cargado: inventory
+[21:25:50] [OK] Comando cargado: leaderboardmoney
+[21:25:50] [OK] Comando cargado: open
+[21:25:50] [OK] Comando cargado: pay
+[21:25:50] [OK] Comando cargado: rob
+[21:25:50] [OK] Comando cargado: shop
+[21:25:50] [OK] Comando cargado: slots
+[21:25:50] [OK] Comando cargado: withdraw
+[21:25:50] [OK] Comando cargado: work
+[21:25:51] [OK] Comando cargado: exportstats
+[21:25:51] [OK] Comando cargado: inactive
+[21:25:51] [OK] Comando cargado: msgstats
+[21:25:51] [OK] Comando cargado: topmessages
+[21:25:51] [OK] Comando cargado: add
+[21:25:51] [OK] Comando cargado: demote
+[21:25:51] [OK] Comando cargado: hidetag
+[21:25:51] [OK] Comando cargado: kick
+[21:25:51] [OK] Comando cargado: mute
+[21:25:51] [OK] Comando cargado: promote
+[21:25:51] [OK] Comando cargado: tagall
+[21:25:51] [OK] Comando cargado: unwarn
+[21:25:51] [OK] Comando cargado: warn
+[21:25:51] [OK] Comando cargado: warnings
+[21:25:51] [OK] Comando cargado: welcome
+[21:25:51] [OK] Comando cargado: ia
+[21:25:51] [OK] Comando cargado: leaderboard
+[21:25:51] [OK] Comando cargado: level
+[21:25:51] [OK] Comando cargado: rank
+[21:25:51] [OK] Comando cargado: menu
+[21:25:51] [OK] Comando cargado: ping
+[21:25:51] [OK] Comando cargado: addpremium
+[21:25:51] [OK] Comando cargado: delpremium
+[21:25:51] [OK] Comando cargado: premium
+[21:25:51] [OK] Comando cargado: profile
+[21:25:51] [OK] Comando cargado: sticker
+[21:25:51] [OK] Comando cargado: addjoinmsg
+[21:25:51] [OK] Comando cargado: clearjoinmsg
+[21:25:51] [OK] Comando cargado: deljoinmsg
+[21:25:51] [OK] Comando cargado: listjoinmsg
+[21:25:51] [INFO] Iniciando KennyBot...
+[21:25:52] [OK] SocketManager cargado
+[21:25:52] [OK] MySQL conectado y tabla lista
+[21:25:53] [OK] KennyBot conectado
+[21:26:51] [EVENT] 74595528876184 -> #blackaxe🇹🇹
+[21:26:51] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:26:51] [EVENT] PassiveCoins: 74595528876184 +5
+[21:27:04] [EVENT] 129579716989035 -> OH
+[21:27:04] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:27:04] [EVENT] PassiveCoins: 129579716989035 +7
