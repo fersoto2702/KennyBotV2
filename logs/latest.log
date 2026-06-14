@@ -115104,3 +115104,155 @@ Utilizar whatsapp o business clon, multispace o clone app pro
 [21:09:59] [EVENT] 1211784810572 -> Pásame tu contrato al priv
 [21:09:59] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
 [21:09:59] [EVENT] PassiveCoins: 1211784810572 +2
+[21:11:36] [OK] UnifiedRateLimiter cargado
+[21:11:36] [OK] Comando cargado: ban
+[21:11:36] [OK] Comando cargado: unban
+[21:11:36] [OK] Comando cargado: antilink
+[21:11:36] [OK] Comando cargado: antibot
+[21:11:36] [OK] Comando cargado: antifake
+[21:11:36] [OK] Comando cargado: autolevelup
+[21:11:36] [OK] Comando cargado: crush
+[21:11:36] [OK] Comando cargado: fusion
+[21:11:36] [OK] Comando cargado: qc
+[21:11:36] [OK] Comando cargado: rate
+[21:11:36] [OK] Comando cargado: ship
+[21:11:36] [OK] Comando cargado: facebook
+[21:11:36] [OK] Comando cargado: instagram
+[21:11:36] [OK] Comando cargado: pinterest
+[21:11:37] [OK] Comando cargado: play
+[21:11:37] [OK] Comando cargado: spotify
+[21:11:37] [OK] Comando cargado: tiktok
+[21:11:37] [OK] Comando cargado: ytmp3
+[21:11:37] [OK] Comando cargado: ytmp4
+[21:11:37] [OK] Comando cargado: balance
+[21:11:37] [OK] Comando cargado: buy
+[21:11:37] [OK] Comando cargado: crime
+[21:11:37] [OK] Comando cargado: daily
+[21:11:37] [OK] Comando cargado: deposit
+[21:11:37] [OK] Comando cargado: gamble
+[21:11:37] [OK] Comando cargado: inventory
+[21:11:37] [OK] Comando cargado: leaderboardmoney
+[21:11:37] [OK] Comando cargado: open
+[21:11:37] [OK] Comando cargado: pay
+[21:11:37] [OK] Comando cargado: rob
+[21:11:37] [OK] Comando cargado: shop
+[21:11:37] [OK] Comando cargado: slots
+[21:11:37] [OK] Comando cargado: withdraw
+[21:11:37] [OK] Comando cargado: work
+[21:11:38] [OK] Comando cargado: exportstats
+[21:11:38] [OK] Comando cargado: inactive
+[21:11:38] [OK] Comando cargado: msgstats
+[21:11:38] [OK] Comando cargado: topmessages
+[21:11:38] [OK] Comando cargado: add
+[21:11:38] [OK] Comando cargado: demote
+[21:11:38] [OK] Comando cargado: hidetag
+[21:11:38] [OK] Comando cargado: kick
+[21:11:38] [OK] Comando cargado: mute
+[21:11:38] [OK] Comando cargado: promote
+[21:11:38] [OK] Comando cargado: tagall
+[21:11:38] [OK] Comando cargado: unwarn
+[21:11:38] [OK] Comando cargado: warn
+[21:11:38] [OK] Comando cargado: warnings
+[21:11:39] [OK] Comando cargado: welcome
+[21:11:39] [OK] Comando cargado: ia
+[21:11:39] [OK] Comando cargado: leaderboard
+[21:11:39] [OK] Comando cargado: level
+[21:11:39] [OK] Comando cargado: rank
+[21:11:39] [OK] Comando cargado: menu
+[21:11:39] [OK] Comando cargado: ping
+[21:11:39] [OK] Comando cargado: addpremium
+[21:11:39] [OK] Comando cargado: delpremium
+[21:11:39] [OK] Comando cargado: premium
+[21:11:39] [OK] Comando cargado: profile
+[21:11:39] [OK] Comando cargado: sticker
+[21:11:39] [OK] Comando cargado: addjoinmsg
+[21:11:39] [OK] Comando cargado: clearjoinmsg
+[21:11:39] [OK] Comando cargado: deljoinmsg
+[21:11:39] [OK] Comando cargado: listjoinmsg
+[21:11:39] [INFO] Iniciando KennyBot...
+[21:11:39] [OK] SocketManager cargado
+[21:11:39] [ERROR] MySQL init error: Access denied for user 'root'@'localhost' (using password: YES)
+[21:11:40] [OK] KennyBot conectado
+[21:12:07] [EVENT] 144453356490962 -> .crush
+[21:12:07] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:12:07] [EVENT] PassiveCoins: 144453356490962 +7
+[21:12:07] [CMD] crush → 144453356490962
+[21:12:16] [EVENT] 144453356490962 -> .ship
+[21:12:16] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:12:16] [CMD] ship → 144453356490962
+[21:12:33] [EVENT] 55783672807489 -> Voy amorsh.
+[21:12:33] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:12:33] [EVENT] PassiveCoins: 55783672807489 +5
+[21:13:30] [EVENT] 161594017357992 -> Como estas
+[21:13:30] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:13:30] [EVENT] PassiveCoins: 161594017357992 +1
+[21:13:57] [EVENT] 248662030565597 -> CHATGPT.
+[21:13:57] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:13:57] [EVENT] PassiveCoins: 248662030565597 +9
+[21:14:34] [EVENT] 13327820398690 -> ¡Hola con todos!
+[21:14:34] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:14:34] [EVENT] PassiveCoins: 13327820398690 +4
+[21:14:37] [EVENT] 13327820398690 -> ¿Que fue?
+[21:14:37] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:16:25] [EVENT] 1211784810572 -> Pasen #
+[21:16:25] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:16:25] [EVENT] PassiveCoins: 1211784810572 +2
+[21:17:28] [EVENT] 70850384507065 -> pasen texto.
+[21:17:28] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:17:28] [EVENT] PassiveCoins: 70850384507065 +4
+[21:17:59] [EVENT] 55783672807489 -> Buenas noches a todos, los que tengan alianza con D'Angelo les comento que no soy el fundador, el fundador es mi hermano Maximiliano D'Angelo, mi familia se llama Vercetti, si están interesados en hacer la labranza con mi familia son bienvenidos, si quieren tenerla con D'Angelo vayan al privado de mi hermano y arreglen los requisitos con el, desde ya no molesto y tengan linda noche.
+[21:17:59] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:17:59] [EVENT] PassiveCoins: 55783672807489 +10
+[21:18:30] [EVENT] 109135941075108 -> Okey, chiqui.
+[21:18:30] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:18:30] [EVENT] PassiveCoins: 109135941075108 +7
+[21:18:53] [EVENT] 55783672807489 -> Tienen que cambiar el #
+[21:18:53] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:19:05] [EVENT] 55783672807489 -> Es #familiavercetti🇫🇷
+[21:19:05] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:19:05] [EVENT] PassiveCoins: 55783672807489 +9
+[21:19:11] [EVENT] 129579716989035 -> Fotoo
+[21:19:11] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:19:11] [EVENT] PassiveCoins: 129579716989035 +6
+[21:19:39] [EVENT] 109135941075108 -> Dale, dale.
+[21:19:39] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:19:39] [EVENT] PassiveCoins: 109135941075108 +6
+[21:20:15] [EVENT] 1211784810572 -> Que, de quién me hablas mami
+[21:20:15] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:20:15] [EVENT] PassiveCoins: 1211784810572 +3
+[21:20:19] [EVENT] 177898216538250 -> JAJAJAJ
+[21:20:19] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:20:19] [EVENT] PassiveCoins: 177898216538250 +9
+[21:23:35] [EVENT] 191925646794801 -> Buenas.
+[21:23:35] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:23:35] [EVENT] PassiveCoins: 191925646794801 +6
+[21:24:03] [EVENT] 53979568406548 -> Nadie amoi
+[21:24:03] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:03] [EVENT] PassiveCoins: 53979568406548 +5
+[21:24:08] [EVENT] 53979568406548 -> Haló.
+[21:24:08] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:22] [EVENT] 120363406317761199 -> ¿Que fue?
+
+> WL.
+[21:24:22] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:39] [EVENT] 92161928392847 -> Lau
+[21:24:39] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:39] [EVENT] PassiveCoins: 92161928392847 +9
+[21:24:40] [EVENT] 92161928392847 -> Lau
+[21:24:40] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:40] [EVENT] 92161928392847 -> Lau
+[21:24:40] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:42] [EVENT] 92161928392847 -> Pv
+[21:24:42] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:42] [EVENT] 92161928392847 -> Pb
+[21:24:42] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:24:43] [EVENT] 92161928392847 -> Pv
+[21:24:43] [WARN] Spam detectado: 92161928392847
+[21:24:43] [WARN] Spam detectado: 92161928392847
+[21:24:45] [EVENT] 92161928392847 -> Pleasw
+[21:24:45] [WARN] Spam detectado: 92161928392847
+[21:24:45] [WARN] Spam detectado: 92161928392847
+[21:24:50] [EVENT] 92161928392847 -> Osh
+[21:24:50] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[21:25:23] [EVENT] 120363406317761199 -> Gran parte, zedrick y su pareja saben muy bien lo que hacen, están concientes y si ellos deciden arreglarlo es rollo de ellos.
+[21:25:23] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
