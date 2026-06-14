@@ -110052,3 +110052,89 @@ Como dice Mackeznie; xoxo para todos ustedes, traumados. 🤏
 [17:07:33] [EVENT] PassiveCoins: 16552971780269 +2
 [17:07:36] [EVENT] 106662039974072 -> Soy el mejor amigo celoso
 [17:07:36] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[17:32:49] [OK] UnifiedRateLimiter cargado
+[17:32:49] [OK] Comando cargado: ban
+[17:32:49] [OK] Comando cargado: unban
+[17:32:49] [OK] Comando cargado: antilink
+[17:32:49] [OK] Comando cargado: antibot
+[17:32:49] [OK] Comando cargado: antifake
+[17:32:49] [OK] Comando cargado: autolevelup
+[17:32:49] [ERROR] fusion.js no tiene name
+[17:32:49] [OK] Comando cargado: qc
+[17:32:49] [OK] Comando cargado: ship
+[17:32:49] [OK] Comando cargado: facebook
+[17:32:49] [OK] Comando cargado: instagram
+[17:32:50] [OK] Comando cargado: pinterest
+[17:32:50] [OK] Comando cargado: play
+[17:32:50] [OK] Comando cargado: spotify
+[17:32:50] [OK] Comando cargado: tiktok
+[17:32:50] [OK] Comando cargado: ytmp3
+[17:32:50] [OK] Comando cargado: ytmp4
+[17:32:50] [OK] Comando cargado: balance
+[17:32:50] [OK] Comando cargado: buy
+[17:32:50] [OK] Comando cargado: crime
+[17:32:50] [OK] Comando cargado: daily
+[17:32:50] [OK] Comando cargado: deposit
+[17:32:50] [OK] Comando cargado: gamble
+[17:32:50] [OK] Comando cargado: inventory
+[17:32:50] [OK] Comando cargado: leaderboardmoney
+[17:32:50] [OK] Comando cargado: open
+[17:32:50] [OK] Comando cargado: pay
+[17:32:50] [OK] Comando cargado: rob
+[17:32:50] [OK] Comando cargado: shop
+[17:32:50] [OK] Comando cargado: slots
+[17:32:50] [OK] Comando cargado: withdraw
+[17:32:50] [OK] Comando cargado: work
+[17:32:51] [OK] Comando cargado: exportstats
+[17:32:51] [OK] Comando cargado: inactive
+[17:32:51] [OK] Comando cargado: msgstats
+[17:32:51] [OK] Comando cargado: topmessages
+[17:32:51] [OK] Comando cargado: add
+[17:32:51] [OK] Comando cargado: demote
+[17:32:51] [OK] Comando cargado: hidetag
+[17:32:51] [OK] Comando cargado: kick
+[17:32:51] [OK] Comando cargado: mute
+[17:32:51] [OK] Comando cargado: promote
+[17:32:52] [OK] Comando cargado: tagall
+[17:32:52] [OK] Comando cargado: unwarn
+[17:32:52] [OK] Comando cargado: warn
+[17:32:52] [OK] Comando cargado: warnings
+[17:32:52] [OK] Comando cargado: welcome
+[17:32:52] [OK] Comando cargado: ia
+[17:32:52] [OK] Comando cargado: leaderboard
+[17:32:52] [OK] Comando cargado: level
+[17:32:52] [OK] Comando cargado: rank
+[17:32:52] [OK] Comando cargado: menu
+[17:32:52] [OK] Comando cargado: ping
+[17:32:52] [OK] Comando cargado: addpremium
+[17:32:52] [OK] Comando cargado: delpremium
+[17:32:52] [OK] Comando cargado: premium
+[17:32:52] [OK] Comando cargado: profile
+[17:32:52] [OK] Comando cargado: sticker
+[17:32:52] [OK] Comando cargado: addjoinmsg
+[17:32:52] [OK] Comando cargado: clearjoinmsg
+[17:32:52] [OK] Comando cargado: deljoinmsg
+[17:32:52] [OK] Comando cargado: listjoinmsg
+[17:32:52] [INFO] Iniciando KennyBot...
+[17:32:52] [OK] SocketManager cargado
+[17:32:53] [ERROR] MySQL init error: Access denied for user 'root'@'localhost' (using password: YES)
+[17:32:54] [OK] KennyBot conectado
+[17:33:04] [EVENT] 70850384507065 -> Hola, mamorr.
+[17:33:04] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[17:33:04] [EVENT] PassiveCoins: 70850384507065 +8
+[17:33:59] [EVENT] 177898216538250 -> Pollito
+[17:33:59] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[17:33:59] [EVENT] PassiveCoins: 177898216538250 +7
+[17:34:10] [EVENT] 177898216538250 -> Era estw mientras editaba y pensaba :
+[17:34:10] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[17:35:05] [EVENT] 182489586901024 -> Provechito
+[17:35:05] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[17:35:05] [EVENT] LevelUp: 182489586901024 +1
+[17:35:06] [EVENT] PassiveCoins: 182489586901024 +2
+[17:35:09] [EVENT] 182489586901024 -> MI CIELO
+[17:35:09] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[17:35:27] [EVENT] 109135941075108 -> SI NO LE CONTESTO SE DESESPERA 🗣️🗣️🗣️
+[17:35:27] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
+[17:35:27] [EVENT] PassiveCoins: 109135941075108 +10
+[17:35:38] [EVENT] 109135941075108 -> Te adoramos.
+[17:35:38] [ERROR] MessageStatsHandler: Cannot read properties of undefined (reading 'endsWith')
