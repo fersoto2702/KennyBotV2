@@ -167651,3 +167651,101 @@ Miren lo q encontré
 [23:08:29] [EVENT] 160314687520773 -> Manda stickers buenos.
 [23:08:51] [EVENT] 189683472588903 -> Te juro.
 [23:08:51] [EVENT] PassiveCoins: 189683472588903 +2
+[23:09:24] [OK] UnifiedRateLimiter cargado
+[23:09:24] [OK] Comando cargado: ban
+[23:09:24] [OK] Comando cargado: unban
+[23:09:24] [OK] Comando cargado: antilink
+[23:09:24] [OK] Comando cargado: antibot
+[23:09:24] [OK] Comando cargado: antifake
+[23:09:24] [OK] Comando cargado: autolevelup
+[23:09:24] [OK] Comando cargado: crush
+[23:09:24] [OK] Comando cargado: fusion
+[23:09:24] [OK] Comando cargado: qc
+[23:09:24] [OK] Comando cargado: rate
+[23:09:24] [OK] Comando cargado: ship
+[23:09:24] [OK] Comando cargado: facebook
+[23:09:24] [OK] Comando cargado: instagram
+[23:09:24] [OK] Comando cargado: pinterest
+[23:09:25] [OK] Comando cargado: play
+[23:09:25] [OK] Comando cargado: spotify
+[23:09:25] [OK] Comando cargado: tiktok
+[23:09:25] [OK] Comando cargado: ytmp3
+[23:09:25] [OK] Comando cargado: ytmp4
+[23:09:25] [OK] Comando cargado: balance
+[23:09:25] [OK] Comando cargado: buy
+[23:09:25] [OK] Comando cargado: crime
+[23:09:25] [OK] Comando cargado: daily
+[23:09:25] [OK] Comando cargado: deposit
+[23:09:25] [OK] Comando cargado: gamble
+[23:09:25] [OK] Comando cargado: inventory
+[23:09:25] [OK] Comando cargado: leaderboardmoney
+[23:09:25] [OK] Comando cargado: open
+[23:09:25] [OK] Comando cargado: pay
+[23:09:25] [OK] Comando cargado: rob
+[23:09:25] [OK] Comando cargado: shop
+[23:09:25] [OK] Comando cargado: slots
+[23:09:25] [OK] Comando cargado: withdraw
+[23:09:25] [OK] Comando cargado: work
+[23:09:26] [OK] Comando cargado: exportstats
+[23:09:26] [OK] Comando cargado: inactive
+[23:09:26] [OK] Comando cargado: msgstats
+[23:09:26] [OK] Comando cargado: topmessages
+[23:09:26] [OK] Comando cargado: add
+[23:09:26] [OK] Comando cargado: demote
+[23:09:26] [OK] Comando cargado: hidetag
+[23:09:26] [OK] Comando cargado: kick
+[23:09:26] [OK] Comando cargado: mute
+[23:09:26] [OK] Comando cargado: promote
+[23:09:26] [OK] Comando cargado: tagall
+[23:09:26] [OK] Comando cargado: unwarn
+[23:09:26] [OK] Comando cargado: warn
+[23:09:26] [OK] Comando cargado: warnings
+[23:09:26] [OK] Comando cargado: welcome
+[23:09:26] [OK] Comando cargado: ia
+[23:09:26] [OK] Comando cargado: leaderboard
+[23:09:26] [OK] Comando cargado: level
+[23:09:26] [OK] Comando cargado: rank
+[23:09:26] [OK] Comando cargado: menu
+[23:09:26] [OK] Comando cargado: ping
+[23:09:26] [OK] Comando cargado: addpremium
+[23:09:26] [OK] Comando cargado: delpremium
+[23:09:26] [OK] Comando cargado: premium
+[23:09:26] [OK] Comando cargado: profile
+[23:09:26] [OK] Comando cargado: sticker
+[23:09:26] [OK] Comando cargado: addjoinmsg
+[23:09:26] [OK] Comando cargado: clearjoinmsg
+[23:09:26] [OK] Comando cargado: deljoinmsg
+[23:09:26] [OK] Comando cargado: listjoinmsg
+[23:09:26] [INFO] Iniciando KennyBot...
+[23:09:27] [OK] SocketManager cargado
+[23:09:27] [OK] MySQL conectado y tabla lista
+[23:09:29] [OK] KennyBot conectado
+[23:09:29] [EVENT] 189683472588903 -> Pasa más así
+[23:09:29] [EVENT] PassiveCoins: 189683472588903 +2
+[23:09:48] [EVENT] 160314687520773 -> .
+[23:09:48] [EVENT] PassiveCoins: 160314687520773 +10
+[23:09:50] [EVENT] 144453356490962 -> .menu
+[23:09:50] [EVENT] PassiveCoins: 144453356490962 +6
+[23:09:50] [CMD] menu → 144453356490962
+[23:10:02] [EVENT] 189683472588903 -> Cerise si sabe.
+[23:10:03] [EVENT] 160314687520773 -> Peidón Cerise pero tienes stickers buenos.
+[23:10:07] [EVENT] 144453356490962 -> .tagall
+[23:10:07] [CMD] tagall → 144453356490962
+[23:10:08] [EVENT] Tagall usado: 120363425530676036
+[23:10:09] [EVENT] 189683472588903 -> .
+[23:10:12] [EVENT] 189683472588903 -> 😭
+[23:10:13] [EVENT] 267718850830503 -> Por el grupo? El otro el de perreo intenso veida
+[23:10:13] [EVENT] PassiveCoins: 267718850830503 +4
+[23:10:20] [EVENT] 189683472588903 -> El de perreo
+[23:10:22] [EVENT] 267718850830503 -> JAJAJA
+[23:10:32] [EVENT] 126590453325895 -> Aca anda cerise que no contesta.
+[23:10:33] [EVENT] PassiveCoins: 126590453325895 +10
+[23:10:34] [EVENT] 126590453325895 -> No, bloq.
+[23:10:44] [EVENT] 267718850830503 -> Heyyy amoii
+[23:11:18] [EVENT] 126590453325895 -> No.
+[23:13:37] [EVENT] 53979568406548 -> Osh
+[23:13:38] [EVENT] 53979568406548 -> OSH
+[23:13:47] [EVENT] 53979568406548 -> Pero sí w
+[23:13:50] [EVENT] 53979568406548 -> Me gustas hace harto
+[23:13:51] [EVENT] 53979568406548 -> Y ya
+[23:13:53] [EVENT] 53979568406548 -> Hasta ahí

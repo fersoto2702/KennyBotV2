@@ -74,9 +74,9 @@ module.exports = {
     text: [
         `📢 TAGALL`,
         ui.divider,
-        `🏷️ Grupo: ${groupName}`,
-        `👥 Miembros: ${participants.length}`,
-        `👑 Admins: ${admins.length}`,
+        `*🏷️ Grupo*: ${groupName}`,
+        `*👥 Miembros*: ${participants.length}`,
+        `*👑 Admins*: ${admins.length}`,
         ui.divider,
         `👑 ADMINISTRADORES\n`,
         adminList,
