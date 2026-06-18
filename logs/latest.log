@@ -167749,3 +167749,85 @@ Miren lo q encontré
 [23:13:50] [EVENT] 53979568406548 -> Me gustas hace harto
 [23:13:51] [EVENT] 53979568406548 -> Y ya
 [23:13:53] [EVENT] 53979568406548 -> Hasta ahí
+[23:15:03] [OK] UnifiedRateLimiter cargado
+[23:15:03] [OK] Comando cargado: ban
+[23:15:03] [OK] Comando cargado: unban
+[23:15:03] [OK] Comando cargado: antilink
+[23:15:03] [OK] Comando cargado: antibot
+[23:15:03] [OK] Comando cargado: antifake
+[23:15:03] [OK] Comando cargado: autolevelup
+[23:15:03] [OK] Comando cargado: crush
+[23:15:03] [OK] Comando cargado: fusion
+[23:15:03] [OK] Comando cargado: qc
+[23:15:03] [OK] Comando cargado: rate
+[23:15:03] [OK] Comando cargado: ship
+[23:15:04] [OK] Comando cargado: facebook
+[23:15:04] [OK] Comando cargado: instagram
+[23:15:04] [OK] Comando cargado: pinterest
+[23:15:04] [OK] Comando cargado: play
+[23:15:04] [OK] Comando cargado: spotify
+[23:15:04] [OK] Comando cargado: tiktok
+[23:15:04] [OK] Comando cargado: ytmp3
+[23:15:04] [OK] Comando cargado: ytmp4
+[23:15:04] [OK] Comando cargado: balance
+[23:15:04] [OK] Comando cargado: buy
+[23:15:04] [OK] Comando cargado: crime
+[23:15:04] [OK] Comando cargado: daily
+[23:15:04] [OK] Comando cargado: deposit
+[23:15:04] [OK] Comando cargado: gamble
+[23:15:04] [OK] Comando cargado: inventory
+[23:15:04] [OK] Comando cargado: leaderboardmoney
+[23:15:04] [OK] Comando cargado: open
+[23:15:04] [OK] Comando cargado: pay
+[23:15:04] [OK] Comando cargado: rob
+[23:15:04] [OK] Comando cargado: shop
+[23:15:04] [OK] Comando cargado: slots
+[23:15:04] [OK] Comando cargado: withdraw
+[23:15:04] [OK] Comando cargado: work
+[23:15:05] [OK] Comando cargado: exportstats
+[23:15:05] [OK] Comando cargado: inactive
+[23:15:05] [OK] Comando cargado: msgstats
+[23:15:05] [OK] Comando cargado: topmessages
+[23:15:05] [OK] Comando cargado: add
+[23:15:05] [OK] Comando cargado: demote
+[23:15:05] [OK] Comando cargado: hidetag
+[23:15:05] [OK] Comando cargado: kick
+[23:15:05] [OK] Comando cargado: mute
+[23:15:05] [OK] Comando cargado: promote
+[23:15:05] [OK] Comando cargado: tagall
+[23:15:05] [OK] Comando cargado: unwarn
+[23:15:05] [OK] Comando cargado: warn
+[23:15:05] [OK] Comando cargado: warnings
+[23:15:05] [OK] Comando cargado: welcome
+[23:15:05] [OK] Comando cargado: ia
+[23:15:05] [OK] Comando cargado: leaderboard
+[23:15:05] [OK] Comando cargado: level
+[23:15:05] [OK] Comando cargado: rank
+[23:15:05] [OK] Comando cargado: menu
+[23:15:05] [OK] Comando cargado: ping
+[23:15:05] [OK] Comando cargado: addpremium
+[23:15:05] [OK] Comando cargado: delpremium
+[23:15:05] [OK] Comando cargado: premium
+[23:15:05] [OK] Comando cargado: profile
+[23:15:05] [OK] Comando cargado: sticker
+[23:15:05] [OK] Comando cargado: addjoinmsg
+[23:15:05] [OK] Comando cargado: clearjoinmsg
+[23:15:05] [OK] Comando cargado: deljoinmsg
+[23:15:05] [OK] Comando cargado: listjoinmsg
+[23:15:05] [INFO] Iniciando KennyBot...
+[23:15:06] [OK] SocketManager cargado
+[23:15:06] [OK] MySQL conectado y tabla lista
+[23:15:07] [OK] KennyBot conectado
+[23:15:15] [EVENT] 144453356490962 -> .tagall
+[23:15:15] [EVENT] PassiveCoins: 144453356490962 +10
+[23:15:15] [CMD] tagall → 144453356490962
+[23:15:15] [EVENT] Tagall usado: 120363425530676036
+[23:17:21] [EVENT] 92161928392847 -> Y como dijo Dereck "Que mañana me la metan a mi pero no a México" frases que si dijo Dereck.
+[23:17:21] [EVENT] PassiveCoins: 92161928392847 +2
+[23:17:32] [EVENT] 53979568406548 -> No, no sé
+[23:17:47] [EVENT] 53979568406548 -> Y no necesariamente tiene que acabar como las otras dos si se hacen las cosas bien
+[23:18:19] [EVENT] 29696175652956 -> ... ¿Se lo diste a alguien?
+[23:18:19] [EVENT] PassiveCoins: 29696175652956 +10
+[23:18:58] [EVENT] 266816320491607 -> Porque no eres admin, Yaya.
+[23:18:58] [EVENT] PassiveCoins: 266816320491607 +10
+[23:19:03] [EVENT] 266816320491607 -> JAJAJAJAAJJAJAJAJA
