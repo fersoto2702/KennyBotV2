@@ -78,10 +78,10 @@ module.exports = {
         `*👥 Miembros*: *${participants.length}*`,
         `*👑 Admins*: *${admins.length}*`,
         ui.divider,
-        `*👑 ADMINISTRADORES\n*`,
+        `👑 ADMINISTRADORES\n`,
         adminList,
         ui.divider,
-        `*👥 MIEMBROS\n*`,
+        `👥 MIEMBROS\n`,
         memberList,
         ui.divider,
         participants.length > MAX_MENTIONS
