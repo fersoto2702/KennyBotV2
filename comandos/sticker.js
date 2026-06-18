@@ -4,9 +4,6 @@ const fs =
 const path =
     require('path')
 
-const Jimp =
-    require('jimp')
-
 const {
     downloadMediaMessage
 } = require('@whiskeysockets/baileys')
@@ -224,12 +221,17 @@ module.exports = {
 
             if (imageMessage) {
 
-                const image =
-                    await Jimp.read(buffer)
+               const sharp =
+    require('sharp')
 
-                image.resize(512, 512)
-
-                await image.writeAsync(outputPath)
+await sharp(buffer)
+    .resize(512, 512, {
+        fit: 'inside'
+    })
+    .webp({
+        quality: 100
+    })
+    .toFile(outputPath)
 
             } else {
 

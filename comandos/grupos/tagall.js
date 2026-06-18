@@ -31,7 +31,6 @@ module.exports = {
     category: 'grupos',
     adminOnly: true,
     groupOnly: true,
-    cooldown: 20,
 
     async execute({ sock, from, msg }) {
 

@@ -75,10 +75,7 @@ async function sendSuccess(
         await sock.safeSendMessage(
             from,
             {
-                image:
-                    fs.readFileSync(iconPath),
-
-                caption:
+                text:
                     ui.success(
                         'HIDETAG EJECUTADO',
                         [
@@ -116,8 +113,6 @@ module.exports = {
     adminOnly: true,
 
     groupOnly: true,
-
-    cooldown: 15,
 
     async execute({
 

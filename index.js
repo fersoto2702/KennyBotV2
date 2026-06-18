@@ -234,7 +234,15 @@ async function startBot() {
 
                     if (!msg) return
                     if (!msg.message) return
-                    if (msg.key.fromMe) return
+                    const text =
+    msg.message?.conversation ||
+    msg.message?.extendedTextMessage?.text ||
+    ''
+
+if (
+    msg.key.fromMe &&
+    !text.startsWith('.')
+) return
 
                     if (
                         msg.key.remoteJid ===
