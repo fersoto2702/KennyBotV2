@@ -9,49 +9,54 @@ const ui =
 
 const categoryConfig = {
 
-    admin: {
-        emoji: '🛡',
-        label: 'Admin'
-    },
-
-    configuración: {
-        emoji: '⚙',
-        label: 'Configuración'
+    general: {
+        emoji: '🤖',
+        label: '𝐆𝐄𝐍𝐄𝐑𝐀𝐋'
     },
 
     descargas: {
-        emoji: '⬇',
-        label: 'Descargas'
+        emoji: '⬇️',
+        label: '𝐃𝐄𝐒𝐂𝐀𝐑𝐆𝐀𝐒'
+    },
+
+    diversión: {
+        emoji: '🎭',
+        label: '𝐃𝐈𝐕𝐄𝐑𝐒𝐈𝐎𝐍'
     },
 
     economía: {
         emoji: '🪙',
-        label: 'Economía'
-    },
-
-    grupos: {
-        emoji: '👥',
-        label: 'Grupos'
+        label: '𝐄𝐂𝐎𝐍𝐎𝐌𝐈𝐀'
     },
 
     niveles: {
         emoji: '⭐',
-        label: 'Niveles'
+        label: '𝐍𝐈𝐕𝐄𝐋𝐄𝐒'
     },
 
     perfil: {
         emoji: '👤',
-        label: 'Perfil'
+        label: '𝐏𝐄𝐑𝐅𝐈𝐋'
+    },
+
+    grupos: {
+        emoji: '👥',
+        label: '𝐆𝐑𝐔𝐏𝐎𝐒'
     },
 
     bienvenida: {
         emoji: '👋',
-        label: 'Bienvenida'
+        label: '𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐀'
     },
 
-    general: {
-        emoji: '🤖',
-        label: 'General'
+    configuración: {
+        emoji: '⚙️',
+        label: '𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐈𝐎𝐍'
+    },
+
+    admin: {
+        emoji: '🛡️',
+        label: '𝐀𝐃𝐌𝐈𝐍'
     }
 
 }
@@ -59,6 +64,7 @@ const categoryConfig = {
 const categoryOrder = [
     'general',
     'descargas',
+    'diversión',
     'economía',
     'niveles',
     'perfil',
@@ -176,80 +182,68 @@ module.exports = {
             const uptime =
                 formatUptime(process.uptime())
 
-            let text = [
-                `╭─〔 🤖 ${settings.botName} 〕`,
-                `│`,
-                `│ ${greeting}`,
-                `│`,
-                `│ ⚡ Prefijos: /  .  #`,
-                `│ 📦 Comandos: ${total}`,
-                `│ ⏱ Uptime: ${uptime}`,
-                `│ 🧠 RAM: ${ramUsed} MB`,
-                `│ 💻 Node: ${process.version}`,
-                `│`,
-                `╰─────────────`
-            ].join('\n')
+        let text =
 
-            text += '\n\n'
+`୨୧ ─────────── ୨୧
 
-            const orderedCategories = [
-                ...categoryOrder.filter(c => categories[c]),
-                ...Object.keys(categories).filter(c => !categoryOrder.includes(c))
-            ]
+⌗ 𝐊𝐄𝐍𝐍𝐘𝐁𝐎𝐓 𝐕𝟐
 
-            for (const category of orderedCategories) {
+✦ ${greeting}
+✦ 𝐏𝐫𝐞𝐟𝐢𝐣𝐨𝐬: / . #
+✦ 𝐂𝐨𝐦𝐚𝐧𝐝𝐨𝐬: ${total}
+✦ 𝐔𝐩𝐭𝐢𝐦𝐞: ${uptime}
+✦ 𝐑𝐀𝐌: ${ramUsed} MB
+✦ 𝐍𝐨𝐝𝐞: ${process.version}
 
-                const cmds =
-                    categories[category]
+୨୧ ─────────── ୨୧
+`
 
-                if (!cmds || cmds.length === 0) continue
+const orderedCategories = [
+    ...categoryOrder.filter(c => categories[c]),
+    ...Object.keys(categories).filter(
+        c => !categoryOrder.includes(c)
+    )
+]
 
-                const config =
-                    categoryConfig[category] ||
-                    {
-                        emoji: '📁',
-                        label:
-                            category.charAt(0).toUpperCase() +
-                            category.slice(1)
-                    }
+for (const category of orderedCategories) {
 
-                text +=
-`╭─〔 ${config.emoji} ${config.label} 〕
-│`
+    const cmds =
+        categories[category]
 
-                for (const cmd of cmds) {
+    if (!cmds?.length) continue
 
-                    const badges = []
+    const config =
+        categoryConfig[category] ||
+        {
+            emoji: '📁',
+            label:
+                category.charAt(0).toUpperCase() +
+                category.slice(1)
+        }
 
-                    if (cmd.adminOnly) badges.push('👮')
-                    if (cmd.ownerOnly) badges.push('👑')
-                    if (cmd.groupOnly) badges.push('👥')
-                    if (cmd.privateOnly) badges.push('💬')
-                    if (cmd.cooldown) badges.push(`⏳${cmd.cooldown}`)
+    text +=
 
-                    const aliasText =
-                        cmd.aliases?.length
-                            ? ` (${cmd.aliases.join(', ')})`
-                            : ''
+`\n⌗ ${config.label} [${cmds.length}]\n\n`
 
-                    text +=
-`\n│ ✦ /${cmd.name}${aliasText}
-│   ↳ ${cmd.description || 'Sin descripción'}
-│   ↳ ${badges.join(' ') || '—'}
-│`
+    for (const cmd of cmds) {
 
-                }
+        text +=
+`✦ .${cmd.name}\n`
 
-                text += '\n╰─────────────\n\n'
+    }
 
-            }
+    text += '\n'
 
-            text +=
-`✨ Usa /comando
-🔥 Compatible con:
-/ . #
+}
 
-© ${settings.botName}`
+text +=
+
+`୨୧ ─────────── ୨୧
+
+✧ 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐊𝐞𝐧𝐧𝐲
+✧ ${settings.botName}
+
+୨୧ ─────────── ୨୧`
 
             await sock.safeSendMessage(
                 from,

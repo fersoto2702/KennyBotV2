@@ -49,6 +49,7 @@ module.exports = {
 
             const metadata = await sock.groupMetadata(from)
             const participants = metadata.participants || []
+            const groupName = metadata.subject || 'Grupo sin nombre'
 
             if (participants.length === 0)
                 return await sock.safeSendMessage(from, {
@@ -70,22 +71,25 @@ module.exports = {
                 : 'Sin miembros'
 
             await sock.safeSendMessage(from, {
-                text: [
-                    `📢 TAGALL`,
-                    ui.divider,
-                    `👥 Miembros: ${participants.length}`,
-                    `👑 Admins: ${admins.length}`,
-                    ui.divider,
-                    `👑 ADMINISTRADORES\n`,
-                    adminList,
-                    ui.divider,
-                    `👥 MIEMBROS\n`,
-                    memberList,
-                    ui.divider,
-                    participants.length > MAX_MENTIONS ? `⚠️ Solo se mencionaron ${MAX_MENTIONS} usuarios.` : ''
-                ].join('\n'),
-                mentions
-            })
+    text: [
+        `📢 TAGALL`,
+        ui.divider,
+        `🏷️ Grupo: ${groupName}`,
+        `👥 Miembros: ${participants.length}`,
+        `👑 Admins: ${admins.length}`,
+        ui.divider,
+        `👑 ADMINISTRADORES\n`,
+        adminList,
+        ui.divider,
+        `👥 MIEMBROS\n`,
+        memberList,
+        ui.divider,
+        participants.length > MAX_MENTIONS
+            ? `⚠️ Solo se mencionaron ${MAX_MENTIONS} usuarios.`
+            : ''
+    ].join('\n'),
+    mentions
+})
 
             logger.event(`Tagall usado: ${from.split('@')[0]}`)
 
