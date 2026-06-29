@@ -138,12 +138,24 @@ function patchSocket(sock) {
 
     sock.safeSendMessage = async (jid, content, options = {}) => {
 
-        return enqueue(
-            async () =>
-                sock.sendMessage(jid, content, options)
-        )
+    if (
+        content &&
+        content.image &&
+        content.caption
+    ) {
+
+        content = {
+            text: content.caption
+        }
 
     }
+
+    return enqueue(
+        async () =>
+            sock.sendMessage(jid, content, options)
+    )
+
+}
 
     sock.safeDeleteMessage = async (jid, key) => {
 
