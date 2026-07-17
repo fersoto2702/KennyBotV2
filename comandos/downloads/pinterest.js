@@ -13,36 +13,16 @@ const ui =
 const pinterest =
     require('pinterest-scraper')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/pinterest.jpeg'
-    )
-
 async function sendPinterestMessage(
     sock,
     from,
-    caption
+    text
 ) {
-
-    if (fs.existsSync(iconPath)) {
-
-        return await sock.sendMessage(
-            from,
-            {
-                image: {
-                    url: iconPath
-                },
-                caption
-            }
-        )
-
-    }
 
     return await sock.sendMessage(
         from,
         {
-            text: caption
+            text
         }
     )
 

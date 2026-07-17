@@ -85,6 +85,11 @@ const saveToggles = data => {
 const normalize = value =>
     String(value || '').trim()
 
+const DEFAULT_TOGGLES = {
+    autolevelup: false
+
+}
+
 const isEnabled = (group, feature) => {
 
     try {
@@ -96,10 +101,16 @@ const isEnabled = (group, feature) => {
 
         const data = getToggles()
 
-        return data?.[gid]?.[feat] ?? true
+        if (data?.[gid]?.[feat] !== undefined) {
+            return data[gid][feat]
+        }
+
+        return DEFAULT_TOGGLES[feat] ?? true
 
     } catch {
-        return true
+
+        return DEFAULT_TOGGLES[feature] ?? true
+
     }
 
 }

@@ -39,30 +39,11 @@ const iconPath =
 async function sendPlayMessage(
     sock,
     from,
-    caption
+    text
 ) {
-
-    if (fs.existsSync(iconPath)) {
-
-        return await sock.sendMessage(
-            from,
-            {
-                image: {
-                    url: iconPath
-                },
-                caption
-            }
-        )
-
-    }
-
-    return await sock.sendMessage(
-        from,
-        {
-            text: caption
-        }
-    )
-
+    return await sock.sendMessage(from, {
+        text
+    })
 }
 
 module.exports = {

@@ -17,36 +17,16 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/tiktok.jpeg'
-    )
-
 async function sendTikTokMessage(
     sock,
     from,
-    caption
+    text
 ) {
-
-    if (fs.existsSync(iconPath)) {
-
-        return await sock.sendMessage(
-            from,
-            {
-                image: {
-                    url: iconPath
-                },
-                caption
-            }
-        )
-
-    }
 
     return await sock.sendMessage(
         from,
         {
-            text: caption
+            text
         }
     )
 

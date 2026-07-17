@@ -17,36 +17,16 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/facebook.jpeg'
-    )
-
 async function sendFacebookMessage(
     sock,
     from,
-    caption
+    text
 ) {
-
-    if (fs.existsSync(iconPath)) {
-
-        return await sock.sendMessage(
-            from,
-            {
-                image: {
-                    url: iconPath
-                },
-                caption
-            }
-        )
-
-    }
 
     return await sock.sendMessage(
         from,
         {
-            text: caption
+            text
         }
     )
 
@@ -126,61 +106,7 @@ module.exports = {
     )
 )
 
-            }
-
-            const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/facebook.jpeg'
-    )
-
-const caption =
-    ui.info(
-
-        'DESCARGANDO',
-
-        [
-
-            ['Fuente', 'Facebook']
-
-        ]
-
-    )
-
-if (fs.existsSync(iconPath)) {
-
-    await sock.sendMessage(
-
-        from,
-
-        {
-
-            image: {
-                url: iconPath
-            },
-
-            caption
-
-        }
-
-    )
-
-} else {
-
-    await sock.sendMessage(
-
-        from,
-
-        {
-
-            text: caption
-
-        }
-
-    )
-
-}
-            const response =
+            }            const response =
                 await axios.get(
 
                     `https://api.vreden.my.id/api/fbdl?url=${encodeURIComponent(url)}`,

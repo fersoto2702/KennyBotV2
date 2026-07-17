@@ -27,36 +27,16 @@ const ui =
 const youtubedl =
     require('youtube-dl-exec')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/ytmp3.jpeg'
-    )
-
 async function sendYtmp3Message(
     sock,
     from,
-    caption
+    text
 ) {
-
-    if (fs.existsSync(iconPath)) {
-
-        return await sock.sendMessage(
-            from,
-            {
-                image: {
-                    url: iconPath
-                },
-                caption
-            }
-        )
-
-    }
 
     return await sock.sendMessage(
         from,
         {
-            text: caption
+            text
         }
     )
 
