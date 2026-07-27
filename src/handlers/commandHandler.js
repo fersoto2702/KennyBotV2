@@ -210,6 +210,10 @@ module.exports = async ({
 
         if (!msg?.message) return
 
+        logger.event(
+            `DEBUG msg.key: ${JSON.stringify(msg.key)}`
+        )
+
         const sender =
             getSender(msg)
 
