@@ -1,3 +1,9 @@
+const fs =
+    require('fs')
+
+const path =
+    require('path')
+
 const settings =
     require('../src/config/settings')
 
@@ -42,6 +48,47 @@ setInterval(() => {
 
 }, 1000 * 60 * 5)
 
+const mutePath =
+    path.join(
+        __dirname,
+        '../database/mute.json'
+    )
+
+const ensureMuteDb = () => {
+
+    if (!fs.existsSync(mutePath)) {
+        fs.writeFileSync(
+            mutePath,
+            JSON.stringify({}, null, 2)
+        )
+    }
+
+}
+
+const isUserMuted = (from, sender, senderAlt) => {
+
+    ensureMuteDb()
+
+    let data = {}
+
+    try {
+        data = JSON.parse(fs.readFileSync(mutePath))
+        if (typeof data !== 'object' || Array.isArray(data)) data = {}
+    } catch { data = {} }
+
+    const list =
+        data[from] || []
+
+    return (
+        list.includes(sender) ||
+        (senderAlt && list.includes(senderAlt))
+    )
+
+}
+
+const isGroup = jid =>
+    jid.endsWith('@g.us')
+
 module.exports = async (sock, messages) => {
 
     try {
@@ -62,6 +109,37 @@ module.exports = async (sock, messages) => {
             msg.key?.remoteJid
 
         if (!from) return
+
+        const sender =
+            msg.key.participant ||
+            msg.participant ||
+            msg.key.remoteJid
+
+        const senderAlt =
+            msg.key.participantAlt
+
+        if (isGroup(from) && isUserMuted(from, sender, senderAlt)) {
+
+            try {
+
+                await sock.sendMessage(
+                    from,
+                    {
+                        delete: msg.key
+                    }
+                )
+
+            } catch (err) {
+
+                logger.error(
+                    `Delete muted msg: ${err.message}`
+                )
+
+            }
+
+            return
+
+        }
 
         const timestamp = Number(
             msg.messageTimestamp || 0
@@ -93,11 +171,6 @@ module.exports = async (sock, messages) => {
             getText(msg)?.trim()
 
         if (!text) return
-
-        const sender =
-            msg.key.participant ||
-            msg.participant ||
-            msg.key.remoteJid
 
         logger.event(
             `${sender?.split('@')[0]} -> ${text}`

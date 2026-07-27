@@ -28,12 +28,6 @@ const {
     getRemainingTime
 } = require('../system/rateLimiter')
 
-const mutePath =
-    path.join(
-        __dirname,
-        '../../database/mute.json'
-    )
-
 const iconsPath =
     path.join(
         __dirname,
@@ -164,38 +158,6 @@ loadCommands(
     )
 )
 
-const ensureMuteDb = () => {
-
-    if (!fs.existsSync(mutePath)) {
-        fs.writeFileSync(
-            mutePath,
-            JSON.stringify({}, null, 2)
-        )
-    }
-
-}
-
-const isUserMuted = (from, sender, senderAlt) => {
-
-    ensureMuteDb()
-
-    let data = {}
-
-    try {
-        data = JSON.parse(fs.readFileSync(mutePath))
-        if (typeof data !== 'object' || Array.isArray(data)) data = {}
-    } catch { data = {} }
-
-    const list =
-        data[from] || []
-
-    return (
-        list.includes(sender) ||
-        (senderAlt && list.includes(senderAlt))
-    )
-
-}
-
 const getSender = msg =>
     msg.key.participant ||
     msg.participant ||
@@ -219,33 +181,7 @@ module.exports = async ({
         const sender =
             getSender(msg)
 
-        const senderAlt =
-            msg.key.participantAlt
-
         if (!sender) return
-
-        if (isGroup(from) && isUserMuted(from, sender, senderAlt)) {
-
-            try {
-
-                await sock.sendMessage(
-                    from,
-                    {
-                        delete: msg.key
-                    }
-                )
-
-            } catch (err) {
-
-                logger.error(
-                    `Delete muted msg: ${err.message}`
-                )
-
-            }
-
-            return
-
-        }
 
         if (!text) return
         if (typeof text !== 'string') return
