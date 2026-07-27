@@ -42,12 +42,21 @@ module.exports = {
 
             const mentioned = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0]
 
-            const target = mentioned || (args[0] ? `${args[0].replace(/[^0-9]/g, '')}@s.whatsapp.net` : null)
+            const quotedParticipant = msg.message?.extendedTextMessage?.contextInfo?.participant
 
-            if (!target)
+            const firstArg = args[0]?.toLowerCase()?.trim()
+
+            const isKeyword = firstArg === 'on' || firstArg === 'off'
+
+            const target =
+                mentioned ||
+                quotedParticipant ||
+                (args[0] && !isKeyword ? `${args[0].replace(/[^0-9]/g, '')}@s.whatsapp.net` : null)
+
+            if (!target || target === '@s.whatsapp.net')
                 return await sock.sendMessage(from, {
                     image: fs.readFileSync(iconPath),
-                    caption: ui.error('FALTA USUARIO', 'Menciona a alguien.\nUso:\n.mute @usuario\n.mute @usuario off')
+                    caption: ui.error('FALTA USUARIO', 'Menciona a alguien, responde a su mensaje, o pon su número.\nUso:\n.mute @usuario\n.mute @usuario off\n(responder a su mensaje) .mute off')
                 })
 
             if (!data[from]) data[from] = []
