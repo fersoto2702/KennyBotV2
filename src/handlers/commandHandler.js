@@ -175,7 +175,7 @@ const ensureMuteDb = () => {
 
 }
 
-const isUserMuted = (from, sender) => {
+const isUserMuted = (from, sender, senderAlt) => {
 
     ensureMuteDb()
 
@@ -186,7 +186,13 @@ const isUserMuted = (from, sender) => {
         if (typeof data !== 'object' || Array.isArray(data)) data = {}
     } catch { data = {} }
 
-    return (data[from] || []).includes(sender)
+    const list =
+        data[from] || []
+
+    return (
+        list.includes(sender) ||
+        (senderAlt && list.includes(senderAlt))
+    )
 
 }
 
@@ -210,16 +216,15 @@ module.exports = async ({
 
         if (!msg?.message) return
 
-        logger.event(
-            `DEBUG msg.key: ${JSON.stringify(msg.key)}`
-        )
-
         const sender =
             getSender(msg)
 
+        const senderAlt =
+            msg.key.participantAlt
+
         if (!sender) return
 
-        if (isGroup(from) && isUserMuted(from, sender)) {
+        if (isGroup(from) && isUserMuted(from, sender, senderAlt)) {
 
             try {
 
