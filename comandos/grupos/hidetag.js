@@ -64,34 +64,6 @@ async function downloadMedia(
 
 }
 
-async function sendSuccess(
-    sock,
-    from,
-    mentionsCount
-) {
-
-    try {
-
-        await sock.safeSendMessage(
-            from,
-            {
-                text:
-                    ui.success(
-                        'HIDETAG EJECUTADO',
-                        [
-                            [
-                                'Usuarios',
-                                `${mentionsCount}`
-                            ]
-                        ]
-                    )
-            }
-        )
-
-    } catch {}
-
-}
-
 module.exports = {
 
     name: 'hidetag',
@@ -207,12 +179,6 @@ module.exports = {
                 quoted?.imageMessage
             ) {
 
-                await sendSuccess(
-                    sock,
-                    from,
-                    mentions.length
-                )
-
                 const buffer =
                     await downloadMedia(
                         quoted.imageMessage,
@@ -233,12 +199,6 @@ module.exports = {
                 quoted?.videoMessage
             ) {
 
-                await sendSuccess(
-                    sock,
-                    from,
-                    mentions.length
-                )
-
                 const buffer =
                     await downloadMedia(
                         quoted.videoMessage,
@@ -258,12 +218,6 @@ module.exports = {
             if (
                 quoted?.audioMessage
             ) {
-
-                await sendSuccess(
-                    sock,
-                    from,
-                    mentions.length
-                )
 
                 const buffer =
                     await downloadMedia(
@@ -288,12 +242,6 @@ module.exports = {
                 quoted?.stickerMessage
             ) {
 
-                await sendSuccess(
-                    sock,
-                    from,
-                    mentions.length
-                )
-
                 const buffer =
                     await downloadMedia(
                         quoted.stickerMessage,
@@ -315,12 +263,6 @@ module.exports = {
                     ?.text
             ) {
 
-                await sendSuccess(
-                    sock,
-                    from,
-                    mentions.length
-                )
-
                 return await sock.safeSendMessage(
                     from,
                     {
@@ -338,12 +280,6 @@ module.exports = {
             if (
                 quoted?.conversation
             ) {
-
-                await sendSuccess(
-                    sock,
-                    from,
-                    mentions.length
-                )
 
                 return await sock.safeSendMessage(
                     from,
@@ -378,12 +314,6 @@ module.exports = {
                 )
 
             }
-
-            await sendSuccess(
-                sock,
-                from,
-                mentions.length
-            )
 
             await sock.safeSendMessage(
                 from,

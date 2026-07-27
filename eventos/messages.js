@@ -116,15 +116,7 @@ module.exports = async (sock, messages) => {
                 `Spam detectado: ${sender?.split('@')[0]}`
             )
 
-            return await sock.sendMessage(
-                from,
-                {
-                    text: ui.warn(
-                        'SPAM DETECTADO',
-                        'Estás enviando mensajes demasiado rápido.\n\nEspera un momento antes de continuar.'
-                    )
-                }
-            )
+            return
 
         }
 

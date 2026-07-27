@@ -62,6 +62,25 @@ function getStatus(percent) {
 
 }
 
+function shuffle(array) {
+
+    const result =
+        [...array]
+
+    for (let i = result.length - 1; i > 0; i--) {
+
+        const j =
+            Math.floor(Math.random() * (i + 1))
+
+        ;[result[i], result[j]] =
+            [result[j], result[i]]
+
+    }
+
+    return result
+
+}
+
 module.exports = {
 
     name: 'ship',
@@ -74,10 +93,12 @@ module.exports = {
     ],
 
     description:
-        'Calcula la compatibilidad entre dos personas',
+        'Calcula la compatibilidad entre dos personas o genera ships aleatorios del grupo',
 
     category:
         'diversion',
+
+    groupOnly: true,
 
     cooldown: 5,
 
@@ -98,6 +119,134 @@ module.exports = {
                     ?.contextInfo
                     ?.mentionedJid || []
 
+            const requestedCount =
+                parseInt(args[0], 10)
+
+            const hasRequestedCount =
+                args.length === 1 &&
+                !isNaN(requestedCount) &&
+                requestedCount > 0
+
+            if (
+                (mentions.length < 2 && args.length < 2) ||
+                hasRequestedCount
+            ) {
+
+                const metadata =
+                    await sock.groupMetadata(from)
+
+                const participants =
+                    (metadata.participants || [])
+                        .map(p => p.id)
+
+                if (participants.length < 2) {
+
+                    return await sock.sendMessage(
+                        from,
+                        {
+                            image:
+                                fs.readFileSync(iconPath),
+
+                            caption:
+                                ui.warn(
+                                    'GRUPO INSUFICIENTE',
+                                    'No hay suficientes integrantes para generar ships.'
+                                )
+                        }
+                    )
+
+                }
+
+                const shuffled =
+                    shuffle(participants)
+
+                const maxPairs =
+                    Math.floor(shuffled.length / 2)
+
+                const pairsCount =
+                    hasRequestedCount ?
+                        Math.min(requestedCount, maxPairs) :
+                        maxPairs
+
+                const lines = []
+                const allMentions = []
+
+                for (let i = 0; i < pairsCount; i++) {
+
+                    const userA =
+                        shuffled[i * 2]
+
+                    const userB =
+                        shuffled[i * 2 + 1]
+
+                    const percent =
+                        getCompatibility(
+                            userA,
+                            userB
+                        )
+
+                    const status =
+                        getStatus(percent)
+
+                    lines.push([
+                        `@${userA.split('@')[0]} ❤️ @${userB.split('@')[0]}`,
+                        `${percent}% ${status}`
+                    ])
+
+                    allMentions.push(userA, userB)
+
+                }
+
+                if (!hasRequestedCount && shuffled.length % 2 !== 0) {
+
+                    const leftover =
+                        shuffled[shuffled.length - 1]
+
+                    const partner =
+                        shuffled[
+                            Math.floor(Math.random() * pairsCount) * 2
+                        ]
+
+                    const percent =
+                        getCompatibility(
+                            leftover,
+                            partner
+                        )
+
+                    const status =
+                        getStatus(percent)
+
+                    lines.push([
+                        `@${leftover.split('@')[0]} ❤️ @${partner.split('@')[0]}`,
+                        `${percent}% ${status}`
+                    ])
+
+                    allMentions.push(leftover, partner)
+
+                }
+
+                logger.event(
+                    `Ship aleatorio en ${from.split('@')[0]}: ${lines.length} parejas`
+                )
+
+                return await sock.sendMessage(
+                    from,
+                    {
+                        image:
+                            fs.readFileSync(iconPath),
+
+                        caption:
+                            ui.success(
+                                'SHIPS DEL GRUPO',
+                                lines
+                            ),
+
+                        mentions: allMentions
+                    }
+                )
+
+            }
+
             let person1
             let person2
 
@@ -110,24 +259,6 @@ module.exports = {
                     `@${mentions[1].split('@')[0]}`
 
             } else {
-
-                if (args.length < 2) {
-
-                    return await sock.sendMessage(
-                        from,
-                        {
-                            image:
-                                fs.readFileSync(iconPath),
-
-                            caption:
-                                ui.warn(
-                                    'DATOS INSUFICIENTES',
-                                    'Uso:\n/ship @usuario1 @usuario2\n\nO\n\n/ship nombre1 nombre2'
-                                )
-                        }
-                    )
-
-                }
 
                 person1 =
                     args[0]

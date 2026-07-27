@@ -9,8 +9,8 @@ const iconPath = path.join(__dirname, '../../assets/icons/mute.jpeg')
 module.exports = {
 
     name: 'mute',
-    aliases: ['silenciar', 'mutegroup'],
-    description: 'Silencia o activa los comandos del grupo',
+    aliases: ['silenciar', 'mutear'],
+    description: 'Silencia a un usuario del grupo (borra sus mensajes)',
     category: 'grupos',
     adminOnly: true,
     groupOnly: true,
@@ -20,13 +20,13 @@ module.exports = {
         try {
 
             if (!fs.existsSync(mutePath))
-                fs.writeFileSync(mutePath, JSON.stringify([], null, 2))
+                fs.writeFileSync(mutePath, JSON.stringify({}, null, 2))
 
-            let data = []
+            let data = {}
             try {
                 data = JSON.parse(fs.readFileSync(mutePath))
-                if (!Array.isArray(data)) data = []
-            } catch { data = [] }
+                if (typeof data !== 'object' || Array.isArray(data)) data = {}
+            } catch { data = {} }
 
             const metadata = await sock.groupMetadata(from)
             const participants = metadata.participants
@@ -40,35 +40,42 @@ module.exports = {
                     caption: ui.error('ACCESO DENEGADO', 'Solo administradores pueden usar este comando.')
                 })
 
-            const option = args[0]?.toLowerCase()?.trim()
+            const mentioned = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0]
 
-            if (option === 'on') {
-                if (!data.includes(from)) data.push(from)
-                fs.writeFileSync(mutePath, JSON.stringify(data, null, 2))
-                logger.event(`Mute ON: ${from.split('@')[0]}`)
+            const target = mentioned || (args[0] ? `${args[0].replace(/[^0-9]/g, '')}@s.whatsapp.net` : null)
+
+            if (!target)
                 return await sock.sendMessage(from, {
                     image: fs.readFileSync(iconPath),
-                    caption: ui.success('GRUPO SILENCIADO', [['Estado', '● MUTE ACTIVADO']])
+                    caption: ui.error('FALTA USUARIO', 'Menciona a alguien.\nUso:\n.mute @usuario\n.mute @usuario off')
                 })
-            }
+
+            if (!data[from]) data[from] = []
+
+            const option = args[args.length - 1]?.toLowerCase()?.trim()
 
             if (option === 'off') {
-                data = data.filter(id => id !== from)
+
+                data[from] = data[from].filter(id => id !== target)
                 fs.writeFileSync(mutePath, JSON.stringify(data, null, 2))
-                logger.event(`Mute OFF: ${from.split('@')[0]}`)
+                logger.event(`Unmute: ${target.split('@')[0]} en ${from.split('@')[0]}`)
+
                 return await sock.sendMessage(from, {
                     image: fs.readFileSync(iconPath),
-                    caption: ui.success('GRUPO ACTIVADO', [['Estado', '○ MUTE DESACTIVADO']])
+                    caption: ui.success('USUARIO ACTIVADO', [['Usuario', `@${target.split('@')[0]}`], ['Estado', '○ MUTE DESACTIVADO']]),
+                    mentions: [target]
                 })
+
             }
 
-            const enabled = data.includes(from)
+            if (!data[from].includes(target)) data[from].push(target)
+            fs.writeFileSync(mutePath, JSON.stringify(data, null, 2))
+            logger.event(`Mute: ${target.split('@')[0]} en ${from.split('@')[0]}`)
 
             await sock.sendMessage(from, {
                 image: fs.readFileSync(iconPath),
-                caption: ui.info('MUTE DEL GRUPO', [
-                    ['Estado', enabled ? '● SILENCIADO' : '○ ACTIVO']
-                ], 'Uso:\n/mute on\n/mute off')
+                caption: ui.success('USUARIO SILENCIADO', [['Usuario', `@${target.split('@')[0]}`], ['Estado', '● MUTE ACTIVADO']]),
+                mentions: [target]
             })
 
         } catch (err) {

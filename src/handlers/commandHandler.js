@@ -169,9 +169,24 @@ const ensureMuteDb = () => {
     if (!fs.existsSync(mutePath)) {
         fs.writeFileSync(
             mutePath,
-            JSON.stringify([], null, 2)
+            JSON.stringify({}, null, 2)
         )
     }
+
+}
+
+const isUserMuted = (from, sender) => {
+
+    ensureMuteDb()
+
+    let data = {}
+
+    try {
+        data = JSON.parse(fs.readFileSync(mutePath))
+        if (typeof data !== 'object' || Array.isArray(data)) data = {}
+    } catch { data = {} }
+
+    return (data[from] || []).includes(sender)
 
 }
 
@@ -194,6 +209,35 @@ module.exports = async ({
     try {
 
         if (!msg?.message) return
+
+        const sender =
+            getSender(msg)
+
+        if (!sender) return
+
+        if (isGroup(from) && isUserMuted(from, sender)) {
+
+            try {
+
+                await sock.sendMessage(
+                    from,
+                    {
+                        delete: msg.key
+                    }
+                )
+
+            } catch (err) {
+
+                logger.error(
+                    `Delete muted msg: ${err.message}`
+                )
+
+            }
+
+            return
+
+        }
+
         if (!text) return
         if (typeof text !== 'string') return
 
@@ -225,11 +269,6 @@ module.exports = async ({
 
         if (!command) return
 
-        const sender =
-            getSender(msg)
-
-        if (!sender) return
-
         if (isGroup(from) && isFlooding(sender)) {
 
             logger.warn(
@@ -258,7 +297,7 @@ module.exports = async ({
                     logger.event(
                         `Expulsado por flood: ${sender.split('@')[0]}`
                     )
-                    
+
                     await sendIcon(sock, from, 'antiflood')
 
                     return await sock.safeSendMessage(
@@ -303,31 +342,6 @@ module.exports = async ({
                     mentions: [sender]
                 }
             )
-
-        }
-
-        ensureMuteDb()
-
-        const mutedGroups =
-            JSON.parse(
-                fs.readFileSync(mutePath)
-            )
-
-        if (mutedGroups.includes(from)) {
-
-            const metadata =
-                await sock.groupMetadata(from)
-
-            const senderData =
-                metadata.participants.find(
-                    p => p.id === sender
-                )
-
-            const isAdmin =
-                senderData?.admin === 'admin' ||
-                senderData?.admin === 'superadmin'
-
-            if (!isAdmin) return
 
         }
 
@@ -543,7 +557,7 @@ module.exports = async ({
         /*
         await sendIcon(sock, from, command.name)
         */
-       
+
         try {
 
             await command.execute({
