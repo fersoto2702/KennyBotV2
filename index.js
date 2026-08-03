@@ -4,6 +4,7 @@ const {
     default: makeWASocket,
     useMultiFileAuthState,
     DisconnectReason,
+    fetchLatestBaileysVersion,
 } = require('@whiskeysockets/baileys')
 
 const P = require('pino')
@@ -53,8 +54,17 @@ async function startBot() {
             saveCreds
         } = await useMultiFileAuthState('./auth_info')
 
+        const {
+            version
+        } = await fetchLatestBaileysVersion()
+
+        logger.info(
+            `Usando WA v${version.join('.')}`
+        )
+
         let sock = makeWASocket({
             auth: state,
+            version,
             logger: P({ level: 'silent' }),
             printQRInTerminal: !usePairingCode,
             browser: ['Ubuntu', 'Chrome', '20.0.04'],

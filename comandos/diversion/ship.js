@@ -229,17 +229,23 @@ module.exports = {
                     `Ship aleatorio en ${from.split('@')[0]}: ${lines.length} parejas`
                 )
 
+                const caption =
+                    [
+                        `▓ SHIPS DEL GRUPO`,
+                        ui.divider,
+                        ...lines.map(
+                            ([pair, result]) =>
+                                `${pair}\n${result}`
+                        )
+                    ].join('\n\n')
+
                 return await sock.sendMessage(
                     from,
                     {
                         image:
                             fs.readFileSync(iconPath),
 
-                        caption:
-                            ui.success(
-                                'SHIPS DEL GRUPO',
-                                lines
-                            ),
+                        caption,
 
                         mentions: allMentions
                     }

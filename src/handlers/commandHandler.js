@@ -34,10 +34,28 @@ const iconsPath =
         '../../assets/icons'
     )
 
-const aliasesCache =
-    new Map()
+const soloAdminsPath =
+    path.join(
+        __dirname,
+        '../../database/soloadmins.json'
+    )
 
-const cooldowns =
+const isSoloAdminsGroup = from => {
+
+    if (!fs.existsSync(soloAdminsPath)) return false
+
+    let data = []
+
+    try {
+        data = JSON.parse(fs.readFileSync(soloAdminsPath))
+        if (!Array.isArray(data)) data = []
+    } catch { data = [] }
+
+    return data.includes(from)
+
+}
+
+const aliasesCache =
     new Map()
 
 async function sendIcon(sock, from, commandName) {
@@ -290,6 +308,41 @@ module.exports = async ({
 
         }
 
+        if (
+            isGroup(from) &&
+            command.name !== 'admins' &&
+            isSoloAdminsGroup(from)
+        ) {
+
+            const metadata =
+                await sock.groupMetadata(from)
+
+            const senderData =
+                metadata.participants.find(
+                    p => p.id === sender
+                )
+
+            const isAdmin =
+                senderData?.admin === 'admin' ||
+                senderData?.admin === 'superadmin'
+
+            if (!isAdmin) {
+
+                return await sock.safeSendMessage(
+                    from,
+                    {
+                        text:
+                            ui.error(
+                                'MODO SOLO ADMINS',
+                                'El bot está restringido a administradores en este grupo.'
+                            )
+                    }
+                )
+
+            }
+
+        }
+
         if (command.ownerOnly) {
 
             const number =
@@ -420,45 +473,6 @@ module.exports = async ({
 
         }
 
-        const cooldown =
-            command.cooldown || 0
-
-        if (cooldown > 0) {
-
-            const key =
-                `${sender}:${command.name}`
-
-            const now =
-                Date.now()
-
-            const expiration =
-                cooldowns.get(key)
-
-            if (expiration && now < expiration) {
-
-                const left =
-                    ((expiration - now) / 1000).toFixed(1)
-
-                return await sock.safeSendMessage(
-                    from,
-                    {
-                        text:
-                            ui.warn(
-                                'COOLDOWN ACTIVO',
-                                `Espera ${left}s antes de usar ${prefix}${command.name}.`
-                            )
-                    }
-                )
-
-            }
-
-            cooldowns.set(
-                key,
-                now + cooldown * 1000
-            )
-
-        }
-
         logger.cmd(
             `${command.name} → ${sender.split('@')[0]}`
         )
@@ -498,10 +512,6 @@ module.exports = async ({
             )
 
         }
-
-        /*
-        await sendIcon(sock, from, command.name)
-        */
 
         try {
 
