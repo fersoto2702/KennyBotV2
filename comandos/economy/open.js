@@ -13,25 +13,11 @@ const economyPath =
         '../../database/economy.json'
     )
 
-const inventoryPath =
-    path.join(
-        __dirname,
-        '../../database/inventory.json'
-    )
-
 const levelsPath =
     path.join(
         __dirname,
         '../../database/levels.json'
     )
-
-const random =
-    arr =>
-        arr[
-            Math.floor(
-                Math.random() * arr.length
-            )
-        ]
 
 const ensureFile = file => {
 
@@ -94,17 +80,14 @@ module.exports = {
     ],
 
     description:
-        'Abre una o varias cajas misteriosas',
+        'Abre una caja misteriosa',
 
     category:
         'economia',
 
-    cooldown: 5,
-
     async execute({
         sock,
         from,
-        args,
         msg
     }) {
 
@@ -119,11 +102,6 @@ module.exports = {
                     economyPath
                 )
 
-            const inventory =
-                readJson(
-                    inventoryPath
-                )
-
             const levels =
                 readJson(
                     levelsPath
@@ -135,12 +113,6 @@ module.exports = {
                     coins: 0,
                     bank: 0
                 }
-
-            }
-
-            if (!inventory[sender]) {
-
-                inventory[sender] = []
 
             }
 
@@ -180,174 +152,108 @@ module.exports = {
 
             }
 
-            if (
-                !Array.isArray(
-                    inventory[sender]
-                )
-            ) {
+            const chance =
+                Math.random()
 
-                inventory[sender] = []
+            let result
+
+            if (chance < 0.02) {
+
+                const amount =
+                    Math.floor(
+                        Math.random() * 15001
+                    ) + 15000
+
+                economy[sender].coins +=
+                    amount
+
+                result =
+                    ui.success(
+                        '🎰 JACKPOT',
+                        [
+                            [
+                                'Recompensa',
+                                `🪙 +${amount.toLocaleString()} monedas`
+                            ]
+                        ],
+                        '¡Has encontrado una recompensa legendaria!'
+                    )
+
+                logger.event(
+                    `Open JACKPOT: ${sender.split('@')[0]} +${amount}`
+                )
 
             }
 
-            const boxCount =
-                inventory[sender]
-                    .filter(
-                        item =>
-                            item ===
-                            '🎁 Caja misteriosa'
+            else if (
+                chance < 0.67
+            ) {
+
+                const amount =
+                    Math.floor(
+                        Math.random() * 3000
+                    ) + 500
+
+                economy[sender].coins +=
+                    amount
+
+                result =
+                    ui.success(
+                        '🎁 CAJA MISTERIOSA',
+                        [
+                            [
+                                'Recompensa',
+                                `🪙 +${amount.toLocaleString()} monedas`
+                            ]
+                        ]
                     )
-                    .length
 
-            if (boxCount <= 0) {
-
-                return await sock.sendMessage(
-                    from,
-                    {
-                        text:
-                            ui.error(
-                                'SIN CAJAS',
-                                'No tienes cajas misteriosas.\n\nCómpralas usando /shop.'
-                            )
-                    }
+                logger.event(
+                    `Open: ${sender.split('@')[0]} +${amount} monedas`
                 )
 
             }
 
-            const requested =
-                String(
-                    args?.[0] || ''
-                )
-                    .toLowerCase()
-                    .trim()
-
-            let amount = 1
-
-            if (
-                requested === 'all' ||
-                requested === 'todo' ||
-                requested === 'todas'
+            else if (
+                chance < 0.92
             ) {
 
-                amount = boxCount
+                const amount =
+                    Math.floor(
+                        Math.random() * 500
+                    ) + 100
 
-            } else if (requested) {
+                levels[sender].xp +=
+                    amount
 
-                const parsed =
-                    Number(
-                        requested
+                result =
+                    ui.success(
+                        '🎁 CAJA MISTERIOSA',
+                        [
+                            [
+                                'Recompensa',
+                                `✨ +${amount} XP`
+                            ]
+                        ]
                     )
 
-                if (
-                    !Number.isInteger(parsed) ||
-                    parsed <= 0
-                ) {
-
-                    return await sock.sendMessage(
-                        from,
-                        {
-                            text:
-                                ui.warn(
-                                    'CANTIDAD INVÁLIDA',
-                                    'Usa /open, /open 5 o /open all.'
-                                )
-                        }
-                    )
-
-                }
-
-                amount =
-                    Math.min(
-                        parsed,
-                        boxCount
-                    )
+                logger.event(
+                    `Open: ${sender.split('@')[0]} +${amount} XP`
+                )
 
             }
 
-            let coinsWon = 0
-            let xpWon = 0
-            let nothing = 0
+            else {
 
-            const rewards = [
-                'coins',
-                'xp',
-                'nothing'
-            ]
-
-            for (
-                let i = 0;
-                i < amount;
-                i++
-            ) {
-
-                const boxIndex =
-                    inventory[sender]
-                        .indexOf(
-                            '🎁 Caja misteriosa'
-                        )
-
-                if (
-                    boxIndex === -1
-                ) {
-
-                    break
-
-                }
-
-                inventory[sender]
-                    .splice(
-                        boxIndex,
-                        1
+                result =
+                    ui.warn(
+                        '🎁 CAJA MISTERIOSA',
+                        'La caja estaba vacía... 💀'
                     )
 
-                const reward =
-                    random(
-                        rewards
-                    )
-
-                if (
-                    reward === 'coins'
-                ) {
-
-                    const rewardAmount =
-                        Math.floor(
-                            Math.random() *
-                            3000
-                        ) + 500
-
-                    economy[sender]
-                        .coins +=
-                        rewardAmount
-
-                    coinsWon +=
-                        rewardAmount
-
-                }
-
-                else if (
-                    reward === 'xp'
-                ) {
-
-                    const rewardAmount =
-                        Math.floor(
-                            Math.random() *
-                            500
-                        ) + 100
-
-                    levels[sender]
-                        .xp +=
-                        rewardAmount
-
-                    xpWon +=
-                        rewardAmount
-
-                }
-
-                else {
-
-                    nothing++
-
-                }
+                logger.event(
+                    `Open: ${sender.split('@')[0]} → vacía`
+                )
 
             }
 
@@ -357,65 +263,14 @@ module.exports = {
             )
 
             saveJson(
-                inventoryPath,
-                inventory
-            )
-
-            saveJson(
                 levelsPath,
                 levels
             )
 
-            const remaining =
-                inventory[sender]
-                    .filter(
-                        item =>
-                            item ===
-                            '🎁 Caja misteriosa'
-                    )
-                    .length
-
-            logger.event(
-                `Caja: ${sender.split('@')[0]} abrió ${amount} caja(s) → ${coinsWon} monedas / ${xpWon} XP / ${nothing} vacías`
-            )
-
-            const fields = [
-
-                [
-                    'Cajas abiertas',
-                    `${amount}`
-                ],
-
-                [
-                    '🪙 Monedas',
-                    `+${coinsWon.toLocaleString()}`
-                ],
-
-                [
-                    '✨ XP',
-                    `+${xpWon.toLocaleString()}`
-                ],
-
-                [
-                    '💀 Vacías',
-                    `${nothing}`
-                ],
-
-                [
-                    '📦 Restantes',
-                    `${remaining}`
-                ]
-
-            ]
-
             return await sock.sendMessage(
                 from,
                 {
-                    text:
-                        ui.success(
-                            '🎁 CAJAS ABIERTAS',
-                            fields
-                        )
+                    text: result
                 }
             )
 
@@ -433,7 +288,7 @@ module.exports = {
                         text:
                             ui.error(
                                 'ERROR',
-                                'No se pudieron abrir las cajas.'
+                                'No se pudo abrir la caja.'
                             )
                     }
                 )
