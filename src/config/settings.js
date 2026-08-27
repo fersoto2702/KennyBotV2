@@ -13,7 +13,7 @@ module.exports = {
 
     ownerNumber: [
 
-        '5216681377982'
+        '50933490758'
 
     ],
 
