@@ -1,5 +1,8 @@
-const fs   = require('fs')
-const path = require('path')
+const fs =
+    require('fs')
+
+const path =
+    require('path')
 
 const {
     isMediaTooLarge,
@@ -30,30 +33,28 @@ const yts =
 const youtubedl =
     require('youtube-dl-exec')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/play.jpeg'
-    )
-
 async function sendPlayMessage(
     sock,
     from,
     text
 ) {
-    return await sock.sendMessage(from, {
-        text
-    })
+
+    return await sock.sendMessage(
+        from,
+        {
+            text
+        }
+    )
+
 }
 
 module.exports = {
 
-    name: 'play',
+    name:
+        'play',
 
     aliases: [
-
         'music'
-
     ],
 
     description:
@@ -87,13 +88,17 @@ module.exports = {
             if (cooldown.active) {
 
                 return await sendPlayMessage(
-    sock,
-    from,
-    ui.warn(
-        'COOLDOWN ACTIVO',
-        `Espera ${cooldown.left}s antes de usar este comando.`
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+                        'COOLDOWN ACTIVO',
+                        `Espera ${cooldown.left}s antes de usar este comando.`
+                    )
+
+                )
 
             }
 
@@ -103,80 +108,114 @@ module.exports = {
             if (!query) {
 
                 return await sendPlayMessage(
-    sock,
-    from,
-    ui.warn(
-        'BÚSQUEDA REQUERIDA',
-        'Uso: /play canción'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+                        'BÚSQUEDA REQUERIDA',
+                        'Uso: /play canción'
+                    )
+
+                )
+
             }
 
             await sendPlayMessage(
-    sock,
-    from,
-    ui.info(
-        'BUSCANDO',
-        [
-            ['Canción', query]
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+                    'BUSCANDO',
+                    [
+                        [
+                            'Canción',
+                            query
+                        ]
+                    ]
+                )
+
+            )
 
             const search =
                 await yts(query)
 
             const video =
 
-                search.videos.find(v =>
-
-                    v.author?.name
-                    ?.toLowerCase()
-                    .includes('topic')
-
+                search.videos.find(
+                    v =>
+                        v.author?.name
+                            ?.toLowerCase()
+                            .includes('topic')
                 )
 
                 ||
 
-                search.videos.find(v =>
-
-                    v.title
-                    .toLowerCase()
-                    .includes('lyrics')
-
+                search.videos.find(
+                    v =>
+                        v.title
+                            ?.toLowerCase()
+                            .includes('lyrics')
                 )
 
                 ||
 
                 search.videos[0]
 
+
             if (!video) {
 
                 return await sendPlayMessage(
-    sock,
-    from,
-    ui.error(
-        'SIN RESULTADOS',
-        'No se encontró ninguna canción.'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+                        'SIN RESULTADOS',
+                        'No se encontró ninguna canción.'
+                    )
+
+                )
 
             }
 
             const position =
                 getQueueLength() + 1
 
+
             await sendPlayMessage(
-    sock,
-    from,
-    ui.info(
-        'COLA DE DESCARGA',
-        [
-            ['Canción', video.title],
-            ['Posición', `#${position}`]
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+                    'COLA DE DESCARGA',
+                    [
+
+                        [
+                            'Canción',
+                            video.title
+                        ],
+
+                        [
+                            'Duración',
+                            video.timestamp
+                        ],
+
+                        [
+                            'Posición',
+                            `#${position}`
+                        ]
+
+                    ]
+                )
+
+            )
 
             const filePath =
                 generateTempFile(
@@ -194,16 +233,24 @@ module.exports = {
 
                         {
 
-                            format: 'bestaudio/best',
+                            format:
+                                'bestaudio/best',
 
                             output:
                                 `${filePath}.%(ext)s`,
 
-                            noCheckCertificates: true,
+                            noCheckCertificates:
+                                true,
 
-                            noPlaylist: true,
+                            noPlaylist:
+                                true,
 
-                            jsruntime: 'deno'
+                            additionalArguments: [
+
+                                '--js-runtimes',
+                                'deno'
+
+                            ]
 
                         }
 
@@ -213,50 +260,49 @@ module.exports = {
 
             )
 
-            await new Promise(resolve =>
-
-                setTimeout(
-                    resolve,
-                    2000
+            const tempDirectory =
+                path.join(
+                    __dirname,
+                    '../../temp'
                 )
 
-            )
 
             const files =
                 fs.readdirSync(
-
-                    path.join(
-                        __dirname,
-                        '../../temp'
-                    )
-
+                    tempDirectory
                 )
+
 
             const downloaded =
-                files.find(f =>
-
-                    f.startsWith(
-                        path.basename(filePath)
-                    )
-
+                files.find(
+                    file =>
+                        file.startsWith(
+                            path.basename(
+                                filePath
+                            )
+                        )
                 )
 
-            if (!downloaded)
+
+            if (!downloaded) {
+
                 throw new Error(
-                    'Archivo no encontrado'
+                    'Archivo descargado no encontrado'
                 )
+
+            }
 
             const finalPath =
                 path.join(
-
-                    __dirname,
-                    '../../temp',
+                    tempDirectory,
                     downloaded
-
                 )
 
             const stats =
-                fs.statSync(finalPath)
+                fs.statSync(
+                    finalPath
+                )
+
 
             if (
 
@@ -267,16 +313,22 @@ module.exports = {
 
             ) {
 
-                fs.unlinkSync(finalPath)
+                fs.unlinkSync(
+                    finalPath
+                )
 
                 return await sendPlayMessage(
-    sock,
-    from,
-    ui.error(
-        'ARCHIVO MUY PESADO',
-        `Peso: ${getFileSizeMB(stats.size)} MB`
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+                        'ARCHIVO MUY PESADO',
+                        `Peso: ${getFileSizeMB(stats.size)} MB`
+                    )
+
+                )
 
             }
 
@@ -287,57 +339,95 @@ module.exports = {
                 {
 
                     audio: {
-                        url: finalPath
+
+                        url:
+                            finalPath
+
                     },
 
                     mimetype:
-                        'audio/mp4',
+                        'audio/webm',
 
-                    ptt: false
+                    ptt:
+                        false
 
                 }
 
             )
 
             await sendPlayMessage(
-    sock,
-    from,
-    ui.success(
-        'DESCARGA COMPLETADA',
-        [
-            ['Título', video.title],
-            ['Duración', video.timestamp],
-            ['Vistas', Number(video.views).toLocaleString()],
-            ['Link', video.url]
-        ]
-    )
-)
 
-            setTimeout(() => {
+                sock,
 
-                try {
+                from,
 
-                    if (
-                        fs.existsSync(finalPath)
-                    ) {
+                ui.success(
+                    'DESCARGA COMPLETADA',
+                    [
 
-                        fs.unlinkSync(finalPath)
+                        [
+                            'Título',
+                            video.title
+                        ],
 
-                        logger.info(
-                            `Temp eliminado: ${downloaded}`
+                        [
+                            'Duración',
+                            video.timestamp
+                        ],
+
+                        [
+                            'Vistas',
+                            Number(
+                                video.views || 0
+                            ).toLocaleString()
+                        ],
+
+                        [
+                            'Fuente',
+                            'YouTube'
+                        ]
+
+                    ]
+                )
+
+            )
+
+            setTimeout(
+
+                () => {
+
+                    try {
+
+                        if (
+                            fs.existsSync(
+                                finalPath
+                            )
+                        ) {
+
+                            fs.unlinkSync(
+                                finalPath
+                            )
+
+                            logger.info(
+                                `Temp eliminado: ${downloaded}`
+                            )
+
+                        }
+
+                    } catch (e) {
+
+                        logger.error(
+                            `Error borrando temp: ${e.message}`
                         )
 
                     }
 
-                } catch (e) {
+                },
 
-                    logger.error(
-                        `Error borrando temp: ${e.message}`
-                    )
+                15000
 
-                }
+            )
 
-            }, 15000)
 
         } catch (err) {
 
@@ -345,14 +435,20 @@ module.exports = {
                 `Error play: ${err.message}`
             )
 
+
             await sendPlayMessage(
-    sock,
-    from,
-    ui.error(
-        'ERROR',
-        'No se pudo descargar la música.'
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.error(
+                    'ERROR',
+                    'No se pudo descargar la música.'
+                )
+
+            )
+
         }
 
     }
