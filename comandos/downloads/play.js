@@ -194,14 +194,16 @@ module.exports = {
 
                         {
 
-                            format: 'bestaudio',
+                            format: 'bestaudio/best',
 
                             output:
                                 `${filePath}.%(ext)s`,
 
                             noCheckCertificates: true,
 
-                            noPlaylist: true
+                            noPlaylist: true,
+
+                            jsruntime: 'deno'
 
                         }
 
