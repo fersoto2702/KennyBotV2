@@ -7,7 +7,7 @@ const { PhoneNumberUtil } = require('google-libphonenumber')
 
 const phoneUtil = PhoneNumberUtil.getInstance()
 const iconPath = path.join(__dirname, '../../assets/icons/tagall.jpeg')
-const MAX_MENTIONS = 200
+const MAX_MENTIONS = 1000
 
 function isoToFlag(iso) {
     if (!iso || iso.length !== 2) return '🌐'

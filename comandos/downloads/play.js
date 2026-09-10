@@ -5,6 +5,10 @@ const path =
     require('path')
 
 const {
+    spawn
+} = require('child_process')
+
+const {
     isMediaTooLarge,
     getFileSizeMB
 } = require('../../src/utils/antiCrash')
@@ -13,10 +17,6 @@ const {
     addToQueue,
     getQueueLength
 } = require('../../src/utils/downloadQueue')
-
-const {
-    checkCooldown
-} = require('../../src/utils/cooldowns')
 
 const generateTempFile =
     require('../../src/utils/generateTempFile')
@@ -30,8 +30,13 @@ const ui =
 const yts =
     require('yt-search')
 
-const youtubedl =
-    require('youtube-dl-exec')
+
+const ytDlpPath =
+    path.join(
+        __dirname,
+        '../../node_modules/youtube-dl-exec/bin/yt-dlp.exe'
+    )
+
 
 async function sendPlayMessage(
     sock,
@@ -47,6 +52,161 @@ async function sendPlayMessage(
     )
 
 }
+
+
+function downloadWithYtDlp(
+    url,
+    output
+) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            if (
+                !fs.existsSync(
+                    ytDlpPath
+                )
+            ) {
+
+                return reject(
+                    new Error(
+                        `No se encontró yt-dlp en: ${ytDlpPath}`
+                    )
+                )
+
+            }
+
+
+            const args = [
+
+                '--js-runtimes',
+                'deno',
+
+                '--no-check-certificates',
+
+                '--no-playlist',
+
+                '-f',
+                'bestaudio/best',
+
+                '-x',
+
+                '--audio-format',
+                'mp3',
+
+                '--audio-quality',
+                '0',
+
+                '-o',
+                `${output}.mp3`,
+
+                url
+
+            ]
+
+
+            logger.info(
+                `yt-dlp iniciado: ${url}`
+            )
+
+
+            const process =
+                spawn(
+                    ytDlpPath,
+                    args,
+                    {
+                        windowsHide: true
+                    }
+                )
+
+
+            let stderr = ''
+
+            let stdout = ''
+
+
+            process.stdout.on(
+                'data',
+                data => {
+
+                    const text =
+                        data.toString()
+
+                    stdout +=
+                        text
+
+                    logger.info(
+                        text.trim()
+                    )
+
+                }
+            )
+
+
+            process.stderr.on(
+                'data',
+                data => {
+
+                    const text =
+                        data.toString()
+
+                    stderr +=
+                        text
+
+                    logger.info(
+                        text.trim()
+                    )
+
+                }
+            )
+
+
+            process.on(
+                'error',
+                err => {
+
+                    reject(
+                        err
+                    )
+
+                }
+            )
+
+
+            process.on(
+                'close',
+                code => {
+
+                    if (
+                        code !== 0
+                    ) {
+
+                        return reject(
+                            new Error(
+                                stderr ||
+                                `yt-dlp terminó con código ${code}`
+                            )
+                        )
+
+                    }
+
+
+                    resolve({
+
+                        stdout,
+
+                        stderr
+
+                    })
+
+                }
+            )
+
+        }
+    )
+
+}
+
 
 module.exports = {
 
@@ -78,39 +238,18 @@ module.exports = {
                 msg.key.participant ||
                 msg.key.remoteJid
 
-            const cooldown =
-                checkCooldown(
-                    sender,
-                    'play',
-                    15
-                )
-
-            if (cooldown.active) {
-
-                return await sendPlayMessage(
-
-                    sock,
-
-                    from,
-
-                    ui.warn(
-                        'COOLDOWN ACTIVO',
-                        `Espera ${cooldown.left}s antes de usar este comando.`
-                    )
-
-                )
-
-            }
 
             const query =
                 args.join(' ')
 
-            if (!query) {
+
+            if (
+                !query
+            ) {
 
                 return await sendPlayMessage(
 
                     sock,
-
                     from,
 
                     ui.warn(
@@ -122,26 +261,32 @@ module.exports = {
 
             }
 
+
             await sendPlayMessage(
 
                 sock,
-
                 from,
 
                 ui.info(
                     'BUSCANDO',
                     [
+
                         [
                             'Canción',
                             query
                         ]
+
                     ]
                 )
 
             )
 
+
             const search =
-                await yts(query)
+                await yts(
+                    query
+                )
+
 
             const video =
 
@@ -166,12 +311,13 @@ module.exports = {
                 search.videos[0]
 
 
-            if (!video) {
+            if (
+                !video
+            ) {
 
                 return await sendPlayMessage(
 
                     sock,
-
                     from,
 
                     ui.error(
@@ -183,6 +329,7 @@ module.exports = {
 
             }
 
+
             const position =
                 getQueueLength() + 1
 
@@ -190,7 +337,6 @@ module.exports = {
             await sendPlayMessage(
 
                 sock,
-
                 from,
 
                 ui.info(
@@ -217,48 +363,27 @@ module.exports = {
 
             )
 
+
             const filePath =
                 generateTempFile(
                     'temp',
                     'audio'
                 )
 
+
             await addToQueue(
 
                 async () => {
 
-                    await youtubedl(
-
+                    await downloadWithYtDlp(
                         video.url,
-
-                        {
-
-                            format:
-                                'bestaudio/best',
-
-                            output:
-                                `${filePath}.%(ext)s`,
-
-                            noCheckCertificates:
-                                true,
-
-                            noPlaylist:
-                                true,
-
-                            additionalArguments: [
-
-                                '--js-runtimes',
-                                'deno'
-
-                            ]
-
-                        }
-
+                        filePath
                     )
 
                 }
 
             )
+
 
             const tempDirectory =
                 path.join(
@@ -267,36 +392,29 @@ module.exports = {
                 )
 
 
-            const files =
-                fs.readdirSync(
-                    tempDirectory
-                )
-
-
             const downloaded =
-                files.find(
-                    file =>
-                        file.startsWith(
-                            path.basename(
-                                filePath
-                            )
-                        )
-                )
+                `${path.basename(filePath)}.mp3`
 
-
-            if (!downloaded) {
-
-                throw new Error(
-                    'Archivo descargado no encontrado'
-                )
-
-            }
 
             const finalPath =
                 path.join(
                     tempDirectory,
                     downloaded
                 )
+
+
+            if (
+                !fs.existsSync(
+                    finalPath
+                )
+            ) {
+
+                throw new Error(
+                    'Archivo MP3 descargado no encontrado'
+                )
+
+            }
+
 
             const stats =
                 fs.statSync(
@@ -317,10 +435,10 @@ module.exports = {
                     finalPath
                 )
 
+
                 return await sendPlayMessage(
 
                     sock,
-
                     from,
 
                     ui.error(
@@ -331,6 +449,7 @@ module.exports = {
                 )
 
             }
+
 
             await sock.sendMessage(
 
@@ -346,7 +465,7 @@ module.exports = {
                     },
 
                     mimetype:
-                        'audio/webm',
+                        'audio/mpeg',
 
                     ptt:
                         false
@@ -355,10 +474,10 @@ module.exports = {
 
             )
 
+
             await sendPlayMessage(
 
                 sock,
-
                 from,
 
                 ui.success(
@@ -383,6 +502,11 @@ module.exports = {
                         ],
 
                         [
+                            'Formato',
+                            'MP3'
+                        ],
+
+                        [
                             'Fuente',
                             'YouTube'
                         ]
@@ -391,6 +515,7 @@ module.exports = {
                 )
 
             )
+
 
             setTimeout(
 
@@ -439,7 +564,6 @@ module.exports = {
             await sendPlayMessage(
 
                 sock,
-
                 from,
 
                 ui.error(
