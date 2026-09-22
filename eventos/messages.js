@@ -1,8 +1,5 @@
-const fs =
-    require('fs')
-
-const path =
-    require('path')
+const fs = require('fs')
+const path = require('path')
 
 const settings =
     require('../src/config/settings')
@@ -28,6 +25,10 @@ const economyHandler =
 const messageStatsHandler =
     require('../src/handlers/messageStatsHandler')
 
+const {
+    ensureMember
+} = require('../src/database/repositories/memberRepository')
+
 const getText =
     require('../src/utils/getText')
 
@@ -37,16 +38,16 @@ const logger =
 const ui =
     require('../src/utils/ui')
 
-const processedMessages =
-    new Set()
+
+const processedMessages = new Set()
+
 
 setInterval(() => {
-
     try {
         processedMessages.clear()
     } catch {}
-
 }, 1000 * 60 * 5)
+
 
 const mutePath =
     path.join(
@@ -54,27 +55,37 @@ const mutePath =
         '../database/mute.json'
     )
 
-const ensureMuteDb = () => {
 
+const ensureMuteDb = () => {
     if (!fs.existsSync(mutePath)) {
         fs.writeFileSync(
             mutePath,
             JSON.stringify({}, null, 2)
         )
     }
-
 }
 
-const isUserMuted = (from, sender, senderAlt) => {
 
+const isUserMuted = (from, sender, senderAlt) => {
     ensureMuteDb()
 
     let data = {}
 
     try {
-        data = JSON.parse(fs.readFileSync(mutePath))
-        if (typeof data !== 'object' || Array.isArray(data)) data = {}
-    } catch { data = {} }
+        data = JSON.parse(
+            fs.readFileSync(mutePath)
+        )
+
+        if (
+            typeof data !== 'object' ||
+            Array.isArray(data)
+        ) {
+            data = {}
+        }
+
+    } catch {
+        data = {}
+    }
 
     const list =
         data[from] || []
@@ -83,11 +94,12 @@ const isUserMuted = (from, sender, senderAlt) => {
         list.includes(sender) ||
         (senderAlt && list.includes(senderAlt))
     )
-
 }
+
 
 const isGroup = jid =>
     jid.endsWith('@g.us')
+
 
 module.exports = async (sock, messages) => {
 
@@ -98,18 +110,30 @@ module.exports = async (sock, messages) => {
 
         if (!msg) return
         if (!msg.message) return
+
+        // Ignorar mensajes enviados por el propio bot
         if (msg.key?.fromMe) return
 
+        // Ignorar estados de WhatsApp
         if (
             msg.key?.remoteJid ===
             'status@broadcast'
         ) return
+
 
         const from =
             msg.key?.remoteJid
 
         if (!from) return
 
+
+        /*
+         * En grupos:
+         * participant = persona que escribió.
+         *
+         * En chats privados:
+         * remoteJid = persona que escribió.
+         */
         const sender =
             msg.key.participant ||
             msg.participant ||
@@ -118,7 +142,21 @@ module.exports = async (sock, messages) => {
         const senderAlt =
             msg.key.participantAlt
 
-        if (isGroup(from) && isUserMuted(from, sender, senderAlt)) {
+
+        if (!sender) return
+
+
+        /*
+         * Sistema de mute
+         */
+        if (
+            isGroup(from) &&
+            isUserMuted(
+                from,
+                sender,
+                senderAlt
+            )
+        ) {
 
             try {
 
@@ -138,44 +176,68 @@ module.exports = async (sock, messages) => {
             }
 
             return
-
         }
 
-        const timestamp = Number(
-            msg.messageTimestamp || 0
-        )
 
-        const now = Math.floor(
-            Date.now() / 1000
-        )
+        /*
+         * Ignorar mensajes antiguos
+         */
+        const timestamp =
+            Number(
+                msg.messageTimestamp || 0
+            )
+
+        const now =
+            Math.floor(
+                Date.now() / 1000
+            )
 
         if (
             timestamp &&
             now - timestamp > 15
         ) return
 
+
+        /*
+         * Protección contra procesamiento duplicado
+         */
         const messageId =
             msg.key?.id
 
         if (!messageId) return
 
-        if (processedMessages.has(messageId)) return
+        if (
+            processedMessages.has(messageId)
+        ) return
 
         processedMessages.add(messageId)
 
         setTimeout(() => {
-            processedMessages.delete(messageId)
+
+            processedMessages.delete(
+                messageId
+            )
+
         }, 30000)
 
+
+        /*
+         * Obtener texto del mensaje
+         */
         const text =
             getText(msg)?.trim()
 
         if (!text) return
 
+
         logger.event(
             `${sender?.split('@')[0]} -> ${text}`
         )
 
+
+        /*
+         * Anti-spam
+         */
         const isSpam =
             await spamHandler(
                 sock,
@@ -190,19 +252,79 @@ module.exports = async (sock, messages) => {
             )
 
             return
+        }
+
+
+        /*
+         * =====================================================
+         * NUEVO SISTEMA DE MIEMBROS - MYSQL
+         * =====================================================
+         *
+         * Registra al usuario en kb_members si todavía
+         * no existe y crea kb_member_stats automáticamente.
+         *
+         * Si ya existe, no crea duplicados.
+         */
+        let member = null
+
+        try {
+
+            member =
+                await ensureMember(
+                    sender,
+                    msg.pushName || null
+                )
+
+        } catch (err) {
+
+            /*
+             * Un fallo de MySQL en este sistema no debe
+             * detener los demás sistemas de KennyBot.
+             */
+            logger.error(
+                `Member DB Error: ${err.message}`
+            )
 
         }
 
-        await messageStatsHandler(msg, from)
 
-        await antiLinkHandler(sock, msg, from, text)
+        /*
+         * Sistemas actuales de KennyBot
+         */
+        await messageStatsHandler(
+            msg,
+            from
+        )
 
-        await levelHandler(sock, msg, from)
+        await antiLinkHandler(
+            sock,
+            msg,
+            from,
+            text
+        )
 
-        await economyHandler(sock, msg, from)
+        await levelHandler(
+            sock,
+            msg,
+            from
+        )
 
-        await badgeHandler(sock, msg, from)
+        await economyHandler(
+            sock,
+            msg,
+            from
+        )
 
+        await badgeHandler(
+            sock,
+            msg,
+            from
+        )
+
+
+        /*
+         * Detectar comandos
+         */
         const prefixes =
             settings.prefixes ||
             [settings.prefix || '/']
@@ -211,6 +333,7 @@ module.exports = async (sock, messages) => {
             prefixes.some(
                 p => text.startsWith(p)
             )
+
 
         if (isCommand) {
 
