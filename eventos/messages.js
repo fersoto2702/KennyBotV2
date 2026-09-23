@@ -29,6 +29,24 @@ const {
     ensureMember
 } = require('../src/database/repositories/memberRepository')
 
+const {
+    ensureInitialGoldCard
+} = require('../src/database/repositories/memberCardRepository')
+
+const {
+    registerValidMessage,
+    registerCommand
+} = require('../src/database/repositories/activityRepository')
+
+const {
+    registerSeasonMessage,
+    registerSeasonCommand
+} = require('../src/database/repositories/seasonRepository')
+
+const {
+    checkCardUnlock
+} = require('../src/services/cardUnlockService')
+
 const getText =
     require('../src/utils/getText')
 
@@ -111,10 +129,8 @@ module.exports = async (sock, messages) => {
         if (!msg) return
         if (!msg.message) return
 
-        // Ignorar mensajes enviados por el propio bot
         if (msg.key?.fromMe) return
 
-        // Ignorar estados de WhatsApp
         if (
             msg.key?.remoteJid ===
             'status@broadcast'
@@ -126,14 +142,6 @@ module.exports = async (sock, messages) => {
 
         if (!from) return
 
-
-        /*
-         * En grupos:
-         * participant = persona que escribió.
-         *
-         * En chats privados:
-         * remoteJid = persona que escribió.
-         */
         const sender =
             msg.key.participant ||
             msg.participant ||
@@ -142,13 +150,8 @@ module.exports = async (sock, messages) => {
         const senderAlt =
             msg.key.participantAlt
 
-
         if (!sender) return
 
-
-        /*
-         * Sistema de mute
-         */
         if (
             isGroup(from) &&
             isUserMuted(
@@ -178,10 +181,6 @@ module.exports = async (sock, messages) => {
             return
         }
 
-
-        /*
-         * Ignorar mensajes antiguos
-         */
         const timestamp =
             Number(
                 msg.messageTimestamp || 0
@@ -197,10 +196,6 @@ module.exports = async (sock, messages) => {
             now - timestamp > 15
         ) return
 
-
-        /*
-         * Protección contra procesamiento duplicado
-         */
         const messageId =
             msg.key?.id
 
@@ -220,10 +215,6 @@ module.exports = async (sock, messages) => {
 
         }, 30000)
 
-
-        /*
-         * Obtener texto del mensaje
-         */
         const text =
             getText(msg)?.trim()
 
@@ -234,10 +225,6 @@ module.exports = async (sock, messages) => {
             `${sender?.split('@')[0]} -> ${text}`
         )
 
-
-        /*
-         * Anti-spam
-         */
         const isSpam =
             await spamHandler(
                 sock,
@@ -254,43 +241,87 @@ module.exports = async (sock, messages) => {
             return
         }
 
-
-        /*
-         * =====================================================
-         * NUEVO SISTEMA DE MIEMBROS - MYSQL
-         * =====================================================
-         *
-         * Registra al usuario en kb_members si todavía
-         * no existe y crea kb_member_stats automáticamente.
-         *
-         * Si ya existe, no crea duplicados.
-         */
         let member = null
 
         try {
 
             member =
-                await ensureMember(
-                    sender,
-                    msg.pushName || null
-                )
+            await ensureMember(
+            sender,
+            senderAlt || null,
+            msg.pushName || null
+    )
+
+            if (member) {
+
+    try {
+
+        await ensureInitialGoldCard(
+            member.id
+        )
+
+    } catch (err) {
+
+        logger.error(
+            `Member Card DB Error: ${err.message}`
+        )
+
+    }
+
+}
 
         } catch (err) {
 
-            /*
-             * Un fallo de MySQL en este sistema no debe
-             * detener los demás sistemas de KennyBot.
-             */
             logger.error(
                 `Member DB Error: ${err.message}`
             )
 
         }
 
+        if (member) {
 
-        /*
-         * Sistemas actuales de KennyBot
-         */
+    try {
+
+        await registerValidMessage(member.id)
+        await registerSeasonMessage(member.id)
+
+        const unlock =
+            await checkCardUnlock(member.id)
+
+        if (unlock.unlocked) {
+
+            logger.info(
+                `Nueva carta desbloqueada: ` +
+                `${member.display_name || member.id} | ` +
+                `${unlock.card.card_name} | ` +
+                `OVR ${unlock.card.rating}`
+            )
+
+            await sock.safeSendMessage(
+                from,
+                {
+                    text:
+`🎉 𝐍𝐔𝐄𝐕𝐀 𝐂𝐀𝐑𝐓𝐀
+
+✦ ${member.display_name || msg.pushName || 'Miembro'}
+✦ ${unlock.card.card_name}
+✦ OVR ${unlock.card.rating}
+
+Usa .card para ver tu nueva carta.`
+                }
+            )
+        }
+
+    } catch (err) {
+
+        logger.error(
+            `Activity/Card DB Error: ${err.message}`
+        )
+
+    }
+
+}
+
         await messageStatsHandler(
             msg,
             from
@@ -321,31 +352,50 @@ module.exports = async (sock, messages) => {
             from
         )
 
-
-        /*
-         * Detectar comandos
-         */
         const prefixes =
-            settings.prefixes ||
-            [settings.prefix || '/']
+    settings.prefixes ||
+    [settings.prefix || '/']
 
-        const isCommand =
-            prefixes.some(
-                p => text.startsWith(p)
+const isCommand =
+    prefixes.some(
+        p => text.startsWith(p)
+    )
+
+
+if (isCommand) {
+
+    if (member) {
+
+        try {
+
+            await registerCommand(
+                member.id
             )
 
+            await registerSeasonCommand(
+                member.id
+            )
 
-        if (isCommand) {
+        } catch (err) {
 
-            await commandHandler({
-                sock,
-                msg,
-                from,
-                text,
-                settings
-            })
+            logger.error(
+                `Command Activity DB Error: ${err.message}`
+            )
 
         }
+
+    }
+
+
+    await commandHandler({
+        sock,
+        msg,
+        from,
+        text,
+        settings
+    })
+
+}
 
     } catch (err) {
 

@@ -8,7 +8,6 @@ const {
 } = require('@whiskeysockets/baileys')
 
 const P = require('pino')
-
 const qrcode = require('qrcode-terminal')
 
 const welcomeSystem =
@@ -30,20 +29,137 @@ const {
     patchSocket
 } = require('./src/system/socketManager')
 
-const { initDB } = require('./src/database/mysql')
-initDB()
+const {
+    initDB
+} = require('./src/database/mysql')
+
+const {
+    runRewardMaintenance
+} = require(
+    './src/services/rewardMaintenanceService'
+)
 
 const usePairingCode = false
 
 let cleanupStarted = false
+let rewardMaintenanceStarted = false
 let reconnecting = false
 let currentSock = null
+let cleanupInterval = null
+let rewardMaintenanceInterval = null
 
-logger.banner(settings.botName)
 
-logger.info(
-    `Iniciando ${settings.botName}...`
-)
+async function executeRewardMaintenance() {
+
+    try {
+
+        const result =
+            await runRewardMaintenance()
+
+        if (!result.processed) {
+
+            if (
+                result.reason !==
+                'ALREADY_RUNNING'
+            ) {
+
+                logger.warn(
+                    `Reward Maintenance: ${result.reason}`
+                )
+            }
+
+            return
+        }
+
+
+        const summary =
+            result.summary || {}
+
+
+        if (
+            Number(
+                summary.awardsPrepared || 0
+            ) > 0 ||
+            Number(
+                summary.rewardsDelivered || 0
+            ) > 0 ||
+            Number(
+                summary.preparationFailures || 0
+            ) > 0 ||
+            Number(
+                summary.processingFailures || 0
+            ) > 0
+        ) {
+
+            logger.info(
+                `Reward Maintenance | ` +
+                `Premios preparados: ${summary.awardsPrepared || 0} | ` +
+                `Recompensas entregadas: ${summary.rewardsDelivered || 0} | ` +
+                `Errores: ${
+                    Number(
+                        summary.preparationFailures || 0
+                    ) +
+                    Number(
+                        summary.processingFailures || 0
+                    )
+                }`
+            )
+        }
+
+
+    } catch (err) {
+
+        logger.error(
+            `Reward Maintenance Error: ${err.message}`
+        )
+    }
+}
+
+
+function startBackgroundTasks() {
+
+    if (!cleanupStarted) {
+
+        cleanupStarted = true
+
+        cleanupTemp()
+
+        cleanupInterval =
+            setInterval(
+                () => {
+
+                    try {
+
+                        cleanupTemp()
+
+                    } catch (err) {
+
+                        logger.error(
+                            `Cleanup Error: ${err.message}`
+                        )
+                    }
+                },
+                1000 * 60
+            )
+    }
+
+
+    if (!rewardMaintenanceStarted) {
+
+        rewardMaintenanceStarted = true
+
+        executeRewardMaintenance()
+
+        rewardMaintenanceInterval =
+            setInterval(
+                () => {
+                    executeRewardMaintenance()
+                },
+                1000 * 60 * 5
+            )
+    }
+}
+
 
 async function startBot() {
 
@@ -52,66 +168,102 @@ async function startBot() {
         const {
             state,
             saveCreds
-        } = await useMultiFileAuthState('./auth_info')
+        } =
+            await useMultiFileAuthState(
+                './auth_info'
+            )
+
 
         const {
             version
-        } = await fetchLatestBaileysVersion()
+        } =
+            await fetchLatestBaileysVersion()
+
 
         logger.info(
             `Usando WA v${version.join('.')}`
         )
 
-        let sock = makeWASocket({
-            auth: state,
-            version,
-            logger: P({ level: 'silent' }),
-            printQRInTerminal: !usePairingCode,
-            browser: ['Ubuntu', 'Chrome', '20.0.04'],
-            markOnlineOnConnect: false,
-            syncFullHistory: false,
-            fireInitQueries: false,
-            generateHighQualityLinkPreview: false,
-            connectTimeoutMs: 60000,
-            defaultQueryTimeoutMs: 60000,
-            keepAliveIntervalMs: 30000
-        })
 
-        sock = patchSocket(sock)
+        let sock =
+            makeWASocket({
+                auth: state,
+                version,
+                logger:
+                    P({
+                        level: 'silent'
+                    }),
+                printQRInTerminal:
+                    !usePairingCode,
+                browser: [
+                    'Ubuntu',
+                    'Chrome',
+                    '20.0.04'
+                ],
+                markOnlineOnConnect:
+                    false,
+                syncFullHistory:
+                    false,
+                fireInitQueries:
+                    false,
+                generateHighQualityLinkPreview:
+                    false,
+                connectTimeoutMs:
+                    60000,
+                defaultQueryTimeoutMs:
+                    60000,
+                keepAliveIntervalMs:
+                    30000
+            })
 
-        currentSock = sock
 
-        if (usePairingCode && !state.creds.registered) {
+        sock =
+            patchSocket(sock)
+
+        currentSock =
+            sock
+
+
+        if (
+            usePairingCode &&
+            !state.creds.registered
+        ) {
 
             const phoneNumber =
                 '6681137982'
 
+
             try {
 
                 const code =
-                    await sock.requestPairingCode(phoneNumber)
+                    await sock.requestPairingCode(
+                        phoneNumber
+                    )
+
 
                 console.log(
                     `\n📲 Código de vinculación:\n${code}\n`
                 )
+
 
             } catch (err) {
 
                 logger.error(
                     `Pairing Error: ${err.message}`
                 )
-
             }
-
         }
+
 
         sock.ev.on(
             'creds.update',
             saveCreds
         )
 
+
         sock.ev.on(
             'connection.update',
+
             async update => {
 
                 try {
@@ -122,41 +274,57 @@ async function startBot() {
                         qr
                     } = update
 
-                    if (qr && !usePairingCode) {
+
+                    if (
+                        qr &&
+                        !usePairingCode
+                    ) {
 
                         logger.qr()
 
-                        qrcode.generate(qr, { small: true })
-
+                        qrcode.generate(
+                            qr,
+                            {
+                                small: true
+                            }
+                        )
                     }
 
-                    if (connection === 'open') {
 
-                        reconnecting = false
+                    if (
+                        connection ===
+                        'open'
+                    ) {
+
+                        reconnecting =
+                            false
+
 
                         logger.success(
                             `${settings.botName} conectado`
                         )
 
+
                         logger.statusTable({
-                            Bot: settings.botName,
-                            Owner: settings.ownerNumber[0],
-                            Estado: 'Conectado ✅',
+                            Bot:
+                                settings.botName,
+
+                            Owner:
+                                settings.ownerNumber[0],
+
+                            Estado:
+                                'Conectado ✅',
                         })
 
-                        if (!cleanupStarted) {
 
-                            cleanupStarted = true
-
-                            setInterval(() => {
-                                cleanupTemp()
-                            }, 1000 * 60)
-
-                        }
-
+                        startBackgroundTasks()
                     }
 
-                    if (connection === 'close') {
+
+                    if (
+                        connection ===
+                        'close'
+                    ) {
 
                         const reason =
                             lastDisconnect
@@ -164,77 +332,102 @@ async function startBot() {
                                 ?.output
                                 ?.statusCode
 
+
                         logger.warn(
                             `Desconectado: ${reason}`
                         )
 
-                        if (reason === DisconnectReason.loggedOut) {
 
-                            logger.error('Sesión cerrada.')
+                        if (
+                            reason ===
+                            DisconnectReason.loggedOut
+                        ) {
+
+                            logger.error(
+                                'Sesión cerrada.'
+                            )
 
                             return
-
                         }
+
 
                         if (!reconnecting) {
 
-                            reconnecting = true
+                            reconnecting =
+                                true
+
 
                             logger.info(
                                 'Reconectando en 5 segundos...'
                             )
 
-                            setTimeout(async () => {
 
-                                try {
+                            setTimeout(
+                                async () => {
 
-                                    if (currentSock) {
-                                        currentSock.ev.removeAllListeners()
-                                        currentSock.ws?.close()
-                                    }
+                                    try {
 
-                                } catch {}
+                                        if (
+                                            currentSock
+                                        ) {
 
-                                startBot()
+                                            currentSock
+                                                .ev
+                                                .removeAllListeners()
 
-                            }, 5000)
+                                            currentSock
+                                                .ws
+                                                ?.close()
+                                        }
 
+                                    } catch {}
+
+
+                                    startBot()
+
+                                },
+                                5000
+                            )
                         }
-
                     }
+
 
                 } catch (err) {
 
                     logger.error(
                         `Connection Update Error: ${err.message}`
                     )
-
                 }
-
             }
         )
 
+
         sock.ev.on(
             'group-participants.update',
+
             async update => {
 
                 try {
 
-                    await welcomeSystem(sock, update)
+                    await welcomeSystem(
+                        sock,
+                        update
+                    )
+
 
                 } catch (err) {
 
                     logger.error(
                         `Welcome Event Error: ${err.message}`
                     )
-
                 }
-
             }
         )
 
+
         sock.ev.on(
             'messages.upsert',
+
             async ({ messages }) => {
 
                 try {
@@ -242,45 +435,75 @@ async function startBot() {
                     const msg =
                         messages?.[0]
 
-                    if (!msg) return
-                    if (!msg.message) return
-                    const text =
-    msg.message?.conversation ||
-    msg.message?.extendedTextMessage?.text ||
-    ''
 
-if (
-    msg.key.fromMe &&
-    !text.startsWith('.')
-) return
+                    if (!msg) return
+
+                    if (!msg.message) return
+
+
+                    const text =
+                        msg.message
+                            ?.conversation ||
+                        msg.message
+                            ?.extendedTextMessage
+                            ?.text ||
+                        ''
+
+
+                    if (
+                        msg.key.fromMe &&
+                        !text.startsWith('.')
+                    ) {
+
+                        return
+                    }
+
 
                     if (
                         msg.key.remoteJid ===
                         'status@broadcast'
-                    ) return
+                    ) {
 
-                    const timestamp = Number(
-                        msg.messageTimestamp
+                        return
+                    }
+
+
+                    const timestamp =
+                        Number(
+                            msg.messageTimestamp
+                        )
+
+
+                    const now =
+                        Math.floor(
+                            Date.now() / 1000
+                        )
+
+
+                    if (
+                        now - timestamp >
+                        30
+                    ) {
+
+                        return
+                    }
+
+
+                    await messagesEvent(
+                        sock,
+                        messages
                     )
 
-                    const now = Math.floor(
-                        Date.now() / 1000
-                    )
-
-                    if (now - timestamp > 30) return
-
-                    await messagesEvent(sock, messages)
 
                 } catch (err) {
 
                     logger.error(
                         `Messages Error: ${err.message}`
                     )
-
                 }
-
             }
         )
+
 
     } catch (err) {
 
@@ -288,12 +511,103 @@ if (
             `StartBot Error: ${err.message}`
         )
 
-        setTimeout(() => {
-            startBot()
-        }, 5000)
 
+        setTimeout(
+            () => {
+                startBot()
+            },
+            5000
+        )
     }
-
 }
 
-startBot()
+
+async function bootstrap() {
+
+    try {
+
+        await initDB()
+
+        logger.success(
+            'Base de datos inicializada'
+        )
+
+        await executeRewardMaintenance()
+
+        await startBot()
+
+
+    } catch (err) {
+
+        logger.error(
+            `Bootstrap Error: ${err.message}`
+        )
+
+
+        setTimeout(
+            () => {
+                bootstrap()
+            },
+            5000
+        )
+    }
+}
+
+
+function shutdown() {
+
+    if (cleanupInterval) {
+        clearInterval(
+            cleanupInterval
+        )
+    }
+
+
+    if (rewardMaintenanceInterval) {
+        clearInterval(
+            rewardMaintenanceInterval
+        )
+    }
+
+
+    try {
+
+        if (currentSock) {
+
+            currentSock
+                .ev
+                .removeAllListeners()
+
+            currentSock
+                .ws
+                ?.close()
+        }
+
+    } catch {}
+
+
+    process.exit(0)
+}
+
+
+process.once(
+    'SIGINT',
+    shutdown
+)
+
+process.once(
+    'SIGTERM',
+    shutdown
+)
+
+
+logger.banner(
+    settings.botName
+)
+
+logger.info(
+    `Iniciando ${settings.botName}...`
+)
+
+
+bootstrap()
