@@ -39,15 +39,36 @@ const {
     './src/services/rewardMaintenanceService'
 )
 
+const {
+    runMilestoneMaintenance
+} = require(
+    './src/services/milestoneMaintenanceService'
+)
+
+const {
+    runSpecialCardMaintenance
+} = require(
+    './src/services/specialCardMaintenanceService'
+)
+
+const {
+    syncMemberRole
+} = require(
+    './src/services/memberRoleService'
+)
+
 const usePairingCode = false
 
 let cleanupStarted = false
 let rewardMaintenanceStarted = false
+let milestoneMaintenanceStarted = false
+let specialCardMaintenanceStarted = false
 let reconnecting = false
 let currentSock = null
 let cleanupInterval = null
 let rewardMaintenanceInterval = null
-
+let milestoneMaintenanceInterval = null
+let specialCardMaintenanceInterval = null
 
 async function executeRewardMaintenance() {
 
@@ -71,10 +92,8 @@ async function executeRewardMaintenance() {
             return
         }
 
-
         const summary =
             result.summary || {}
-
 
         if (
             Number(
@@ -106,7 +125,6 @@ async function executeRewardMaintenance() {
             )
         }
 
-
     } catch (err) {
 
         logger.error(
@@ -115,6 +133,104 @@ async function executeRewardMaintenance() {
     }
 }
 
+async function executeMilestoneMaintenance() {
+
+    try {
+
+        const result =
+            await runMilestoneMaintenance()
+
+        if (!result.processed) {
+
+            if (
+                result.reason !==
+                'ALREADY_RUNNING'
+            ) {
+
+                logger.warn(
+                    `Milestone Maintenance: ${result.reason}`
+                )
+            }
+
+            return
+        }
+
+        if (
+            Number(
+                result.awardsGranted || 0
+            ) > 0 ||
+            Number(
+                result.rewardsDelivered || 0
+            ) > 0 ||
+            Number(
+                result.failures || 0
+            ) > 0
+        ) {
+
+            logger.info(
+                `Milestone Maintenance | ` +
+                `Miembros revisados: ${result.membersChecked || 0} | ` +
+                `Premios concedidos: ${result.awardsGranted || 0} | ` +
+                `Recompensas entregadas: ${result.rewardsDelivered || 0} | ` +
+                `Errores: ${result.failures || 0}`
+            )
+        }
+
+    } catch (err) {
+
+        logger.error(
+            `Milestone Maintenance Error: ${err.message}`
+        )
+    }
+}
+
+async function executeSpecialCardMaintenance() {
+
+    try {
+
+        const result =
+            await runSpecialCardMaintenance()
+
+        if (!result.processed) {
+
+            if (
+                result.reason !==
+                'ALREADY_RUNNING'
+            ) {
+
+                logger.warn(
+                    `Special Card Maintenance: ${result.reason}`
+                )
+            }
+
+            return
+        }
+
+        if (
+            Number(
+                result.changed || 0
+            ) > 0 ||
+            Number(
+                result.failed || 0
+            ) > 0
+        ) {
+
+            logger.info(
+                `Special Card Maintenance | ` +
+                `Cartas revisadas: ${result.checked || 0} | ` +
+                `Cartas cambiadas: ${result.changed || 0} | ` +
+                `Sin cambios: ${result.unchanged || 0} | ` +
+                `Errores: ${result.failed || 0}`
+            )
+        }
+
+    } catch (err) {
+
+        logger.error(
+            `Special Card Maintenance Error: ${err.message}`
+        )
+    }
+}
 
 function startBackgroundTasks() {
 
@@ -143,7 +259,6 @@ function startBackgroundTasks() {
             )
     }
 
-
     if (!rewardMaintenanceStarted) {
 
         rewardMaintenanceStarted = true
@@ -158,8 +273,35 @@ function startBackgroundTasks() {
                 1000 * 60 * 5
             )
     }
-}
 
+    if (!milestoneMaintenanceStarted) {
+
+        milestoneMaintenanceStarted = true
+
+        milestoneMaintenanceInterval =
+            setInterval(
+                () => {
+                    executeMilestoneMaintenance()
+                },
+                1000 * 60 * 60 * 24
+            )
+    }
+
+    if (!specialCardMaintenanceStarted) {
+
+        specialCardMaintenanceStarted = true
+
+        executeSpecialCardMaintenance()
+
+        specialCardMaintenanceInterval =
+            setInterval(
+                () => {
+                    executeSpecialCardMaintenance()
+                },
+                1000 * 60 * 5
+            )
+    }
+}
 
 async function startBot() {
 
@@ -173,17 +315,14 @@ async function startBot() {
                 './auth_info'
             )
 
-
         const {
             version
         } =
             await fetchLatestBaileysVersion()
 
-
         logger.info(
             `Usando WA v${version.join('.')}`
         )
-
 
         let sock =
             makeWASocket({
@@ -216,13 +355,11 @@ async function startBot() {
                     30000
             })
 
-
         sock =
             patchSocket(sock)
 
         currentSock =
             sock
-
 
         if (
             usePairingCode &&
@@ -232,7 +369,6 @@ async function startBot() {
             const phoneNumber =
                 '6681137982'
 
-
             try {
 
                 const code =
@@ -240,11 +376,9 @@ async function startBot() {
                         phoneNumber
                     )
 
-
                 console.log(
                     `\n📲 Código de vinculación:\n${code}\n`
                 )
-
 
             } catch (err) {
 
@@ -254,12 +388,10 @@ async function startBot() {
             }
         }
 
-
         sock.ev.on(
             'creds.update',
             saveCreds
         )
-
 
         sock.ev.on(
             'connection.update',
@@ -273,7 +405,6 @@ async function startBot() {
                         lastDisconnect,
                         qr
                     } = update
-
 
                     if (
                         qr &&
@@ -290,7 +421,6 @@ async function startBot() {
                         )
                     }
 
-
                     if (
                         connection ===
                         'open'
@@ -299,11 +429,9 @@ async function startBot() {
                         reconnecting =
                             false
 
-
                         logger.success(
                             `${settings.botName} conectado`
                         )
-
 
                         logger.statusTable({
                             Bot:
@@ -316,10 +444,8 @@ async function startBot() {
                                 'Conectado ✅',
                         })
 
-
                         startBackgroundTasks()
                     }
-
 
                     if (
                         connection ===
@@ -332,11 +458,9 @@ async function startBot() {
                                 ?.output
                                 ?.statusCode
 
-
                         logger.warn(
                             `Desconectado: ${reason}`
                         )
-
 
                         if (
                             reason ===
@@ -350,17 +474,14 @@ async function startBot() {
                             return
                         }
 
-
                         if (!reconnecting) {
 
                             reconnecting =
                                 true
 
-
                             logger.info(
                                 'Reconectando en 5 segundos...'
                             )
-
 
                             setTimeout(
                                 async () => {
@@ -382,7 +503,6 @@ async function startBot() {
 
                                     } catch {}
 
-
                                     startBot()
 
                                 },
@@ -390,7 +510,6 @@ async function startBot() {
                             )
                         }
                     }
-
 
                 } catch (err) {
 
@@ -401,10 +520,8 @@ async function startBot() {
             }
         )
 
-
         sock.ev.on(
             'group-participants.update',
-
             async update => {
 
                 try {
@@ -414,16 +531,93 @@ async function startBot() {
                         update
                     )
 
-
                 } catch (err) {
 
                     logger.error(
                         `Welcome Event Error: ${err.message}`
                     )
                 }
+
+                if (
+                    update.action !== 'promote' &&
+                    update.action !== 'demote'
+                ) {
+                    return
+                }
+
+                try {
+
+                    const metadata =
+                        await sock.groupMetadata(
+                            update.id
+                        )
+
+                    const participants =
+                        metadata.participants || []
+
+                    const affected =
+                        update.participants || []
+
+                    for (const participant of affected) {
+
+                        const participantId =
+                            typeof participant === 'string'
+                                ? participant
+                                : participant?.id
+
+                        if (!participantId) {
+                            continue
+                        }
+
+                        const current =
+                            participants.find(
+                                item =>
+                                    item.id === participantId
+                            )
+
+                        if (!current) {
+
+                            logger.warn(
+                                `Role Sync: participante ${participantId} no encontrado en ${update.id}`
+                            )
+
+                            continue
+                        }
+
+                        const altJid =
+                            current.phoneNumber ||
+                            current.jid ||
+                            null
+
+                        const result =
+                            await syncMemberRole({
+                                userJid:
+                                    current.id,
+                                altJid,
+                                displayName:
+                                    current.notify ||
+                                    null,
+                                whatsappAdmin:
+                                    current.admin ||
+                                    null
+                            })
+
+                        if (result.changed) {
+
+                            logger.event(
+                                `Role Sync: ${participantId} ${result.previousType} -> ${result.memberType}`
+                            )
+                        }
+                    }
+
+                } catch (err) {
+
+                    logger.error(
+                        `Role Sync Event Error: ${err.message}`
+                    )
+                }
             }
         )
-
 
         sock.ev.on(
             'messages.upsert',
@@ -435,11 +629,9 @@ async function startBot() {
                     const msg =
                         messages?.[0]
 
-
                     if (!msg) return
 
                     if (!msg.message) return
-
 
                     const text =
                         msg.message
@@ -449,7 +641,6 @@ async function startBot() {
                             ?.text ||
                         ''
 
-
                     if (
                         msg.key.fromMe &&
                         !text.startsWith('.')
@@ -457,7 +648,6 @@ async function startBot() {
 
                         return
                     }
-
 
                     if (
                         msg.key.remoteJid ===
@@ -467,18 +657,15 @@ async function startBot() {
                         return
                     }
 
-
                     const timestamp =
                         Number(
                             msg.messageTimestamp
                         )
 
-
                     const now =
                         Math.floor(
                             Date.now() / 1000
                         )
-
 
                     if (
                         now - timestamp >
@@ -488,12 +675,10 @@ async function startBot() {
                         return
                     }
 
-
                     await messagesEvent(
                         sock,
                         messages
                     )
-
 
                 } catch (err) {
 
@@ -504,13 +689,11 @@ async function startBot() {
             }
         )
 
-
     } catch (err) {
 
         logger.error(
             `StartBot Error: ${err.message}`
         )
-
 
         setTimeout(
             () => {
@@ -520,7 +703,6 @@ async function startBot() {
         )
     }
 }
-
 
 async function bootstrap() {
 
@@ -534,15 +716,19 @@ async function bootstrap() {
 
         await executeRewardMaintenance()
 
-        await startBot()
+        await executeMilestoneMaintenance()
 
+        await executeRewardMaintenance()
+
+        await executeSpecialCardMaintenance()
+
+        await startBot()
 
     } catch (err) {
 
         logger.error(
             `Bootstrap Error: ${err.message}`
         )
-
 
         setTimeout(
             () => {
@@ -553,22 +739,35 @@ async function bootstrap() {
     }
 }
 
-
 function shutdown() {
 
     if (cleanupInterval) {
+
         clearInterval(
             cleanupInterval
         )
     }
 
-
     if (rewardMaintenanceInterval) {
+
         clearInterval(
             rewardMaintenanceInterval
         )
     }
 
+    if (milestoneMaintenanceInterval) {
+
+        clearInterval(
+            milestoneMaintenanceInterval
+        )
+    }
+
+    if (specialCardMaintenanceInterval) {
+
+        clearInterval(
+            specialCardMaintenanceInterval
+        )
+    }
 
     try {
 
@@ -585,10 +784,8 @@ function shutdown() {
 
     } catch {}
 
-
     process.exit(0)
 }
-
 
 process.once(
     'SIGINT',
@@ -600,7 +797,6 @@ process.once(
     shutdown
 )
 
-
 logger.banner(
     settings.botName
 )
@@ -608,6 +804,5 @@ logger.banner(
 logger.info(
     `Iniciando ${settings.botName}...`
 )
-
 
 bootstrap()

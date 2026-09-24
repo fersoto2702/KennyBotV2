@@ -26,15 +26,14 @@ async function deliverMilestoneReward(
         return {
             attempted: false,
             delivered: 0,
-            failed: 0,
-            result: null
+            failed: 0
         }
     }
 
 
     try {
 
-        const delivery =
+        const result =
             await deliverAwardRewards(
                 awardResult.memberAwardId
             )
@@ -42,12 +41,7 @@ async function deliverMilestoneReward(
 
         return {
             attempted: true,
-            delivered:
-                delivery.delivered || 0,
-            failed:
-                delivery.failed || 0,
-            result:
-                delivery
+            ...result
         }
 
 
@@ -77,43 +71,64 @@ async function checkMemberMilestones(
             SELECT
                 id,
                 display_name,
-                joined_at,
-                TIMESTAMPDIFF(
-                    DAY,
-                    joined_at,
-                    NOW()
-                ) AS tenure_days
+                member_type,
+                group_joined_at,
+                CASE
+                    WHEN group_joined_at IS NULL
+                    THEN NULL
+                    ELSE TIMESTAMPDIFF(
+                        DAY,
+                        group_joined_at,
+                        NOW()
+                    )
+                END AS tenure_days
 
             FROM kb_members
 
             WHERE id = ?
+              AND active = 1
 
             LIMIT 1
             `,
-            [memberId]
+            [
+                memberId
+            ]
         )
-
-
-    if (!rows.length) {
-
-        return {
-            memberId,
-            tenureDays: 0,
-            granted: []
-        }
-    }
 
 
     const member =
         rows[0]
 
+
+    if (!member) {
+
+        return {
+            processed: false,
+            reason:
+                'MEMBER_NOT_FOUND',
+            granted: []
+        }
+    }
+
+
+    if (!member.group_joined_at) {
+
+        return {
+            processed: false,
+            reason:
+                'GROUP_JOIN_DATE_UNKNOWN',
+            memberId:
+                member.id,
+            granted: []
+        }
+    }
+
+
     const tenureDays =
-        Math.max(
-            0,
-            Number(
-                member.tenure_days || 0
-            )
+        Number(
+            member.tenure_days || 0
         )
+
 
     const granted = []
 
@@ -126,7 +141,7 @@ async function checkMemberMilestones(
                 'ONE_YEAR_VETERAN',
                 {
                     reason:
-                        'Alcanzó 1 año de antigüedad en KennyBot'
+                        '1 año de antigüedad en la comunidad'
                 }
             )
 
@@ -163,7 +178,7 @@ async function checkMemberMilestones(
                 'TWO_YEAR_VETERAN',
                 {
                     reason:
-                        'Alcanzó 2 años de antigüedad en KennyBot'
+                        '2 años de antigüedad en la comunidad'
                 }
             )
 
@@ -193,10 +208,15 @@ async function checkMemberMilestones(
 
 
     return {
-        memberId,
+        processed: true,
+        reason:
+            'COMPLETED',
 
-        displayName:
-            member.display_name,
+        memberId:
+            member.id,
+
+        groupJoinedAt:
+            member.group_joined_at,
 
         tenureDays,
 

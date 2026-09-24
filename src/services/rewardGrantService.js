@@ -1,10 +1,18 @@
 const { pool } =
     require('../database/mysql')
 
+const {
+    isSpecialCardAward,
+    calculateSpecialCardRating,
+    activateSpecialCard
+} = require('./specialCardService')
+
+
 function buildRewardCardKey(grantId) {
 
     return `reward:grant:${grantId}`
 }
+
 
 async function processMemberCardGrant(
     conn,
@@ -13,16 +21,39 @@ async function processMemberCardGrant(
 
     if (grant.member_card_id) {
 
+        let activation = {
+            equipped: false
+        }
+
+        if (
+            isSpecialCardAward(
+                grant.award_code
+            )
+        ) {
+
+            activation =
+                await activateSpecialCard(
+                    conn,
+                    grant.member_id,
+                    grant.member_card_id,
+                    grant.award_code
+                )
+        }
+
         return {
             memberCardId:
                 grant.member_card_id,
 
-            recovered: true
+            recovered: true,
+
+            equipped:
+                activation.equipped === true
         }
     }
 
 
     if (!grant.card_family) {
+
         throw new Error(
             'CARD_FAMILY_REQUIRED'
         )
@@ -30,13 +61,27 @@ async function processMemberCardGrant(
 
 
     if (!grant.card_promo_code) {
+
         throw new Error(
             'CARD_PROMO_CODE_REQUIRED'
         )
     }
 
 
-    if (!grant.card_rating) {
+    const specialCard =
+        isSpecialCardAward(
+            grant.award_code
+        )
+
+
+    if (
+        !specialCard &&
+        (
+            grant.card_rating === null ||
+            grant.card_rating === undefined
+        )
+    ) {
+
         throw new Error(
             'CARD_RATING_REQUIRED'
         )
@@ -44,15 +89,23 @@ async function processMemberCardGrant(
 
 
     const cardKey =
-        buildRewardCardKey(grant.id)
+        buildRewardCardKey(
+            grant.id
+        )
+
 
     const [existingCards] =
         await conn.execute(
             `
-            SELECT id
+            SELECT
+                id
+
             FROM kb_member_cards
+
             WHERE card_key = ?
+
             LIMIT 1
+
             FOR UPDATE
             `,
             [cardKey]
@@ -61,46 +114,42 @@ async function processMemberCardGrant(
 
     if (existingCards.length) {
 
+        let activation = {
+            equipped: false
+        }
+
+        if (specialCard) {
+
+            activation =
+                await activateSpecialCard(
+                    conn,
+                    grant.member_id,
+                    existingCards[0].id,
+                    grant.award_code
+                )
+        }
+
+
         return {
             memberCardId:
                 existingCards[0].id,
 
-            recovered: true
+            recovered: true,
+
+            equipped:
+                activation.equipped === true
         }
     }
 
-    const [statsRows] =
-        await conn.execute(
-            `
-            SELECT
-                valid_messages,
-                commands_used,
-                interactions,
-                active_days,
-                longest_streak
-
-            FROM kb_member_stats
-
-            WHERE member_id = ?
-
-            LIMIT 1
-            FOR UPDATE
-            `,
-            [grant.member_id]
-        )
-
-
-    const stats =
-        statsRows[0] || {}
 
     const rating =
-        Math.max(
-            1,
-            Math.min(
-                99,
-                Number(grant.card_rating)
-            )
+        await calculateSpecialCardRating(
+            conn,
+            grant.member_id,
+            grant.award_code,
+            grant.card_rating
         )
+
 
     const [result] =
         await conn.execute(
@@ -167,13 +216,34 @@ async function processMemberCardGrant(
         )
 
 
+    let activation = {
+        equipped: false
+    }
+
+
+    if (specialCard) {
+
+        activation =
+            await activateSpecialCard(
+                conn,
+                grant.member_id,
+                result.insertId,
+                grant.award_code
+            )
+    }
+
+
     return {
         memberCardId:
             result.insertId,
 
-        recovered: false
+        recovered: false,
+
+        equipped:
+            activation.equipped === true
     }
 }
+
 
 async function processUserPackGrant(
     conn,
@@ -192,6 +262,7 @@ async function processUserPackGrant(
 
 
     if (!grant.pack_type_id) {
+
         throw new Error(
             'PACK_TYPE_REQUIRED'
         )
@@ -199,6 +270,7 @@ async function processUserPackGrant(
 
 
     if (!grant.pool_id) {
+
         throw new Error(
             'PACK_POOL_REQUIRED'
         )
@@ -209,8 +281,11 @@ async function processUserPackGrant(
         await conn.execute(
             `
             SELECT id
+
             FROM ut_pack_types
+
             WHERE id = ?
+
             LIMIT 1
             `,
             [grant.pack_type_id]
@@ -218,6 +293,7 @@ async function processUserPackGrant(
 
 
     if (!packTypes.length) {
+
         throw new Error(
             'PACK_TYPE_NOT_FOUND'
         )
@@ -228,8 +304,11 @@ async function processUserPackGrant(
         await conn.execute(
             `
             SELECT id
+
             FROM ut_pack_pools
+
             WHERE id = ?
+
             LIMIT 1
             `,
             [grant.pool_id]
@@ -237,6 +316,7 @@ async function processUserPackGrant(
 
 
     if (!pools.length) {
+
         throw new Error(
             'PACK_POOL_NOT_FOUND'
         )
@@ -253,7 +333,14 @@ async function processUserPackGrant(
                 status,
                 obtained_reason
             )
-            VALUES (?, ?, ?, 'UNOPENED', ?)
+
+            VALUES (
+                ?,
+                ?,
+                ?,
+                'UNOPENED',
+                ?
+            )
             `,
             [
                 grant.member_id,
@@ -272,14 +359,19 @@ async function processUserPackGrant(
     }
 }
 
-async function processRewardGrant(grantId) {
+
+async function processRewardGrant(
+    grantId
+) {
 
     const conn =
         await pool.getConnection()
 
+
     try {
 
         await conn.beginTransaction()
+
 
         const [rows] =
             await conn.execute(
@@ -349,7 +441,11 @@ async function processRewardGrant(grantId) {
         const grant =
             rows[0]
 
-        if (grant.status === 'DELIVERED') {
+
+        if (
+            grant.status ===
+            'DELIVERED'
+        ) {
 
             await conn.commit()
 
@@ -363,7 +459,10 @@ async function processRewardGrant(grantId) {
         }
 
 
-        if (grant.status === 'CANCELLED') {
+        if (
+            grant.status ===
+            'CANCELLED'
+        ) {
 
             await conn.commit()
 
@@ -376,7 +475,11 @@ async function processRewardGrant(grantId) {
             }
         }
 
-        if (grant.status !== 'PENDING') {
+
+        if (
+            grant.status !==
+            'PENDING'
+        ) {
 
             await conn.commit()
 
@@ -388,6 +491,7 @@ async function processRewardGrant(grantId) {
                     grant.id
             }
         }
+
 
         await conn.execute(
             `
@@ -404,6 +508,7 @@ async function processRewardGrant(grantId) {
             `,
             [grant.id]
         )
+
 
         if (
             grant.reward_type ===
@@ -443,67 +548,81 @@ async function processRewardGrant(grantId) {
 
             return {
                 processed: true,
-                reason: 'DELIVERED',
+                reason:
+                    'DELIVERED',
+
                 rewardType:
                     'MEMBER_CARD',
+
                 grantId:
                     grant.id,
+
                 memberCardId:
                     delivery.memberCardId,
+
+                recovered:
+                    delivery.recovered,
+
+                equipped:
+                    delivery.equipped === true
+            }
+        }
+
+
+        if (
+            grant.reward_type ===
+            'USER_PACK'
+        ) {
+
+            const delivery =
+                await processUserPackGrant(
+                    conn,
+                    grant
+                )
+
+
+            await conn.execute(
+                `
+                UPDATE kb_member_reward_grants
+
+                SET
+                    status = 'DELIVERED',
+                    user_pack_id = ?,
+                    delivered_at =
+                        CURRENT_TIMESTAMP,
+                    processing_at = NULL,
+                    last_error = NULL
+
+                WHERE id = ?
+                `,
+                [
+                    delivery.userPackId,
+                    grant.id
+                ]
+            )
+
+
+            await conn.commit()
+
+
+            return {
+                processed: true,
+                reason:
+                    'DELIVERED',
+
+                rewardType:
+                    'USER_PACK',
+
+                grantId:
+                    grant.id,
+
+                userPackId:
+                    delivery.userPackId,
+
                 recovered:
                     delivery.recovered
             }
         }
-
-        if (
-    grant.reward_type ===
-    'USER_PACK'
-) {
-
-    const delivery =
-        await processUserPackGrant(
-            conn,
-            grant
-        )
-
-
-    await conn.execute(
-        `
-        UPDATE kb_member_reward_grants
-
-        SET
-            status = 'DELIVERED',
-            user_pack_id = ?,
-            delivered_at =
-                CURRENT_TIMESTAMP,
-            processing_at = NULL,
-            last_error = NULL
-
-        WHERE id = ?
-        `,
-        [
-            delivery.userPackId,
-            grant.id
-        ]
-    )
-
-
-    await conn.commit()
-
-
-    return {
-        processed: true,
-        reason: 'DELIVERED',
-        rewardType:
-            'USER_PACK',
-        grantId:
-            grant.id,
-        userPackId:
-            delivery.userPackId,
-        recovered:
-            delivery.recovered
-    }
-}
 
 
         throw new Error(
@@ -514,8 +633,11 @@ async function processRewardGrant(grantId) {
     } catch (error) {
 
         try {
+
             await conn.rollback()
+
         } catch (_) {}
+
 
         try {
 
@@ -535,8 +657,12 @@ async function processRewardGrant(grantId) {
                 `,
                 [
                     String(
-                        error.message || error
-                    ).slice(0, 1000),
+                        error.message ||
+                        error
+                    ).slice(
+                        0,
+                        1000
+                    ),
 
                     grantId
                 ]
@@ -547,12 +673,13 @@ async function processRewardGrant(grantId) {
 
         throw error
 
+
     } finally {
 
         conn.release()
-
     }
 }
+
 
 async function processPendingRewardGrants(
     limit = 50
@@ -572,9 +699,13 @@ async function processPendingRewardGrants(
         await pool.query(
             `
             SELECT id
+
             FROM kb_member_reward_grants
+
             WHERE status = 'PENDING'
+
             ORDER BY id ASC
+
             LIMIT ${safeLimit}
             `
         )
@@ -648,6 +779,7 @@ async function processPendingRewardGrants(
         results
     }
 }
+
 
 module.exports = {
     processRewardGrant,
