@@ -17,6 +17,9 @@ module.exports = {
 
     ],
 
+    roleAuthorityGroup:
+        '',
+
     stickerPack:
 
         'KennyBot',

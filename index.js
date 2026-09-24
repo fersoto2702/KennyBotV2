@@ -521,103 +521,105 @@ async function startBot() {
         )
 
         sock.ev.on(
-            'group-participants.update',
-            async update => {
+    'group-participants.update',
+    async update => {
+        try {
+            await welcomeSystem(
+                sock,
+                update
+            )
+        } catch (err) {
+            logger.error(
+                `Welcome Event Error: ${err.message}`
+            )
+        }
 
-                try {
+        if (
+            update.action !== 'promote' &&
+            update.action !== 'demote'
+        ) {
+            return
+        }
 
-                    await welcomeSystem(
-                        sock,
-                        update
-                    )
+        const roleAuthorityGroup =
+            settings.roleAuthorityGroup || null
 
-                } catch (err) {
+        if (
+            !roleAuthorityGroup ||
+            update.id !== roleAuthorityGroup
+        ) {
+            logger.info(
+                `Role Sync ignorado en ${update.id}: grupo no autorizado`
+            )
+            return
+        }
 
-                    logger.error(
-                        `Welcome Event Error: ${err.message}`
-                    )
+        try {
+            const metadata =
+                await sock.groupMetadata(
+                    update.id
+                )
+
+            const participants =
+                metadata.participants || []
+
+            const affected =
+                update.participants || []
+
+            for (const participant of affected) {
+                const participantId =
+                    typeof participant === 'string'
+                        ? participant
+                        : participant?.id
+
+                if (!participantId) {
+                    continue
                 }
 
-                if (
-                    update.action !== 'promote' &&
-                    update.action !== 'demote'
-                ) {
-                    return
+                const current =
+                    participants.find(
+                        item =>
+                            item.id === participantId
+                    )
+
+                if (!current) {
+                    logger.warn(
+                        `Role Sync: participante ${participantId} no encontrado en ${update.id}`
+                    )
+                    continue
                 }
 
-                try {
+                const altJid =
+                    current.phoneNumber ||
+                    current.jid ||
+                    null
 
-                    const metadata =
-                        await sock.groupMetadata(
-                            update.id
-                        )
-
-                    const participants =
-                        metadata.participants || []
-
-                    const affected =
-                        update.participants || []
-
-                    for (const participant of affected) {
-
-                        const participantId =
-                            typeof participant === 'string'
-                                ? participant
-                                : participant?.id
-
-                        if (!participantId) {
-                            continue
-                        }
-
-                        const current =
-                            participants.find(
-                                item =>
-                                    item.id === participantId
-                            )
-
-                        if (!current) {
-
-                            logger.warn(
-                                `Role Sync: participante ${participantId} no encontrado en ${update.id}`
-                            )
-
-                            continue
-                        }
-
-                        const altJid =
-                            current.phoneNumber ||
-                            current.jid ||
+                const result =
+                    await syncMemberRole({
+                        userJid:
+                            current.id,
+                        altJid,
+                        displayName:
+                            current.notify ||
+                            null,
+                        whatsappAdmin:
+                            current.admin ||
                             null
+                    })
 
-                        const result =
-                            await syncMemberRole({
-                                userJid:
-                                    current.id,
-                                altJid,
-                                displayName:
-                                    current.notify ||
-                                    null,
-                                whatsappAdmin:
-                                    current.admin ||
-                                    null
-                            })
-
-                        if (result.changed) {
-
-                            logger.event(
-                                `Role Sync: ${participantId} ${result.previousType} -> ${result.memberType}`
-                            )
-                        }
-                    }
-
-                } catch (err) {
-
-                    logger.error(
-                        `Role Sync Event Error: ${err.message}`
+                if (result.changed) {
+                    logger.event(
+                        `Role Sync: ${participantId} ${result.previousType} -> ${result.memberType}`
                     )
                 }
             }
-        )
+        } catch (err) {
+            logger.error(
+                `Role Sync Event Error: ${err.message}`
+            )
+        }
+    }
+)
 
         sock.ev.on(
             'messages.upsert',
