@@ -52,9 +52,11 @@ const {
 )
 
 const {
-    syncMemberRole
+    syncAllGlobalRoles,
+    syncGlobalRoleForMember,
+    isProductionRoleGroup
 } = require(
-    './src/services/memberRoleService'
+    './src/services/globalRoleSyncService'
 )
 
 const usePairingCode = false
@@ -228,6 +230,52 @@ async function executeSpecialCardMaintenance() {
 
         logger.error(
             `Special Card Maintenance Error: ${err.message}`
+        )
+    }
+}
+
+async function executeGlobalRoleSync(sock) {
+
+    try {
+
+        const result =
+            await syncAllGlobalRoles(
+                sock
+            )
+
+        if (!result.processed) {
+
+            logger.warn(
+                `Global Role Sync: ${result.reason} | ` +
+                `Grupos revisados: ${result.groupsChecked || 0} | ` +
+                `Grupos con error: ${result.groupsFailed || 0}`
+            )
+
+            return
+        }
+
+        if (
+            Number(
+                result.changed || 0
+            ) > 0 ||
+            Number(
+                result.failed || 0
+            ) > 0
+        ) {
+
+            logger.info(
+                `Global Role Sync | ` +
+                `Grupos: ${result.groupsChecked || 0} | ` +
+                `Miembros: ${result.membersChecked || 0} | ` +
+                `Cambios: ${result.changed || 0} | ` +
+                `Errores: ${result.failed || 0}`
+            )
+        }
+
+    } catch (err) {
+
+        logger.error(
+            `Global Role Sync Error: ${err.message}`
         )
     }
 }
@@ -445,6 +493,10 @@ async function startBot() {
                         })
 
                         startBackgroundTasks()
+
+                        await executeGlobalRoleSync(
+                            sock
+                        )
                     }
 
                     if (
@@ -521,105 +573,95 @@ async function startBot() {
         )
 
         sock.ev.on(
-    'group-participants.update',
-    async update => {
-        try {
-            await welcomeSystem(
-                sock,
-                update
-            )
-        } catch (err) {
-            logger.error(
-                `Welcome Event Error: ${err.message}`
-            )
-        }
+            'group-participants.update',
+            async update => {
 
-        if (
-            update.action !== 'promote' &&
-            update.action !== 'demote'
-        ) {
-            return
-        }
+                try {
 
-        const roleAuthorityGroup =
-            settings.roleAuthorityGroup || null
-
-        if (
-            !roleAuthorityGroup ||
-            update.id !== roleAuthorityGroup
-        ) {
-            logger.info(
-                `Role Sync ignorado en ${update.id}: grupo no autorizado`
-            )
-            return
-        }
-
-        try {
-            const metadata =
-                await sock.groupMetadata(
-                    update.id
-                )
-
-            const participants =
-                metadata.participants || []
-
-            const affected =
-                update.participants || []
-
-            for (const participant of affected) {
-                const participantId =
-                    typeof participant === 'string'
-                        ? participant
-                        : participant?.id
-
-                if (!participantId) {
-                    continue
-                }
-
-                const current =
-                    participants.find(
-                        item =>
-                            item.id === participantId
+                    await welcomeSystem(
+                        sock,
+                        update
                     )
 
-                if (!current) {
-                    logger.warn(
-                        `Role Sync: participante ${participantId} no encontrado en ${update.id}`
+                } catch (err) {
+
+                    logger.error(
+                        `Welcome Event Error: ${err.message}`
                     )
-                    continue
                 }
 
-                const altJid =
-                    current.phoneNumber ||
-                    current.jid ||
-                    null
+                if (
+                    update.action !== 'promote' &&
+                    update.action !== 'demote'
+                ) {
+                    return
+                }
 
-                const result =
-                    await syncMemberRole({
-                        userJid:
-                            current.id,
-                        altJid,
-                        displayName:
-                            current.notify ||
-                            null,
-                        whatsappAdmin:
-                            current.admin ||
-                            null
-                    })
+                if (
+                    !isProductionRoleGroup(
+                        update.id
+                    )
+                ) {
 
-                if (result.changed) {
-                    logger.event(
-                        `Role Sync: ${participantId} ${result.previousType} -> ${result.memberType}`
+                    logger.info(
+                        `Global Role Sync ignorado en grupo de prueba/no productivo: ${update.id}`
+                    )
+
+                    return
+                }
+
+                try {
+
+                    const affected =
+                        update.participants || []
+
+                    for (const participant of affected) {
+
+                        const participantId =
+                            typeof participant === 'string'
+                                ? participant
+                                : participant?.id
+
+                        if (!participantId) {
+                            continue
+                        }
+
+                        const result =
+                            await syncGlobalRoleForMember(
+                                sock,
+                                participantId
+                            )
+
+                        if (!result.processed) {
+
+                            logger.warn(
+                                `Global Role Sync: ${participantId} | ${result.reason}`
+                            )
+
+                            continue
+                        }
+
+                        if (
+                            result.result?.changed
+                        ) {
+
+                            logger.event(
+                                `Global Role Sync: ` +
+                                `${participantId} ` +
+                                `${result.result.previousType} -> ` +
+                                `${result.result.memberType}`
+                            )
+                        }
+                    }
+
+                } catch (err) {
+
+                    logger.error(
+                        `Global Role Sync Event Error: ${err.message}`
                     )
                 }
             }
-        } catch (err) {
-            logger.error(
-                `Role Sync Event Error: ${err.message}`
-            )
-        }
-    }
-)
+        )
 
         sock.ev.on(
             'messages.upsert',
