@@ -1,21 +1,12 @@
 const axios =
     require('axios')
 
-const fs =
-    require('fs')
-
-const path =
-    require('path')
-
-const {
-    checkCooldown
-} = require('../../src/utils/cooldowns')
-
 const logger =
     require('../../src/utils/logger')
 
 const ui =
     require('../../src/utils/ui')
+
 
 async function sendInstagramMessage(
     sock,
@@ -32,14 +23,14 @@ async function sendInstagramMessage(
 
 }
 
+
 module.exports = {
 
-    name: 'instagram',
+    name:
+        'instagram',
 
     aliases: [
-
         'ig'
-
     ],
 
     description:
@@ -47,6 +38,7 @@ module.exports = {
 
     category:
         'descargas',
+
 
     async execute({
 
@@ -63,67 +55,98 @@ module.exports = {
                 msg.key.participant ||
                 msg.key.remoteJid
 
-            const cooldown =
-                checkCooldown(
-                    sender,
-                    'instagram',
-                    10
-                )
 
             if (cooldown.active) {
 
                 return await sendInstagramMessage(
-    sock,
-    from,
-    ui.warn(
-        'COOLDOWN ACTIVO',
-        `Espera ${cooldown.left}s antes de usar este comando.`
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'COOLDOWN ACTIVO',
+
+                        `Debes esperar ${cooldown.left}s antes de volver a descargar contenido de Instagram.`
+
+                    )
+
+                )
 
             }
+
 
             const url =
                 args[0]
 
+
             if (
-
                 !url ||
-
                 !url.includes('instagram.com')
-
             ) {
 
                 return await sendInstagramMessage(
-    sock,
-    from,
-    ui.warn(
-        'URL INVÁLIDA',
-        'Uso: /instagram link'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'ENLACE REQUERIDO',
+
+                        'Envía un enlace válido de Instagram.\n\nUso: /instagram link'
+
+                    )
+
+                )
 
             }
 
+
             await sendInstagramMessage(
-    sock,
-    from,
-    ui.info(
-        'DESCARGANDO',
-        [
-            ['Fuente', 'Instagram']
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+
+                    '📸 INSTAGRAM',
+
+                    [
+                        [
+                            'Estado',
+                            'Procesando descarga'
+                        ],
+
+                        [
+                            'Fuente',
+                            'Instagram'
+                        ]
+                    ],
+
+                    'Buscando el contenido disponible...'
+
+                )
+
+            )
+
 
             const response =
                 await axios.get(
 
-                    `https://api.vreden.my.id/api/igdl?url=${encodeURIComponent(url)}`,
+                    'https://api.azbry.com/api/download/instagram',
 
                     {
 
-                        timeout: 30000,
+                        params: {
+                            url
+                        },
+
+                        timeout:
+                            30000,
 
                         headers: {
 
@@ -136,40 +159,100 @@ module.exports = {
 
                 )
 
+
             const data =
                 response.data
 
+
+            logger.info(
+                `Instagram API response: ${JSON.stringify(data)}`
+            )
+
+
             if (
-
                 !data ||
-
-                !data.result ||
-
-                !data.result.media ||
-
-                !data.result.media.length
-
+                data.status !== true
             ) {
 
                 return await sendInstagramMessage(
-    sock,
-    from,
-    ui.error(
-        'DESCARGA FALLIDA',
-        'No se pudo obtener el contenido.'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'DESCARGA FALLIDA',
+
+                        'Instagram no devolvió contenido descargable.'
+
+                    )
+
+                )
+
             }
 
-            const limitedMedia =
-                data.result.media.slice(0, 10)
 
-            for (const media of limitedMedia) {
+            const videos =
+                Array.isArray(data.videos)
+                    ? data.videos
+                    : []
+
+
+            const images =
+                Array.isArray(data.images)
+                    ? data.images
+                    : []
+
+
+            if (
+                videos.length === 0 &&
+                images.length === 0
+            ) {
+
+                return await sendInstagramMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'SIN CONTENIDO',
+
+                        'No se encontraron fotos o videos disponibles para descargar.'
+
+                    )
+
+                )
+
+            }
+
+
+            const media = [
+
+                ...videos.map(url => ({
+                    type: 'video',
+                    url
+                })),
+
+                ...images.map(url => ({
+                    type: 'image',
+                    url
+                }))
+
+            ].slice(0, 10)
+
+
+            let enviados = 0
+
+
+            for (const item of media) {
 
                 try {
 
                     if (
-                        media.type === 'video'
+                        item.type === 'video'
                     ) {
 
                         await sock.sendMessage(
@@ -179,10 +262,8 @@ module.exports = {
                             {
 
                                 video: {
-
                                     url:
-                                        media.url
-
+                                        item.url
                                 },
 
                                 mimetype:
@@ -191,13 +272,23 @@ module.exports = {
                                 caption:
                                     ui.success(
 
-                                        'INSTAGRAM',
+                                        '📸 INSTAGRAM DOWNLOAD',
 
                                         [
 
-                                            ['Tipo', 'Video']
+                                            [
+                                                'Contenido',
+                                                'VIDEO'
+                                            ],
 
-                                        ]
+                                            [
+                                                'Estado',
+                                                'DESCARGADO'
+                                            ]
+
+                                        ],
+
+                                        'Video listo para disfrutar.'
 
                                     )
 
@@ -207,7 +298,10 @@ module.exports = {
 
                     }
 
-                    else {
+
+                    else if (
+                        item.type === 'image'
+                    ) {
 
                         await sock.sendMessage(
 
@@ -216,22 +310,30 @@ module.exports = {
                             {
 
                                 image: {
-
                                     url:
-                                        media.url
-
+                                        item.url
                                 },
 
                                 caption:
                                     ui.success(
 
-                                        'INSTAGRAM',
+                                        '📸 INSTAGRAM DOWNLOAD',
 
                                         [
 
-                                            ['Tipo', 'Imagen']
+                                            [
+                                                'Contenido',
+                                                'IMAGEN'
+                                            ],
 
-                                        ]
+                                            [
+                                                'Estado',
+                                                'DESCARGADA'
+                                            ]
+
+                                        ],
+
+                                        'Imagen descargada correctamente.'
 
                                     )
 
@@ -241,51 +343,149 @@ module.exports = {
 
                     }
 
-                    await new Promise(resolve =>
 
-                        setTimeout(
-                            resolve,
-                            1500
-                        )
+                    enviados++
+
+
+                    await new Promise(
+
+                        resolve =>
+                            setTimeout(
+                                resolve,
+                                1500
+                            )
 
                     )
+
 
                 } catch (mediaErr) {
 
                     logger.warn(
+
                         `Error enviando media Instagram: ${mediaErr.message}`
+
                     )
 
                 }
 
             }
 
+
+            if (
+                enviados === 0
+            ) {
+
+                return await sendInstagramMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ERROR DE ENVÍO',
+
+                        'El contenido fue encontrado, pero WhatsApp no pudo recibirlo.'
+
+                    )
+
+                )
+
+            }
+
+
             await sendInstagramMessage(
-    sock,
-    from,
-    ui.success(
-        'DESCARGA COMPLETADA',
-        [
-            ['Archivos', `${limitedMedia.length}`],
-            ['Estado', 'Enviado']
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.success(
+
+                    'DESCARGA COMPLETADA',
+
+                    [
+
+                        [
+                            'Archivos enviados',
+                            `${enviados}`
+                        ],
+
+                        [
+                            'Estado',
+                            'COMPLETADO'
+                        ]
+
+                    ],
+
+                    'Todo el contenido disponible fue enviado correctamente.'
+
+                )
+
+            )
+
 
         } catch (err) {
 
+
             logger.error(
+
                 `Error instagram: ${err.message}`
+
             )
 
+
+            if (
+                err.response
+            ) {
+
+                logger.error(
+
+                    `Instagram API status: ${err.response.status}`
+
+                )
+
+                logger.error(
+
+                    `Instagram API response: ${
+                        JSON.stringify(
+                            err.response.data
+                        )
+                    }`
+
+                )
+
+            }
+
+
+            if (
+                err.code
+            ) {
+
+                logger.error(
+
+                    `Instagram error code: ${err.code}`
+
+                )
+
+            }
+
+
             await sendInstagramMessage(
-    sock,
-    from,
-    ui.error(
-        'ERROR',
-        'No se pudo descargar el contenido de Instagram.'
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.error(
+
+                    'ERROR DE INSTAGRAM',
+
+                    'No se pudo completar la descarga del contenido.'
+
+                )
+
+            )
 
         }
 

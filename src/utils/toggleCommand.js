@@ -1,207 +1,111 @@
-const fs =
-require('fs')
-
-const path =
-require('path')
-
 const {
-isEnabled,
-setToggle
+    isEnabled,
+    setToggle
 } = require('./toggles')
 
-const isGroupAdmin =
-require('./isAdmin')
-
-const logger =
-require('./logger')
-
-const ui =
-require('./ui')
+const isGroupAdmin = require('./isAdmin')
+const logger = require('./logger')
+const ui = require('./ui')
 
 function createToggleCommand({
-name,
-description,
-emoji,
-category = 'configuración',
-aliases = []
-}) {
-
-if (!name) {
-    throw new Error('Toggle command requiere name')
-}
-
-return {
-
     name,
-
     description,
+    emoji,
+    category = 'configuración',
+    aliases = []
+}) {
+    if (!name) {
+        throw new Error('Toggle command requiere name')
+    }
 
-    category,
+    return {
+        name,
+        description,
+        category,
+        aliases,
+        adminOnly: true,
+        groupOnly: true,
+        cooldown: 3,
 
-    aliases,
+        async execute({ sock, from, args, msg }) {
+            try {
+                if (!from || !from.endsWith('@g.us')) {
+                    return await sock.sendMessage(from, {
+                        text: ui.error('SOLO GRUPOS', 'Este comando solo funciona en grupos.')
+                    })
+                }
 
-    adminOnly: true,
+                const sender = msg.key.participant || msg.participant || msg.key.remoteJid
 
-    groupOnly: true,
+                if (!sender) {
+                    return await sock.sendMessage(from, {
+                        text: ui.error('ERROR DE USUARIO', 'No se pudo identificar al usuario que ejecutó el comando.')
+                    })
+                }
 
-    cooldown: 3,
+                const admin = await isGroupAdmin(sock, from, sender)
 
-    async execute({
-        sock,
-        from,
-        args,
-        msg
-    }) {
+                if (!admin) {
+                    return await sock.sendMessage(from, {
+                        text: ui.error('ACCESO DENEGADO', 'Solo administradores pueden usar este comando.')
+                    })
+                }
 
-        try {
+                const option = String(args?.[0] || '')
+                    .toLowerCase()
+                    .trim()
 
-            if (!from || !from.endsWith('@g.us')) {
+                if (option !== 'on' && option !== 'off') {
+                    const enabled = isEnabled(from, name)
+                    const status = enabled ? 'ACTIVADO' : 'DESACTIVADO'
 
-                return await sock.sendMessage(from, {
-                    text: ui.error(
-                        'SOLO GRUPOS',
-                        'Este comando solo funciona en grupos.'
-                    )
-                })
-
-            }
-
-            const sender =
-                msg.key.participant ||
-                msg.participant ||
-                msg.key.remoteJid
-
-            const admin =
-                await isGroupAdmin(
-                    sock,
-                    from,
-                    sender
-                )
-
-            if (!admin) {
-
-                return await sock.sendMessage(from, {
-                    text: ui.error(
-                        'ACCESO DENEGADO',
-                        'Solo administradores pueden usar este comando.'
-                    )
-                })
-
-            }
-
-            const option =
-                String(args?.[0] || '')
-                .toLowerCase()
-                .trim()
-
-            const iconPath =
-                path.join(
-                    __dirname,
-                    '../../assets/icons',
-                    `${name}.jpeg`
-                )
-
-            const hasIcon =
-                fs.existsSync(iconPath)
-
-            if (option !== 'on' && option !== 'off') {
-
-                const enabled =
-                    isEnabled(from, name)
-
-                const caption =
-                    ui.info(
+                    const text = ui.info(
                         `${emoji || '⚙️'} ${name.toUpperCase()}`,
-                        [
-                            [
-                                'Estado',
-                                enabled
-                                    ? '● ACTIVADO'
-                                    : '○ DESACTIVADO'
-                            ]
-                        ],
+                        [['Estado', status]],
                         `Uso: /${name} on · /${name} off`
                     )
 
-                return await sock.sendMessage(
-                    from,
-                    hasIcon
-                        ? {
-                            image: fs.readFileSync(iconPath),
-                            caption
-                        }
-                        : {
-                            text: caption
-                        }
-                )
+                    return await sock.sendMessage(from, { text })
+                }
 
-            }
+                const enabled = option === 'on'
+                setToggle(from, name, enabled)
 
-            const enabled =
-                option === 'on'
+                logger.event(`${name} ${enabled ? 'activado' : 'desactivado'} por ${sender.split('@')[0]} → ${from.split('@')[0]}`)
 
-            setToggle(from, name, enabled)
+                const status = enabled ? 'ACTIVADO' : 'DESACTIVADO'
+                const footer = enabled
+                    ? `${name.toUpperCase()} ahora está activo en este grupo.`
+                    : `${name.toUpperCase()} ahora está desactivado en este grupo.`
 
-            logger.event(
-                `${name} ${enabled ? 'activado' : 'desactivado'} → ${from.split('@')[0]}`
-            )
-
-            const caption =
-                ui.success(
+                const text = ui.success(
                     `${emoji || '⚙️'} ${name.toUpperCase()}`,
                     [
-                        [
-                            'Estado',
-                            enabled
-                                ? '● ACTIVADO'
-                                : '○ DESACTIVADO'
-                        ],
-                        [
-                            'Modificado por',
-                            `@${sender.split('@')[0]}`
-                        ]
-                    ]
+                        ['Estado', status],
+                        ['Modificado por', `@${sender.split('@')[0]}`]
+                    ],
+                    footer
                 )
 
-            await sock.sendMessage(
-                from,
-                hasIcon
-                    ? {
-                        image: fs.readFileSync(iconPath),
-                        caption,
-                        mentions: [sender]
-                    }
-                    : {
-                        text: caption,
-                        mentions: [sender]
-                    }
-            )
-
-        } catch (err) {
-
-            logger.error(
-                `Toggle Error (${name}): ${err.message}`
-            )
-
-            try {
-
-                await sock.sendMessage(from, {
-                    text: ui.error(
-                        'ERROR',
-                        `No se pudo actualizar ${name}.`
-                    )
+                return await sock.sendMessage(from, {
+                    text,
+                    mentions: [sender]
                 })
+            } catch (err) {
+                logger.error(`Toggle Error (${name}): ${err.stack || err.message}`)
 
-            } catch {}
-
+                try {
+                    await sock.sendMessage(from, {
+                        text: ui.error('ERROR INTERNO', `No se pudo actualizar ${name}.`)
+                    })
+                } catch {
+                    // Evita otro error si falla el mensaje de error.
+                }
+            }
         }
-
     }
-
-}
-
 }
 
 module.exports = {
-createToggleCommand
+    createToggleCommand
 }

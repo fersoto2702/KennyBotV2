@@ -13,15 +13,97 @@ const ui =
 const isGroupAdmin =
     require('../../src/utils/isAdmin')
 
+
 const banPath =
     path.join(
         __dirname,
         '../../database/bans.json'
     )
 
+
+function ensureBanFile() {
+
+    const directory =
+        path.dirname(banPath)
+
+    if (!fs.existsSync(directory)) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+    if (!fs.existsSync(banPath)) {
+
+        fs.writeFileSync(
+            banPath,
+            JSON.stringify(
+                [],
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function readBans() {
+
+    ensureBanFile()
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    banPath,
+                    'utf8'
+                )
+            )
+
+        return Array.isArray(data)
+            ? data
+            : []
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo bans.json: ${err.message}`
+        )
+
+        return []
+
+    }
+
+}
+
+
+function saveBans(data = []) {
+
+    fs.writeFileSync(
+        banPath,
+        JSON.stringify(
+            data,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+
 module.exports = {
 
-    name: 'unban',
+    name:
+        'unban',
 
     description:
         'Desbanea usuarios del bot',
@@ -29,9 +111,12 @@ module.exports = {
     category:
         'admin',
 
-    adminOnly: true,
+    adminOnly:
+        true,
 
-    groupOnly: true,
+    groupOnly:
+        true,
+
 
     async execute({
 
@@ -43,155 +128,303 @@ module.exports = {
 
         try {
 
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
+
+            if (
+                !from.endsWith('@g.us')
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'SOLO GRUPOS',
+
+                                'Este comando solo funciona en grupos.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               USUARIO QUE EJECUTA
+            ───────────────────────────── */
+
             const sender =
+
                 msg.key.participant ||
+
                 msg.participant
+
+
+            if (!sender) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario que ejecutó el comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               VERIFICAR ADMIN
+            ───────────────────────────── */
 
             const isAdmin =
                 await isGroupAdmin(
+
                     sock,
                     from,
                     sender
+
                 )
+
 
             if (!isAdmin) {
 
                 return await sock.sendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.error(
+
                                 'ACCESO DENEGADO',
+
                                 'Solo administradores pueden usar este comando.'
+
                             )
+
                     }
+
                 )
 
             }
 
-            const target =
+
+            /* ─────────────────────────────
+               USUARIO OBJETIVO
+            ───────────────────────────── */
+
+            const contextInfo =
+
                 msg.message
-                ?.extendedTextMessage
-                ?.contextInfo
-                ?.mentionedJid?.[0]
+                    ?.extendedTextMessage
+                    ?.contextInfo
+
+
+            const target =
+
+                contextInfo
+                    ?.mentionedJid
+                    ?.[0]
+
 
             if (!target) {
 
                 return await sock.sendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.warn(
+
                                 'USUARIO REQUERIDO',
+
                                 'Menciona al usuario que quieres desbanear.\n\nEjemplo: /unban @usuario'
+
                             )
+
                     }
+
                 )
 
             }
 
-            if (!fs.existsSync(banPath)) {
 
-                fs.writeFileSync(
-                    banPath,
-                    JSON.stringify([], null, 2)
-                )
+            /* ─────────────────────────────
+               LEER BAN LIST
+            ───────────────────────────── */
 
-            }
+            let bans =
+                readBans()
 
-            let data = []
 
-            try {
+            /* ─────────────────────────────
+               COMPROBAR BAN
+            ───────────────────────────── */
 
-                data =
-                    JSON.parse(
-                        fs.readFileSync(banPath)
-                    )
-
-            } catch {
-
-                data = []
-
-            }
-
-            if (!data.includes(target)) {
+            if (
+                !bans.includes(target)
+            ) {
 
                 return await sock.sendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.warn(
+
                                 'NO BANEADO',
-                                'Ese usuario no está baneado.'
-                            )
+
+                                `@${target.split('@')[0]} no está baneado.`
+
+                            ),
+
+                        mentions: [
+                            target
+                        ]
+
                     }
+
                 )
 
             }
 
-            data =
-                data.filter(
-                    user => user !== target
+
+            /* ─────────────────────────────
+               ELIMINAR BAN
+            ───────────────────────────── */
+
+            bans =
+                bans.filter(
+                    user =>
+                        user !== target
                 )
 
-            fs.writeFileSync(
-                banPath,
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                )
-            )
+
+            saveBans(bans)
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
 
             logger.event(
-                `Unban aplicado: ${target.split('@')[0]}`
+
+                `Unban aplicado: ${target.split('@')[0]} por ${sender.split('@')[0]}`
+
             )
 
-            const iconPath =
-                path.join(
-                    __dirname,
-                    '../../assets/icons/unban.jpeg'
-                )
 
-            await sock.sendMessage(
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            return await sock.sendMessage(
+
                 from,
-                {
-                    image: {
-                        url: iconPath
-                    },
 
-                    caption:
+                {
+
+                    text:
                         ui.success(
+
                             'UNBAN EJECUTADO',
+
                             [
+
                                 [
                                     'Usuario',
                                     `@${target.split('@')[0]}`
                                 ],
+
                                 [
                                     'Estado',
                                     'DESBANEADO'
                                 ],
+
                                 [
                                     'Por',
                                     `@${sender.split('@')[0]}`
                                 ]
+
                             ],
+
                             'Este usuario puede volver a usar los comandos del bot.'
+
                         ),
 
                     mentions: [
+
                         target,
                         sender
+
                     ]
+
                 }
+
             )
+
 
         } catch (err) {
 
             logger.error(
-                `Error unban: ${err.message}`
+
+                `Error unban: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR INTERNO',
+
+                                'Ocurrió un error al intentar desbanear al usuario.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {
+
+                // Evita otro error si tampoco se puede enviar el mensaje.
+
+            }
 
         }
 

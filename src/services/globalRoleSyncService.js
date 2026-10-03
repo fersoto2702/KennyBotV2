@@ -69,6 +69,34 @@ function getParticipantKeys(participant) {
     ].filter(Boolean)
 }
 
+function normalizeParticipant(participant) {
+
+    if (!participant) {
+        return null
+    }
+
+    if (typeof participant === 'string') {
+
+        return {
+            id: participant,
+            phoneNumber: null,
+            jid: null
+        }
+    }
+
+    return {
+        id:
+            participant.id ||
+            null,
+        phoneNumber:
+            participant.phoneNumber ||
+            null,
+        jid:
+            participant.jid ||
+            null
+    }
+}
+
 async function getProductionMetadata(sock) {
 
     const metadataList = []
@@ -82,7 +110,9 @@ async function getProductionMetadata(sock) {
                     groupJid
                 )
 
-            metadataList.push(metadata)
+            metadataList.push(
+                metadata
+            )
 
         } catch (err) {
 
@@ -110,13 +140,16 @@ function consolidateParticipants(metadataList) {
         for (const participant of participants) {
 
             const keys =
-                getParticipantKeys(participant)
+                getParticipantKeys(
+                    participant
+                )
 
             if (!keys.length) {
                 continue
             }
 
-            let record = null
+            const matchedRecords =
+                new Set()
 
             for (const key of keys) {
 
@@ -124,8 +157,92 @@ function consolidateParticipants(metadataList) {
                     keyToRecord.get(key)
 
                 if (existing) {
-                    record = existing
-                    break
+                    matchedRecords.add(
+                        existing
+                    )
+                }
+            }
+
+            let record =
+                matchedRecords
+                    .values()
+                    .next()
+                    .value ||
+                null
+
+            if (
+                matchedRecords.size > 1
+            ) {
+
+                const recordsToMerge =
+                    Array.from(
+                        matchedRecords
+                    )
+
+                record =
+                    recordsToMerge[0]
+
+                for (
+                    let index = 1;
+                    index <
+                    recordsToMerge.length;
+                    index++
+                ) {
+
+                    const duplicate =
+                        recordsToMerge[index]
+
+                    record.memberType =
+                        getHighestRole(
+                            record.memberType,
+                            duplicate.memberType
+                        )
+
+                    if (
+                        !record.altJid &&
+                        duplicate.altJid
+                    ) {
+                        record.altJid =
+                            duplicate.altJid
+                    }
+
+                    if (
+                        !record.displayName &&
+                        duplicate.displayName
+                    ) {
+                        record.displayName =
+                            duplicate.displayName
+                    }
+
+                    for (
+                        const key
+                        of duplicate.keys
+                    ) {
+
+                        record.keys.add(
+                            key
+                        )
+
+                        keyToRecord.set(
+                            key,
+                            record
+                        )
+                    }
+
+                    const duplicateIndex =
+                        records.indexOf(
+                            duplicate
+                        )
+
+                    if (
+                        duplicateIndex !== -1
+                    ) {
+
+                        records.splice(
+                            duplicateIndex,
+                            1
+                        )
+                    }
                 }
             }
 
@@ -138,7 +255,8 @@ function consolidateParticipants(metadataList) {
 
                 record = {
                     userJid:
-                        participant.id,
+                        participant.id ||
+                        keys[0],
                     altJid:
                         getParticipantAltJid(
                             participant
@@ -149,10 +267,12 @@ function consolidateParticipants(metadataList) {
                     memberType:
                         candidateRole,
                     keys:
-                        new Set(keys)
+                        new Set()
                 }
 
-                records.push(record)
+                records.push(
+                    record
+                )
 
             } else {
 
@@ -161,6 +281,15 @@ function consolidateParticipants(metadataList) {
                         record.memberType,
                         candidateRole
                     )
+
+                if (
+                    !record.userJid &&
+                    participant.id
+                ) {
+
+                    record.userJid =
+                        participant.id
+                }
 
                 if (
                     !record.altJid &&
@@ -183,13 +312,14 @@ function consolidateParticipants(metadataList) {
                     record.displayName =
                         participant.notify
                 }
-
-                for (const key of keys) {
-                    record.keys.add(key)
-                }
             }
 
-            for (const key of record.keys) {
+            for (const key of keys) {
+
+                record.keys.add(
+                    key
+                )
+
                 keyToRecord.set(
                     key,
                     record
@@ -201,10 +331,49 @@ function consolidateParticipants(metadataList) {
     return records
 }
 
+function findConsolidatedMember(
+    members,
+    participant
+) {
+
+    const normalized =
+        normalizeParticipant(
+            participant
+        )
+
+    if (!normalized) {
+        return null
+    }
+
+    const keys =
+        getParticipantKeys(
+            normalized
+        )
+
+    if (!keys.length) {
+        return null
+    }
+
+    return (
+        members.find(
+            member =>
+                keys.some(
+                    key =>
+                        member.keys.has(
+                            key
+                        )
+                )
+        ) ||
+        null
+    )
+}
+
 async function syncAllGlobalRoles(sock) {
 
     const metadataList =
-        await getProductionMetadata(sock)
+        await getProductionMetadata(
+            sock
+        )
 
     const failedGroups =
         metadataList.filter(
@@ -216,7 +385,8 @@ async function syncAllGlobalRoles(sock) {
 
         return {
             processed: false,
-            reason: 'INCOMPLETE_GROUP_METADATA',
+            reason:
+                'INCOMPLETE_GROUP_METADATA',
             groupsChecked:
                 metadataList.length,
             groupsFailed:
@@ -279,11 +449,32 @@ async function syncAllGlobalRoles(sock) {
 
 async function syncGlobalRoleForMember(
     sock,
-    participantId
+    participant
 ) {
 
+    const normalized =
+        normalizeParticipant(
+            participant
+        )
+
+    if (
+        !normalized ||
+        !getParticipantKeys(
+            normalized
+        ).length
+    ) {
+
+        return {
+            processed: false,
+            reason:
+                'INVALID_PARTICIPANT'
+        }
+    }
+
     const metadataList =
-        await getProductionMetadata(sock)
+        await getProductionMetadata(
+            sock
+        )
 
     const failedGroups =
         metadataList.filter(
@@ -296,7 +487,11 @@ async function syncGlobalRoleForMember(
         return {
             processed: false,
             reason:
-                'INCOMPLETE_GROUP_METADATA'
+                'INCOMPLETE_GROUP_METADATA',
+            groupsChecked:
+                metadataList.length,
+            groupsFailed:
+                failedGroups.length
         }
     }
 
@@ -306,11 +501,9 @@ async function syncGlobalRoleForMember(
         )
 
     const member =
-        members.find(
-            item =>
-                item.keys.has(
-                    participantId
-                )
+        findConsolidatedMember(
+            members,
+            normalized
         )
 
     if (!member) {
@@ -342,11 +535,17 @@ async function syncGlobalRoleForMember(
         processed: true,
         memberType:
             member.memberType,
+        userJid:
+            member.userJid,
+        altJid:
+            member.altJid,
         result
     }
 }
 
-function isProductionRoleGroup(groupJid) {
+function isProductionRoleGroup(
+    groupJid
+) {
 
     return productionGroups.includes(
         groupJid

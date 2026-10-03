@@ -13,15 +13,97 @@ const ui =
 const isGroupAdmin =
     require('../../src/utils/isAdmin')
 
+
 const banPath =
     path.join(
         __dirname,
         '../../database/bans.json'
     )
 
+
+function ensureBanFile() {
+
+    const directory =
+        path.dirname(banPath)
+
+    if (!fs.existsSync(directory)) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+    if (!fs.existsSync(banPath)) {
+
+        fs.writeFileSync(
+            banPath,
+            JSON.stringify(
+                [],
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function readBans() {
+
+    ensureBanFile()
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    banPath,
+                    'utf8'
+                )
+            )
+
+        return Array.isArray(data)
+            ? data
+            : []
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo bans.json: ${err.message}`
+        )
+
+        return []
+
+    }
+
+}
+
+
+function saveBans(data = []) {
+
+    fs.writeFileSync(
+        banPath,
+        JSON.stringify(
+            data,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+
 module.exports = {
 
-    name: 'ban',
+    name:
+        'ban',
 
     description:
         'Banea usuarios del bot',
@@ -29,9 +111,12 @@ module.exports = {
     category:
         'admin',
 
-    adminOnly: true,
+    adminOnly:
+        true,
 
-    groupOnly: true,
+    groupOnly:
+        true,
+
 
     async execute({
 
@@ -42,6 +127,10 @@ module.exports = {
     }) {
 
         try {
+
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
 
             if (
                 !from.endsWith('@g.us')
@@ -68,11 +157,45 @@ module.exports = {
 
             }
 
+
+            /* ─────────────────────────────
+               USUARIO QUE EJECUTA
+            ───────────────────────────── */
+
             const sender =
 
                 msg.key.participant ||
 
                 msg.participant
+
+
+            if (!sender) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario que ejecutó el comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               VERIFICAR ADMIN
+            ───────────────────────────── */
 
             const isAdmin =
                 await isGroupAdmin(
@@ -82,6 +205,7 @@ module.exports = {
                     sender
 
                 )
+
 
             if (!isAdmin) {
 
@@ -106,12 +230,24 @@ module.exports = {
 
             }
 
-            const target =
+
+            /* ─────────────────────────────
+               USUARIO OBJETIVO
+            ───────────────────────────── */
+
+            const contextInfo =
 
                 msg.message
-                ?.extendedTextMessage
-                ?.contextInfo
-                ?.mentionedJid?.[0]
+                    ?.extendedTextMessage
+                    ?.contextInfo
+
+
+            const target =
+
+                contextInfo
+                    ?.mentionedJid
+                    ?.[0]
+
 
             if (!target) {
 
@@ -136,7 +272,14 @@ module.exports = {
 
             }
 
-            if (target === sender) {
+
+            /* ─────────────────────────────
+               VALIDACIONES
+            ───────────────────────────── */
+
+            if (
+                target === sender
+            ) {
 
                 return await sock.sendMessage(
 
@@ -159,10 +302,17 @@ module.exports = {
 
             }
 
-            const botNumber =
-                sock.user.id.split(':')[0] + '@s.whatsapp.net'
 
-            if (target === botNumber) {
+            const botNumber =
+
+                sock.user.id
+                    .split(':')[0] +
+                '@s.whatsapp.net'
+
+
+            if (
+                target === botNumber
+            ) {
 
                 return await sock.sendMessage(
 
@@ -185,45 +335,21 @@ module.exports = {
 
             }
 
-            if (
-                !fs.existsSync(banPath)
-            ) {
 
-                fs.writeFileSync(
+            /* ─────────────────────────────
+               LEER BAN LIST
+            ───────────────────────────── */
 
-                    banPath,
+            const bans =
+                readBans()
 
-                    JSON.stringify(
-                        [],
-                        null,
-                        2
-                    )
 
-                )
-
-            }
-
-            let data = []
-
-            try {
-
-                data =
-                    JSON.parse(
-
-                        fs.readFileSync(
-                            banPath
-                        )
-
-                    )
-
-            } catch {
-
-                data = []
-
-            }
+            /* ─────────────────────────────
+               COMPROBAR BAN
+            ───────────────────────────── */
 
             if (
-                data.includes(target)
+                bans.includes(target)
             ) {
 
                 return await sock.sendMessage(
@@ -237,9 +363,13 @@ module.exports = {
 
                                 'YA BANEADO',
 
-                                'Ese usuario ya estaba baneado.'
+                                `@${target.split('@')[0]} ya estaba baneado.`
 
-                            )
+                            ),
+
+                        mentions: [
+                            target
+                        ]
 
                     }
 
@@ -247,86 +377,112 @@ module.exports = {
 
             }
 
-            data.push(target)
 
-            fs.writeFileSync(
+            /* ─────────────────────────────
+               APLICAR BAN
+            ───────────────────────────── */
 
-                banPath,
+            bans.push(target)
 
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                )
+            saveBans(bans)
 
-            )
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
 
             logger.event(
-                `Ban aplicado: ${target.split('@')[0]}`
+
+                `Ban aplicado: ${target.split('@')[0]} por ${sender.split('@')[0]}`
+
             )
 
-           const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/ban.jpeg'
-    )
 
-    console.log('BAN ICON:', iconPath)
-    console.log('EXISTS:', fs.existsSync(iconPath))
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
 
-await sock.sendMessage(
+            return await sock.sendMessage(
 
-    from,
+                from,
 
-    {
+                {
 
-        image:
-            { url: iconPath },
+                    text:
+                        ui.success(
 
-        caption:
-            ui.success(
+                            'BAN EJECUTADO',
 
-                'BAN EJECUTADO',
+                            [
 
-                [
+                                [
+                                    'Usuario',
+                                    `@${target.split('@')[0]}`
+                                ],
 
-                    [
-                        'Usuario',
-                        `@${target.split('@')[0]}`
-                    ],
+                                [
+                                    'Estado',
+                                    'BANEADO'
+                                ],
 
-                    [
-                        'Estado',
-                        'BANEADO'
-                    ],
+                                [
+                                    'Por',
+                                    `@${sender.split('@')[0]}`
+                                ]
 
-                    [
-                        'Por',
-                        `@${sender.split('@')[0]}`
+                            ],
+
+                            'Este usuario ya no puede usar los comandos del bot.'
+
+                        ),
+
+                    mentions: [
+
+                        target,
+                        sender
+
                     ]
 
-                ],
+                }
 
-                'Este usuario ya no puede usar los comandos del bot.'
+            )
 
-            ),
-
-        mentions: [
-
-            target,
-            sender
-
-        ]
-
-    }
-
-)
 
         } catch (err) {
 
             logger.error(
-                `Error ban: ${err.message}`
+
+                `Error ban: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR INTERNO',
+
+                                'Ocurrió un error al intentar banear al usuario.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {
+
+                // Evita otro error si falla el envío del mensaje.
+
+            }
 
         }
 

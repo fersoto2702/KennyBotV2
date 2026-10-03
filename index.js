@@ -52,6 +52,12 @@ const {
 )
 
 const {
+    runObjectiveMaintenance
+} = require(
+    './src/services/objectiveMaintenanceService'
+)
+
+const {
     syncAllGlobalRoles,
     syncGlobalRoleForMember,
     isProductionRoleGroup
@@ -65,12 +71,14 @@ let cleanupStarted = false
 let rewardMaintenanceStarted = false
 let milestoneMaintenanceStarted = false
 let specialCardMaintenanceStarted = false
+let objectiveMaintenanceStarted = false
 let reconnecting = false
 let currentSock = null
 let cleanupInterval = null
 let rewardMaintenanceInterval = null
 let milestoneMaintenanceInterval = null
 let specialCardMaintenanceInterval = null
+let objectiveMaintenanceInterval = null
 
 async function executeRewardMaintenance() {
 
@@ -234,6 +242,60 @@ async function executeSpecialCardMaintenance() {
     }
 }
 
+async function executeObjectiveMaintenance() {
+
+    try {
+
+        const result =
+            await runObjectiveMaintenance()
+
+        if (!result.processed) {
+
+            if (
+                result.reason !==
+                'ALREADY_RUNNING'
+            ) {
+
+                logger.warn(
+                    `Objective Maintenance: ${result.reason}`
+                )
+            }
+
+            return
+        }
+
+        if (
+            Number(
+                result.eventsActivated || 0
+            ) > 0 ||
+            Number(
+                result.eventsFinished || 0
+            ) > 0 ||
+            Number(
+                result.objectivesExpired || 0
+            ) > 0 ||
+            Number(
+                result.objectivesCancelled || 0
+            ) > 0
+        ) {
+
+            logger.info(
+                `Objective Maintenance | ` +
+                `Eventos activados: ${result.eventsActivated || 0} | ` +
+                `Eventos finalizados: ${result.eventsFinished || 0} | ` +
+                `Objetivos expirados: ${result.objectivesExpired || 0} | ` +
+                `Objetivos cancelados: ${result.objectivesCancelled || 0}`
+            )
+        }
+
+    } catch (err) {
+
+        logger.error(
+            `Objective Maintenance Error: ${err.message}`
+        )
+    }
+}
+
 async function executeGlobalRoleSync(sock) {
 
     try {
@@ -345,6 +407,21 @@ function startBackgroundTasks() {
             setInterval(
                 () => {
                     executeSpecialCardMaintenance()
+                },
+                1000 * 60 * 5
+            )
+    }
+
+    if (!objectiveMaintenanceStarted) {
+
+        objectiveMaintenanceStarted = true
+
+        executeObjectiveMaintenance()
+
+        objectiveMaintenanceInterval =
+            setInterval(
+                () => {
+                    executeObjectiveMaintenance()
                 },
                 1000 * 60 * 5
             )
@@ -615,6 +692,14 @@ async function startBot() {
                     const affected =
                         update.participants || []
 
+                    await new Promise(
+                        resolve =>
+                            setTimeout(
+                                resolve,
+                                1500
+                            )
+                    )
+
                     for (const participant of affected) {
 
                         const participantId =
@@ -629,17 +714,27 @@ async function startBot() {
                         const result =
                             await syncGlobalRoleForMember(
                                 sock,
-                                participantId
+                                participant
                             )
 
                         if (!result.processed) {
 
                             logger.warn(
-                                `Global Role Sync: ${participantId} | ${result.reason}`
+                                `Global Role Sync: ` +
+                                `${participantId} | ` +
+                                `${result.reason}`
                             )
 
                             continue
                         }
+
+                        const previousType =
+                            result.result?.previousType ||
+                            result.memberType
+
+                        const currentType =
+                            result.result?.memberType ||
+                            result.memberType
 
                         if (
                             result.result?.changed
@@ -648,8 +743,8 @@ async function startBot() {
                             logger.event(
                                 `Global Role Sync: ` +
                                 `${participantId} ` +
-                                `${result.result.previousType} -> ` +
-                                `${result.result.memberType}`
+                                `${previousType} -> ` +
+                                `${currentType}`
                             )
                         }
                     }
@@ -766,6 +861,8 @@ async function bootstrap() {
 
         await executeSpecialCardMaintenance()
 
+        await executeObjectiveMaintenance()
+
         await startBot()
 
     } catch (err) {
@@ -810,6 +907,13 @@ function shutdown() {
 
         clearInterval(
             specialCardMaintenanceInterval
+        )
+    }
+
+    if (objectiveMaintenanceInterval) {
+
+        clearInterval(
+            objectiveMaintenanceInterval
         )
     }
 

@@ -1,17 +1,9 @@
-const fs = require('fs')
-const path = require('path')
-
 const logger =
     require('../../src/utils/logger')
 
 const ui =
     require('../../src/utils/ui')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/crush.jpeg'
-    )
 
 function getPercent(text) {
 
@@ -31,6 +23,7 @@ function getPercent(text) {
 
 }
 
+
 function getResult(percent) {
 
     if (percent <= 20)
@@ -49,9 +42,11 @@ function getResult(percent) {
 
 }
 
+
 module.exports = {
 
-    name: 'crush',
+    name:
+        'crush',
 
     aliases: [
         'amor'
@@ -63,7 +58,9 @@ module.exports = {
     category:
         'diversion',
 
-    cooldown: 3,
+    cooldown:
+        3,
+
 
     async execute({
 
@@ -76,85 +73,191 @@ module.exports = {
 
         try {
 
+            /* ─────────────────────────────
+               MENCIONES
+            ───────────────────────────── */
+
             const mentions =
+
                 msg.message
                     ?.extendedTextMessage
                     ?.contextInfo
                     ?.mentionedJid || []
 
-            let target
+
+            let target = ''
+            let targetJid = null
+
+
+            /* ─────────────────────────────
+               OBJETIVO
+            ───────────────────────────── */
 
             if (mentions.length > 0) {
 
-                target =
+                targetJid =
                     mentions[0]
-                        .split('@')[0]
+
+                target =
+                    `@${targetJid.split('@')[0]}`
 
             } else {
 
                 target =
-                    args.join(' ')
+                    args
+                        .join(' ')
                         .trim()
 
             }
 
+
+            /* ─────────────────────────────
+               VALIDACIÓN
+            ───────────────────────────── */
+
             if (!target) {
 
                 return await sock.sendMessage(
-                    from,
-                    {
-                        image:
-                            fs.readFileSync(iconPath),
 
-                        caption:
+                    from,
+
+                    {
+
+                        text:
                             ui.warn(
+
                                 'OBJETIVO REQUERIDO',
-                                'Uso: /crush @usuario'
+
+                                'Menciona a alguien o escribe un nombre.\n\nUso: /crush @usuario'
+
                             )
+
                     }
+
                 )
 
             }
 
+
+            /* ─────────────────────────────
+               CÁLCULO
+            ───────────────────────────── */
+
+            const seed =
+
+                targetJid
+                    ? targetJid.split('@')[0]
+                    : target.toLowerCase()
+
+
             const percent =
-                getPercent(target)
+                getPercent(seed)
+
+
+            const result =
+                getResult(percent)
+
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            const text =
+                ui.success(
+
+                    '💘 CRUSH',
+
+                    [
+
+                        [
+                            'Objetivo',
+                            target
+                        ],
+
+                        [
+                            'Probabilidad',
+                            `${percent}%`
+                        ],
+
+                        [
+                            'Resultado',
+                            result
+                        ]
+
+                    ],
+
+                    'Resultado generado solo por diversión.'
+
+                )
+
+
+            const message = {
+
+                text
+
+            }
+
+
+            if (targetJid) {
+
+                message.mentions = [
+                    targetJid
+                ]
+
+            }
+
 
             await sock.sendMessage(
-                from,
-                {
-                    image:
-                        fs.readFileSync(iconPath),
 
-                    caption:
-                        ui.success(
-                            'CRUSH',
-                            [
-                                [
-                                    'Objetivo',
-                                    target
-                                ],
-                                [
-                                    'Probabilidad',
-                                    `${percent}%`
-                                ],
-                                [
-                                    'Resultado',
-                                    getResult(percent)
-                                ]
-                            ]
-                        )
-                }
+                from,
+
+                message
+
             )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
 
             logger.event(
-                `Crush: ${target} (${percent}%)`
+
+                `Crush: ${seed} (${percent}%)`
+
             )
+
 
         } catch (err) {
 
             logger.error(
-                `Error crush: ${err.message}`
+
+                `Error crush: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR INTERNO',
+
+                                'No se pudo calcular el resultado del crush.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const logger = require('../../src/utils/logger')
 const ui = require('../../src/utils/ui')
+const { jidNormalizedUser } = require('@whiskeysockets/baileys')
 
 const iconPath = path.join(__dirname, '../../assets/icons/promote.jpeg')
 
@@ -30,8 +31,8 @@ module.exports = {
                     caption: ui.error('ACCESO DENEGADO', 'Solo administradores pueden usar este comando.')
                 })
 
-            const botId = sock.user.id.split(':')[0]
-            const botData = participants.find(p => p.id.includes(botId))
+            const botJid = jidNormalizedUser(sock.user.id)
+            const botData = participants.find(p => jidNormalizedUser(p.id) === botJid)
             const botAdmin = botData?.admin === 'admin' || botData?.admin === 'superadmin'
 
             if (!botAdmin)
@@ -54,9 +55,7 @@ module.exports = {
                     caption: ui.warn('ACCIÓN INVÁLIDA', 'No puedes promoverte a ti mismo.')
                 })
 
-            const botJid = sock.user.id.split(':')[0] + '@s.whatsapp.net'
-
-            if (target === botJid)
+            if (jidNormalizedUser(target) === botJid)
                 return await sock.sendMessage(from, {
                     image: fs.readFileSync(iconPath),
                     caption: ui.warn('ACCIÓN INVÁLIDA', 'El bot ya tiene permisos.')

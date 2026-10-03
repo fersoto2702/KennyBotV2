@@ -1,0 +1,1505 @@
+[
+  {
+    "file": "players_1.json",
+    "name": "Cristiano Ronaldo",
+    "rating": 98,
+    "id": "184570177",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_1.json",
+    "name": "Messi",
+    "rating": 96,
+    "id": "117598535",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_2.json",
+    "name": "Neymar",
+    "rating": 95,
+    "id": "100854167",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_2.json",
+    "name": "Ibrahimović",
+    "rating": 95,
+    "id": "151036180",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_2.json",
+    "name": "Higuaín",
+    "rating": 95,
+    "id": "251825904",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_3.json",
+    "name": "Messi",
+    "rating": 94,
+    "id": "50489671",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_3.json",
+    "name": "Neymar",
+    "rating": 94,
+    "id": "84076951",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_3.json",
+    "name": "Suárez",
+    "rating": 94,
+    "id": "100839876",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_4.json",
+    "name": "Ibrahimović",
+    "rating": 93,
+    "id": "117481748",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_5.json",
+    "name": "Lewandowski",
+    "rating": 92,
+    "id": "84074625",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_5.json",
+    "name": "Sergio Ramos",
+    "rating": 92,
+    "id": "134373590",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_5.json",
+    "name": "Lewandowski",
+    "rating": 92,
+    "id": "167960705",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_6.json",
+    "name": "Agüero",
+    "rating": 91,
+    "id": "84039159",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_6.json",
+    "name": "Pogba",
+    "rating": 91,
+    "id": "117636376",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_7.json",
+    "name": "Higuaín",
+    "rating": 91,
+    "id": "218271472",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_7.json",
+    "name": "Dybala",
+    "rating": 91,
+    "id": "218314918",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_7.json",
+    "name": "Isco",
+    "rating": 91,
+    "id": "235078805",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_8.json",
+    "name": "Özil",
+    "rating": 90,
+    "id": "50508283",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_8.json",
+    "name": "Modrić",
+    "rating": 90,
+    "id": "50508651",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_8.json",
+    "name": "Godín",
+    "rating": 90,
+    "id": "67291357",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_8.json",
+    "name": "Chiellini",
+    "rating": 90,
+    "id": "84025036",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_10.json",
+    "name": "Aubameyang",
+    "rating": 90,
+    "id": "151183511",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_10.json",
+    "name": "Thiago",
+    "rating": 90,
+    "id": "167961669",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_11.json",
+    "name": "Buffon",
+    "rating": 89,
+    "id": "50332827",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_12.json",
+    "name": "Buffon",
+    "rating": 89,
+    "id": "67110043",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_12.json",
+    "name": "Griezmann",
+    "rating": 89,
+    "id": "67303629",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_12.json",
+    "name": "Cavani",
+    "rating": 89,
+    "id": "84065893",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_12.json",
+    "name": "Vidal",
+    "rating": 89,
+    "id": "84067952",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_14.json",
+    "name": "Lacazette",
+    "rating": 89,
+    "id": "167965461",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_16.json",
+    "name": "Vidal",
+    "rating": 88,
+    "id": "50513520",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_16.json",
+    "name": "Di María",
+    "rating": 88,
+    "id": "50515546",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_16.json",
+    "name": "Oblak",
+    "rating": 88,
+    "id": "50532037",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_16.json",
+    "name": "Vidal",
+    "rating": 88,
+    "id": "67290736",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_17.json",
+    "name": "Aubameyang",
+    "rating": 88,
+    "id": "84074647",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_17.json",
+    "name": "Müller",
+    "rating": 88,
+    "id": "100852892",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_18.json",
+    "name": "Schmeichel",
+    "rating": 88,
+    "id": "134381315",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_19.json",
+    "name": "Lacazette",
+    "rating": 88,
+    "id": "151188245",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_19.json",
+    "name": "Casemiro",
+    "rating": 88,
+    "id": "151195089",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_21.json",
+    "name": "Miranda",
+    "rating": 87,
+    "id": "50500257",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_21.json",
+    "name": "Jonas",
+    "rating": 87,
+    "id": "50508417",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_23.json",
+    "name": "Payet",
+    "rating": 87,
+    "id": "67286252",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_23.json",
+    "name": "Höwedes",
+    "rating": 87,
+    "id": "67288648",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_23.json",
+    "name": "Lacazette",
+    "rating": 87,
+    "id": "67302165",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_24.json",
+    "name": "Aduriz",
+    "rating": 87,
+    "id": "83992311",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_24.json",
+    "name": "Filipe Luís",
+    "rating": 87,
+    "id": "84050249",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_24.json",
+    "name": "Mertens",
+    "rating": 87,
+    "id": "84062023",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_24.json",
+    "name": "Dybala",
+    "rating": 87,
+    "id": "84097190",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_25.json",
+    "name": "Dani Alves",
+    "rating": 87,
+    "id": "100809826",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_25.json",
+    "name": "Sommer",
+    "rating": 87,
+    "id": "100840979",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_25.json",
+    "name": "Gündoğan",
+    "rating": 87,
+    "id": "100850238",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_25.json",
+    "name": "Thiago",
+    "rating": 87,
+    "id": "100852805",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_25.json",
+    "name": "Schmeichel",
+    "rating": 87,
+    "id": "117604099",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_25.json",
+    "name": "Džeko",
+    "rating": 87,
+    "id": "117621442",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_26.json",
+    "name": "Iago Aspas",
+    "rating": 87,
+    "id": "134410357",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_26.json",
+    "name": "Cavani",
+    "rating": 87,
+    "id": "167951973",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_26.json",
+    "name": "Kane",
+    "rating": 87,
+    "id": "167974286",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_27.json",
+    "name": "Eto'o",
+    "rating": 86,
+    "id": "50341324",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Rooney",
+    "rating": 86,
+    "id": "50385698",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Dani Alves",
+    "rating": 86,
+    "id": "50478178",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Gignac",
+    "rating": 86,
+    "id": "50484892",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Ruffier",
+    "rating": 86,
+    "id": "50499276",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Juan Mata",
+    "rating": 86,
+    "id": "50509736",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Fährmann",
+    "rating": 86,
+    "id": "50511431",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Höwedes",
+    "rating": 86,
+    "id": "50511432",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_28.json",
+    "name": "Willian",
+    "rating": 86,
+    "id": "50512051",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_29.json",
+    "name": "Giovinco",
+    "rating": 86,
+    "id": "50516079",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_29.json",
+    "name": "Toprak",
+    "rating": 86,
+    "id": "50516887",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_29.json",
+    "name": "Navas",
+    "rating": 86,
+    "id": "50524689",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_29.json",
+    "name": "Varane",
+    "rating": 86,
+    "id": "50533183",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_30.json",
+    "name": "Mahrez",
+    "rating": 86,
+    "id": "50536133",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_30.json",
+    "name": "Aduriz",
+    "rating": 86,
+    "id": "67215095",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_30.json",
+    "name": "Dani Alves",
+    "rating": 86,
+    "id": "67255394",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_30.json",
+    "name": "Hamšik",
+    "rating": 86,
+    "id": "67280741",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_31.json",
+    "name": "Džeko",
+    "rating": 86,
+    "id": "84067010",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_31.json",
+    "name": "Stindl",
+    "rating": 86,
+    "id": "84073152",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_32.json",
+    "name": "Isco",
+    "rating": 86,
+    "id": "84083861",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_32.json",
+    "name": "Insigne",
+    "rating": 86,
+    "id": "84084299",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_32.json",
+    "name": "Aboubakar",
+    "rating": 86,
+    "id": "84085149",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_32.json",
+    "name": "Fekir",
+    "rating": 86,
+    "id": "84102674",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_32.json",
+    "name": "Podolski",
+    "rating": 86,
+    "id": "100813812",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_32.json",
+    "name": "Giuliano",
+    "rating": 86,
+    "id": "100848238",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_33.json",
+    "name": "Casemiro",
+    "rating": 86,
+    "id": "100863441",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_33.json",
+    "name": "Dendoncker",
+    "rating": 86,
+    "id": "100875797",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_35.json",
+    "name": "De Rossi",
+    "rating": 85,
+    "id": "50384950",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_35.json",
+    "name": "Juanfran",
+    "rating": 85,
+    "id": "50478408",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_36.json",
+    "name": "Lopes",
+    "rating": 85,
+    "id": "50531130",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_37.json",
+    "name": "Cabral",
+    "rating": 85,
+    "id": "67274400",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_37.json",
+    "name": "Douglas Costa",
+    "rating": 85,
+    "id": "67299347",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_37.json",
+    "name": "Hugo Mallo",
+    "rating": 85,
+    "id": "67303093",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_37.json",
+    "name": "Gameiro",
+    "rating": 85,
+    "id": "84062680",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_38.json",
+    "name": "Fellaini",
+    "rating": 85,
+    "id": "84063024",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_38.json",
+    "name": "Sergi Roberto",
+    "rating": 85,
+    "id": "100862860",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_38.json",
+    "name": "Tolisso",
+    "rating": 85,
+    "id": "100882979",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_38.json",
+    "name": "Al Soma",
+    "rating": 85,
+    "id": "117664139",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_41.json",
+    "name": "Fernandinho",
+    "rating": 84,
+    "id": "50467155",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_41.json",
+    "name": "Utaka",
+    "rating": 84,
+    "id": "50483504",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_41.json",
+    "name": "Perrin",
+    "rating": 84,
+    "id": "50490795",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_41.json",
+    "name": "Dembélé",
+    "rating": 84,
+    "id": "50493888",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_42.json",
+    "name": "Schmeichel",
+    "rating": 84,
+    "id": "50495235",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_42.json",
+    "name": "Parolo",
+    "rating": 84,
+    "id": "50515146",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_43.json",
+    "name": "Smolov",
+    "rating": 84,
+    "id": "50519139",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_43.json",
+    "name": "de Jong",
+    "rating": 84,
+    "id": "50521453",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_43.json",
+    "name": "De Marcos",
+    "rating": 84,
+    "id": "50521797",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_44.json",
+    "name": "Kurzawa",
+    "rating": 84,
+    "id": "50533158",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_44.json",
+    "name": "Griffiths",
+    "rating": 84,
+    "id": "50534187",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_45.json",
+    "name": "Alli",
+    "rating": 84,
+    "id": "50542765",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_45.json",
+    "name": "Fekir",
+    "rating": 84,
+    "id": "50548242",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_45.json",
+    "name": "McCormack",
+    "rating": 84,
+    "id": "67264843",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_46.json",
+    "name": "Aboubakar",
+    "rating": 84,
+    "id": "67307933",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_46.json",
+    "name": "Traoré",
+    "rating": 84,
+    "id": "67316812",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_46.json",
+    "name": "Ederson",
+    "rating": 84,
+    "id": "67319121",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_46.json",
+    "name": "Anderson Talisca",
+    "rating": 84,
+    "id": "67321387",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_46.json",
+    "name": "Fekir",
+    "rating": 84,
+    "id": "67325458",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_46.json",
+    "name": "Defoe",
+    "rating": 84,
+    "id": "83936622",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_47.json",
+    "name": "Dendoncker",
+    "rating": 84,
+    "id": "84098581",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_47.json",
+    "name": "Benteke",
+    "rating": 84,
+    "id": "100847407",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_48.json",
+    "name": "Pozuelo",
+    "rating": 84,
+    "id": "100867191",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_48.json",
+    "name": "Mbappe Lottin",
+    "rating": 84,
+    "id": "117672259",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_50.json",
+    "name": "Totti",
+    "rating": 83,
+    "id": "50332886",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_51.json",
+    "name": "Barry",
+    "rating": 83,
+    "id": "50338474",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_51.json",
+    "name": "Cabral",
+    "rating": 83,
+    "id": "50497184",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_52.json",
+    "name": "Hugo Mallo",
+    "rating": 83,
+    "id": "50525877",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_53.json",
+    "name": "Sidibé",
+    "rating": 83,
+    "id": "50532690",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_53.json",
+    "name": "Can",
+    "rating": 83,
+    "id": "50539981",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_54.json",
+    "name": "Kimmich",
+    "rating": 83,
+    "id": "50544270",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_54.json",
+    "name": "Fellaini",
+    "rating": 83,
+    "id": "67285808",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_54.json",
+    "name": "Héctor Bellerín",
+    "rating": 83,
+    "id": "67312611",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_54.json",
+    "name": "Fabinho",
+    "rating": 83,
+    "id": "67318363",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_54.json",
+    "name": "Dembélé",
+    "rating": 83,
+    "id": "67340307",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_55.json",
+    "name": "Escudero",
+    "rating": 83,
+    "id": "84078759",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_61.json",
+    "name": "Kongolo",
+    "rating": 82,
+    "id": "50535133",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_61.json",
+    "name": "Goretzka",
+    "rating": 82,
+    "id": "50541306",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_62.json",
+    "name": "Rashford",
+    "rating": 82,
+    "id": "50563325",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_63.json",
+    "name": "Smolov",
+    "rating": 82,
+    "id": "67296355",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_63.json",
+    "name": "Mario Gaspar",
+    "rating": 82,
+    "id": "67301653",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_63.json",
+    "name": "Chadli",
+    "rating": 82,
+    "id": "67309393",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_68.json",
+    "name": "Kuyt",
+    "rating": 81,
+    "id": "50347371",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_69.json",
+    "name": "Guzmán",
+    "rating": 81,
+    "id": "50508567",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_71.json",
+    "name": "Botía",
+    "rating": 81,
+    "id": "50523336",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_71.json",
+    "name": "Ginczek",
+    "rating": 81,
+    "id": "50524093",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_71.json",
+    "name": "Najar",
+    "rating": 81,
+    "id": "50530353",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_72.json",
+    "name": "Anderson Talisca",
+    "rating": 81,
+    "id": "50544171",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_73.json",
+    "name": "Pjaca",
+    "rating": 81,
+    "id": "50561241",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_73.json",
+    "name": "Morison",
+    "rating": 81,
+    "id": "67270920",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_73.json",
+    "name": "Pulido",
+    "rating": 81,
+    "id": "67301794",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_73.json",
+    "name": "Viergever",
+    "rating": 81,
+    "id": "67302304",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_75.json",
+    "name": "Pozuelo",
+    "rating": 81,
+    "id": "84089975",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_75.json",
+    "name": "Berisha",
+    "rating": 81,
+    "id": "100821003",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_81.json",
+    "name": "Cahill",
+    "rating": 80,
+    "id": "50383060",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_81.json",
+    "name": "Perbet",
+    "rating": 80,
+    "id": "50482242",
+    "playerType": "special edition",
+    "color": "sbc_base",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_163.json",
+    "name": "Falk Jensen",
+    "rating": 74,
+    "id": "50532951",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_164.json",
+    "name": "Assombalonga",
+    "rating": 74,
+    "id": "50534952",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_166.json",
+    "name": "Acheampong",
+    "rating": 74,
+    "id": "50544661",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_167.json",
+    "name": "Samatta",
+    "rating": 74,
+    "id": "50549714",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_169.json",
+    "name": "Colley",
+    "rating": 74,
+    "id": "50558184",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_169.json",
+    "name": "Onana",
+    "rating": 74,
+    "id": "50558401",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_169.json",
+    "name": "Bailey",
+    "rating": 74,
+    "id": "50561554",
+    "playerType": "special edition",
+    "color": "gotm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_171.json",
+    "name": "Pulisic",
+    "rating": 74,
+    "id": "67336660",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_191.json",
+    "name": "Rodelin",
+    "rating": 74,
+    "id": "50520045",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_193.json",
+    "name": "Viergever",
+    "rating": 74,
+    "id": "50525088",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_222.json",
+    "name": "Frei",
+    "rating": 73,
+    "id": "50522217",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_227.json",
+    "name": "Kaká",
+    "rating": 72,
+    "id": "50509704",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_230.json",
+    "name": "Goodwin",
+    "rating": 72,
+    "id": "50541536",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_232.json",
+    "name": "Adams",
+    "rating": 72,
+    "id": "67334957",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_544.json",
+    "name": "Potts",
+    "rating": 64,
+    "id": "50538301",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_546.json",
+    "name": "Waldschmidt",
+    "rating": 64,
+    "id": "50551733",
+    "playerType": "special edition",
+    "color": "purple",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  },
+  {
+    "file": "players_549.json",
+    "name": "de Ligt",
+    "rating": 64,
+    "id": "50566891",
+    "playerType": "special edition",
+    "color": "confederation_champions_motm",
+    "error": "Tipo FIFA 17 no mapeado: special edition"
+  }
+]

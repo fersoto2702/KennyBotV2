@@ -27,25 +27,41 @@ const messageStatsHandler =
 
 const {
     ensureMember
-} = require('../src/database/repositories/memberRepository')
+} = require(
+    '../src/database/repositories/memberRepository'
+)
 
 const {
     ensureInitialGoldCard
-} = require('../src/database/repositories/memberCardRepository')
+} = require(
+    '../src/database/repositories/memberCardRepository'
+)
 
 const {
     registerValidMessage,
     registerCommand
-} = require('../src/database/repositories/activityRepository')
+} = require(
+    '../src/database/repositories/activityRepository'
+)
 
 const {
     registerSeasonMessage,
     registerSeasonCommand
-} = require('../src/database/repositories/seasonRepository')
+} = require(
+    '../src/database/repositories/seasonRepository'
+)
 
 const {
     checkCardUnlock
-} = require('../src/services/cardUnlockService')
+} = require(
+    '../src/services/cardUnlockService'
+)
+
+const {
+    syncMemberObjectivesByType
+} = require(
+    '../src/services/objectiveProgressService'
+)
 
 const getText =
     require('../src/utils/getText')
@@ -56,16 +72,18 @@ const logger =
 const ui =
     require('../src/utils/ui')
 
-
-const processedMessages = new Set()
-
+const processedMessages =
+    new Set()
 
 setInterval(() => {
-    try {
-        processedMessages.clear()
-    } catch {}
-}, 1000 * 60 * 5)
 
+    try {
+
+        processedMessages.clear()
+
+    } catch {}
+
+}, 1000 * 60 * 5)
 
 const mutePath =
     path.join(
@@ -73,35 +91,49 @@ const mutePath =
         '../database/mute.json'
     )
 
-
 const ensureMuteDb = () => {
+
     if (!fs.existsSync(mutePath)) {
+
         fs.writeFileSync(
             mutePath,
-            JSON.stringify({}, null, 2)
+            JSON.stringify(
+                {},
+                null,
+                2
+            )
         )
     }
 }
 
+const isUserMuted = (
+    from,
+    sender,
+    senderAlt
+) => {
 
-const isUserMuted = (from, sender, senderAlt) => {
     ensureMuteDb()
 
     let data = {}
 
     try {
+
         data = JSON.parse(
-            fs.readFileSync(mutePath)
+            fs.readFileSync(
+                mutePath
+            )
         )
 
         if (
             typeof data !== 'object' ||
             Array.isArray(data)
         ) {
+
             data = {}
         }
 
     } catch {
+
         data = {}
     }
 
@@ -110,16 +142,67 @@ const isUserMuted = (from, sender, senderAlt) => {
 
     return (
         list.includes(sender) ||
-        (senderAlt && list.includes(senderAlt))
+        (
+            senderAlt &&
+            list.includes(senderAlt)
+        )
     )
 }
-
 
 const isGroup = jid =>
     jid.endsWith('@g.us')
 
+async function syncMessageObjectives(
+    memberId
+) {
 
-module.exports = async (sock, messages) => {
+    const types = [
+        'MESSAGES',
+        'ACTIVE_DAYS',
+        'STREAK'
+    ]
+
+    for (const type of types) {
+
+        try {
+
+            await syncMemberObjectivesByType(
+                memberId,
+                type
+            )
+
+        } catch (err) {
+
+            logger.error(
+                `Objective ${type} Sync Error: ${err.message}`
+            )
+        }
+    }
+}
+
+async function syncCommandObjectives(
+    memberId
+) {
+
+    try {
+
+        await syncMemberObjectivesByType(
+            memberId,
+            'COMMANDS'
+        )
+
+    } catch (err) {
+
+        logger.error(
+            `Objective COMMANDS Sync Error: ${err.message}`
+        )
+    }
+}
+
+module.exports = async (
+    sock,
+    messages
+) => {
 
     try {
 
@@ -128,14 +211,12 @@ module.exports = async (sock, messages) => {
 
         if (!msg) return
         if (!msg.message) return
-
         if (msg.key?.fromMe) return
 
         if (
             msg.key?.remoteJid ===
             'status@broadcast'
         ) return
-
 
         const from =
             msg.key?.remoteJid
@@ -148,7 +229,9 @@ module.exports = async (sock, messages) => {
             msg.key.remoteJid
 
         const senderAlt =
-            msg.key.participantAlt
+            msg.key.participantAlt ||
+            msg.participantAlt ||
+            null
 
         if (!sender) return
 
@@ -166,7 +249,8 @@ module.exports = async (sock, messages) => {
                 await sock.sendMessage(
                     from,
                     {
-                        delete: msg.key
+                        delete:
+                            msg.key
                     }
                 )
 
@@ -175,7 +259,6 @@ module.exports = async (sock, messages) => {
                 logger.error(
                     `Delete muted msg: ${err.message}`
                 )
-
             }
 
             return
@@ -183,7 +266,8 @@ module.exports = async (sock, messages) => {
 
         const timestamp =
             Number(
-                msg.messageTimestamp || 0
+                msg.messageTimestamp ||
+                0
             )
 
         const now =
@@ -202,10 +286,14 @@ module.exports = async (sock, messages) => {
         if (!messageId) return
 
         if (
-            processedMessages.has(messageId)
+            processedMessages.has(
+                messageId
+            )
         ) return
 
-        processedMessages.add(messageId)
+        processedMessages.add(
+            messageId
+        )
 
         setTimeout(() => {
 
@@ -219,7 +307,6 @@ module.exports = async (sock, messages) => {
             getText(msg)?.trim()
 
         if (!text) return
-
 
         logger.event(
             `${sender?.split('@')[0]} -> ${text}`
@@ -246,81 +333,90 @@ module.exports = async (sock, messages) => {
         try {
 
             member =
-            await ensureMember(
-            sender,
-            senderAlt || null,
-            msg.pushName || null
-    )
+                await ensureMember(
+                    sender,
+                    senderAlt,
+                    msg.pushName ||
+                    null
+                )
 
             if (member) {
 
-    try {
+                try {
 
-        await ensureInitialGoldCard(
-            member.id
-        )
+                    await ensureInitialGoldCard(
+                        member.id
+                    )
 
-    } catch (err) {
+                } catch (err) {
 
-        logger.error(
-            `Member Card DB Error: ${err.message}`
-        )
-
-    }
-
-}
+                    logger.error(
+                        `Member Card DB Error: ${err.message}`
+                    )
+                }
+            }
 
         } catch (err) {
 
             logger.error(
                 `Member DB Error: ${err.message}`
             )
-
         }
 
         if (member) {
 
-    try {
+            try {
 
-        await registerValidMessage(member.id)
-        await registerSeasonMessage(member.id)
+                await registerValidMessage(
+                    member.id
+                )
 
-        const unlock =
-            await checkCardUnlock(member.id)
+                await registerSeasonMessage(
+                    member.id
+                )
 
-        if (unlock.unlocked) {
+                await syncMessageObjectives(
+                    member.id
+                )
 
-            logger.info(
-                `Nueva carta desbloqueada: ` +
-                `${member.display_name || member.id} | ` +
-                `${unlock.card.card_name} | ` +
-                `OVR ${unlock.card.rating}`
-            )
+                const unlock =
+                    await checkCardUnlock(
+                        member.id
+                    )
 
-            await sock.safeSendMessage(
-                from,
-                {
-                    text:
+                if (unlock.unlocked) {
+
+                    logger.info(
+                        `Nueva carta desbloqueada: ` +
+                        `${member.display_name || member.id} | ` +
+                        `${unlock.card.card_name} | ` +
+                        `OVR ${unlock.card.rating}`
+                    )
+
+                    await sock.safeSendMessage(
+                        from,
+                        {
+                            text:
 `🎉 𝐍𝐔𝐄𝐕𝐀 𝐂𝐀𝐑𝐓𝐀
 
 ✦ ${member.display_name || msg.pushName || 'Miembro'}
+
 ✦ ${unlock.card.card_name}
+
 ✦ OVR ${unlock.card.rating}
 
 Usa .card para ver tu nueva carta.`
+                        }
+                    )
                 }
-            )
+
+            } catch (err) {
+
+                logger.error(
+                    `Activity/Card DB Error: ${err.message}`
+                )
+            }
         }
-
-    } catch (err) {
-
-        logger.error(
-            `Activity/Card DB Error: ${err.message}`
-        )
-
-    }
-
-}
 
         await messageStatsHandler(
             msg,
@@ -353,56 +449,59 @@ Usa .card para ver tu nueva carta.`
         )
 
         const prefixes =
-    settings.prefixes ||
-    [settings.prefix || '/']
+            settings.prefixes ||
+            [
+                settings.prefix ||
+                '/'
+            ]
 
-const isCommand =
-    prefixes.some(
-        p => text.startsWith(p)
-    )
-
-
-if (isCommand) {
-
-    if (member) {
-
-        try {
-
-            await registerCommand(
-                member.id
+        const isCommand =
+            prefixes.some(
+                prefix =>
+                    text.startsWith(
+                        prefix
+                    )
             )
 
-            await registerSeasonCommand(
-                member.id
-            )
+        if (isCommand) {
 
-        } catch (err) {
+            if (member) {
 
-            logger.error(
-                `Command Activity DB Error: ${err.message}`
-            )
+                try {
 
+                    await registerCommand(
+                        member.id
+                    )
+
+                    await registerSeasonCommand(
+                        member.id
+                    )
+
+                    await syncCommandObjectives(
+                        member.id
+                    )
+
+                } catch (err) {
+
+                    logger.error(
+                        `Command Activity DB Error: ${err.message}`
+                    )
+                }
+            }
+
+            await commandHandler({
+                sock,
+                msg,
+                from,
+                text,
+                settings
+            })
         }
-
-    }
-
-
-    await commandHandler({
-        sock,
-        msg,
-        from,
-        text,
-        settings
-    })
-
-}
 
     } catch (err) {
 
         logger.error(
             `Messages Event Error: ${err.message}`
         )
-
     }
-
 }

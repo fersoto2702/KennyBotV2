@@ -1,39 +1,39 @@
-const fs = require('fs')
-const path = require('path')
-
 const logger =
     require('../../src/utils/logger')
 
 const ui =
     require('../../src/utils/ui')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/ship.jpeg'
-    )
 
 function getCompatibility(a, b) {
 
-    const text =
-        `${a}${b}`
-            .toLowerCase()
+    const pair =
+        [
+            String(a).toLowerCase(),
+            String(b).toLowerCase()
+        ]
+            .sort()
+            .join('|')
+
 
     let hash = 0
 
-    for (let i = 0; i < text.length; i++) {
+
+    for (let i = 0; i < pair.length; i++) {
 
         hash =
             ((hash << 5) - hash) +
-            text.charCodeAt(i)
+            pair.charCodeAt(i)
 
         hash |= 0
 
     }
 
+
     return Math.abs(hash % 101)
 
 }
+
 
 function getBar(percent) {
 
@@ -46,6 +46,7 @@ function getBar(percent) {
     )
 
 }
+
 
 function getStatus(percent) {
 
@@ -62,34 +63,76 @@ function getStatus(percent) {
 
 }
 
+
 function shuffle(array) {
 
     const result =
         [...array]
 
-    for (let i = result.length - 1; i > 0; i--) {
+
+    for (
+        let i = result.length - 1;
+        i > 0;
+        i--
+    ) {
 
         const j =
-            Math.floor(Math.random() * (i + 1))
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            )
 
-        ;[result[i], result[j]] =
-            [result[j], result[i]]
+
+        ;[
+            result[i],
+            result[j]
+        ] = [
+            result[j],
+            result[i]
+        ]
 
     }
+
 
     return result
 
 }
 
+
+function normalizeName(value = '') {
+
+    const clean =
+        String(value)
+            .trim()
+
+    if (!clean)
+        return ''
+
+    return clean.startsWith('@')
+        ? clean
+        : `@${clean}`
+
+}
+
+
+function displayJid(jid = '') {
+
+    if (!jid)
+        return '@desconocido'
+
+    return `@${jid.split('@')[0]}`
+
+}
+
+
 module.exports = {
 
-    name: 'ship',
+    name:
+        'ship',
 
     aliases: [
-
         'love',
         'compatibilidad'
-
     ],
 
     description:
@@ -98,9 +141,12 @@ module.exports = {
     category:
         'diversion',
 
-    groupOnly: true,
+    groupOnly:
+        true,
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
 
@@ -113,65 +159,140 @@ module.exports = {
 
         try {
 
+            if (
+                !from ||
+                !from.endsWith('@g.us')
+            ) {
+
+                return await sock.sendMessage(
+                    from,
+                    {
+                        text:
+                            ui.error(
+                                'SOLO GRUPOS',
+                                'Este comando solo funciona en grupos.'
+                            )
+                    }
+                )
+
+            }
+
+
             const mentions =
+
                 msg.message
                     ?.extendedTextMessage
                     ?.contextInfo
                     ?.mentionedJid || []
 
+
             const requestedCount =
-                parseInt(args[0], 10)
+                parseInt(
+                    args?.[0],
+                    10
+                )
+
 
             const hasRequestedCount =
-                args.length === 1 &&
-                !isNaN(requestedCount) &&
+
+                args?.length === 1 &&
+
+                !Number.isNaN(
+                    requestedCount
+                ) &&
+
                 requestedCount > 0
 
+
+            /* ─────────────────────────────
+               SHIPS ALEATORIOS
+            ───────────────────────────── */
+
             if (
-                (mentions.length < 2 && args.length < 2) ||
+                (
+                    mentions.length < 2 &&
+                    args.length < 2
+                ) ||
                 hasRequestedCount
             ) {
 
                 const metadata =
-                    await sock.groupMetadata(from)
+                    await sock.groupMetadata(
+                        from
+                    )
+
 
                 const participants =
-                    (metadata.participants || [])
-                        .map(p => p.id)
 
-                if (participants.length < 2) {
+                    (
+                        metadata.participants ||
+                        []
+                    )
+                        .map(
+                            participant =>
+                                participant.id
+                        )
+                        .filter(Boolean)
+
+
+                if (
+                    participants.length < 2
+                ) {
 
                     return await sock.sendMessage(
-                        from,
-                        {
-                            image:
-                                fs.readFileSync(iconPath),
 
-                            caption:
+                        from,
+
+                        {
+
+                            text:
                                 ui.warn(
+
                                     'GRUPO INSUFICIENTE',
+
                                     'No hay suficientes integrantes para generar ships.'
+
                                 )
+
                         }
+
                     )
 
                 }
 
+
                 const shuffled =
                     shuffle(participants)
 
+
                 const maxPairs =
-                    Math.floor(shuffled.length / 2)
+                    Math.floor(
+                        shuffled.length / 2
+                    )
+
 
                 const pairsCount =
-                    hasRequestedCount ?
-                        Math.min(requestedCount, maxPairs) :
-                        maxPairs
+
+                    hasRequestedCount
+
+                        ? Math.min(
+                            requestedCount,
+                            maxPairs
+                        )
+
+                        : maxPairs
+
 
                 const lines = []
+
                 const allMentions = []
 
-                for (let i = 0; i < pairsCount; i++) {
+
+                for (
+                    let i = 0;
+                    i < pairsCount;
+                    i++
+                ) {
 
                     const userA =
                         shuffled[i * 2]
@@ -179,33 +300,56 @@ module.exports = {
                     const userB =
                         shuffled[i * 2 + 1]
 
+
                     const percent =
                         getCompatibility(
                             userA,
                             userB
                         )
 
+
                     const status =
-                        getStatus(percent)
+                        getStatus(
+                            percent
+                        )
 
-                    lines.push([
-                        `@${userA.split('@')[0]} ❤️ @${userB.split('@')[0]}`,
-                        `${percent}% ${status}`
-                    ])
 
-                    allMentions.push(userA, userB)
+                    lines.push(
+                        [
+                            `${displayJid(userA)} ❤️ ${displayJid(userB)}`,
+                            `${percent}% ${status}`
+                        ]
+                    )
+
+
+                    allMentions.push(
+                        userA,
+                        userB
+                    )
 
                 }
 
-                if (!hasRequestedCount && shuffled.length % 2 !== 0) {
+
+                if (
+                    !hasRequestedCount &&
+                    shuffled.length % 2 !== 0 &&
+                    pairsCount > 0
+                ) {
 
                     const leftover =
-                        shuffled[shuffled.length - 1]
+                        shuffled[
+                            shuffled.length - 1
+                        ]
+
 
                     const partner =
                         shuffled[
-                            Math.floor(Math.random() * pairsCount) * 2
+                            Math.floor(
+                                Math.random() *
+                                pairsCount
+                            ) * 2
                         ]
+
 
                     const percent =
                         getCompatibility(
@@ -213,135 +357,293 @@ module.exports = {
                             partner
                         )
 
+
                     const status =
-                        getStatus(percent)
+                        getStatus(
+                            percent
+                        )
 
-                    lines.push([
-                        `@${leftover.split('@')[0]} ❤️ @${partner.split('@')[0]}`,
-                        `${percent}% ${status}`
-                    ])
 
-                    allMentions.push(leftover, partner)
+                    lines.push(
+                        [
+                            `${displayJid(leftover)} ❤️ ${displayJid(partner)}`,
+                            `${percent}% ${status}`
+                        ]
+                    )
+
+
+                    allMentions.push(
+                        leftover,
+                        partner
+                    )
 
                 }
 
+
                 logger.event(
+
                     `Ship aleatorio en ${from.split('@')[0]}: ${lines.length} parejas`
+
                 )
 
-                const caption =
-                    [
-                        `▓ SHIPS DEL GRUPO`,
-                        ui.divider,
-                        ...lines.map(
-                            ([pair, result]) =>
-                                `${pair}\n${result}`
-                        )
-                    ].join('\n\n')
+
+                const text = [
+
+                    'ㅤ۟∩　ׅ　💞　ׅ　*SHIPS DEL GRUPO*　ׄᰙ',
+
+                    '',
+
+                    ...lines.map(
+
+                        ([pair, result]) =>
+
+                            `𖣣ֶㅤ֯⌗ ♡  ׄ ⬭ ${pair}\nㅤ╰─ 𓂃 ${result}`
+
+                    )
+
+                ].join('\n\n')
+
 
                 return await sock.sendMessage(
+
                     from,
+
                     {
-                        image:
-                            fs.readFileSync(iconPath),
 
-                        caption,
+                        text,
 
-                        mentions: allMentions
+                        mentions:
+                            [
+                                ...new Set(
+                                    allMentions
+                                )
+                            ]
+
                     }
+
                 )
 
             }
+
+
+            /* ─────────────────────────────
+               SHIP ENTRE DOS PERSONAS
+            ───────────────────────────── */
 
             let person1
             let person2
 
-            if (mentions.length >= 2) {
+            let person1Seed
+            let person2Seed
+
+            let shipMentions = []
+
+
+            /* ─────────────────────────────
+               DOS MENCIONES REALES
+            ───────────────────────────── */
+
+            if (
+                mentions.length >= 2
+            ) {
+
+                const jid1 =
+                    mentions[0]
+
+                const jid2 =
+                    mentions[1]
+
 
                 person1 =
-                    `@${mentions[0].split('@')[0]}`
+                    displayJid(
+                        jid1
+                    )
 
                 person2 =
-                    `@${mentions[1].split('@')[0]}`
+                    displayJid(
+                        jid2
+                    )
+
+
+                person1Seed =
+                    jid1
+
+                person2Seed =
+                    jid2
+
+
+                shipMentions = [
+                    jid1,
+                    jid2
+                ]
 
             } else {
 
+                /* ─────────────────────────────
+                   USERNAMES/NOMBRES COMO TEXTO
+                ───────────────────────────── */
+
+                const raw1 =
+                    args?.[0]
+
+                const raw2 =
+                    args?.slice(1).join(' ')
+
+
+                if (
+                    !raw1 ||
+                    !raw2
+                ) {
+
+                    return await sock.sendMessage(
+
+                        from,
+
+                        {
+
+                            text:
+                                ui.warn(
+
+                                    'USUARIOS REQUERIDOS',
+
+                                    'Usa /ship @usuario1 @usuario2'
+
+                                )
+
+                        }
+
+                    )
+
+                }
+
+
                 person1 =
-                    args[0]
+                    normalizeName(
+                        raw1
+                    )
 
                 person2 =
-                    args.slice(1).join(' ')
+                    normalizeName(
+                        raw2
+                    )
+
+
+                person1Seed =
+                    person1
+
+                person2Seed =
+                    person2
 
             }
 
+
             const percent =
                 getCompatibility(
-                    person1,
-                    person2
+                    person1Seed,
+                    person2Seed
                 )
 
+
             const bar =
-                getBar(percent)
+                getBar(
+                    percent
+                )
+
 
             const status =
-                getStatus(percent)
+                getStatus(
+                    percent
+                )
+
 
             logger.event(
+
                 `Ship: ${person1} ❤️ ${person2} (${percent}%)`
+
             )
 
-            await sock.sendMessage(
+
+            const text =
+                ui.success(
+
+                    '💞 SHIP',
+
+                    [
+
+                        [
+                            'Pareja',
+                            `${person1} ❤️ ${person2}`
+                        ],
+
+                        [
+                            'Compatibilidad',
+                            `${percent}%`
+                        ],
+
+                        [
+                            'Barra',
+                            bar
+                        ],
+
+                        [
+                            'Resultado',
+                            status
+                        ]
+
+                    ],
+
+                    '¿Será amor verdadero? 👀'
+
+                )
+
+
+            return await sock.sendMessage(
+
                 from,
+
                 {
-                    image:
-                        fs.readFileSync(iconPath),
 
-                    caption:
-                        ui.success(
-                            'SHIP',
-                            [
-                                [
-                                    'Pareja',
-                                    `${person1} ❤️ ${person2}`
-                                ],
-                                [
-                                    'Compatibilidad',
-                                    `${percent}%`
-                                ],
-                                [
-                                    'Barra',
-                                    bar
-                                ],
-                                [
-                                    'Resultado',
-                                    status
-                                ]
-                            ]
-                        ),
+                    text,
 
-                    mentions
+                    mentions:
+                        shipMentions
+
                 }
+
             )
+
 
         } catch (err) {
 
             logger.error(
-                `Error ship: ${err.message}`
+
+                `Error ship: ${err.stack || err.message}`
+
             )
 
-            await sock.sendMessage(
-                from,
-                {
-                    image:
-                        fs.readFileSync(iconPath),
 
-                    caption:
-                        ui.error(
-                            'ERROR',
-                            'No se pudo calcular la compatibilidad.'
-                        )
-                }
-            )
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR INTERNO',
+
+                                'No se pudo calcular la compatibilidad.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

@@ -1,42 +1,82 @@
 const LINE =
-    '────────────────────────'
+    '𓂃 𓂃 𓂃 𓂃 𓂃 𓂃 𓂃 𓂃'
 
 const DLINE =
     '━━━━━━━━━━━━━━━━━━━━━━━━'
 
+
 const safe = value =>
     String(value ?? '').trim()
 
-function header(title, icon = '⟨', close = '⟩') {
+
+/* ─────────────────────────────
+   HEADER GENERAL
+───────────────────────────── */
+
+function header(
+    title,
+    icon = '𖤐'
+) {
 
     return [
-        `${icon} ${safe(title)} ${close}`,
-        LINE
+        `ㅤ۟${icon}　ׅ　*${safe(title)}*　ׄ𓂃`,
+        ''
     ].join('\n')
 
 }
 
-function subheader(label, icon = '▸') {
-    return `${icon} ${safe(label)}`
+
+/* ─────────────────────────────
+   SUBHEADER
+───────────────────────────── */
+
+function subheader(
+    label,
+    icon = '⌗'
+) {
+
+    return (
+        `𖣣ֶㅤ֯${icon}  ׄ  ${safe(label)}`
+    )
+
 }
 
-function field(key, value, pad = 10) {
 
-    const padded =
-        safe(key).padEnd(pad, ' ')
+/* ─────────────────────────────
+   CAMPOS
+───────────────────────────── */
 
-    return `${padded} ${safe(value)}`
+function field(
+    key,
+    value
+) {
+
+    return (
+        `𖣣ֶㅤ֯⌗ ⟡  ׄ ⬭ *${safe(key)}:* ${safe(value)}`
+    )
 
 }
 
-function list(items = [], prefix = '│') {
 
-    if (!Array.isArray(items)) return ''
+/* ─────────────────────────────
+   LISTAS
+───────────────────────────── */
+
+function list(
+    items = [],
+    prefix = '𖣣ֶㅤ֯⌗'
+) {
+
+    if (!Array.isArray(items))
+        return ''
 
     return items.map(item => {
 
-        const name = safe(item?.name)
-        const desc = safe(item?.desc)
+        const name =
+            safe(item?.name)
+
+        const desc =
+            safe(item?.desc)
 
         const aliases =
             Array.isArray(item?.aliases)
@@ -50,18 +90,24 @@ function list(items = [], prefix = '│') {
 
         const badgeText =
             badges.length
-                ? ` ‹ ${badges.join(' · ')} ›`
+                ? `  ‹ ${badges.join(' · ')} ›`
                 : ''
 
         let line =
-            `${prefix} *${name}*${badgeText}`
+            `${prefix} ✦  ׄ ⬭ *${name}*${badgeText}`
 
         if (desc) {
-            line += `\n${prefix}  ↳ ${desc}`
+
+            line +=
+                `\nㅤ╰─ 𓂃 ${desc}`
+
         }
 
         if (aliases.length) {
-            line += `\n${prefix}  ↳ Aliases: ${aliases.join(', ')}`
+
+            line +=
+                `\nㅤ╰─ 𓂃 *Aliases:* ${aliases.join(', ')}`
+
         }
 
         return line
@@ -70,131 +116,263 @@ function list(items = [], prefix = '│') {
 
 }
 
-function section(label, emoji, items = []) {
+
+/* ─────────────────────────────
+   SECCIONES DEL MENÚ
+───────────────────────────── */
+
+function section(
+    label,
+    emoji,
+    items = []
+) {
 
     return [
-        `┌─「 ${safe(emoji)} ${safe(label).toUpperCase()} 」─ ${items.length} cmds`,
-        list(items),
-        `└${LINE}`
-    ].join('\n')
 
-}
-
-function success(title, fields = [], footer = '') {
-
-    const lines = [
-        `▓ ${safe(title)}`,
-        LINE
-    ]
-
-    if (Array.isArray(fields)) {
-        lines.push(
-            ...fields.map(([k, v]) => field(k, v))
-        )
-    }
-
-    if (fields.length) {
-        lines.push(LINE)
-    }
-
-    if (footer) {
-        lines.push(safe(footer))
-    }
-
-    return lines.join('\n')
-
-}
-
-function error(title, detail = '') {
-
-    const lines = [
-        `⚠ ${safe(title)}`
-    ]
-
-    if (detail) {
-        lines.push(LINE)
-        lines.push(safe(detail))
-    }
-
-    return lines.join('\n')
-
-}
-
-function info(title, fields = [], footer = '') {
-
-    const lines = [
-        `⟨ ${safe(title)} ⟩`,
-        LINE
-    ]
-
-    if (Array.isArray(fields)) {
-        lines.push(
-            ...fields.map(([k, v]) => field(k, v))
-        )
-    }
-
-    if (fields.length) {
-        lines.push(LINE)
-    }
-
-    if (footer) {
-        lines.push(safe(footer))
-    }
-
-    return lines.join('\n')
-
-}
-
-function warn(title, detail = '') {
-
-    const lines = [
-        `◈ ${safe(title)}`
-    ]
-
-    if (detail) {
-        lines.push(LINE)
-        lines.push(safe(detail))
-    }
-
-    return lines.join('\n')
-
-}
-
-function menuHeader(botName, greeting, prefix, total) {
-
-    return [
-        `╔══════════════════════╗`,
-        `  ${safe(botName)}`,
-        `  ${safe(greeting)}`,
-        `╚══════════════════════╝`,
+        `ㅤ۟∩　ׅ　${safe(emoji)}　ׅ　*${safe(label).toUpperCase()}*`,
+        `ㅤׄ⌗ ${items.length} comandos`,
         '',
-        `⬡ Prefijo: *${safe(prefix)}*   Cmds: *${safe(total)}*`,
-        DLINE
+
+        list(items),
+
+        ''
+
     ].join('\n')
 
 }
 
-function menuFooter(prefix) {
+
+/* ─────────────────────────────
+   SUCCESS
+───────────────────────────── */
+
+function success(
+    title,
+    fields = [],
+    footer = ''
+) {
+
+    const lines = [
+
+        `ㅤ۟∩　ׅ　✓　ׅ　*${safe(title)}*　ׄᰙ`,
+        ''
+
+    ]
+
+    if (Array.isArray(fields)) {
+
+        fields.forEach(
+            ([key, value], index) => {
+
+                const icons = [
+                    '✦',
+                    '❖',
+                    '♛',
+                    'ꕥ',
+                    '☆'
+                ]
+
+                const icon =
+                    icons[index % icons.length]
+
+                lines.push(
+                    `𖣣ֶㅤ֯⌗ ${icon}  ׄ ⬭ *${safe(key)}:* ${safe(value)}`
+                )
+
+            }
+        )
+
+    }
+
+    if (footer) {
+
+        lines.push('')
+        lines.push(
+            `╰─ 𓂃 ${safe(footer)}`
+        )
+
+    }
+
+    return lines.join('\n')
+
+}
+
+
+/* ─────────────────────────────
+   ERROR
+───────────────────────────── */
+
+function error(
+    title,
+    detail = ''
+) {
+
+    const lines = [
+
+        `ㅤ۟∩　ׅ　✕　ׅ　*${safe(title)}*　ׄᰙ`
+
+    ]
+
+    if (detail) {
+
+        lines.push('')
+        lines.push(
+            `𖣣ֶㅤ֯⌗ ⚠  ׄ ⬭ ${safe(detail)}`
+        )
+
+    }
+
+    return lines.join('\n')
+
+}
+
+
+/* ─────────────────────────────
+   INFO
+───────────────────────────── */
+
+function info(
+    title,
+    fields = [],
+    footer = ''
+) {
+
+    const lines = [
+
+        `ㅤ۟∩　ׅ　◈　ׅ　*${safe(title)}*　ׄᰙ`,
+        ''
+
+    ]
+
+    if (Array.isArray(fields)) {
+
+        fields.forEach(
+            ([key, value], index) => {
+
+                const icons = [
+                    '✎',
+                    '⌁',
+                    '⟡',
+                    'ꕥ',
+                    '☆'
+                ]
+
+                const icon =
+                    icons[index % icons.length]
+
+                lines.push(
+                    `𖣣ֶㅤ֯⌗ ${icon}  ׄ ⬭ *${safe(key)}:* ${safe(value)}`
+                )
+
+            }
+        )
+
+    }
+
+    if (footer) {
+
+        lines.push('')
+        lines.push(
+            `╰─ 𓂃 ${safe(footer)}`
+        )
+
+    }
+
+    return lines.join('\n')
+
+}
+
+
+/* ─────────────────────────────
+   WARNING
+───────────────────────────── */
+
+function warn(
+    title,
+    detail = ''
+) {
+
+    const lines = [
+
+        `ㅤ۟∩　ׅ　⚠　ׅ　*${safe(title)}*　ׄᰙ`
+
+    ]
+
+    if (detail) {
+
+        lines.push('')
+        lines.push(
+            `𖣣ֶㅤ֯⌗ ◇  ׄ ⬭ ${safe(detail)}`
+        )
+
+    }
+
+    return lines.join('\n')
+
+}
+
+
+/* ─────────────────────────────
+   MENU HEADER
+───────────────────────────── */
+
+function menuHeader(
+    botName,
+    greeting,
+    prefix,
+    total
+) {
 
     return [
-        DLINE,
-        `💡 Usa *${safe(prefix)}help <comando>* para más info`
+
+        `ㅤ۟∩　ׅ　𖤐　ׅ　*${safe(botName)}*　ׄᰙ`,
+        '',
+        `𖣣ֶㅤ֯⌗ ♡  ׄ ⬭ ${safe(greeting)}`,
+        `𖣣ֶㅤ֯⌗ ⌁  ׄ ⬭ *Prefijo:* ${safe(prefix)}`,
+        `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ *Comandos:* ${safe(total)}`,
+        ''
+
     ].join('\n')
 
 }
+
+
+/* ─────────────────────────────
+   MENU FOOTER
+───────────────────────────── */
+
+function menuFooter(
+    prefix
+) {
+
+    return [
+
+        '',
+        `╰─ 𓂃 💡 Usa *${safe(prefix)}help <comando>*`,
+        `ㅤ   para obtener más información.`
+
+    ].join('\n')
+
+}
+
 
 module.exports = {
+
     header,
     subheader,
     field,
     list,
     section,
+
     success,
     error,
     info,
     warn,
+
     menuHeader,
     menuFooter,
+
     divider: LINE,
     doubleDivider: DLINE,
+
 }
