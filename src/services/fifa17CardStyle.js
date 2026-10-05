@@ -214,62 +214,27 @@ halloween: {
 
 movember: {
     template: path.join(__dirname, '..', '..', 'fifa17-movember-template.png'),
-    textColor: '#4A2B19',
-    chemistryColor: '#4A2B19',
+    textColor: '#3D2415',
+    chemistryColor: '#3D2415',
     statsColor: '#C9BEA5',
 
     playerImage: {
-        height: 130,
-        x: 92,
-        y: 46,
+        height: 138,
+        x: 76,
+        y: 43,
         visibleBottom: 174
     },
 
     club: {
-        size: 44,
-        x: 44,
-        y: 96
+        size: 38,
+        x: 40,
+        y: 105
     },
 
     nation: {
-        width: 50,
-        x: 41,
-        y: 142
-    },
-
-    rating: {
-        x: 44.5,
-        y: 72,
-        size: 36
-    },
-
-    position: {
-        x: 65.5,
-        y: 91,
-        size: 22
-    },
-
-    name: {
-        x: 113.5,
-        y: 197,
-        size: 23
-    },
-
-    stats: {
-        row1Y: 223,
-        row2Y: 244,
-        row3Y: 265,
-        valuesize: 18,
-        namesize: 17,
-
-        leftValueX: 31,
-        leftNameX: 56,
-
-        rightValueX: 127,
-        rightNameX: 152,
-
-        valueSize: 18,
-        nameSize: 17
+        width: 35,
+        x: 44,
+        y: 148
     },
 
     chemistry: {
@@ -282,6 +247,36 @@ movember: {
     cardSize: {
         width: 220,
         height: 346
+    },
+
+    condensedText: {
+        rating: {
+            x: 61,
+            y: 75.7,
+            size: 31.3
+        },
+
+        position: {
+            x: 61,
+            y: 97,
+            size: 23.7
+        },
+
+        name: {
+            x: 112,
+            y: 201.3,
+            size: 21.8,
+            weight: 'wide',
+            letterSpacing: 0.35
+        },
+
+        stats: {
+            valueCenterX: [58, 137.4],
+            labelX: [76.4, 155.8],
+            rowsY: [227.3, 253.4, 278.3],
+            valueSize: 21.1,
+            labelSize: 21.1
+        }
     },
 },
 }

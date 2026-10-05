@@ -185,6 +185,13 @@ const CONDENSED_FONT_CANDIDATES = {
         'DINPro-CondBold.otf',
         'D-DINCondensed-Bold.otf',
         '@fontsource/barlow/files/barlow-latin-700-normal.woff'
+    ],
+
+    // Peso normal y ancho normal (por ejemplo el nombre de la carta Movember)
+    wide: [
+        'DINPro-Medium.otf',
+        'D-DIN.otf',
+        '@fontsource/barlow/files/barlow-latin-500-normal.woff'
     ]
 
 }
@@ -236,8 +243,10 @@ function loadCondensedFont(kind) {
         )
     }
 
-    if (chain.length === 0 && kind === 'display') {
-        const fallbackChain = loadCondensedFont('bold')
+    if (chain.length === 0 && (kind === 'display' || kind === 'wide')) {
+        const fallbackChain = loadCondensedFont(
+            kind === 'display' ? 'bold' : 'regular'
+        )
 
         condensedFontCache.set(kind, fallbackChain)
 
@@ -311,6 +320,7 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
     const bold = loadCondensedFont('bold')
     const regular = loadCondensedFont('regular')
     const display = loadCondensedFont('display')
+    const wide = loadCondensedFont('wide')
 
     const rating = {
         x: 65,
@@ -331,6 +341,7 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
         y: 196.4,
         size: 21.5,
         letterSpacing: 0,
+        weight: 'bold',
         ...(config.name || {})
     }
 
@@ -378,7 +389,11 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
 
     paths.push(
         textToPath({
-            chain: bold,
+            chain: name.weight === 'wide'
+                ? wide
+                : name.weight === 'regular'
+                    ? regular
+                    : bold,
             text: getDisplayName(player),
             x: name.x,
             y: name.y,

@@ -1,104 +1,856 @@
-const fs = require('fs')
-const path = require('path')
-const logger = require('../../src/utils/logger')
-const ui = require('../../src/utils/ui')
-const { jidNormalizedUser } = require('@whiskeysockets/baileys')
+const logger =
+    require('../../src/utils/logger')
 
-const iconPath = path.join(__dirname, '../../assets/icons/promote.jpeg')
+const ui =
+    require('../../src/utils/ui')
+
+const {
+    jidNormalizedUser
+} = require('@whiskeysockets/baileys')
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    try {
+
+        return jidNormalizedUser(
+            jid
+        )
+
+    } catch {
+
+        return String(jid)
+            .replace(
+                /:\d+@/,
+                '@'
+            )
+
+    }
+
+}
+
+
+function getNumber(
+    jid
+) {
+
+    return String(
+        jid || ''
+    )
+        .split('@')[0]
+        .split(':')[0]
+
+}
+
+
+function isAdministrator(
+    participant
+) {
+
+    return (
+
+        participant?.admin === 'admin' ||
+
+        participant?.admin === 'superadmin'
+
+    )
+
+}
+
+
+function getParticipantJids(
+    participant
+) {
+
+    return [
+
+        participant?.id,
+
+        participant?.phoneNumber,
+
+        participant?.lid
+
+    ]
+        .filter(Boolean)
+        .map(
+            normalizeJid
+        )
+
+}
+
+
+function findParticipant(
+    participants,
+    jid
+) {
+
+    const target =
+        normalizeJid(
+            jid
+        )
+
+
+    if (!target) {
+
+        return null
+
+    }
+
+
+    const targetNumber =
+        getNumber(
+            target
+        )
+
+
+    return participants.find(
+
+        participant => {
+
+            const jids =
+                getParticipantJids(
+                    participant
+                )
+
+
+            return jids.some(
+
+                participantJid => {
+
+                    if (
+                        participantJid ===
+                        target
+                    ) {
+
+                        return true
+
+                    }
+
+
+                    return (
+                        getNumber(
+                            participantJid
+                        ) ===
+                        targetNumber
+                    )
+
+                }
+
+            )
+
+        }
+
+    ) || null
+
+}
+
+
+function getMentionedJids(
+    msg
+) {
+
+    return (
+
+        msg.message
+            ?.extendedTextMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        msg.message
+            ?.imageMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        msg.message
+            ?.videoMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        []
+
+    )
+
+}
+
+
+function findBotParticipant(
+    participants,
+    sock
+) {
+
+    const candidates = [
+
+        sock.user?.id,
+
+        sock.user?.lid
+
+    ]
+        .filter(Boolean)
+        .map(
+            normalizeJid
+        )
+
+
+    for (
+        const candidate
+        of candidates
+    ) {
+
+        const participant =
+            findParticipant(
+
+                participants,
+
+                candidate
+
+            )
+
+
+        if (
+            participant
+        ) {
+
+            return participant
+
+        }
+
+    }
+
+
+    return null
+
+}
+
 
 module.exports = {
 
-    name: 'promote',
-    aliases: ['promover', 'admin'],
-    description: 'Promueve a un usuario a administrador',
-    category: 'grupos',
-    adminOnly: true,
-    groupOnly: true,
+    name:
+        'promote',
 
-    async execute({ sock, from, msg }) {
+    aliases: [
+        'promover',
+        'admin'
+    ],
+
+    description:
+        'Promueve a un usuario a administrador',
+
+    category:
+        'grupos',
+
+    adminOnly:
+        true,
+
+    groupOnly:
+        true,
+
+
+    async execute({
+
+        sock,
+        from,
+        msg
+
+    }) {
 
         try {
 
-            const metadata = await sock.groupMetadata(from)
-            const participants = metadata.participants
-            const sender = msg.key.participant || msg.participant
-            const senderData = participants.find(p => p.id === sender)
-            const isAdmin = senderData?.admin === 'admin' || senderData?.admin === 'superadmin'
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
 
-            if (!isAdmin)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('ACCESO DENEGADO', 'Solo administradores pueden usar este comando.')
-                })
+            if (
+                !from.endsWith(
+                    '@g.us'
+                )
+            ) {
 
-            const botJid = jidNormalizedUser(sock.user.id)
-            const botData = participants.find(p => jidNormalizedUser(p.id) === botJid)
-            const botAdmin = botData?.admin === 'admin' || botData?.admin === 'superadmin'
+                return await sock.sendMessage(
 
-            if (!botAdmin)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('BOT SIN PERMISOS', 'El bot necesita ser administrador.')
-                })
+                    from,
 
-            const target = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0]
+                    {
 
-            if (!target)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('USUARIO REQUERIDO', 'Uso: /promote @usuario')
-                })
+                        text:
+                            ui.error(
 
-            if (target === sender)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('ACCIÓN INVÁLIDA', 'No puedes promoverte a ti mismo.')
-                })
+                                'SOLO GRUPOS',
 
-            if (jidNormalizedUser(target) === botJid)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('ACCIÓN INVÁLIDA', 'El bot ya tiene permisos.')
-                })
+                                'Este comando solo funciona dentro de grupos.'
 
-            const targetData = participants.find(p => p.id === target)
+                            )
 
-            if (!targetData)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('USUARIO NO ENCONTRADO', 'Ese usuario no está en el grupo.')
-                })
+                    }
 
-            const targetAdmin = targetData?.admin === 'admin' || targetData?.admin === 'superadmin'
+                )
 
-            if (targetAdmin)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('YA ES ADMIN', 'Ese usuario ya es administrador.')
-                })
+            }
 
-            const response = await sock.groupParticipantsUpdate(from, [target], 'promote')
-            const result = response?.[0]
 
-            if (result?.status && result.status !== '200')
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('NO SE PUDO PROMOVER', `Código: ${result.status}`)
-                })
+            /* ─────────────────────────────
+               METADATA
+            ───────────────────────────── */
 
-            logger.event(`Promote: ${target.split('@')[0]} en ${from.split('@')[0]}`)
+            const metadata =
+                await sock.groupMetadata(
+                    from
+                )
 
-            await sock.sendMessage(from, {
-                image: fs.readFileSync(iconPath),
-                caption: ui.success('NUEVO ADMINISTRADOR', [
-                    ['Usuario', `@${target.split('@')[0]}`],
-                    ['Rango', '👑 Administrador']
-                ]),
-                mentions: [target]
-            })
+
+            const participants =
+                Array.isArray(
+                    metadata?.participants
+                )
+                    ? metadata.participants
+                    : []
+
+
+            if (
+                participants.length === 0
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE GRUPO',
+
+                                'No se pudieron obtener los participantes del grupo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               REMITENTE
+            ───────────────────────────── */
+
+            const sender =
+
+                msg.key.participant ||
+
+                msg.participant ||
+
+                msg.key.remoteJid
+
+
+            if (!sender) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario que ejecutó el comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const senderData =
+                findParticipant(
+
+                    participants,
+
+                    sender
+
+                )
+
+
+            if (
+                !isAdministrator(
+                    senderData
+                )
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ACCESO DENEGADO',
+
+                                'Solo los administradores pueden usar este comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               VALIDAR BOT ADMIN
+            ───────────────────────────── */
+
+            const botData =
+                findBotParticipant(
+
+                    participants,
+
+                    sock
+
+                )
+
+
+            if (
+                !botData
+            ) {
+
+                logger.warn(
+
+                    `Promote: no se encontró al bot en metadata del grupo ${from}`
+
+                )
+
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'BOT NO IDENTIFICADO',
+
+                                'No se pudo localizar a KennyBot dentro de los participantes del grupo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            if (
+                !isAdministrator(
+                    botData
+                )
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'BOT SIN PERMISOS',
+
+                                'KennyBot necesita ser administrador para promover usuarios.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               OBJETIVO
+            ───────────────────────────── */
+
+            const mentions =
+                getMentionedJids(
+                    msg
+                )
+
+
+            const target =
+                mentions[0]
+
+
+            if (!target) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'USUARIO REQUERIDO',
+
+                                'Menciona al usuario que quieres promover.\n\nUso: /promote @usuario'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const targetData =
+                findParticipant(
+
+                    participants,
+
+                    target
+
+                )
+
+
+            if (!targetData) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'USUARIO NO ENCONTRADO',
+
+                                'Ese usuario no forma parte del grupo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const targetJid =
+
+                targetData.id ||
+
+                targetData.phoneNumber ||
+
+                normalizeJid(
+                    target
+                )
+
+
+            /* ─────────────────────────────
+               PROTECCIONES
+            ───────────────────────────── */
+
+            if (
+                senderData ===
+                targetData
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'ACCIÓN INVÁLIDA',
+
+                                'No puedes promoverte a ti mismo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            if (
+                targetData ===
+                botData
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'ACCIÓN INVÁLIDA',
+
+                                'KennyBot ya cuenta con permisos de administrador.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            if (
+                isAdministrator(
+                    targetData
+                )
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'YA ES ADMIN',
+
+                                `@${getNumber(targetJid)} ya es administrador del grupo.`
+
+                            ),
+
+                        mentions: [
+                            targetJid
+                        ]
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               PROMOVER
+            ───────────────────────────── */
+
+            const response =
+                await sock.groupParticipantsUpdate(
+
+                    from,
+
+                    [
+                        targetJid
+                    ],
+
+                    'promote'
+
+                )
+
+
+            const result =
+                Array.isArray(response)
+                    ? response[0]
+                    : null
+
+
+            const status =
+                String(
+                    result?.status || ''
+                )
+
+
+            if (
+                status &&
+                status !== '200'
+            ) {
+
+                let reason =
+                    `WhatsApp respondió con el código ${status}.`
+
+
+                if (
+                    status === '403'
+                ) {
+
+                    reason =
+                        'WhatsApp rechazó la promoción. Verifica que KennyBot siga siendo administrador.'
+
+                }
+
+
+                else if (
+                    status === '404'
+                ) {
+
+                    reason =
+                        'El usuario ya no parece formar parte del grupo.'
+
+                }
+
+
+                else if (
+                    status === '408'
+                ) {
+
+                    reason =
+                        'La solicitud de promoción expiró. Inténtalo nuevamente.'
+
+                }
+
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'NO SE PUDO PROMOVER',
+
+                                reason
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Promote: ${getNumber(targetJid)} promovido por ${getNumber(sender)} en ${from.split('@')[0]}`
+
+            )
+
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            return await sock.sendMessage(
+
+                from,
+
+                {
+
+                    text:
+                        ui.success(
+
+                            '👑 NUEVO ADMINISTRADOR',
+
+                            [
+
+                                [
+                                    'Usuario',
+                                    `@${getNumber(targetJid)}`
+                                ],
+
+                                [
+                                    'Nuevo rango',
+                                    '👑 ADMINISTRADOR'
+                                ],
+
+                                [
+                                    'Promovido por',
+                                    `@${getNumber(sender)}`
+                                ]
+
+                            ],
+
+                            'El usuario recibió permisos de administrador correctamente.'
+
+                        ),
+
+                    mentions: [
+                        targetJid,
+                        sender
+                    ]
+
+                }
+
+            )
+
 
         } catch (err) {
-            logger.error(`Error promote: ${err.message}`)
+
+            logger.error(
+
+                `Error promote: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR AL PROMOVER',
+
+                                'No se pudo otorgar el rango de administrador.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
+
         }
 
     }

@@ -1,75 +1,518 @@
-const fs = require('fs')
-const path = require('path')
-const logger = require('../../src/utils/logger')
-const ui = require('../../src/utils/ui')
-const { getUserStats } = require('../../src/database/mysql')
+const logger =
+    require('../../src/utils/logger')
 
-const iconPath = path.join(__dirname, '../../assets/icons/msgstats.jpeg')
+const ui =
+    require('../../src/utils/ui')
 
-const formatTime = ms => {
-    const mins = Math.floor(ms / 60000)
-    const hours = Math.floor(mins / 60)
-    const days = Math.floor(hours / 24)
-    if (days > 0) return `${days}d`
-    if (hours > 0) return `${hours}h`
-    return `${mins}m`
+const {
+    getUserStats
+} = require('../../src/database/mysql')
+
+
+function formatTime(ms) {
+
+    const safeMs =
+        Number(ms)
+
+
+    if (
+        !Number.isFinite(safeMs) ||
+        safeMs < 0
+    ) {
+
+        return 'Desconocido'
+
+    }
+
+
+    const totalMinutes =
+        Math.floor(
+            safeMs / 60000
+        )
+
+
+    const days =
+        Math.floor(
+            totalMinutes / 1440
+        )
+
+
+    const hours =
+        Math.floor(
+            (totalMinutes % 1440) / 60
+        )
+
+
+    const minutes =
+        totalMinutes % 60
+
+
+    if (
+        days > 0
+    ) {
+
+        return (
+            hours > 0
+                ? `${days}d ${hours}h`
+                : `${days}d`
+        )
+
+    }
+
+
+    if (
+        hours > 0
+    ) {
+
+        return (
+            minutes > 0
+                ? `${hours}h ${minutes}m`
+                : `${hours}h`
+        )
+
+    }
+
+
+    return `${minutes}m`
+
 }
+
+
+function formatNumber(value) {
+
+    const number =
+        Number(value)
+
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return '0'
+
+    }
+
+
+    return number.toLocaleString(
+        'es-MX'
+    )
+
+}
+
+
+function getMentionedJids(msg) {
+
+    return (
+
+        msg.message
+            ?.extendedTextMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        msg.message
+            ?.imageMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        msg.message
+            ?.videoMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        []
+
+    )
+
+}
+
+
+function getDays(args = []) {
+
+    const numericArg =
+        args.find(
+            arg =>
+                /^\d+$/.test(
+                    String(arg)
+                )
+        )
+
+
+    if (!numericArg) {
+
+        return 7
+
+    }
+
+
+    return Number.parseInt(
+        numericArg,
+        10
+    )
+
+}
+
 
 module.exports = {
 
-    name: 'msgstats',
-    aliases: ['messages', 'actividad'],
-    description: 'Muestra estadísticas de mensajes',
-    category: 'general',
-    cooldown: 5,
+    name:
+        'msgstats',
 
-    async execute({ sock, from, msg, args }) {
+    aliases: [
+        'messages',
+        'actividad'
+    ],
+
+    description:
+        'Muestra estadísticas de mensajes',
+
+    category:
+        'general',
+
+    cooldown:
+        5,
+
+
+    async execute({
+
+        sock,
+        from,
+        msg,
+        args
+
+    }) {
 
         try {
 
-            if (!from.endsWith('@g.us'))
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('SOLO GRUPOS', 'Este comando solo funciona en grupos.')
-                })
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
 
-            const target =
-                msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] ||
+            if (
+                !from.endsWith(
+                    '@g.us'
+                )
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'SOLO GRUPOS',
+
+                                'Este comando solo funciona dentro de grupos.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
+            const mentions =
+                getMentionedJids(
+                    msg
+                )
+
+
+            const sender =
+
                 msg.key.participant ||
+
+                msg.participant ||
+
                 msg.key.remoteJid
 
-            const days = parseInt(args[0]) || 7
 
-            if (days < 1 || days > 365)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('DÍAS INVÁLIDOS', 'Usa un número entre 1 y 365.\nEjemplo: /msgstats 30')
-                })
+            const target =
 
-            const stats = await getUserStats(from, target, days)
+                mentions[0] ||
 
-            if (!stats.total)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('SIN DATOS', `Ese usuario no tiene estadísticas de los últimos ${days} días.`)
-                })
+                sender
 
-            const inactiveMs = stats.ultimo ? Date.now() - Number(stats.ultimo) : null
 
-            await sock.sendMessage(from, {
-                image: fs.readFileSync(iconPath),
-                caption: ui.info('ESTADÍSTICAS', [
-                    ['Usuario', `@${target.split('@')[0]}`],
-                    ['Mensajes', `💬 ${Number(stats.total).toLocaleString()}`],
-                    ['Posición', `🏆 #${stats.position}`],
-                    ['Período', `📅 ${days} días`],
-                    ['Último msg', inactiveMs ? `⏱ Hace ${formatTime(inactiveMs)}` : 'Sin datos']
-                ]),
-                mentions: [target]
-            })
+            if (!target) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               PERÍODO
+            ───────────────────────────── */
+
+            const days =
+                getDays(
+                    args
+                )
+
+
+            if (
+                !Number.isFinite(days) ||
+                days < 1 ||
+                days > 365
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'DÍAS INVÁLIDOS',
+
+                                'Usa un número entre 1 y 365.\n\nEjemplos:\n/msgstats 30\n/msgstats @usuario 30'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               CONSULTA
+            ───────────────────────────── */
+
+            const stats =
+                await getUserStats(
+
+                    from,
+
+                    target,
+
+                    days
+
+                )
+
+
+            const total =
+                Number(
+                    stats?.total || 0
+                )
+
+
+            if (
+                !stats ||
+                !Number.isFinite(total) ||
+                total <= 0
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'SIN DATOS',
+
+                                `@${target.split('@')[0]} no tiene estadísticas registradas de los últimos ${days} días.`
+
+                            ),
+
+                        mentions: [
+                            target
+                        ]
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ÚLTIMA ACTIVIDAD
+            ───────────────────────────── */
+
+            const lastMessage =
+                Number(
+                    stats.ultimo
+                )
+
+
+            const inactiveMs =
+
+                Number.isFinite(
+                    lastMessage
+                )
+
+                    ? Math.max(
+                        0,
+                        Date.now() -
+                        lastMessage
+                    )
+
+                    : null
+
+
+            const lastActivity =
+
+                inactiveMs !== null
+
+                    ? `⏱ Hace ${formatTime(inactiveMs)}`
+
+                    : 'Sin datos'
+
+
+            /* ─────────────────────────────
+               POSICIÓN
+            ───────────────────────────── */
+
+            const position =
+                Number(
+                    stats.position
+                )
+
+
+            const formattedPosition =
+
+                Number.isFinite(position) &&
+                position > 0
+
+                    ? `🏆 #${position}`
+
+                    : 'Sin ranking'
+
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            await sock.sendMessage(
+
+                from,
+
+                {
+
+                    text:
+                        ui.info(
+
+                            '📊 ESTADÍSTICAS',
+
+                            [
+
+                                [
+                                    'Usuario',
+                                    `@${target.split('@')[0]}`
+                                ],
+
+                                [
+                                    'Mensajes',
+                                    `💬 ${formatNumber(total)}`
+                                ],
+
+                                [
+                                    'Posición',
+                                    formattedPosition
+                                ],
+
+                                [
+                                    'Período',
+                                    `📅 ${days} días`
+                                ],
+
+                                [
+                                    'Último mensaje',
+                                    lastActivity
+                                ]
+
+                            ],
+
+                            'Actividad registrada dentro del grupo.'
+
+                        ),
+
+                    mentions: [
+                        target
+                    ]
+
+                }
+
+            )
+
+
+            logger.event(
+
+                `MsgStats: ${from.split('@')[0]} | ${target.split('@')[0]} | ${days} días | ${total} mensajes`
+
+            )
+
 
         } catch (err) {
-            logger.error(`MsgStats Error: ${err.message}`)
+
+            logger.error(
+
+                `MsgStats Error: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE ESTADÍSTICAS',
+
+                                'No se pudieron consultar las estadísticas.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
+
         }
 
     }

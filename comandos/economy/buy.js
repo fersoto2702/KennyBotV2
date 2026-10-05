@@ -1,81 +1,541 @@
-const fs = require('fs')
-const path = require('path')
-const logger = require('../../src/utils/logger')
-const ui = require('../../src/utils/ui')
+const fs =
+    require('fs')
 
-const economyPath = path.join(__dirname, '../../database/economy.json')
-const inventoryPath = path.join(__dirname, '../../database/inventory.json')
-const iconPath = path.join(__dirname, '../../assets/icons/buy.jpeg')
+const path =
+    require('path')
+
+const logger =
+    require('../../src/utils/logger')
+
+const ui =
+    require('../../src/utils/ui')
+
+
+const economyPath =
+    path.join(
+        __dirname,
+        '../../database/economy.json'
+    )
+
+const inventoryPath =
+    path.join(
+        __dirname,
+        '../../database/inventory.json'
+    )
+
 
 const items = {
-    1: { name: '🛡️ Chaleco', price: 800 },
-    2: { name: '⚔️ Espada', price: 1000 },
-    3: { name: '💎 VIP', price: 1500 },
-    4: { name: '🎁 Caja misteriosa', price: 2000 },
-    5: { name: '🚀 XP Boost', price: 2500 }
+
+    1: {
+        name:
+            '🛡️ Chaleco',
+        price:
+            800
+    },
+
+    2: {
+        name:
+            '⚔️ Espada',
+        price:
+            1000
+    },
+
+    3: {
+        name:
+            '💎 VIP',
+        price:
+            1500
+    },
+
+    4: {
+        name:
+            '🎁 Caja misteriosa',
+        price:
+            2000
+    },
+
+    5: {
+        name:
+            '🚀 XP Boost',
+        price:
+            2500
+    }
+
 }
+
+
+function ensureJsonFile(
+    filePath
+) {
+
+    const directory =
+        path.dirname(
+            filePath
+        )
+
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+
+    if (
+        !fs.existsSync(
+            filePath
+        )
+    ) {
+
+        fs.writeFileSync(
+            filePath,
+            JSON.stringify(
+                {},
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function readJson(
+    filePath
+) {
+
+    ensureJsonFile(
+        filePath
+    )
+
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    filePath,
+                    'utf8'
+                )
+            )
+
+
+        return (
+            data &&
+            typeof data === 'object' &&
+            !Array.isArray(data)
+        )
+            ? data
+            : {}
+
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo ${path.basename(filePath)}: ${err.message}`
+        )
+
+        return {}
+
+    }
+
+}
+
+
+function saveJson(
+    filePath,
+    data
+) {
+
+    fs.writeFileSync(
+        filePath,
+        JSON.stringify(
+            data,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+
+function formatMoney(
+    value
+) {
+
+    return Number(
+        value || 0
+    )
+        .toLocaleString(
+            'es-MX'
+        )
+
+}
+
 
 module.exports = {
 
-    name: 'buy',
-    aliases: ['comprar'],
-    description: 'Compra un item de la tienda',
-    category: 'economia',
-    cooldown: 5,
+    name:
+        'buy',
 
-    async execute({ sock, from, msg, args }) {
+    aliases: [
+        'comprar'
+    ],
+
+    description:
+        'Compra un item de la tienda',
+
+    category:
+        'economia',
+
+    cooldown:
+        5,
+
+
+    async execute({
+
+        sock,
+        from,
+        msg,
+        args
+
+    }) {
 
         try {
 
-            const itemId = parseInt(args[0])
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
 
-            if (!items[itemId])
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('ITEM INVÁLIDO', 'Usa /shop para ver los items disponibles.')
-                })
+            const sender =
 
-            const item = items[itemId]
-            const sender = msg.key.participant || msg.key.remoteJid
+                msg.key.participant ||
 
-            for (const file of [economyPath, inventoryPath])
-                if (!fs.existsSync(file))
-                    fs.writeFileSync(file, JSON.stringify({}, null, 2))
+                msg.participant ||
 
-            let economy = {}
-            let inventory = {}
-            try { economy = JSON.parse(fs.readFileSync(economyPath)) } catch { economy = {} }
-            try { inventory = JSON.parse(fs.readFileSync(inventoryPath)) } catch { inventory = {} }
+                msg.key.remoteJid
 
-            if (!economy[sender]) economy[sender] = { coins: 0, bank: 0 }
-            if (!inventory[sender]) inventory[sender] = []
-            if (typeof economy[sender].coins !== 'number') economy[sender].coins = 0
 
-            if (economy[sender].coins < item.price)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('FONDOS INSUFICIENTES', `Necesitas 🪙 ${item.price.toLocaleString()} monedas.`)
-                })
+            if (!sender) {
 
-            economy[sender].coins -= item.price
-            inventory[sender].push(item.name)
+                return await sock.sendMessage(
 
-            fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2))
-            fs.writeFileSync(inventoryPath, JSON.stringify(inventory, null, 2))
+                    from,
 
-            logger.event(`Compra: ${sender.split('@')[0]} → ${item.name}`)
+                    {
 
-            await sock.sendMessage(from, {
-                image: fs.readFileSync(iconPath),
-                caption: ui.success('COMPRA REALIZADA', [
-                    ['Item', item.name],
-                    ['Costo', `🪙 ${item.price.toLocaleString()}`],
-                    ['Wallet', `🪙 ${economy[sender].coins.toLocaleString()}`]
-                ])
-            })
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar tu cuenta.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ITEM
+            ───────────────────────────── */
+
+            const itemId =
+                Number.parseInt(
+                    args?.[0],
+                    10
+                )
+
+
+            const item =
+                items[itemId]
+
+
+            if (!item) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'ITEM INVÁLIDO',
+
+                                'Usa /shop para consultar los artículos disponibles.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               CARGAR DATOS
+            ───────────────────────────── */
+
+            const economy =
+                readJson(
+                    economyPath
+                )
+
+
+            const inventory =
+                readJson(
+                    inventoryPath
+                )
+
+
+            if (
+                !economy[sender] ||
+                typeof economy[sender] !== 'object'
+            ) {
+
+                economy[sender] = {
+                    coins: 0,
+                    bank: 0
+                }
+
+            }
+
+
+            if (
+                !Array.isArray(
+                    inventory[sender]
+                )
+            ) {
+
+                inventory[sender] = []
+
+            }
+
+
+            if (
+                !Number.isFinite(
+                    Number(
+                        economy[sender].coins
+                    )
+                )
+            ) {
+
+                economy[sender].coins =
+                    0
+
+            }
+
+
+            if (
+                !Number.isFinite(
+                    Number(
+                        economy[sender].bank
+                    )
+                )
+            ) {
+
+                economy[sender].bank =
+                    0
+
+            }
+
+
+            economy[sender].coins =
+                Number(
+                    economy[sender].coins
+                )
+
+
+            economy[sender].bank =
+                Number(
+                    economy[sender].bank
+                )
+
+
+            const wallet =
+                economy[sender].coins
+
+
+            /* ─────────────────────────────
+               FONDOS
+            ───────────────────────────── */
+
+            if (
+                wallet <
+                item.price
+            ) {
+
+                const missing =
+                    item.price -
+                    wallet
+
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'FONDOS INSUFICIENTES',
+
+                                `Necesitas 🪙 ${formatMoney(item.price)} monedas.\nTe faltan 🪙 ${formatMoney(missing)}.`
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               REALIZAR COMPRA
+            ───────────────────────────── */
+
+            economy[sender].coins -=
+                item.price
+
+
+            inventory[sender].push(
+                item.name
+            )
+
+
+            saveJson(
+                economyPath,
+                economy
+            )
+
+
+            saveJson(
+                inventoryPath,
+                inventory
+            )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Compra: ${sender.split('@')[0]} → ${item.name} | ${item.price} monedas`
+
+            )
+
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            await sock.sendMessage(
+
+                from,
+
+                {
+
+                    text:
+                        ui.success(
+
+                            '🛒 COMPRA REALIZADA',
+
+                            [
+
+                                [
+                                    'Usuario',
+                                    `@${sender.split('@')[0]}`
+                                ],
+
+                                [
+                                    'Item',
+                                    item.name
+                                ],
+
+                                [
+                                    'Costo',
+                                    `🪙 ${formatMoney(item.price)}`
+                                ],
+
+                                [
+                                    'Wallet',
+                                    `🪙 ${formatMoney(economy[sender].coins)}`
+                                ],
+
+                                [
+                                    'Inventario',
+                                    `${inventory[sender].length} item(s)`
+                                ]
+
+                            ],
+
+                            'El artículo fue agregado correctamente a tu inventario.'
+
+                        ),
+
+                    mentions: [
+                        sender
+                    ]
+
+                }
+
+            )
+
 
         } catch (err) {
-            logger.error(`Error buy: ${err.message}`)
+
+            logger.error(
+
+                `Error buy: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE COMPRA',
+
+                                'No se pudo completar la compra.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
+
         }
 
     }

@@ -1,68 +1,365 @@
-const fs = require('fs')
-const path = require('path')
-const logger = require('../../src/utils/logger')
-const ui = require('../../src/utils/ui')
-const { getTopMessages } = require('../../src/database/mysql')
+const logger =
+    require('../../src/utils/logger')
 
-const iconPath = path.join(__dirname, '../../assets/icons/topmessages.jpeg')
+const ui =
+    require('../../src/utils/ui')
 
-const MEDALS = ['🥇', '🥈', '🥉']
+const {
+    getTopMessages
+} = require('../../src/database/mysql')
+
+
+const MEDALS = [
+    '🥇',
+    '🥈',
+    '🥉'
+]
+
+
+function formatNumber(value) {
+
+    const number =
+        Number(value)
+
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return '0'
+
+    }
+
+
+    return number.toLocaleString(
+        'es-MX'
+    )
+
+}
+
 
 module.exports = {
 
-    name: 'topmessages',
-    aliases: ['topmsg', 'activostop'],
-    description: 'Muestra los usuarios más activos',
-    category: 'general',
-    cooldown: 10,
+    name:
+        'topmessages',
 
-    async execute({ sock, from, args }) {
+    aliases: [
+        'topmsg',
+        'activostop'
+    ],
+
+    description:
+        'Muestra los usuarios más activos',
+
+    category:
+        'general',
+
+    cooldown:
+        10,
+
+
+    async execute({
+
+        sock,
+        from,
+        args
+
+    }) {
 
         try {
 
-            if (!from.endsWith('@g.us'))
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('SOLO GRUPOS', 'Este comando solo funciona en grupos.')
-                })
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
 
-            const days = parseInt(args[0]) || 7
+            if (
+                !from.endsWith(
+                    '@g.us'
+                )
+            ) {
 
-            if (days < 1 || days > 365)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('DÍAS INVÁLIDOS', 'Usa un número entre 1 y 365.\nEjemplo: /topmessages 30')
-                })
+                return await sock.sendMessage(
 
-            const users = await getTopMessages(from, days, 10)
+                    from,
 
-            if (!users || users.length === 0)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('SIN DATOS', `No hay estadísticas de los últimos ${days} días.`)
-                })
+                    {
 
-            const mentions = users.map(u => u.usuario)
+                        text:
+                            ui.error(
 
-            const rows = users.map((u, i) => {
-                const medal = MEDALS[i] || `${i + 1}.`
-                return `${medal} @${u.usuario.split('@')[0]}\n│ 💬 ${Number(u.total).toLocaleString()} mensajes`
-            }).join('\n' + ui.divider + '\n')
+                                'SOLO GRUPOS',
 
-            await sock.sendMessage(from, {
-                image: fs.readFileSync(iconPath),
-                caption: [
-                    `⟨ USUARIOS MÁS ACTIVOS ⟩`,
-                    `📅 Últimos ${days} días`,
-                    ui.divider,
-                    rows,
-                    ui.divider
-                ].join('\n'),
-                mentions
-            })
+                                'Este comando solo funciona dentro de grupos.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               PERÍODO
+            ───────────────────────────── */
+
+            const days =
+                Number.parseInt(
+                    args?.[0] || '7',
+                    10
+                )
+
+
+            if (
+                !Number.isFinite(days) ||
+                days < 1 ||
+                days > 365
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'DÍAS INVÁLIDOS',
+
+                                'Usa un número entre 1 y 365.\n\nEjemplo: /topmessages 30'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               CONSULTA
+            ───────────────────────────── */
+
+            const users =
+                await getTopMessages(
+                    from,
+                    days,
+                    10
+                )
+
+
+            if (
+                !Array.isArray(users) ||
+                users.length === 0
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'SIN DATOS',
+
+                                `No hay estadísticas disponibles de los últimos ${days} días.`
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               USUARIOS VÁLIDOS
+            ───────────────────────────── */
+
+            const validUsers =
+                users.filter(
+
+                    user =>
+                        user &&
+                        typeof user.usuario === 'string'
+
+                )
+
+
+            if (
+                validUsers.length === 0
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'SIN DATOS',
+
+                                'No se encontraron usuarios válidos en las estadísticas.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               MENCIONES
+            ───────────────────────────── */
+
+            const mentions =
+                validUsers.map(
+
+                    user =>
+                        user.usuario
+
+                )
+
+
+            /* ─────────────────────────────
+               RANKING
+            ───────────────────────────── */
+
+            const rows =
+                validUsers
+                    .map(
+
+                        (user, index) => {
+
+                            const medal =
+                                MEDALS[index] ||
+                                `${index + 1}.`
+
+
+                            const number =
+                                user.usuario
+                                    .split('@')[0]
+
+
+                            const total =
+                                formatNumber(
+                                    user.total
+                                )
+
+
+                            return [
+
+                                `${medal} *@${number}*`,
+
+                                `   💬 Mensajes: ${total}`
+
+                            ].join('\n')
+
+                        }
+
+                    )
+                    .join(
+                        '\n\n'
+                    )
+
+
+            /* ─────────────────────────────
+               MENSAJE
+            ───────────────────────────── */
+
+            const text = [
+
+                'ㅤ۟∩　ׅ　🏆　ׅ　*USUARIOS MÁS ACTIVOS*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 📅  ׄ ⬭ *Período:* últimos ${days} días`,
+
+                `𖣣ֶㅤ֯⌗ 👥  ׄ ⬭ *Usuarios:* ${validUsers.length}`,
+
+                '',
+
+                rows,
+
+                '',
+
+                '╰─ 𓂃 Ranking basado en mensajes enviados.'
+
+            ].join('\n')
+
+
+            /* ─────────────────────────────
+               ENVIAR
+            ───────────────────────────── */
+
+            await sock.sendMessage(
+
+                from,
+
+                {
+
+                    text,
+
+                    mentions
+
+                }
+
+            )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `TopMessages: ${from.split('@')[0]} | ${validUsers.length} usuarios | ${days} días`
+
+            )
+
 
         } catch (err) {
-            logger.error(`TopMessages Error: ${err.message}`)
+
+            logger.error(
+
+                `TopMessages Error: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE RANKING',
+
+                                'No se pudo consultar el ranking de mensajes.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
+
         }
 
     }

@@ -1,96 +1,731 @@
-const fs = require('fs')
-const path = require('path')
-const logger = require('../../src/utils/logger')
-const ui = require('../../src/utils/ui')
-const { jidNormalizedUser } = require('@whiskeysockets/baileys')
+const logger =
+    require('../../src/utils/logger')
 
-const iconPath = path.join(__dirname, '../../assets/icons/demote.jpeg')
+const ui =
+    require('../../src/utils/ui')
+
+const {
+    jidNormalizedUser
+} = require('@whiskeysockets/baileys')
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    try {
+
+        return jidNormalizedUser(
+            jid
+        )
+
+    } catch {
+
+        return jid
+
+    }
+
+}
+
+
+function isAdministrator(
+    participant
+) {
+
+    return (
+
+        participant?.admin === 'admin' ||
+
+        participant?.admin === 'superadmin'
+
+    )
+
+}
+
+
+function findParticipant(
+    participants,
+    jid
+) {
+
+    const normalized =
+        normalizeJid(
+            jid
+        )
+
+
+    return participants.find(
+
+        participant => {
+
+            const participantJid =
+                normalizeJid(
+                    participant?.phoneNumber ||
+                    participant?.id
+                )
+
+
+            return (
+                participantJid &&
+                participantJid === normalized
+            )
+
+        }
+
+    )
+
+}
+
+
+function getMentionedJids(
+    msg
+) {
+
+    return (
+
+        msg.message
+            ?.extendedTextMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        msg.message
+            ?.imageMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        msg.message
+            ?.videoMessage
+            ?.contextInfo
+            ?.mentionedJid
+
+        ||
+
+        []
+
+    )
+
+}
+
 
 module.exports = {
 
-    name: 'demote',
-    aliases: ['degradar', 'unadmin'],
-    description: 'Quita el rol de administrador a un usuario',
-    category: 'grupos',
-    adminOnly: true,
-    groupOnly: true,
+    name:
+        'demote',
 
-    async execute({ sock, from, msg }) {
+    aliases: [
+        'degradar',
+        'unadmin'
+    ],
+
+    description:
+        'Quita el rol de administrador a un usuario',
+
+    category:
+        'grupos',
+
+    adminOnly:
+        true,
+
+    groupOnly:
+        true,
+
+
+    async execute({
+
+        sock,
+        from,
+        msg
+
+    }) {
 
         try {
 
-            const metadata = await sock.groupMetadata(from)
-            const participants = metadata.participants
-            const sender = msg.key.participant || msg.participant
-            const senderData = participants.find(p => p.id === sender)
-            const isAdmin = senderData?.admin === 'admin' || senderData?.admin === 'superadmin'
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
 
-            if (!isAdmin)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('ACCESO DENEGADO', 'Solo administradores pueden usar este comando.')
-                })
+            if (
+                !from.endsWith(
+                    '@g.us'
+                )
+            ) {
 
-            const botJid = jidNormalizedUser(sock.user.id)
-            const botData = participants.find(p => jidNormalizedUser(p.id) === botJid)
-            const botAdmin = botData?.admin === 'admin' || botData?.admin === 'superadmin'
+                return await sock.sendMessage(
 
-            if (!botAdmin)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('BOT SIN PERMISOS', 'El bot necesita ser administrador.')
-                })
+                    from,
 
-            const target = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0]
+                    {
 
-            if (!target)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('USUARIO REQUERIDO', 'Uso: /demote @usuario')
-                })
+                        text:
+                            ui.error(
 
-            if (target === sender)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('ACCIÓN INVÁLIDA', 'No puedes degradarte a ti mismo.')
-                })
+                                'SOLO GRUPOS',
 
-            const targetData = participants.find(p => p.id === target)
+                                'Este comando solo funciona dentro de grupos.'
 
-            if (!targetData)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('USUARIO NO ENCONTRADO', 'Ese usuario no está en el grupo.')
-                })
+                            )
 
-            const targetAdmin = targetData?.admin === 'admin' || targetData?.admin === 'superadmin'
+                    }
 
-            if (!targetAdmin)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.warn('SIN RANGO', 'Ese usuario no es administrador.')
-                })
+                )
 
-            if (targetData?.admin === 'superadmin')
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('ACCIÓN INVÁLIDA', 'No puedes quitarle rango al creador del grupo.')
-                })
+            }
 
-            await sock.groupParticipantsUpdate(from, [target], 'demote')
-            logger.event(`Demote: ${target.split('@')[0]} degradado en ${from.split('@')[0]}`)
 
-            await sock.sendMessage(from, {
-                image: fs.readFileSync(iconPath),
-                caption: ui.success('USUARIO DEGRADADO', [
-                    ['Usuario', `@${target.split('@')[0]}`],
-                    ['Nuevo rango', '○ Miembro']
-                ]),
-                mentions: [target]
-            })
+            /* ─────────────────────────────
+               METADATA
+            ───────────────────────────── */
+
+            const metadata =
+                await sock.groupMetadata(
+                    from
+                )
+
+
+            const participants =
+                Array.isArray(
+                    metadata?.participants
+                )
+                    ? metadata.participants
+                    : []
+
+
+            if (
+                participants.length === 0
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE GRUPO',
+
+                                'No se pudieron obtener los participantes del grupo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               REMITENTE
+            ───────────────────────────── */
+
+            const sender =
+
+                msg.key.participant ||
+
+                msg.participant ||
+
+                msg.key.remoteJid
+
+
+            if (!sender) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario que ejecutó el comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const normalizedSender =
+                normalizeJid(
+                    sender
+                )
+
+
+            /* ─────────────────────────────
+               VALIDAR ADMIN DEL USUARIO
+            ───────────────────────────── */
+
+            const senderData =
+                findParticipant(
+
+                    participants,
+
+                    normalizedSender
+
+                )
+
+
+            if (
+                !isAdministrator(
+                    senderData
+                )
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ACCESO DENEGADO',
+
+                                'Solo los administradores pueden usar este comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               VALIDAR ADMIN DEL BOT
+            ───────────────────────────── */
+
+            const botJid =
+                normalizeJid(
+                    sock.user?.id
+                )
+
+
+            if (!botJid) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DEL BOT',
+
+                                'No se pudo identificar la cuenta del bot.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const botData =
+                findParticipant(
+
+                    participants,
+
+                    botJid
+
+                )
+
+
+            if (
+                !isAdministrator(
+                    botData
+                )
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'BOT SIN PERMISOS',
+
+                                'KennyBot necesita ser administrador para degradar usuarios.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               OBJETIVO
+            ───────────────────────────── */
+
+            const mentions =
+                getMentionedJids(
+                    msg
+                )
+
+
+            const target =
+                mentions[0]
+
+
+            if (!target) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'USUARIO REQUERIDO',
+
+                                'Menciona al administrador que quieres degradar.\n\nUso: /demote @usuario'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const normalizedTarget =
+                normalizeJid(
+                    target
+                )
+
+
+            /* ─────────────────────────────
+               VALIDACIONES
+            ───────────────────────────── */
+
+            if (
+                normalizedTarget ===
+                normalizedSender
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'ACCIÓN INVÁLIDA',
+
+                                'No puedes degradarte a ti mismo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            if (
+                normalizedTarget ===
+                botJid
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'ACCIÓN INVÁLIDA',
+
+                                'No puedes quitarle el rango de administrador al bot usando este comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const targetData =
+                findParticipant(
+
+                    participants,
+
+                    normalizedTarget
+
+                )
+
+
+            if (!targetData) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'USUARIO NO ENCONTRADO',
+
+                                'Ese usuario no forma parte del grupo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            if (
+                !isAdministrator(
+                    targetData
+                )
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'SIN RANGO',
+
+                                `@${normalizedTarget.split('@')[0]} no es administrador.`
+
+                            ),
+
+                        mentions: [
+                            normalizedTarget
+                        ]
+
+                    }
+
+                )
+
+            }
+
+
+            if (
+                targetData.admin === 'superadmin'
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ACCIÓN INVÁLIDA',
+
+                                'No puedes quitarle el rango al creador o superadministrador del grupo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               DEGRADAR
+            ───────────────────────────── */
+
+            const response =
+                await sock.groupParticipantsUpdate(
+
+                    from,
+
+                    [
+                        normalizedTarget
+                    ],
+
+                    'demote'
+
+                )
+
+
+            const result =
+                Array.isArray(response)
+                    ? response[0]
+                    : null
+
+
+            const status =
+                String(
+                    result?.status || ''
+                )
+
+
+            if (
+                status &&
+                status !== '200'
+            ) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'NO SE PUDO DEGRADAR',
+
+                                `WhatsApp respondió con el código ${status}.`
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Demote: ${normalizedTarget.split('@')[0]} degradado por ${normalizedSender.split('@')[0]} en ${from.split('@')[0]}`
+
+            )
+
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            return await sock.sendMessage(
+
+                from,
+
+                {
+
+                    text:
+                        ui.success(
+
+                            '👤 USUARIO DEGRADADO',
+
+                            [
+
+                                [
+                                    'Usuario',
+                                    `@${normalizedTarget.split('@')[0]}`
+                                ],
+
+                                [
+                                    'Nuevo rango',
+                                    '○ MIEMBRO'
+                                ],
+
+                                [
+                                    'Acción realizada por',
+                                    `@${normalizedSender.split('@')[0]}`
+                                ]
+
+                            ],
+
+                            'El rango de administrador fue retirado correctamente.'
+
+                        ),
+
+                    mentions: [
+                        normalizedTarget,
+                        normalizedSender
+                    ]
+
+                }
+
+            )
+
 
         } catch (err) {
-            logger.error(`Error demote: ${err.message}`)
+
+            logger.error(
+
+                `Error demote: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR AL DEGRADAR',
+
+                                'No se pudo quitar el rango de administrador.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
+
         }
 
     }

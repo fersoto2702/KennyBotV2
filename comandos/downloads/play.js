@@ -31,12 +31,49 @@ const yts =
     require('yt-search')
 
 
-const ytDlpPath =
-    path.join(
-        __dirname,
-        '../../node_modules/youtube-dl-exec/bin/yt-dlp.exe'
-    )
+/* ─────────────────────────────
+   CONFIGURACIÓN
+───────────────────────────── */
 
+const MAX_AUDIO_MB =
+    25
+
+
+function getYtDlpPath() {
+
+    /*
+        WINDOWS:
+        usa el ejecutable incluido por
+        youtube-dl-exec.
+
+        LINUX / TERMUX:
+        intenta usar yt-dlp instalado
+        globalmente.
+    */
+
+    if (
+        process.platform === 'win32'
+    ) {
+
+        return path.join(
+
+            __dirname,
+
+            '../../node_modules/youtube-dl-exec/bin/yt-dlp.exe'
+
+        )
+
+    }
+
+
+    return 'yt-dlp'
+
+}
+
+
+/* ─────────────────────────────
+   MENSAJES
+───────────────────────────── */
 
 async function sendPlayMessage(
     sock,
@@ -45,14 +82,59 @@ async function sendPlayMessage(
 ) {
 
     return await sock.sendMessage(
+
         from,
+
         {
             text
         }
+
     )
 
 }
 
+
+/* ─────────────────────────────
+   BORRAR ARCHIVO TEMPORAL
+───────────────────────────── */
+
+function removeTemp(filePath) {
+
+    try {
+
+        if (
+            filePath &&
+            fs.existsSync(filePath)
+        ) {
+
+            fs.unlinkSync(
+                filePath
+            )
+
+            logger.info(
+
+                `Temp eliminado: ${path.basename(filePath)}`
+
+            )
+
+        }
+
+    } catch (err) {
+
+        logger.warn(
+
+            `No se pudo eliminar temp: ${err.message}`
+
+        )
+
+    }
+
+}
+
+
+/* ─────────────────────────────
+   DESCARGAR CON YT-DLP
+───────────────────────────── */
 
 function downloadWithYtDlp(
     url,
@@ -62,29 +144,46 @@ function downloadWithYtDlp(
     return new Promise(
         (resolve, reject) => {
 
+            const ytDlpPath =
+                getYtDlpPath()
+
+
+            /*
+                En Windows verificamos que
+                realmente exista yt-dlp.exe.
+            */
+
             if (
+                process.platform === 'win32' &&
                 !fs.existsSync(
                     ytDlpPath
                 )
             ) {
 
                 return reject(
+
                     new Error(
+
                         `No se encontró yt-dlp en: ${ytDlpPath}`
+
                     )
+
                 )
 
             }
 
 
-            const args = [
+            const outputFile =
+                `${output}.mp3`
 
-                '--js-runtimes',
-                'deno',
+
+            const args = [
 
                 '--no-check-certificates',
 
                 '--no-playlist',
+
+                '--no-warnings',
 
                 '-f',
                 'bestaudio/best',
@@ -98,71 +197,118 @@ function downloadWithYtDlp(
                 '0',
 
                 '-o',
-                `${output}.mp3`,
+                outputFile,
 
                 url
 
             ]
 
 
+            /*
+                Deno solo se especifica si está
+                disponible en tu instalación.
+
+                Si ya te funcionaba correctamente,
+                puedes volver a agregar:
+
+                '--js-runtimes',
+                'deno',
+            */
+
+
             logger.info(
+
                 `yt-dlp iniciado: ${url}`
+
             )
 
 
-            const process =
+            const child =
                 spawn(
+
                     ytDlpPath,
+
                     args,
+
                     {
-                        windowsHide: true
+
+                        windowsHide:
+                            true
+
                     }
+
                 )
 
 
-            let stderr = ''
+            let stderr =
+                ''
 
-            let stdout = ''
+            let stdout =
+                ''
 
 
-            process.stdout.on(
+            child.stdout.on(
+
                 'data',
+
                 data => {
 
                     const text =
-                        data.toString()
+                        data
+                            .toString()
+                            .trim()
+
 
                     stdout +=
                         text
 
-                    logger.info(
-                        text.trim()
-                    )
+
+                    if (text) {
+
+                        logger.info(
+                            text
+                        )
+
+                    }
 
                 }
+
             )
 
 
-            process.stderr.on(
+            child.stderr.on(
+
                 'data',
+
                 data => {
 
                     const text =
-                        data.toString()
+                        data
+                            .toString()
+                            .trim()
+
 
                     stderr +=
                         text
 
-                    logger.info(
-                        text.trim()
-                    )
+
+                    if (text) {
+
+                        logger.info(
+                            text
+                        )
+
+                    }
 
                 }
+
             )
 
 
-            process.on(
+            child.on(
+
                 'error',
+
                 err => {
 
                     reject(
@@ -170,11 +316,14 @@ function downloadWithYtDlp(
                     )
 
                 }
+
             )
 
 
-            process.on(
+            child.on(
+
                 'close',
+
                 code => {
 
                     if (
@@ -182,10 +331,15 @@ function downloadWithYtDlp(
                     ) {
 
                         return reject(
+
                             new Error(
+
                                 stderr ||
+
                                 `yt-dlp terminó con código ${code}`
+
                             )
+
                         )
 
                     }
@@ -194,12 +348,13 @@ function downloadWithYtDlp(
                     resolve({
 
                         stdout,
-
-                        stderr
+                        stderr,
+                        outputFile
 
                     })
 
                 }
+
             )
 
         }
@@ -207,6 +362,36 @@ function downloadWithYtDlp(
 
 }
 
+
+/* ─────────────────────────────
+   FORMATEAR VISTAS
+───────────────────────────── */
+
+function formatViews(value) {
+
+    const number =
+        Number(value || 0)
+
+
+    if (
+        Number.isNaN(number)
+    ) {
+
+        return '0'
+
+    }
+
+
+    return number.toLocaleString(
+        'es-MX'
+    )
+
+}
+
+
+/* ─────────────────────────────
+   COMANDO
+───────────────────────────── */
 
 module.exports = {
 
@@ -223,6 +408,10 @@ module.exports = {
     category:
         'descargas',
 
+    cooldown:
+        10,
+
+
     async execute({
 
         sock,
@@ -232,29 +421,47 @@ module.exports = {
 
     }) {
 
+        let finalPath =
+            null
+
+
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
+
                 msg.key.participant ||
+
                 msg.key.remoteJid
 
 
+            /* ─────────────────────────────
+               BÚSQUEDA
+            ───────────────────────────── */
+
             const query =
-                args.join(' ')
+                args
+                    .join(' ')
+                    .trim()
 
 
-            if (
-                !query
-            ) {
+            if (!query) {
 
                 return await sendPlayMessage(
 
                     sock,
+
                     from,
 
                     ui.warn(
+
                         'BÚSQUEDA REQUERIDA',
-                        'Uso: /play canción'
+
+                        'Escribe el nombre de una canción.\n\nUso: /play canción'
+
                     )
 
                 )
@@ -265,22 +472,37 @@ module.exports = {
             await sendPlayMessage(
 
                 sock,
+
                 from,
 
                 ui.info(
-                    'BUSCANDO',
+
+                    '🎵 MUSIC SEARCH',
+
                     [
 
                         [
                             'Canción',
                             query
+                        ],
+
+                        [
+                            'Estado',
+                            'BUSCANDO'
                         ]
 
-                    ]
+                    ],
+
+                    'Buscando la mejor coincidencia en YouTube...'
+
                 )
 
             )
 
+
+            /* ─────────────────────────────
+               YOUTUBE SEARCH
+            ───────────────────────────── */
 
             const search =
                 await yts(
@@ -288,47 +510,66 @@ module.exports = {
                 )
 
 
+            const videos =
+                Array.isArray(
+                    search?.videos
+                )
+                    ? search.videos
+                    : []
+
+
             const video =
 
-                search.videos.find(
-                    v =>
-                        v.author?.name
+                videos.find(
+                    item =>
+                        item.author
+                            ?.name
                             ?.toLowerCase()
-                            .includes('topic')
+                            .includes(
+                                'topic'
+                            )
                 )
 
                 ||
 
-                search.videos.find(
-                    v =>
-                        v.title
+                videos.find(
+                    item =>
+                        item.title
                             ?.toLowerCase()
-                            .includes('lyrics')
+                            .includes(
+                                'lyrics'
+                            )
                 )
 
                 ||
 
-                search.videos[0]
+                videos[0]
 
 
-            if (
-                !video
-            ) {
+            if (!video) {
 
                 return await sendPlayMessage(
 
                     sock,
+
                     from,
 
                     ui.error(
+
                         'SIN RESULTADOS',
-                        'No se encontró ninguna canción.'
+
+                        'No se encontró ninguna canción relacionada.'
+
                     )
 
                 )
 
             }
 
+
+            /* ─────────────────────────────
+               COLA
+            ───────────────────────────── */
 
             const position =
                 getQueueLength() + 1
@@ -337,20 +578,24 @@ module.exports = {
             await sendPlayMessage(
 
                 sock,
+
                 from,
 
                 ui.info(
-                    'COLA DE DESCARGA',
+
+                    '🎧 COLA DE DESCARGA',
+
                     [
 
                         [
-                            'Canción',
+                            'Título',
                             video.title
                         ],
 
                         [
                             'Duración',
-                            video.timestamp
+                            video.timestamp ||
+                            'Desconocida'
                         ],
 
                         [
@@ -358,48 +603,68 @@ module.exports = {
                             `#${position}`
                         ]
 
-                    ]
+                    ],
+
+                    'La canción fue añadida a la cola.'
+
                 )
 
             )
 
+
+            /* ─────────────────────────────
+               TEMP
+            ───────────────────────────── */
 
             const filePath =
                 generateTempFile(
+
                     'temp',
+
                     'audio'
+
                 )
 
 
-            await addToQueue(
+            /* ─────────────────────────────
+               DESCARGAR
+            ───────────────────────────── */
 
-                async () => {
+            const downloadResult =
+                await addToQueue(
 
-                    await downloadWithYtDlp(
-                        video.url,
-                        filePath
-                    )
+                    async () => {
 
-                }
+                        return await downloadWithYtDlp(
 
-            )
+                            video.url,
+
+                            filePath
+
+                        )
+
+                    }
+
+                )
 
 
-            const tempDirectory =
+            /*
+                Preferimos la ruta devuelta
+                directamente por yt-dlp.
+            */
+
+            finalPath =
+                downloadResult?.outputFile ||
+
+
                 path.join(
+
                     __dirname,
-                    '../../temp'
-                )
 
+                    '../../temp',
 
-            const downloaded =
-                `${path.basename(filePath)}.mp3`
+                    `${path.basename(filePath)}.mp3`
 
-
-            const finalPath =
-                path.join(
-                    tempDirectory,
-                    downloaded
                 )
 
 
@@ -410,11 +675,17 @@ module.exports = {
             ) {
 
                 throw new Error(
+
                     'Archivo MP3 descargado no encontrado'
+
                 )
 
             }
 
+
+            /* ─────────────────────────────
+               PESO
+            ───────────────────────────── */
 
             const stats =
                 fs.statSync(
@@ -423,33 +694,52 @@ module.exports = {
 
 
             if (
-
                 isMediaTooLarge(
-                    stats.size,
-                    25
-                )
 
+                    stats.size,
+
+                    MAX_AUDIO_MB
+
+                )
             ) {
 
-                fs.unlinkSync(
+                const size =
+                    getFileSizeMB(
+                        stats.size
+                    )
+
+
+                removeTemp(
                     finalPath
                 )
+
+
+                finalPath =
+                    null
 
 
                 return await sendPlayMessage(
 
                     sock,
+
                     from,
 
                     ui.error(
+
                         'ARCHIVO MUY PESADO',
-                        `Peso: ${getFileSizeMB(stats.size)} MB`
+
+                        `La canción pesa ${size} MB y supera el límite de ${MAX_AUDIO_MB} MB.`
+
                     )
 
                 )
 
             }
 
+
+            /* ─────────────────────────────
+               ENVIAR AUDIO
+            ───────────────────────────── */
 
             await sock.sendMessage(
 
@@ -475,13 +765,20 @@ module.exports = {
             )
 
 
+            /* ─────────────────────────────
+               RESULTADO
+            ───────────────────────────── */
+
             await sendPlayMessage(
 
                 sock,
+
                 from,
 
                 ui.success(
-                    'DESCARGA COMPLETADA',
+
+                    '🎵 MUSIC DOWNLOAD',
+
                     [
 
                         [
@@ -490,15 +787,22 @@ module.exports = {
                         ],
 
                         [
+                            'Autor',
+                            video.author?.name ||
+                            'Desconocido'
+                        ],
+
+                        [
                             'Duración',
-                            video.timestamp
+                            video.timestamp ||
+                            'Desconocida'
                         ],
 
                         [
                             'Vistas',
-                            Number(
-                                video.views || 0
-                            ).toLocaleString()
+                            formatViews(
+                                video.views
+                            )
                         ],
 
                         [
@@ -511,41 +815,37 @@ module.exports = {
                             'YouTube'
                         ]
 
-                    ]
+                    ],
+
+                    'Canción descargada correctamente.'
+
                 )
 
             )
+
+
+            logger.event(
+
+                `Play: "${video.title}" | ${sender?.split('@')[0] || 'desconocido'}`
+
+            )
+
+
+            /* ─────────────────────────────
+               LIMPIEZA
+            ───────────────────────────── */
+
+            const pathToDelete =
+                finalPath
 
 
             setTimeout(
 
                 () => {
 
-                    try {
-
-                        if (
-                            fs.existsSync(
-                                finalPath
-                            )
-                        ) {
-
-                            fs.unlinkSync(
-                                finalPath
-                            )
-
-                            logger.info(
-                                `Temp eliminado: ${downloaded}`
-                            )
-
-                        }
-
-                    } catch (e) {
-
-                        logger.error(
-                            `Error borrando temp: ${e.message}`
-                        )
-
-                    }
+                    removeTemp(
+                        pathToDelete
+                    )
 
                 },
 
@@ -554,24 +854,72 @@ module.exports = {
             )
 
 
+            finalPath =
+                null
+
+
         } catch (err) {
 
             logger.error(
-                `Error play: ${err.message}`
+
+                `Error play: ${err.stack || err.message}`
+
             )
 
 
-            await sendPlayMessage(
+            /*
+                Si falló después de descargar,
+                eliminamos inmediatamente el temp.
+            */
 
-                sock,
-                from,
+            if (
+                finalPath
+            ) {
 
-                ui.error(
-                    'ERROR',
-                    'No se pudo descargar la música.'
+                removeTemp(
+                    finalPath
                 )
 
-            )
+            }
+
+
+            let detail =
+                'No se pudo descargar la música.'
+
+
+            if (
+                String(
+                    err.message
+                ).includes(
+                    'yt-dlp'
+                )
+            ) {
+
+                detail =
+                    'Ocurrió un problema con el descargador de YouTube.'
+
+            }
+
+
+            try {
+
+                await sendPlayMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ERROR DE DESCARGA',
+
+                        detail
+
+                    )
+
+                )
+
+            } catch {}
 
         }
 

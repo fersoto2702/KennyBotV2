@@ -1,12 +1,6 @@
 const axios =
     require('axios')
 
-const fs =
-    require('fs')
-
-const path =
-    require('path')
-
 const {
     checkCooldown
 } = require('../../src/utils/cooldowns')
@@ -16,6 +10,11 @@ const logger =
 
 const ui =
     require('../../src/utils/ui')
+
+
+const TIKWM_API =
+    'https://www.tikwm.com/api/'
+
 
 async function sendTikTokMessage(
     sock,
@@ -32,14 +31,98 @@ async function sendTikTokMessage(
 
 }
 
+
+function isTikTokUrl(value = '') {
+
+    try {
+
+        const parsed =
+            new URL(value)
+
+        const host =
+            parsed.hostname
+                .toLowerCase()
+                .replace(/^www\./, '')
+
+
+        return (
+            host === 'tiktok.com' ||
+            host.endsWith('.tiktok.com')
+        )
+
+    } catch {
+
+        return false
+
+    }
+
+}
+
+
+function formatNumber(value) {
+
+    const number =
+        Number(value || 0)
+
+
+    if (
+        Number.isNaN(number)
+    ) {
+
+        return '0'
+
+    }
+
+
+    return number.toLocaleString(
+        'es-MX'
+    )
+
+}
+
+
+function formatDuration(seconds) {
+
+    const total =
+        Number(seconds || 0)
+
+
+    if (
+        !Number.isFinite(total) ||
+        total <= 0
+    ) {
+
+        return 'Desconocida'
+
+    }
+
+
+    const minutes =
+        Math.floor(
+            total / 60
+        )
+
+
+    const remaining =
+        Math.floor(
+            total % 60
+        )
+
+
+    return (
+        `${minutes}:${String(remaining).padStart(2, '0')}`
+    )
+
+}
+
+
 module.exports = {
 
-    name: 'tiktok',
+    name:
+        'tiktok',
 
     aliases: [
-
         'tt'
-
     ],
 
     description:
@@ -47,6 +130,10 @@ module.exports = {
 
     category:
         'descargas',
+
+    cooldown:
+        10,
+
 
     async execute({
 
@@ -59,126 +146,331 @@ module.exports = {
 
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
+
                 msg.key.participant ||
+
                 msg.key.remoteJid
+
+
+            /* ─────────────────────────────
+               COOLDOWN
+            ───────────────────────────── */
 
             const cooldown =
                 checkCooldown(
+
                     sender,
+
                     'tiktok',
+
                     10
+
                 )
 
-            if (cooldown.active) {
+
+            if (
+                cooldown.active
+            ) {
 
                 return await sendTikTokMessage(
-    sock,
-    from,
-    ui.warn(
-        'COOLDOWN ACTIVO',
-        `Espera ${cooldown.left}s antes de usar este comando.`
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'COOLDOWN ACTIVO',
+
+                        `Espera ${cooldown.left}s antes de volver a usar este comando.`
+
+                    )
+
+                )
 
             }
+
+
+            /* ─────────────────────────────
+               URL
+            ───────────────────────────── */
 
             const url =
-                args[0]
+                String(
+                    args?.[0] || ''
+                )
+                    .trim()
+
 
             if (
-
                 !url ||
-
-                !url.includes('tiktok.com')
-
+                !isTikTokUrl(url)
             ) {
 
                 return await sendTikTokMessage(
-    sock,
-    from,
-    ui.warn(
-        'URL INVÁLIDA',
-        'Uso: /tiktok link'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'ENLACE REQUERIDO',
+
+                        'Envía un enlace válido de TikTok.\n\nUso: /tiktok link'
+
+                    )
+
+                )
 
             }
+
+
+            /* ─────────────────────────────
+               PROCESANDO
+            ───────────────────────────── */
 
             await sendTikTokMessage(
-    sock,
-    from,
-    ui.info(
-        'DESCARGANDO',
-        [
-            ['Fuente', 'TikTok']
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+
+                    '🎵 TIKTOK',
+
+                    [
+
+                        [
+                            'Fuente',
+                            'TikTok'
+                        ],
+
+                        [
+                            'Estado',
+                            'PROCESANDO'
+                        ]
+
+                    ],
+
+                    'Obteniendo información del video...'
+
+                )
+
+            )
+
+
+            /* ─────────────────────────────
+               API
+            ───────────────────────────── */
 
             const response =
-    await axios.post(
+                await axios.post(
 
-        'https://www.tikwm.com/api/',
+                    TIKWM_API,
 
-        {
-            url
-        },
+                    {
+                        url
+                    },
 
-        {
+                    {
 
-            timeout: 30000,
+                        timeout:
+                            30000,
 
-            headers: {
+                        headers: {
 
-                'Content-Type':
-                    'application/json',
+                            'Content-Type':
+                                'application/json',
 
-                'User-Agent':
-                    'Mozilla/5.0'
+                            'User-Agent':
+                                'Mozilla/5.0'
 
-            }
+                        }
 
-        }
+                    }
 
-    )
+                )
 
-            const data =
+
+            const responseData =
                 response.data
 
+
+            logger.info(
+
+                `TikTok API response: ${
+                    JSON.stringify(responseData)
+                }`
+
+            )
+
+
+            /* ─────────────────────────────
+               VALIDAR RESPUESTA
+            ───────────────────────────── */
+
             if (
-
-            !data ||
-
-             data.code !== 0 ||
-
-            !data.data?.play
-
+                !responseData ||
+                responseData.code !== 0 ||
+                !responseData.data
             ) {
-            return await sendTikTokMessage(
 
-    sock,
-    from,
-    ui.error(
-        'DESCARGA FALLIDA',
-        'No se pudo obtener el video.'
-    )
-)
+                return await sendTikTokMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'DESCARGA FALLIDA',
+
+                        responseData?.msg ||
+                        'No se pudo obtener información del video.'
+
+                    )
+
+                )
 
             }
 
-          const author =
-    data.data.author?.nickname ||
-    'Desconocido'
 
-const title =
-    data.data.title ||
-    'Sin título'
+            const data =
+                responseData.data
 
-const likes =
-    Number(
-        data.data.digg_count || 0
-    ).toLocaleString()
+
+            /* ─────────────────────────────
+               VIDEO
+            ───────────────────────────── */
+
+            const videoUrl =
+
+                data.hdplay ||
+
+                data.play ||
+
+                data.wmplay
+
+
+            if (!videoUrl) {
+
+                return await sendTikTokMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'VIDEO NO DISPONIBLE',
+
+                        'TikTok no devolvió un enlace descargable.'
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               DATOS
+            ───────────────────────────── */
+
+            const title =
+                data.title ||
+                'Sin título'
+
+
+            const nickname =
+                data.author?.nickname ||
+                'Desconocido'
+
+
+            const username =
+                data.author?.unique_id ||
+                data.author?.uniqueId ||
+                null
+
+
+            const author =
+
+                username
+                    ? `${nickname} (@${username})`
+                    : nickname
+
+
+            const duration =
+                formatDuration(
+                    data.duration
+                )
+
+
+            const likes =
+                formatNumber(
+                    data.digg_count
+                )
+
+
+            const comments =
+                formatNumber(
+                    data.comment_count
+                )
+
+
+            const views =
+                formatNumber(
+                    data.play_count
+                )
+
+
+            const shares =
+                formatNumber(
+                    data.share_count
+                )
+
+
+            /* ─────────────────────────────
+               DECORACIÓN ESPECIAL TIKTOK
+            ───────────────────────────── */
+
+            const caption = [
+
+                'ㅤ۟∩　ׅ　★　ׅ　*🅣𝗂𝗄𝖳𝗈𝗄 🅓ownload*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ ✎  ׄ ⬭ *Título:* ${title}`,
+
+                `𖣣ֶㅤ֯⌗ ꕥ  ׄ ⬭ *Autor:* ${author}`,
+
+                `𖣣ֶㅤ֯⌗ ⴵ  ׄ ⬭ *Duración:* ${duration}`,
+
+                `𖣣ֶㅤ֯⌗ ❖  ׄ ⬭ *Likes:* ${likes}`,
+
+                `𖣣ֶㅤ֯⌗ ❀  ׄ ⬭ *Comentarios:* ${comments}`,
+
+                `𖣣ֶㅤ֯⌗ ✿  ׄ ⬭ *Vistas:* ${views}`,
+
+                `𖣣ֶㅤ֯⌗ ☆  ׄ ⬭ *Compartidos:* ${shares}`,
+
+                '',
+
+                '╰─ 𓂃 Video descargado sin marca de agua.'
+
+            ].join('\n')
+
+
+            /* ─────────────────────────────
+               ENVIAR VIDEO
+            ───────────────────────────── */
 
             await sock.sendMessage(
 
@@ -189,48 +481,27 @@ const likes =
                     video: {
 
                         url:
-                        data.data.play
+                            videoUrl
 
                     },
 
                     mimetype:
                         'video/mp4',
 
-                    caption:
-                        ui.success(
-
-                            'TIKTOK',
-
-                            [
-
-                                ['Autor', author],
-
-                                ['Título', title],
-
-                                ['Likes', likes]
-
-                            ]
-
-                        )
+                    caption
 
                 }
 
             )
 
-            await sendTikTokMessage(
-    sock,
-    from,
-    ui.success(
-        'DESCARGA COMPLETADA',
-        [
-            ['Autor', author],
-            ['Título', title],
-            ['Likes', likes]
-        ]
-    )
-)
 
-            if (data.data.music) {
+            /* ─────────────────────────────
+               AUDIO
+            ───────────────────────────── */
+
+            if (
+                data.music
+            ) {
 
                 try {
 
@@ -243,14 +514,15 @@ const likes =
                             audio: {
 
                                 url:
-                                    data.data.music
+                                    data.music
 
                             },
 
                             mimetype:
                                 'audio/mpeg',
 
-                            ptt: false
+                            ptt:
+                                false
 
                         }
 
@@ -259,26 +531,92 @@ const likes =
                 } catch (audioErr) {
 
                     logger.warn(
+
                         `Audio TikTok falló: ${audioErr.message}`
+
                     )
 
                 }
 
             }
 
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `TikTok descargado: ${username || nickname} | ${sender?.split('@')[0] || 'desconocido'}`
+
+            )
+
+
         } catch (err) {
 
             logger.error(
-                `Error tiktok: ${err.message}`
+
+                `Error tiktok: ${err.stack || err.message}`
+
             )
 
-            await sendTikTokMessage(
-    sock,
-    from,
-    ui.error(
-        '❌ El servicio de descarga de TikTok se encuentra temporalmente fuera de servicio.',
-    )
-)
+
+            if (
+                err.response
+            ) {
+
+                logger.error(
+
+                    `TikTok API status: ${err.response.status}`
+
+                )
+
+                logger.error(
+
+                    `TikTok API response: ${
+                        JSON.stringify(
+                            err.response.data
+                        )
+                    }`
+
+                )
+
+            }
+
+
+            let detail =
+                'El servicio de descarga de TikTok se encuentra temporalmente fuera de servicio.'
+
+
+            if (
+                err.code === 'ECONNABORTED'
+            ) {
+
+                detail =
+                    'TikTok tardó demasiado en responder. Inténtalo nuevamente.'
+
+            }
+
+
+            try {
+
+                await sendTikTokMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ERROR DE TIKTOK',
+
+                        detail
+
+                    )
+
+                )
+
+            } catch {}
 
         }
 

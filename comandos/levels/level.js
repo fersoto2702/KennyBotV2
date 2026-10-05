@@ -10,11 +10,186 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
+
 const levelsPath =
     path.join(
         __dirname,
         '../../database/levels.json'
     )
+
+
+function ensureLevelsFile() {
+
+    const directory =
+        path.dirname(
+            levelsPath
+        )
+
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+
+    if (
+        !fs.existsSync(
+            levelsPath
+        )
+    ) {
+
+        fs.writeFileSync(
+            levelsPath,
+            JSON.stringify(
+                {},
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function readLevels() {
+
+    ensureLevelsFile()
+
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    levelsPath,
+                    'utf8'
+                )
+            )
+
+
+        return (
+            data &&
+            typeof data === 'object' &&
+            !Array.isArray(data)
+        )
+            ? data
+            : {}
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo levels.json: ${err.message}`
+        )
+
+        return {}
+
+    }
+
+}
+
+
+function saveLevels(
+    levels
+) {
+
+    fs.writeFileSync(
+        levelsPath,
+        JSON.stringify(
+            levels,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+
+function formatNumber(
+    value
+) {
+
+    return Number(
+        value || 0
+    )
+        .toLocaleString(
+            'es-MX'
+        )
+
+}
+
+
+function createProgressBar(
+    current,
+    required,
+    size = 10
+) {
+
+    if (
+        !Number.isFinite(current) ||
+        !Number.isFinite(required) ||
+        required <= 0
+    ) {
+
+        return {
+            bar:
+                '░'.repeat(size),
+
+            percent:
+                0
+        }
+
+    }
+
+
+    const ratio =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                current / required
+            )
+        )
+
+
+    const filled =
+        Math.floor(
+            ratio * size
+        )
+
+
+    const percent =
+        Math.floor(
+            ratio * 100
+        )
+
+
+    return {
+
+        bar:
+            '█'.repeat(filled) +
+            '░'.repeat(
+                size - filled
+            ),
+
+        percent
+
+    }
+
+}
+
 
 module.exports = {
 
@@ -33,110 +208,311 @@ module.exports = {
     category:
         'niveles',
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
+
         sock,
         from,
         msg
+
     }) {
 
         try {
 
-            if (!fs.existsSync(levelsPath)) {
-                fs.writeFileSync(
-                    levelsPath,
-                    JSON.stringify({}, null, 2)
-                )
-            }
-
-            let levels = {}
-
-            try {
-                levels =
-                    JSON.parse(
-                        fs.readFileSync(levelsPath)
-                    )
-            } catch {
-                levels = {}
-            }
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
 
             const sender =
+
                 msg.key.participant ||
+
+                msg.participant ||
+
                 msg.key.remoteJid
 
-            if (!levels[sender]) {
+
+            if (!sender) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar tu cuenta.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               NIVELES
+            ───────────────────────────── */
+
+            const levels =
+                readLevels()
+
+
+            let changed =
+                false
+
+
+            if (
+                !levels[sender] ||
+                typeof levels[sender] !== 'object' ||
+                Array.isArray(levels[sender])
+            ) {
+
                 levels[sender] = {
                     xp: 0,
                     level: 1
                 }
+
+
+                changed =
+                    true
+
             }
 
-            if (typeof levels[sender].xp !== 'number') levels[sender].xp = 0
-            if (typeof levels[sender].level !== 'number') levels[sender].level = 1
-            if (levels[sender].xp < 0) levels[sender].xp = 0
-            if (levels[sender].level < 1) levels[sender].level = 1
 
-            const xp =
-                levels[sender].xp
+            let xp =
+                Number(
+                    levels[sender].xp
+                )
 
-            const level =
-                levels[sender].level
+
+            let level =
+                Number(
+                    levels[sender].level
+                )
+
+
+            if (
+                !Number.isFinite(xp) ||
+                xp < 0
+            ) {
+
+                xp =
+                    0
+
+                changed =
+                    true
+
+            }
+
+
+            if (
+                !Number.isFinite(level) ||
+                level < 1
+            ) {
+
+                level =
+                    1
+
+                changed =
+                    true
+
+            }
+
+
+            xp =
+                Math.floor(
+                    xp
+                )
+
+
+            level =
+                Math.floor(
+                    level
+                )
+
+
+            if (
+                levels[sender].xp !== xp
+            ) {
+
+                levels[sender].xp =
+                    xp
+
+                changed =
+                    true
+
+            }
+
+
+            if (
+                levels[sender].level !== level
+            ) {
+
+                levels[sender].level =
+                    level
+
+                changed =
+                    true
+
+            }
+
+
+            /* ─────────────────────────────
+               XP NECESARIA
+            ───────────────────────────── */
 
             const neededXp =
                 level * 100
 
-            const progress =
-                Math.min(
-                    Math.floor(
-                        (xp / neededXp) * 10
-                    ),
+
+            const {
+                bar,
+                percent
+            } =
+                createProgressBar(
+
+                    xp,
+
+                    neededXp,
+
                     10
+
                 )
 
-            const bar =
-                '█'.repeat(progress) +
-                '░'.repeat(10 - progress)
 
-            const percent =
-                Math.min(
-                    Math.floor(
-                        (xp / neededXp) * 100
-                    ),
-                    100
+            const remainingXp =
+                Math.max(
+                    0,
+                    neededXp - xp
                 )
 
-            fs.writeFileSync(
-                levelsPath,
-                JSON.stringify(levels, null, 2)
-            )
+
+            /* ─────────────────────────────
+               GUARDAR SOLO SI CAMBIÓ
+            ───────────────────────────── */
+
+            if (
+                changed
+            ) {
+
+                saveLevels(
+                    levels
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
 
             logger.event(
-                `Level check: ${sender.split('@')[0]} → Nivel ${level}`
+
+                `Level check: ${sender.split('@')[0]} → Nivel ${level} | ${xp}/${neededXp} XP`
+
             )
 
-            await sock.sendMessage(
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            return await sock.sendMessage(
+
                 from,
+
                 {
+
                     text:
                         ui.info(
-                            'NIVEL · XP',
+
+                            '⭐ NIVEL · XP',
+
                             [
-                                ['Usuario', `@${sender.split('@')[0]}`],
-                                ['Nivel', `⭐ ${level}`],
-                                ['XP', `✨ ${xp.toLocaleString()} / ${neededXp.toLocaleString()}`],
-                                ['Progreso', `${bar} ${percent}%`]
-                            ]
+
+                                [
+                                    'Usuario',
+                                    `@${sender.split('@')[0]}`
+                                ],
+
+                                [
+                                    'Nivel',
+                                    `⭐ ${formatNumber(level)}`
+                                ],
+
+                                [
+                                    'XP',
+                                    `✨ ${formatNumber(xp)} / ${formatNumber(neededXp)}`
+                                ],
+
+                                [
+                                    'Progreso',
+                                    `${bar} ${percent}%`
+                                ],
+
+                                [
+                                    'Faltan',
+                                    remainingXp > 0
+                                        ? `✨ ${formatNumber(remainingXp)} XP`
+                                        : '✓ Nivel listo para subir'
+                                ]
+
+                            ],
+
+                            'Sigue participando para ganar más experiencia.'
+
                         ),
-                    mentions: [sender]
+
+                    mentions: [
+                        sender
+                    ]
+
                 }
+
             )
+
 
         } catch (err) {
 
             logger.error(
-                `Error level: ${err.message}`
+
+                `Error level: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE NIVEL',
+
+                                'No se pudo consultar tu nivel y experiencia.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

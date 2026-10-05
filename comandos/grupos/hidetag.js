@@ -1,6 +1,6 @@
-const fs = require('fs')
-const path = require('path')
-const { downloadContentFromMessage } = require('@whiskeysockets/baileys')
+const {
+    downloadContentFromMessage
+} = require('@whiskeysockets/baileys')
 
 const isGroupAdmin =
     require('../../src/utils/isAdmin')
@@ -11,17 +11,46 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
-const iconPath =
-    path.join(
-        __dirname,
-        '../../assets/icons/hidetag.jpeg'
-    )
 
-const MAX_MENTIONS = 200
-const MAX_MEDIA_MB = 15
+const MAX_MENTIONS =
+    1000
+
+const MAX_MEDIA_MB =
+    15
+
 
 const getSizeMB = bytes =>
-    (bytes / 1024 / 1024).toFixed(2)
+    (
+        bytes /
+        1024 /
+        1024
+    ).toFixed(2)
+
+
+function normalizeJid(participant) {
+
+    if (!participant)
+        return null
+
+    return (
+        participant.phoneNumber ||
+        participant.id ||
+        null
+    )
+
+}
+
+
+function uniqueJids(jids = []) {
+
+    return [
+        ...new Set(
+            jids.filter(Boolean)
+        )
+    ]
+
+}
+
 
 async function downloadMedia(
     message,
@@ -34,46 +63,80 @@ async function downloadMedia(
             type
         )
 
-    let buffer =
-        Buffer.from([])
 
-    for await (const chunk of stream) {
+    const chunks = []
 
-        buffer =
-            Buffer.concat([
-                buffer,
-                chunk
-            ])
+    let totalBytes =
+        0
+
+
+    for await (
+        const chunk of stream
+    ) {
+
+        totalBytes +=
+            chunk.length
+
 
         if (
-            buffer.length /
+            totalBytes /
             1024 /
             1024 >
             MAX_MEDIA_MB
         ) {
 
             throw new Error(
-                `Media demasiado pesada (${getSizeMB(buffer.length)}MB)`
+                `Media demasiado pesada (${getSizeMB(totalBytes)}MB)`
             )
 
         }
 
+
+        chunks.push(
+            chunk
+        )
+
     }
 
-    return buffer
+
+    return Buffer.concat(
+        chunks
+    )
 
 }
 
+
+async function logAndSend({
+    sock,
+    from,
+    payload,
+    sender,
+    mentionsCount,
+    type
+}) {
+
+    await sock.safeSendMessage(
+        from,
+        payload
+    )
+
+
+    logger.event(
+        `Hidetag usado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentionsCount} menciones | ${type}`
+    )
+
+}
+
+
 module.exports = {
 
-    name: 'hidetag',
+    name:
+        'hidetag',
 
     aliases: [
-
         'htag',
         'ghosttag',
         'tag'
-
     ],
 
     description:
@@ -82,9 +145,15 @@ module.exports = {
     category:
         'grupos',
 
-    adminOnly: true,
+    adminOnly:
+        true,
 
-    groupOnly: true,
+    groupOnly:
+        true,
+
+    cooldown:
+        5,
+
 
     async execute({
 
@@ -97,83 +166,233 @@ module.exports = {
 
         try {
 
-            await sock.sendPresenceUpdate(
-                'composing',
-                from
-            )
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
+
+            if (
+                !from ||
+                !from.endsWith('@g.us')
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'SOLO GRUPOS',
+
+                                'Este comando solo funciona en grupos.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               PRESENCIA
+            ───────────────────────────── */
+
+            try {
+
+                await sock.sendPresenceUpdate(
+                    'composing',
+                    from
+                )
+
+            } catch {}
+
+
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
 
             const sender =
+
                 msg.key.participant ||
-                msg.participant
+
+                msg.participant ||
+
+                msg.key.remoteJid
+
+
+            if (!sender) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario que ejecutó el comando.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               VERIFICAR ADMIN
+            ───────────────────────────── */
 
             const admin =
                 await isGroupAdmin(
+
                     sock,
                     from,
                     sender
+
                 )
+
 
             if (!admin) {
 
                 return await sock.safeSendMessage(
-                    from,
-                    {
-                        image:
-                            fs.readFileSync(iconPath),
 
-                        caption:
+                    from,
+
+                    {
+
+                        text:
                             ui.error(
+
                                 'ACCESO DENEGADO',
+
                                 'Solo administradores pueden usar este comando.'
+
                             )
+
                     }
+
                 )
 
             }
+
+
+            /* ─────────────────────────────
+               PARTICIPANTES
+            ───────────────────────────── */
 
             const metadata =
                 await sock.groupMetadata(
                     from
                 )
 
+
             const participants =
-                metadata.participants || []
+                Array.isArray(
+                    metadata?.participants
+                )
+                    ? metadata.participants
+                    : []
+
 
             if (
                 participants.length === 0
             ) {
 
                 return await sock.safeSendMessage(
-                    from,
-                    {
-                        image:
-                            fs.readFileSync(iconPath),
 
-                        caption:
+                    from,
+
+                    {
+
+                        text:
                             ui.warn(
+
                                 'GRUPO VACÍO',
+
                                 'No hay participantes para mencionar.'
+
                             )
+
                     }
+
                 )
 
             }
 
-            const mentions =
-                participants
-                    .slice(
-                        0,
-                        MAX_MENTIONS
-                    )
-                    .map(
-                        p => p.id
-                    )
 
-            const quoted =
+            const mentions =
+                uniqueJids(
+
+                    participants
+                        .slice(
+                            0,
+                            MAX_MENTIONS
+                        )
+                        .map(
+                            participant =>
+                                normalizeJid(
+                                    participant
+                                )
+                        )
+
+                )
+
+
+            if (
+                mentions.length === 0
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'SIN MENCIONES',
+
+                                'No se pudieron obtener identificadores válidos de los participantes.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               MENSAJE RESPONDIDO
+            ───────────────────────────── */
+
+            const contextInfo =
+
                 msg.message
                     ?.extendedTextMessage
                     ?.contextInfo
+
+
+            const quoted =
+                contextInfo
                     ?.quotedMessage
+
+
+            /* ─────────────────────────────
+               IMAGEN
+            ───────────────────────────── */
 
             if (
                 quoted?.imageMessage
@@ -181,19 +400,50 @@ module.exports = {
 
                 const buffer =
                     await downloadMedia(
+
                         quoted.imageMessage,
+
                         'image'
+
                     )
 
-                return await sock.safeSendMessage(
+
+                const caption =
+
+                    quoted.imageMessage
+                        ?.caption ||
+                    ''
+
+
+                return await logAndSend({
+
+                    sock,
                     from,
-                    {
-                        image: buffer,
+                    sender,
+                    mentionsCount:
+                        mentions.length,
+                    type:
+                        'imagen',
+
+                    payload: {
+
+                        image:
+                            buffer,
+
+                        caption,
+
                         mentions
+
                     }
-                )
+
+                })
 
             }
+
+
+            /* ─────────────────────────────
+               VIDEO
+            ───────────────────────────── */
 
             if (
                 quoted?.videoMessage
@@ -201,19 +451,55 @@ module.exports = {
 
                 const buffer =
                     await downloadMedia(
+
                         quoted.videoMessage,
+
                         'video'
+
                     )
 
-                return await sock.safeSendMessage(
+
+                const caption =
+
+                    quoted.videoMessage
+                        ?.caption ||
+                    ''
+
+
+                return await logAndSend({
+
+                    sock,
                     from,
-                    {
-                        video: buffer,
+                    sender,
+                    mentionsCount:
+                        mentions.length,
+                    type:
+                        'video',
+
+                    payload: {
+
+                        video:
+                            buffer,
+
+                        caption,
+
+                        mimetype:
+                            quoted.videoMessage
+                                ?.mimetype ||
+                            'video/mp4',
+
                         mentions
+
                     }
-                )
+
+                })
 
             }
+
+
+            /* ─────────────────────────────
+               AUDIO
+            ───────────────────────────── */
 
             if (
                 quoted?.audioMessage
@@ -221,22 +507,52 @@ module.exports = {
 
                 const buffer =
                     await downloadMedia(
+
                         quoted.audioMessage,
+
                         'audio'
+
                     )
 
-                return await sock.safeSendMessage(
+
+                return await logAndSend({
+
+                    sock,
                     from,
-                    {
-                        audio: buffer,
+                    sender,
+                    mentionsCount:
+                        mentions.length,
+                    type:
+                        'audio',
+
+                    payload: {
+
+                        audio:
+                            buffer,
+
                         mimetype:
+                            quoted.audioMessage
+                                ?.mimetype ||
                             'audio/mpeg',
-                        ptt: false,
+
+                        ptt:
+                            Boolean(
+                                quoted.audioMessage
+                                    ?.ptt
+                            ),
+
                         mentions
+
                     }
-                )
+
+                })
 
             }
+
+
+            /* ─────────────────────────────
+               STICKER
+            ───────────────────────────── */
 
             if (
                 quoted?.stickerMessage
@@ -244,109 +560,183 @@ module.exports = {
 
                 const buffer =
                     await downloadMedia(
+
                         quoted.stickerMessage,
+
                         'sticker'
+
                     )
 
-                return await sock.safeSendMessage(
+
+                return await logAndSend({
+
+                    sock,
                     from,
-                    {
-                        sticker: buffer,
+                    sender,
+                    mentionsCount:
+                        mentions.length,
+                    type:
+                        'sticker',
+
+                    payload: {
+
+                        sticker:
+                            buffer,
+
                         mentions
+
                     }
-                )
+
+                })
 
             }
+
+
+            /* ─────────────────────────────
+               TEXTO RESPONDIDO
+            ───────────────────────────── */
+
+            const quotedText =
+
+                quoted
+                    ?.extendedTextMessage
+                    ?.text ||
+
+                quoted
+                    ?.conversation ||
+
+                null
+
 
             if (
-                quoted?.extendedTextMessage
-                    ?.text
+                quotedText
             ) {
 
-                return await sock.safeSendMessage(
+                return await logAndSend({
+
+                    sock,
                     from,
-                    {
+                    sender,
+                    mentionsCount:
+                        mentions.length,
+                    type:
+                        'texto citado',
+
+                    payload: {
+
                         text:
-                            quoted
-                                .extendedTextMessage
-                                .text,
+                            quotedText,
 
                         mentions
+
                     }
-                )
+
+                })
 
             }
 
-            if (
-                quoted?.conversation
-            ) {
 
-                return await sock.safeSendMessage(
-                    from,
-                    {
-                        text:
-                            quoted.conversation,
-
-                        mentions
-                    }
-                )
-
-            }
+            /* ─────────────────────────────
+               TEXTO DIRECTO
+            ───────────────────────────── */
 
             const text =
-                args.join(' ')
+                args
+                    .join(' ')
                     .trim()
+
 
             if (!text) {
 
                 return await sock.safeSendMessage(
-                    from,
-                    {
-                        image:
-                            fs.readFileSync(iconPath),
 
-                        caption:
+                    from,
+
+                    {
+
+                        text:
                             ui.warn(
+
                                 'MENSAJE REQUERIDO',
-                                'Uso: /hidetag mensaje'
+
+                                'Escribe un mensaje o responde a texto, imagen, video, audio o sticker.\n\nUso: /hidetag mensaje'
+
                             )
+
                     }
+
                 )
 
             }
 
-            await sock.safeSendMessage(
-                from,
-                {
-                    text,
-                    mentions
-                }
-            )
 
-            logger.event(
-                `Hidetag usado: ${from.split('@')[0]}`
-            )
+            return await logAndSend({
+
+                sock,
+                from,
+                sender,
+                mentionsCount:
+                    mentions.length,
+                type:
+                    'texto',
+
+                payload: {
+
+                    text,
+
+                    mentions
+
+                }
+
+            })
+
 
         } catch (err) {
 
             logger.error(
-                `Error hidetag: ${err.message}`
+
+                `Error hidetag: ${err.stack || err.message}`
+
             )
+
+
+            let detail =
+                'No se pudo ejecutar el hidetag.'
+
+
+            if (
+                String(
+                    err.message
+                ).includes(
+                    'Media demasiado pesada'
+                )
+            ) {
+
+                detail =
+                    `El archivo supera el límite permitido de ${MAX_MEDIA_MB} MB.`
+
+            }
+
 
             try {
 
                 await sock.safeSendMessage(
-                    from,
-                    {
-                        image:
-                            fs.readFileSync(iconPath),
 
-                        caption:
+                    from,
+
+                    {
+
+                        text:
                             ui.error(
-                                'ERROR',
-                                'No se pudo ejecutar el hidetag.'
+
+                                'ERROR HIDETAG',
+
+                                detail
+
                             )
+
                     }
+
                 )
 
             } catch {}

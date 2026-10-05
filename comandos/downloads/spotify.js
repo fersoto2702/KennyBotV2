@@ -1,5 +1,14 @@
-const fs   = require('fs')
-const path = require('path')
+const fs =
+    require('fs')
+
+const axios =
+    require('axios')
+
+const yts =
+    require('yt-search')
+
+const youtubedl =
+    require('youtube-dl-exec')
 
 const {
     addToQueue,
@@ -24,14 +33,13 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
-const axios =
-    require('axios')
 
-const yts =
-    require('yt-search')
+const SPOTIFY_API =
+    'https://api.vreden.my.id/api/spotify'
 
-const youtubedl =
-    require('youtube-dl-exec')
+const MAX_AUDIO_MB =
+    25
+
 
 async function sendSpotifyMessage(
     sock,
@@ -48,21 +56,84 @@ async function sendSpotifyMessage(
 
 }
 
+
+function isSpotifyUrl(value = '') {
+
+    try {
+
+        const parsed =
+            new URL(value)
+
+        const host =
+            parsed.hostname
+                .toLowerCase()
+                .replace(/^www\./, '')
+
+
+        return (
+            host === 'open.spotify.com' ||
+            host === 'spotify.com' ||
+            host.endsWith('.spotify.com')
+        )
+
+    } catch {
+
+        return false
+
+    }
+
+}
+
+
+function removeTemp(filePath) {
+
+    try {
+
+        if (
+            filePath &&
+            fs.existsSync(filePath)
+        ) {
+
+            fs.unlinkSync(
+                filePath
+            )
+
+
+            logger.info(
+                `Temp eliminado: ${filePath}`
+            )
+
+        }
+
+    } catch (err) {
+
+        logger.warn(
+            `Error borrando temp: ${err.message}`
+        )
+
+    }
+
+}
+
+
 module.exports = {
 
-    name: 'spotify',
+    name:
+        'spotify',
 
     aliases: [
-
         'sp'
-
     ],
 
     description:
-        'Descarga canciones de Spotify',
+        'Descarga canciones de Spotify en MP3',
 
     category:
         'descargas',
+
+    cooldown:
+        20,
+
 
     async execute({
 
@@ -73,73 +144,145 @@ module.exports = {
 
     }) {
 
+        let finalPath =
+            null
+
+
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
+
                 msg.key.participant ||
+
                 msg.key.remoteJid
+
+
+            /* ─────────────────────────────
+               COOLDOWN
+            ───────────────────────────── */
 
             const cooldown =
                 checkCooldown(
+
                     sender,
+
                     'spotify',
+
                     20
+
                 )
 
-            if (cooldown.active) {
-
-                return await sendSpotifyMessage(
-    sock,
-    from,
-    ui.warn(
-        'COOLDOWN ACTIVO',
-        `Espera ${cooldown.left}s antes de usar este comando.`
-    )
-)
-
-            }
-
-            const url =
-                args[0]
 
             if (
-
-                !url ||
-
-                !url.includes('spotify.com')
-
+                cooldown.active
             ) {
 
                 return await sendSpotifyMessage(
-    sock,
-    from,
-    ui.warn(
-        'URL INVÁLIDA',
-        'Uso: /spotify link'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'COOLDOWN ACTIVO',
+
+                        `Espera ${cooldown.left}s antes de volver a usar este comando.`
+
+                    )
+
+                )
 
             }
 
+
+            /* ─────────────────────────────
+               URL
+            ───────────────────────────── */
+
+            const url =
+                String(
+                    args?.[0] || ''
+                )
+                    .trim()
+
+
+            if (
+                !url ||
+                !isSpotifyUrl(url)
+            ) {
+
+                return await sendSpotifyMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'ENLACE REQUERIDO',
+
+                        'Envía un enlace válido de Spotify.\n\nUso: /spotify link'
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               OBTENER INFORMACIÓN
+            ───────────────────────────── */
+
             await sendSpotifyMessage(
-    sock,
-    from,
-    ui.info(
-        'OBTENIENDO CANCIÓN',
-        [
-            ['Fuente', 'Spotify']
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+
+                    '🎧 SPOTIFY',
+
+                    [
+
+                        [
+                            'Fuente',
+                            'Spotify'
+                        ],
+
+                        [
+                            'Estado',
+                            'OBTENIENDO INFORMACIÓN'
+                        ]
+
+                    ],
+
+                    'Analizando la canción...'
+
+                )
+
+            )
+
 
             const response =
                 await axios.get(
 
-                    `https://api.vreden.my.id/api/spotify?url=${encodeURIComponent(url)}`,
+                    SPOTIFY_API,
 
                     {
 
-                        timeout: 30000,
+                        params: {
+                            url
+                        },
+
+                        timeout:
+                            30000,
 
                         headers: {
 
@@ -152,97 +295,249 @@ module.exports = {
 
                 )
 
+
             const data =
                 response.data
 
-            if (!data.result) {
+
+            logger.info(
+
+                `Spotify API response: ${JSON.stringify(data)}`
+
+            )
+
+
+            if (
+                !data ||
+                !data.result
+            ) {
 
                 return await sendSpotifyMessage(
-    sock,
-    from,
-    ui.error(
-        'SIN INFORMACIÓN',
-        'No se pudo obtener los datos de Spotify.'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'SIN INFORMACIÓN',
+
+                        'No se pudieron obtener los datos de la canción.'
+
+                    )
+
+                )
 
             }
 
-            const title =
-                `${data.result.title} ${data.result.artist}`
+
+            const trackTitle =
+                String(
+                    data.result.title || ''
+                )
+                    .trim()
+
+
+            const artist =
+                String(
+                    data.result.artist || ''
+                )
+                    .trim()
+
+
+            if (!trackTitle) {
+
+                return await sendSpotifyMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'DATOS INCOMPLETOS',
+
+                        'Spotify no devolvió el título de la canción.'
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               BUSCAR AUDIO
+            ───────────────────────────── */
+
+            const searchQuery =
+
+                artist
+                    ? `${trackTitle} ${artist}`
+                    : trackTitle
+
 
             await sendSpotifyMessage(
-    sock,
-    from,
-    ui.info(
-        'BUSCANDO AUDIO',
-        [
-            ['Canción', data.result.title]
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+
+                    '🎵 BUSCANDO AUDIO',
+
+                    [
+
+                        [
+                            'Título',
+                            trackTitle
+                        ],
+
+                        [
+                            'Artista',
+                            artist ||
+                            'Desconocido'
+                        ]
+
+                    ],
+
+                    'Buscando la mejor coincidencia...'
+
+                )
+
+            )
+
 
             const search =
-                await yts(title)
+                await yts(
+                    searchQuery
+                )
+
+
+            const videos =
+                Array.isArray(
+                    search?.videos
+                )
+                    ? search.videos
+                    : []
+
 
             const video =
 
-                search.videos.find(v =>
-
-                    v.author?.name
-                    ?.toLowerCase()
-                    .includes('topic')
-
+                videos.find(
+                    item =>
+                        item.author
+                            ?.name
+                            ?.toLowerCase()
+                            .includes(
+                                'topic'
+                            )
                 )
 
                 ||
 
-                search.videos.find(v =>
-
-                    v.title
-                    .toLowerCase()
-                    .includes('lyrics')
-
+                videos.find(
+                    item =>
+                        item.title
+                            ?.toLowerCase()
+                            .includes(
+                                'lyrics'
+                            )
                 )
 
                 ||
 
-                search.videos[0]
+                videos[0]
+
 
             if (!video) {
 
                 return await sendSpotifyMessage(
-    sock,
-    from,
-    ui.error(
-        'SIN RESULTADOS',
-        'No se encontró el audio.'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'SIN RESULTADOS',
+
+                        'No se encontró una coincidencia para esa canción.'
+
+                    )
+
+                )
 
             }
+
+
+            /* ─────────────────────────────
+               COLA
+            ───────────────────────────── */
 
             const position =
                 getQueueLength() + 1
 
+
             await sendSpotifyMessage(
-    sock,
-    from,
-    ui.info(
-        'COLA DE DESCARGA',
-        [
-            ['Canción', data.result.title],
-            ['Artista', data.result.artist],
-            ['Posición', `#${position}`]
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+
+                    '🎶 COLA DE DESCARGA',
+
+                    [
+
+                        [
+                            'Canción',
+                            trackTitle
+                        ],
+
+                        [
+                            'Artista',
+                            artist ||
+                            'Desconocido'
+                        ],
+
+                        [
+                            'Posición',
+                            `#${position}`
+                        ]
+
+                    ],
+
+                    'La canción fue añadida a la cola.'
+
+                )
+
+            )
+
+
+            /* ─────────────────────────────
+               ARCHIVO TEMPORAL
+            ───────────────────────────── */
 
             const filePath =
                 generateTempFile(
+
                     'temp',
+
                     'audio'
+
                 )
+
+
+            finalPath =
+                `${filePath}.mp3`
+
+
+            /* ─────────────────────────────
+               DESCARGAR Y CONVERTIR A MP3
+            ───────────────────────────── */
 
             await addToQueue(
 
@@ -254,14 +549,26 @@ module.exports = {
 
                         {
 
-                            format: 'bestaudio',
+                            format:
+                                'bestaudio/best',
+
+                            extractAudio:
+                                true,
+
+                            audioFormat:
+                                'mp3',
+
+                            audioQuality:
+                                0,
 
                             output:
-                                `${filePath}.%(ext)s`,
+                                finalPath,
 
-                            noCheckCertificates: true,
+                            noCheckCertificates:
+                                true,
 
-                            noPlaylist: true
+                            noPlaylist:
+                                true
 
                         }
 
@@ -271,72 +578,81 @@ module.exports = {
 
             )
 
-            await new Promise(resolve =>
 
-                setTimeout(
-                    resolve,
-                    2000
-                )
-
-            )
-
-            const files =
-                fs.readdirSync(
-
-                    path.join(
-                        __dirname,
-                        '../../temp'
-                    )
-
-                )
-
-            const downloaded =
-                files.find(f =>
-
-                    f.startsWith(
-                        path.basename(filePath)
-                    )
-
-                )
-
-            if (!downloaded)
-                throw new Error(
-                    'Archivo no encontrado'
-                )
-
-            const finalPath =
-                path.join(
-
-                    __dirname,
-                    '../../temp',
-                    downloaded
-
-                )
-
-            const stats =
-                fs.statSync(finalPath)
+            /* ─────────────────────────────
+               VERIFICAR ARCHIVO
+            ───────────────────────────── */
 
             if (
-
-                isMediaTooLarge(
-                    stats.size,
-                    25
+                !fs.existsSync(
+                    finalPath
                 )
-
             ) {
 
-                fs.unlinkSync(finalPath)
-
-                return await sendSpotifyMessage(
-    sock,
-    from,
-    ui.error(
-        'ARCHIVO MUY PESADO',
-        `Peso: ${getFileSizeMB(stats.size)} MB`
-    )
-)
+                throw new Error(
+                    'Archivo MP3 descargado no encontrado'
+                )
 
             }
+
+
+            /* ─────────────────────────────
+               TAMAÑO
+            ───────────────────────────── */
+
+            const stats =
+                fs.statSync(
+                    finalPath
+                )
+
+
+            if (
+                isMediaTooLarge(
+
+                    stats.size,
+
+                    MAX_AUDIO_MB
+
+                )
+            ) {
+
+                const size =
+                    getFileSizeMB(
+                        stats.size
+                    )
+
+
+                removeTemp(
+                    finalPath
+                )
+
+
+                finalPath =
+                    null
+
+
+                return await sendSpotifyMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ARCHIVO MUY PESADO',
+
+                        `La canción pesa ${size} MB y supera el límite de ${MAX_AUDIO_MB} MB.`
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ENVIAR MP3
+            ───────────────────────────── */
 
             await sock.sendMessage(
 
@@ -345,69 +661,191 @@ module.exports = {
                 {
 
                     audio: {
-                        url: finalPath
+
+                        url:
+                            finalPath
+
                     },
 
                     mimetype:
-                        'audio/mp4',
+                        'audio/mpeg',
 
-                    ptt: false
+                    ptt:
+                        false
 
                 }
 
             )
 
+
+            /* ─────────────────────────────
+               RESULTADO
+            ───────────────────────────── */
+
             await sendSpotifyMessage(
-    sock,
-    from,
-    ui.success(
-        'SPOTIFY',
-        [
-            ['Título', data.result.title],
-            ['Artista', data.result.artist]
-        ]
-    )
-)
-            setTimeout(() => {
 
-                try {
+                sock,
 
-                    if (
-                        fs.existsSync(finalPath)
-                    ) {
+                from,
 
-                        fs.unlinkSync(finalPath)
+                ui.success(
 
-                        logger.info(
-                            `Temp eliminado: ${downloaded}`
-                        )
+                    '🎧 SPOTIFY DOWNLOAD',
 
-                    }
+                    [
 
-                } catch (e) {
+                        [
+                            'Título',
+                            trackTitle
+                        ],
 
-                    logger.error(
-                        `Error borrando temp: ${e.message}`
+                        [
+                            'Artista',
+                            artist ||
+                            'Desconocido'
+                        ],
+
+                        [
+                            'Duración',
+                            video.timestamp ||
+                            'Desconocida'
+                        ],
+
+                        [
+                            'Formato',
+                            'MP3'
+                        ],
+
+                        [
+                            'Fuente',
+                            'Spotify'
+                        ]
+
+                    ],
+
+                    'Canción descargada correctamente.'
+
+                )
+
+            )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Spotify: "${trackTitle}" - ${artist || 'Desconocido'} | MP3 | ${sender?.split('@')[0] || 'desconocido'}`
+
+            )
+
+
+            /* ─────────────────────────────
+               LIMPIEZA
+            ───────────────────────────── */
+
+            const pathToDelete =
+                finalPath
+
+
+            setTimeout(
+
+                () => {
+
+                    removeTemp(
+                        pathToDelete
                     )
 
-                }
+                },
 
-            }, 15000)
+                15000
+
+            )
+
+
+            finalPath =
+                null
+
 
         } catch (err) {
 
             logger.error(
-                `Error spotify: ${err.message}`
+
+                `Error spotify: ${err.stack || err.message}`
+
             )
 
-            await sendSpotifyMessage(
-    sock,
-    from,
-    ui.error(
-        'ERROR',
-        'No se pudo descargar la canción.'
-    )
-)
+
+            if (
+                err.response
+            ) {
+
+                logger.error(
+
+                    `Spotify API status: ${err.response.status}`
+
+                )
+
+                logger.error(
+
+                    `Spotify API response: ${JSON.stringify(err.response.data)}`
+
+                )
+
+            }
+
+
+            if (
+                finalPath
+            ) {
+
+                removeTemp(
+                    finalPath
+                )
+
+            }
+
+
+            let detail =
+                'No se pudo descargar la canción.'
+
+
+            if (
+                String(
+                    err.message
+                )
+                    .toLowerCase()
+                    .includes(
+                        'ffmpeg'
+                    )
+            ) {
+
+                detail =
+                    'No se pudo convertir el audio a MP3. Verifica que FFmpeg esté instalado.'
+
+            }
+
+
+            try {
+
+                await sendSpotifyMessage(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ERROR DE SPOTIFY',
+
+                        detail
+
+                    )
+
+                )
+
+            } catch {}
 
         }
 

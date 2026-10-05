@@ -1,76 +1,505 @@
-const fs = require('fs')
-const path = require('path')
-const isGroupAdmin = require('../../src/utils/isAdmin')
-const logger = require('../../src/utils/logger')
-const ui = require('../../src/utils/ui')
+const fs =
+    require('fs')
 
-const welcomePath = path.join(__dirname, '../../database/welcome.json')
-const iconPath = path.join(__dirname, '../../assets/icons/welcome.jpeg')
+const path =
+    require('path')
+
+const isGroupAdmin =
+    require('../../src/utils/isAdmin')
+
+const logger =
+    require('../../src/utils/logger')
+
+const ui =
+    require('../../src/utils/ui')
+
+
+const welcomePath =
+    path.join(
+        __dirname,
+        '../../database/welcome.json'
+    )
+
+
+function ensureWelcomeFile() {
+
+    const directory =
+        path.dirname(
+            welcomePath
+        )
+
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+
+    if (
+        !fs.existsSync(
+            welcomePath
+        )
+    ) {
+
+        fs.writeFileSync(
+            welcomePath,
+            JSON.stringify(
+                [],
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function readWelcomeData() {
+
+    ensureWelcomeFile()
+
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    welcomePath,
+                    'utf8'
+                )
+            )
+
+
+        return Array.isArray(data)
+            ? data
+            : []
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo welcome.json: ${err.message}`
+        )
+
+        return []
+
+    }
+
+}
+
+
+function saveWelcomeData(
+    data
+) {
+
+    fs.writeFileSync(
+        welcomePath,
+        JSON.stringify(
+            data,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
 
 module.exports = {
 
-    name: 'welcome',
-    aliases: ['bienvenida', 'welcomemsg'],
-    description: 'Activa o desactiva el mensaje de bienvenida',
-    category: 'grupos',
-    adminOnly: true,
-    groupOnly: true,
+    name:
+        'welcome',
 
-    async execute({ sock, from, args, msg }) {
+    aliases: [
+        'bienvenida',
+        'welcomemsg'
+    ],
+
+    description:
+        'Activa o desactiva el mensaje de bienvenida',
+
+    category:
+        'grupos',
+
+    adminOnly:
+        true,
+
+    groupOnly:
+        true,
+
+
+    async execute({
+
+        sock,
+        from,
+        args,
+        msg
+
+    }) {
 
         try {
 
-            const sender = msg.key.participant || msg.participant
-            const admin = await isGroupAdmin(sock, from, sender)
+            /* ─────────────────────────────
+               SOLO GRUPOS
+            ───────────────────────────── */
 
-            if (!admin)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.error('ACCESO DENEGADO', 'Solo administradores pueden usar este comando.')
-                })
+            if (
+                !from.endsWith(
+                    '@g.us'
+                )
+            ) {
 
-            if (!fs.existsSync(welcomePath))
-                fs.writeFileSync(welcomePath, JSON.stringify([], null, 2))
+                return await sock.sendMessage(
 
-            let data = []
-            try {
-                data = JSON.parse(fs.readFileSync(welcomePath))
-                if (!Array.isArray(data)) data = []
-            } catch { data = [] }
+                    from,
 
-            const option = args[0]?.toLowerCase()?.trim()
+                    {
 
-            if (option === 'on') {
-                if (!data.includes(from)) data.push(from)
-                fs.writeFileSync(welcomePath, JSON.stringify(data, null, 2))
-                logger.event(`Welcome ON: ${from.split('@')[0]}`)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.success('WELCOME ACTIVADO', [['Estado', '● ACTIVADO']])
-                })
+                        text:
+                            ui.error(
+
+                                'SOLO GRUPOS',
+
+                                'Este comando solo funciona dentro de grupos.'
+
+                            )
+
+                    }
+
+                )
+
             }
 
-            if (option === 'off') {
-                data = data.filter(id => id !== from)
-                fs.writeFileSync(welcomePath, JSON.stringify(data, null, 2))
-                logger.event(`Welcome OFF: ${from.split('@')[0]}`)
-                return await sock.sendMessage(from, {
-                    image: fs.readFileSync(iconPath),
-                    caption: ui.success('WELCOME DESACTIVADO', [['Estado', '○ DESACTIVADO']])
-                })
+
+            /* ─────────────────────────────
+               REMITENTE
+            ───────────────────────────── */
+
+            const sender =
+
+                msg.key.participant ||
+
+                msg.participant ||
+
+                msg.key.remoteJid
+
+
+            if (!sender) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario.'
+
+                            )
+
+                    }
+
+                )
+
             }
 
-            const enabled = data.includes(from)
 
-            await sock.sendMessage(from, {
-                image: fs.readFileSync(iconPath),
-                caption: ui.info('WELCOME DEL GRUPO', [
-                    ['Estado', enabled ? '● ACTIVADO' : '○ DESACTIVADO']
-                ], 'Uso:\n/welcome on\n/welcome off')
-            })
+            /* ─────────────────────────────
+               VALIDAR ADMIN
+            ───────────────────────────── */
+
+            const admin =
+                await isGroupAdmin(
+
+                    sock,
+
+                    from,
+
+                    sender
+
+                )
+
+
+            if (!admin) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ACCESO DENEGADO',
+
+                                'Solo los administradores pueden cambiar la bienvenida.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               DATOS
+            ───────────────────────────── */
+
+            let data =
+                readWelcomeData()
+
+
+            const option =
+                String(
+                    args?.[0] || ''
+                )
+                    .trim()
+                    .toLowerCase()
+
+
+            const enabled =
+                data.includes(
+                    from
+                )
+
+
+            /* ─────────────────────────────
+               ACTIVAR
+            ───────────────────────────── */
+
+            if (
+                option === 'on'
+            ) {
+
+                if (
+                    !enabled
+                ) {
+
+                    data.push(
+                        from
+                    )
+
+
+                    saveWelcomeData(
+                        data
+                    )
+
+                }
+
+
+                logger.event(
+
+                    `Welcome ON: ${from.split('@')[0]} | ${sender.split('@')[0]}`
+
+                )
+
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.success(
+
+                                '👋 WELCOME ACTIVADO',
+
+                                [
+
+                                    [
+                                        'Estado',
+                                        '● ACTIVADO'
+                                    ],
+
+                                    [
+                                        'Configurado por',
+                                        `@${sender.split('@')[0]}`
+                                    ]
+
+                                ],
+
+                                enabled
+                                    ? 'El mensaje de bienvenida ya estaba activado.'
+                                    : 'KennyBot enviará un mensaje cuando entre un nuevo miembro.'
+
+                            ),
+
+                        mentions: [
+                            sender
+                        ]
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               DESACTIVAR
+            ───────────────────────────── */
+
+            if (
+                option === 'off'
+            ) {
+
+                if (
+                    enabled
+                ) {
+
+                    data =
+                        data.filter(
+                            id =>
+                                id !== from
+                        )
+
+
+                    saveWelcomeData(
+                        data
+                    )
+
+                }
+
+
+                logger.event(
+
+                    `Welcome OFF: ${from.split('@')[0]} | ${sender.split('@')[0]}`
+
+                )
+
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.success(
+
+                                '👋 WELCOME DESACTIVADO',
+
+                                [
+
+                                    [
+                                        'Estado',
+                                        '○ DESACTIVADO'
+                                    ],
+
+                                    [
+                                        'Configurado por',
+                                        `@${sender.split('@')[0]}`
+                                    ]
+
+                                ],
+
+                                enabled
+                                    ? 'KennyBot dejó de enviar mensajes de bienvenida.'
+                                    : 'La bienvenida ya estaba desactivada.'
+
+                            ),
+
+                        mentions: [
+                            sender
+                        ]
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ESTADO ACTUAL
+            ───────────────────────────── */
+
+            return await sock.sendMessage(
+
+                from,
+
+                {
+
+                    text:
+                        ui.info(
+
+                            '👋 WELCOME DEL GRUPO',
+
+                            [
+
+                                [
+                                    'Estado',
+                                    enabled
+                                        ? '● ACTIVADO'
+                                        : '○ DESACTIVADO'
+                                ]
+
+                            ],
+
+                            [
+                                'Uso:',
+                                '/welcome on',
+                                '/welcome off'
+                            ].join('\n')
+
+                        )
+
+                }
+
+            )
+
 
         } catch (err) {
-            logger.error(`Error welcome: ${err.message}`)
+
+            logger.error(
+
+                `Error welcome: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE WELCOME',
+
+                                'No se pudo cambiar el estado de la bienvenida.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
+
         }
 
     }

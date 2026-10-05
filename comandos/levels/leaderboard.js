@@ -10,17 +10,190 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
+
 const levelsPath =
     path.join(
         __dirname,
         '../../database/levels.json'
     )
 
+
 const MEDALS = [
     '🥇',
     '🥈',
     '🥉'
 ]
+
+
+function ensureLevelsFile() {
+
+    const directory =
+        path.dirname(
+            levelsPath
+        )
+
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+
+    if (
+        !fs.existsSync(
+            levelsPath
+        )
+    ) {
+
+        fs.writeFileSync(
+            levelsPath,
+            JSON.stringify(
+                {},
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function readLevels() {
+
+    ensureLevelsFile()
+
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    levelsPath,
+                    'utf8'
+                )
+            )
+
+
+        return (
+            data &&
+            typeof data === 'object' &&
+            !Array.isArray(data)
+        )
+            ? data
+            : {}
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo levels.json: ${err.message}`
+        )
+
+        return {}
+
+    }
+
+}
+
+
+function normalizeLevelData(
+    data
+) {
+
+    const source =
+        data &&
+        typeof data === 'object' &&
+        !Array.isArray(data)
+            ? data
+            : {}
+
+
+    let level =
+        Number(
+            source.level
+        )
+
+
+    let xp =
+        Number(
+            source.xp
+        )
+
+
+    if (
+        !Number.isFinite(level) ||
+        level < 1
+    ) {
+
+        level =
+            1
+
+    }
+
+
+    if (
+        !Number.isFinite(xp) ||
+        xp < 0
+    ) {
+
+        xp =
+            0
+
+    }
+
+
+    return {
+
+        ...source,
+
+        level:
+            Math.floor(level),
+
+        xp:
+            Math.floor(xp)
+
+    }
+
+}
+
+
+function formatNumber(
+    value
+) {
+
+    return Number(
+        value || 0
+    )
+        .toLocaleString(
+            'es-MX'
+        )
+
+}
+
+
+function getNumber(
+    jid
+) {
+
+    return String(
+        jid || ''
+    )
+        .split('@')[0]
+        .split(':')[0]
+
+}
+
 
 module.exports = {
 
@@ -39,118 +212,253 @@ module.exports = {
     category:
         'niveles',
 
-    cooldown: 10,
+    cooldown:
+        10,
+
 
     async execute({
+
         sock,
         from
+
     }) {
 
         try {
 
-            if (!fs.existsSync(levelsPath)) {
-                fs.writeFileSync(
-                    levelsPath,
-                    JSON.stringify({}, null, 2)
-                )
-            }
+            /* ─────────────────────────────
+               DATOS
+            ───────────────────────────── */
 
-            let levels = {}
+            const levels =
+                readLevels()
 
-            try {
-                levels =
-                    JSON.parse(
-                        fs.readFileSync(levelsPath)
-                    )
-            } catch {
-                levels = {}
-            }
 
             let users =
-                Object.entries(levels)
+                Object.entries(
+                    levels
+                )
+                    .map(
 
-            if (users.length === 0) {
+                        ([id, data]) => {
+
+                            return [
+
+                                id,
+
+                                normalizeLevelData(
+                                    data
+                                )
+
+                            ]
+
+                        }
+
+                    )
+
+
+            /* ─────────────────────────────
+               SIN USUARIOS
+            ───────────────────────────── */
+
+            if (
+                users.length === 0
+            ) {
 
                 return await sock.sendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.info(
-                                'LEADERBOARD',
+
+                                '🏆 LEADERBOARD',
+
                                 [],
-                                'No hay datos todavía.'
+
+                                'Todavía no hay usuarios registrados en el sistema de niveles.'
+
                             )
+
                     }
+
                 )
 
             }
 
-            users = users.map(
-                ([id, data]) => {
 
-                    if (typeof data !== 'object') data = {}
-                    if (typeof data.level !== 'number') data.level = 1
-                    if (typeof data.xp !== 'number') data.xp = 0
-                    if (data.level < 1) data.level = 1
-                    if (data.xp < 0) data.xp = 0
-
-                    return [id, data]
-
-                }
-            )
+            /* ─────────────────────────────
+               ORDENAR
+            ───────────────────────────── */
 
             users.sort(
-                (a, b) =>
-                    b[1].xp -
-                    a[1].xp
-            )
 
-            const top =
-                users.slice(0, 10)
+                (a, b) => {
 
-            const mentions =
-                top.map(([id]) => id)
+                    const levelDiff =
+                        b[1].level -
+                        a[1].level
 
-            const rows =
-                top.map(
-                    ([id, data], i) => {
 
-                        const medal =
-                            MEDALS[i] ||
-                            `${i + 1}.`
+                    if (
+                        levelDiff !== 0
+                    ) {
 
-                        return [
-                            `${medal} @${id.split('@')[0]}`,
-                            `⭐ Nivel ${data.level}`,
-                            `✨ ${Number(data.xp).toLocaleString()} XP`
-                        ].join('  •  ')
+                        return levelDiff
 
                     }
-                ).join('\n\n')
 
-            logger.event(
-                `Leaderboard usado en ${from.split('@')[0]}`
+
+                    return (
+                        b[1].xp -
+                        a[1].xp
+                    )
+
+                }
+
             )
+
+
+            const top =
+                users.slice(
+                    0,
+                    10
+                )
+
+
+            /* ─────────────────────────────
+               MENCIONES
+            ───────────────────────────── */
+
+            const mentions =
+                top
+                    .map(
+                        ([id]) =>
+                            id
+                    )
+                    .filter(
+                        id =>
+                            typeof id === 'string' &&
+                            id.includes('@')
+                    )
+
+
+            /* ─────────────────────────────
+               RANKING
+            ───────────────────────────── */
+
+            const rows =
+                top
+                    .map(
+
+                        ([id, data], index) => {
+
+                            const position =
+                                MEDALS[index] ||
+                                `${index + 1}.`
+
+
+                            return [
+
+                                `${position} *@${getNumber(id)}*`,
+
+                                `   ⭐ Nivel: ${formatNumber(data.level)}`,
+
+                                `   ✨ XP: ${formatNumber(data.xp)}`
+
+                            ].join('\n')
+
+                        }
+
+                    )
+                    .join(
+                        '\n\n'
+                    )
+
+
+            /* ─────────────────────────────
+               MENSAJE
+            ───────────────────────────── */
+
+            const text = [
+
+                'ㅤ۟∩　ׅ　🏆　ׅ　*LEADERBOARD GLOBAL*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 👥  ׄ ⬭ *Usuarios registrados:* ${users.length}`,
+
+                `𖣣ֶㅤ֯⌗ 🔝  ׄ ⬭ *Mostrando:* Top ${top.length}`,
+
+                '',
+
+                rows,
+
+                '',
+
+                '╰─ 𓂃 Ranking ordenado por nivel y XP.'
+
+            ].join('\n')
+
+
+            /* ─────────────────────────────
+               ENVIAR
+            ───────────────────────────── */
 
             await sock.sendMessage(
+
                 from,
+
                 {
-                    text: [
-                        `🏆 LEADERBOARD GLOBAL`,
-                        ui.divider,
-                        rows,
-                        ui.divider,
-                        `👥 Usuarios rankeados: ${users.length}`
-                    ].join('\n'),
+
+                    text,
+
                     mentions
+
                 }
+
             )
+
+
+            logger.event(
+
+                `Leaderboard usado en ${from.split('@')[0]} | ${users.length} usuarios`
+
+            )
+
 
         } catch (err) {
 
             logger.error(
-                `Error leaderboard: ${err.message}`
+
+                `Error leaderboard: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE LEADERBOARD',
+
+                                'No se pudo generar el ranking de niveles.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

@@ -1,5 +1,5 @@
-const fs   = require('fs')
-const path = require('path')
+const fs =
+    require('fs')
 
 const {
     isMediaTooLarge,
@@ -27,6 +27,11 @@ const ui =
 const youtubedl =
     require('youtube-dl-exec')
 
+
+const MAX_VIDEO_MB =
+    80
+
+
 async function sendYtmp4Message(
     sock,
     from,
@@ -42,21 +47,82 @@ async function sendYtmp4Message(
 
 }
 
+
+function isYouTubeUrl(value = '') {
+
+    try {
+
+        const parsed =
+            new URL(value)
+
+        const host =
+            parsed.hostname
+                .toLowerCase()
+                .replace(/^www\./, '')
+
+        return (
+            host === 'youtube.com' ||
+            host.endsWith('.youtube.com') ||
+            host === 'youtu.be'
+        )
+
+    } catch {
+
+        return false
+
+    }
+
+}
+
+
+function removeTemp(filePath) {
+
+    try {
+
+        if (
+            filePath &&
+            fs.existsSync(filePath)
+        ) {
+
+            fs.unlinkSync(
+                filePath
+            )
+
+            logger.info(
+                `Temp eliminado: ${filePath}`
+            )
+
+        }
+
+    } catch (err) {
+
+        logger.warn(
+            `Error borrando temp: ${err.message}`
+        )
+
+    }
+
+}
+
+
 module.exports = {
 
-    name: 'ytmp4',
+    name:
+        'ytmp4',
 
     aliases: [
-
         'ytv'
-
     ],
 
     description:
-        'Descarga videos de YouTube',
+        'Descarga videos de YouTube en MP4',
 
     category:
         'descargas',
+
+    cooldown:
+        30,
+
 
     async execute({
 
@@ -67,76 +133,162 @@ module.exports = {
 
     }) {
 
+        let finalPath =
+            null
+
+
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
+
                 msg.key.participant ||
+
                 msg.key.remoteJid
+
+
+            /* ─────────────────────────────
+               COOLDOWN
+            ───────────────────────────── */
 
             const cooldown =
                 checkCooldown(
+
                     sender,
+
                     'ytmp4',
+
                     30
+
                 )
 
-            if (cooldown.active) {
-
-                return await sendYtmp4Message(
-    sock,
-    from,
-    ui.warn(
-        'COOLDOWN ACTIVO',
-        `Espera ${cooldown.left}s antes de usar este comando.`
-    )
-)
-
-            }
-
-            const url =
-                args[0]
 
             if (
-
-                !url ||
-
-                (
-                    !url.includes('youtube.com') &&
-                    !url.includes('youtu.be')
-                )
-
+                cooldown.active
             ) {
 
                 return await sendYtmp4Message(
-    sock,
-    from,
-    ui.warn(
-        'URL INVÁLIDA',
-        'Uso: /ytmp4 link'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'COOLDOWN ACTIVO',
+
+                        `Espera ${cooldown.left}s antes de volver a usar este comando.`
+
+                    )
+
+                )
+
             }
+
+
+            /* ─────────────────────────────
+               URL
+            ───────────────────────────── */
+
+            const url =
+                String(
+                    args?.[0] || ''
+                )
+                    .trim()
+
+
+            if (
+                !url ||
+                !isYouTubeUrl(url)
+            ) {
+
+                return await sendYtmp4Message(
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'ENLACE REQUERIDO',
+
+                        'Envía un enlace válido de YouTube.\n\nUso: /ytmp4 link'
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               COLA
+            ───────────────────────────── */
 
             const position =
                 getQueueLength() + 1
 
+
             await sendYtmp4Message(
-    sock,
-    from,
-    ui.info(
-        'COLA DE DESCARGA',
-        [
-            ['Formato', 'Video'],
-            ['Posición', `#${position}`]
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+
+                    '🎬 YOUTUBE VIDEO',
+
+                    [
+
+                        [
+                            'Formato',
+                            'MP4'
+                        ],
+
+                        [
+                            'Posición',
+                            `#${position}`
+                        ],
+
+                        [
+                            'Estado',
+                            'EN COLA'
+                        ]
+
+                    ],
+
+                    'El video será procesado en la mejor calidad compatible.'
+
+                )
+
+            )
+
+
+            /* ─────────────────────────────
+               ARCHIVO TEMPORAL
+            ───────────────────────────── */
 
             const filePath =
                 generateTempFile(
+
                     'temp',
+
                     'video'
+
                 )
+
+
+            finalPath =
+                `${filePath}.mp4`
+
+
+            /* ─────────────────────────────
+               DESCARGAR VIDEO
+            ───────────────────────────── */
 
             await addToQueue(
 
@@ -148,15 +300,28 @@ module.exports = {
 
                         {
 
+                            /*
+                                Priorizamos MP4 + M4A para
+                                evitar conversiones innecesarias.
+
+                                Si no existe esa combinación,
+                                usa la mejor alternativa.
+                            */
+
                             format:
-                                'bestvideo+bestaudio/best',
+                                'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+
+                            mergeOutputFormat:
+                                'mp4',
 
                             output:
-                                `${filePath}.%(ext)s`,
+                                finalPath,
 
-                            noCheckCertificates: true,
+                            noCheckCertificates:
+                                true,
 
-                            noPlaylist: true
+                            noPlaylist:
+                                true
 
                         }
 
@@ -166,122 +331,228 @@ module.exports = {
 
             )
 
-            await new Promise(resolve =>
 
-                setTimeout(
-                    resolve,
-                    3000
-                )
-
-            )
-
-            const files =
-                fs.readdirSync(
-
-                    path.join(
-                        __dirname,
-                        '../../temp'
-                    )
-
-                )
-
-            const downloaded =
-                files.find(f =>
-
-                    f.startsWith(
-                        path.basename(filePath)
-                    )
-
-                )
-
-            if (!downloaded)
-                throw new Error(
-                    'Archivo no encontrado'
-                )
-
-            const finalPath =
-                path.join(
-
-                    __dirname,
-                    '../../temp',
-                    downloaded
-
-                )
-
-            const stats =
-                fs.statSync(finalPath)
+            /* ─────────────────────────────
+               VERIFICAR ARCHIVO
+            ───────────────────────────── */
 
             if (
-
-                isMediaTooLarge(
-                    stats.size,
-                    80
+                !fs.existsSync(
+                    finalPath
                 )
-
             ) {
 
-                fs.unlinkSync(finalPath)
-
-                return await sendYtmp4Message(
-    sock,
-    from,
-    ui.error(
-        'ARCHIVO MUY PESADO',
-        `Peso: ${getFileSizeMB(stats.size)} MB`
-    )
-)
+                throw new Error(
+                    'Archivo MP4 descargado no encontrado'
+                )
 
             }
 
-           caption:
-    ui.success(
-        'VIDEO ENVIADO',
-        [
-            ['Formato', 'Video'],
-            ['Estado', 'Completado']
-        ]
-    )
 
-            setTimeout(() => {
+            /* ─────────────────────────────
+               TAMAÑO
+            ───────────────────────────── */
 
-                try {
+            const stats =
+                fs.statSync(
+                    finalPath
+                )
 
-                    if (
-                        fs.existsSync(finalPath)
-                    ) {
 
-                        fs.unlinkSync(finalPath)
+            if (
+                isMediaTooLarge(
 
-                        logger.info(
-                            `Temp eliminado: ${downloaded}`
-                        )
+                    stats.size,
 
-                    }
+                    MAX_VIDEO_MB
 
-                } catch (e) {
+                )
+            ) {
 
-                    logger.error(
-                        `Error borrando temp: ${e.message}`
+                const size =
+                    getFileSizeMB(
+                        stats.size
                     )
+
+
+                removeTemp(
+                    finalPath
+                )
+
+
+                finalPath =
+                    null
+
+
+                return await sendYtmp4Message(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ARCHIVO MUY PESADO',
+
+                        `El video pesa ${size} MB y supera el límite de ${MAX_VIDEO_MB} MB.`
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ENVIAR VIDEO
+            ───────────────────────────── */
+
+            await sock.sendMessage(
+
+                from,
+
+                {
+
+                    video: {
+
+                        url:
+                            finalPath
+
+                    },
+
+                    mimetype:
+                        'video/mp4',
+
+                    caption:
+                        ui.success(
+
+                            '🎬 YOUTUBE VIDEO',
+
+                            [
+
+                                [
+                                    'Formato',
+                                    'MP4'
+                                ],
+
+                                [
+                                    'Estado',
+                                    'COMPLETADO'
+                                ],
+
+                                [
+                                    'Peso',
+                                    `${getFileSizeMB(stats.size)} MB`
+                                ]
+
+                            ],
+
+                            'Video descargado correctamente.'
+
+                        )
 
                 }
 
-            }, 15000)
+            )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `YTMP4 descargado por ${sender?.split('@')[0] || 'desconocido'} | ${getFileSizeMB(stats.size)} MB`
+
+            )
+
+
+            /* ─────────────────────────────
+               LIMPIEZA
+            ───────────────────────────── */
+
+            const pathToDelete =
+                finalPath
+
+
+            setTimeout(
+
+                () => {
+
+                    removeTemp(
+                        pathToDelete
+                    )
+
+                },
+
+                15000
+
+            )
+
+
+            finalPath =
+                null
+
 
         } catch (err) {
 
             logger.error(
-                `Error ytmp4: ${err.message}`
+
+                `Error ytmp4: ${err.stack || err.message}`
+
             )
 
-            await sendYtmp4Message(
-    sock,
-    from,
-    ui.error(
-        'ERROR',
-        'No se pudo descargar el video.'
-    )
-)
+
+            if (
+                finalPath
+            ) {
+
+                removeTemp(
+                    finalPath
+                )
+
+            }
+
+
+            let detail =
+                'No se pudo descargar el video.'
+
+
+            if (
+                String(
+                    err.message
+                )
+                    .toLowerCase()
+                    .includes(
+                        'ffmpeg'
+                    )
+            ) {
+
+                detail =
+                    'No se pudo combinar el video y el audio. Verifica que FFmpeg esté instalado.'
+
+            }
+
+
+            try {
+
+                await sendYtmp4Message(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ERROR YTMP4',
+
+                        detail
+
+                    )
+
+                )
+
+            } catch {}
 
         }
 

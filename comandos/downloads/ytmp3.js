@@ -1,5 +1,5 @@
-const fs   = require('fs')
-const path = require('path')
+const fs =
+    require('fs')
 
 const {
     addToQueue,
@@ -27,6 +27,11 @@ const ui =
 const youtubedl =
     require('youtube-dl-exec')
 
+
+const MAX_AUDIO_MB =
+    25
+
+
 async function sendYtmp3Message(
     sock,
     from,
@@ -42,21 +47,82 @@ async function sendYtmp3Message(
 
 }
 
+
+function isYouTubeUrl(value = '') {
+
+    try {
+
+        const parsed =
+            new URL(value)
+
+        const host =
+            parsed.hostname
+                .toLowerCase()
+                .replace(/^www\./, '')
+
+        return (
+            host === 'youtube.com' ||
+            host.endsWith('.youtube.com') ||
+            host === 'youtu.be'
+        )
+
+    } catch {
+
+        return false
+
+    }
+
+}
+
+
+function removeTemp(filePath) {
+
+    try {
+
+        if (
+            filePath &&
+            fs.existsSync(filePath)
+        ) {
+
+            fs.unlinkSync(
+                filePath
+            )
+
+            logger.info(
+                `Temp eliminado: ${filePath}`
+            )
+
+        }
+
+    } catch (err) {
+
+        logger.warn(
+            `Error borrando temp: ${err.message}`
+        )
+
+    }
+
+}
+
+
 module.exports = {
 
-    name: 'ytmp3',
+    name:
+        'ytmp3',
 
     aliases: [
-
         'yta'
-
     ],
 
     description:
-        'Descarga audio de YouTube',
+        'Descarga audio de YouTube en MP3',
 
     category:
         'descargas',
+
+    cooldown:
+        20,
+
 
     async execute({
 
@@ -67,77 +133,162 @@ module.exports = {
 
     }) {
 
+        let finalPath =
+            null
+
+
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
+
                 msg.key.participant ||
+
                 msg.key.remoteJid
+
+
+            /* ─────────────────────────────
+               COOLDOWN
+            ───────────────────────────── */
 
             const cooldown =
                 checkCooldown(
+
                     sender,
+
                     'ytmp3',
+
                     20
+
                 )
 
-            if (cooldown.active) {
-
-                return await sendYtmp3Message(
-    sock,
-    from,
-    ui.warn(
-        'COOLDOWN ACTIVO',
-        `Espera ${cooldown.left}s antes de usar este comando.`
-    )
-)
-
-            }
-
-            const url =
-                args[0]
 
             if (
-
-                !url ||
-
-                (
-                    !url.includes('youtube.com') &&
-                    !url.includes('youtu.be')
-                )
-
+                cooldown.active
             ) {
 
                 return await sendYtmp3Message(
-    sock,
-    from,
-    ui.warn(
-        'URL INVÁLIDA',
-        'Uso: /ytmp3 link'
-    )
-)
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'COOLDOWN ACTIVO',
+
+                        `Espera ${cooldown.left}s antes de volver a usar este comando.`
+
+                    )
+
+                )
 
             }
+
+
+            /* ─────────────────────────────
+               URL
+            ───────────────────────────── */
+
+            const url =
+                String(
+                    args?.[0] || ''
+                )
+                    .trim()
+
+
+            if (
+                !url ||
+                !isYouTubeUrl(url)
+            ) {
+
+                return await sendYtmp3Message(
+
+                    sock,
+
+                    from,
+
+                    ui.warn(
+
+                        'ENLACE REQUERIDO',
+
+                        'Envía un enlace válido de YouTube.\n\nUso: /ytmp3 link'
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               COLA
+            ───────────────────────────── */
 
             const position =
                 getQueueLength() + 1
 
+
             await sendYtmp3Message(
-    sock,
-    from,
-    ui.info(
-        'COLA DE DESCARGA',
-        [
-            ['Formato', 'Audio'],
-            ['Posición', `#${position}`]
-        ]
-    )
-)
+
+                sock,
+
+                from,
+
+                ui.info(
+
+                    '🎵 YOUTUBE MP3',
+
+                    [
+
+                        [
+                            'Formato',
+                            'MP3'
+                        ],
+
+                        [
+                            'Posición',
+                            `#${position}`
+                        ],
+
+                        [
+                            'Estado',
+                            'EN COLA'
+                        ]
+
+                    ],
+
+                    'El audio será procesado en la mejor calidad disponible.'
+
+                )
+
+            )
+
+
+            /* ─────────────────────────────
+               TEMPORAL
+            ───────────────────────────── */
 
             const filePath =
                 generateTempFile(
+
                     'temp',
+
                     'audio'
+
                 )
+
+
+            finalPath =
+                `${filePath}.mp3`
+
+
+            /* ─────────────────────────────
+               DESCARGAR + CONVERTIR
+            ───────────────────────────── */
 
             await addToQueue(
 
@@ -149,14 +300,26 @@ module.exports = {
 
                         {
 
-                            format: 'bestaudio',
+                            format:
+                                'bestaudio/best',
+
+                            extractAudio:
+                                true,
+
+                            audioFormat:
+                                'mp3',
+
+                            audioQuality:
+                                0,
 
                             output:
-                                `${filePath}.%(ext)s`,
+                                finalPath,
 
-                            noCheckCertificates: true,
+                            noCheckCertificates:
+                                true,
 
-                            noPlaylist: true
+                            noPlaylist:
+                                true
 
                         }
 
@@ -166,72 +329,81 @@ module.exports = {
 
             )
 
-            await new Promise(resolve =>
 
-                setTimeout(
-                    resolve,
-                    2000
-                )
-
-            )
-
-            const files =
-                fs.readdirSync(
-
-                    path.join(
-                        __dirname,
-                        '../../temp'
-                    )
-
-                )
-
-            const downloaded =
-                files.find(f =>
-
-                    f.startsWith(
-                        path.basename(filePath)
-                    )
-
-                )
-
-            if (!downloaded)
-                throw new Error(
-                    'Archivo no encontrado'
-                )
-
-            const finalPath =
-                path.join(
-
-                    __dirname,
-                    '../../temp',
-                    downloaded
-
-                )
-
-            const stats =
-                fs.statSync(finalPath)
+            /* ─────────────────────────────
+               VERIFICAR ARCHIVO
+            ───────────────────────────── */
 
             if (
-
-                isMediaTooLarge(
-                    stats.size,
-                    25
+                !fs.existsSync(
+                    finalPath
                 )
-
             ) {
 
-                fs.unlinkSync(finalPath)
-
-                return await sendYtmp3Message(
-    sock,
-    from,
-    ui.error(
-        'ARCHIVO MUY PESADO',
-        `Peso: ${getFileSizeMB(stats.size)} MB`
-    )
-)
+                throw new Error(
+                    'Archivo MP3 descargado no encontrado'
+                )
 
             }
+
+
+            /* ─────────────────────────────
+               TAMAÑO
+            ───────────────────────────── */
+
+            const stats =
+                fs.statSync(
+                    finalPath
+                )
+
+
+            if (
+                isMediaTooLarge(
+
+                    stats.size,
+
+                    MAX_AUDIO_MB
+
+                )
+            ) {
+
+                const size =
+                    getFileSizeMB(
+                        stats.size
+                    )
+
+
+                removeTemp(
+                    finalPath
+                )
+
+
+                finalPath =
+                    null
+
+
+                return await sendYtmp3Message(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ARCHIVO MUY PESADO',
+
+                        `El audio pesa ${size} MB y supera el límite de ${MAX_AUDIO_MB} MB.`
+
+                    )
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ENVIAR MP3
+            ───────────────────────────── */
 
             await sock.sendMessage(
 
@@ -240,71 +412,156 @@ module.exports = {
                 {
 
                     audio: {
-                        url: finalPath
+
+                        url:
+                            finalPath
+
                     },
 
                     mimetype:
-                        'audio/mp4',
+                        'audio/mpeg',
 
-                    ptt: false
+                    ptt:
+                        false
 
                 }
 
             )
 
-            await sock.sendMessage(
-    from,
-    {
-        text:
-            ui.success(
-                'AUDIO ENVIADO',
-                [
-                    ['Formato', 'Audio'],
-                    ['Estado', 'Completado']
-                ]
+
+            /* ─────────────────────────────
+               RESULTADO
+            ───────────────────────────── */
+
+            await sendYtmp3Message(
+
+                sock,
+
+                from,
+
+                ui.success(
+
+                    '🎧 YOUTUBE MP3',
+
+                    [
+
+                        [
+                            'Formato',
+                            'MP3'
+                        ],
+
+                        [
+                            'Estado',
+                            'COMPLETADO'
+                        ],
+
+                        [
+                            'Peso',
+                            `${getFileSizeMB(stats.size)} MB`
+                        ]
+
+                    ],
+
+                    'Audio descargado correctamente.'
+
+                )
+
             )
-    }
-)
-            setTimeout(() => {
 
-                try {
 
-                    if (
-                        fs.existsSync(finalPath)
-                    ) {
+            logger.event(
 
-                        fs.unlinkSync(finalPath)
+                `YTMP3 descargado por ${sender?.split('@')[0] || 'desconocido'} | ${getFileSizeMB(stats.size)} MB`
 
-                        logger.info(
-                            `Temp eliminado: ${downloaded}`
-                        )
+            )
 
-                    }
 
-                } catch (e) {
+            /* ─────────────────────────────
+               LIMPIEZA
+            ───────────────────────────── */
 
-                    logger.error(
-                        `Error borrando temp: ${e.message}`
+            const pathToDelete =
+                finalPath
+
+
+            setTimeout(
+
+                () => {
+
+                    removeTemp(
+                        pathToDelete
                     )
 
-                }
+                },
 
-            }, 15000)
+                15000
+
+            )
+
+
+            finalPath =
+                null
+
 
         } catch (err) {
 
             logger.error(
-                `Error ytmp3: ${err.message}`
+
+                `Error ytmp3: ${err.stack || err.message}`
+
             )
 
-            await sendYtmp3Message(
-    sock,
-    from,
-    ui.error(
-        'ERROR',
-        'No se pudo descargar el audio.'
-    )
-)
+
+            if (
+                finalPath
+            ) {
+
+                removeTemp(
+                    finalPath
+                )
+
+            }
+
+
+            let detail =
+                'No se pudo descargar el audio.'
+
+
+            if (
+                String(
+                    err.message
+                )
+                    .toLowerCase()
+                    .includes(
+                        'ffmpeg'
+                    )
+            ) {
+
+                detail =
+                    'No se pudo convertir el audio a MP3. Verifica que FFmpeg esté instalado.'
+
+            }
+
+
+            try {
+
+                await sendYtmp3Message(
+
+                    sock,
+
+                    from,
+
+                    ui.error(
+
+                        'ERROR YTMP3',
+
+                        detail
+
+                    )
+
+                )
+
+            } catch {}
 
         }
 
