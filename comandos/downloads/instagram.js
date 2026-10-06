@@ -24,6 +24,56 @@ async function sendInstagramMessage(
 }
 
 
+function isInstagramUrl(
+    value
+) {
+
+    if (!value) {
+
+        return false
+
+    }
+
+
+    try {
+
+        const url =
+            new URL(
+                value
+            )
+
+
+        const hostname =
+            url.hostname
+                .toLowerCase()
+                .replace(
+                    /^www\./,
+                    ''
+                )
+
+
+        return (
+
+            hostname ===
+            'instagram.com'
+
+            ||
+
+            hostname.endsWith(
+                '.instagram.com'
+            )
+
+        )
+
+    } catch {
+
+        return false
+
+    }
+
+}
+
+
 module.exports = {
 
     name:
@@ -51,12 +101,20 @@ module.exports = {
 
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
+
                 msg.key.participant ||
+
+                msg.participant ||
+
                 msg.key.remoteJid
 
 
-            if (cooldown.active) {
+            if (!sender) {
 
                 return await sendInstagramMessage(
 
@@ -64,11 +122,11 @@ module.exports = {
 
                     from,
 
-                    ui.warn(
+                    ui.error(
 
-                        'COOLDOWN ACTIVO',
+                        'ERROR DE USUARIO',
 
-                        `Debes esperar ${cooldown.left}s antes de volver a descargar contenido de Instagram.`
+                        'No se pudo identificar al usuario.'
 
                     )
 
@@ -77,13 +135,21 @@ module.exports = {
             }
 
 
+            /* ─────────────────────────────
+               URL
+            ───────────────────────────── */
+
             const url =
-                args[0]
+                String(
+                    args?.[0] || ''
+                )
+                    .trim()
 
 
             if (
-                !url ||
-                !url.includes('instagram.com')
+                !isInstagramUrl(
+                    url
+                )
             ) {
 
                 return await sendInstagramMessage(
@@ -105,6 +171,10 @@ module.exports = {
             }
 
 
+            /* ─────────────────────────────
+               PROCESANDO
+            ───────────────────────────── */
+
             await sendInstagramMessage(
 
                 sock,
@@ -116,6 +186,7 @@ module.exports = {
                     '📸 INSTAGRAM',
 
                     [
+
                         [
                             'Estado',
                             'Procesando descarga'
@@ -125,6 +196,7 @@ module.exports = {
                             'Fuente',
                             'Instagram'
                         ]
+
                     ],
 
                     'Buscando el contenido disponible...'
@@ -133,6 +205,10 @@ module.exports = {
 
             )
 
+
+            /* ─────────────────────────────
+               API
+            ───────────────────────────── */
 
             const response =
                 await axios.get(
@@ -165,9 +241,15 @@ module.exports = {
 
 
             logger.info(
+
                 `Instagram API response: ${JSON.stringify(data)}`
+
             )
 
+
+            /* ─────────────────────────────
+               VALIDAR RESPUESTA
+            ───────────────────────────── */
 
             if (
                 !data ||
@@ -193,15 +275,25 @@ module.exports = {
             }
 
 
+            /* ─────────────────────────────
+               CONTENIDO
+            ───────────────────────────── */
+
             const videos =
-                Array.isArray(data.videos)
+                Array.isArray(
+                    data.videos
+                )
                     ? data.videos
+                        .filter(Boolean)
                     : []
 
 
             const images =
-                Array.isArray(data.images)
+                Array.isArray(
+                    data.images
+                )
                     ? data.images
+                        .filter(Boolean)
                     : []
 
 
@@ -231,28 +323,59 @@ module.exports = {
 
             const media = [
 
-                ...videos.map(url => ({
-                    type: 'video',
-                    url
-                })),
+                ...videos.map(
 
-                ...images.map(url => ({
-                    type: 'image',
-                    url
-                }))
+                    mediaUrl => ({
 
-            ].slice(0, 10)
+                        type:
+                            'video',
+
+                        url:
+                            mediaUrl
+
+                    })
+
+                ),
+
+                ...images.map(
+
+                    mediaUrl => ({
+
+                        type:
+                            'image',
+
+                        url:
+                            mediaUrl
+
+                    })
+
+                )
+
+            ]
+                .slice(
+                    0,
+                    10
+                )
 
 
-            let enviados = 0
+            /* ─────────────────────────────
+               ENVIAR MEDIA
+            ───────────────────────────── */
+
+            let enviados =
+                0
 
 
-            for (const item of media) {
+            for (
+                const item
+                of media
+            ) {
 
                 try {
 
                     if (
-                        item.type === 'video'
+                        item.type ===
+                        'video'
                     ) {
 
                         await sock.sendMessage(
@@ -300,7 +423,8 @@ module.exports = {
 
 
                     else if (
-                        item.type === 'image'
+                        item.type ===
+                        'image'
                     ) {
 
                         await sock.sendMessage(
@@ -371,6 +495,10 @@ module.exports = {
             }
 
 
+            /* ─────────────────────────────
+               VALIDAR ENVÍO
+            ───────────────────────────── */
+
             if (
                 enviados === 0
             ) {
@@ -393,6 +521,10 @@ module.exports = {
 
             }
 
+
+            /* ─────────────────────────────
+               FINAL
+            ───────────────────────────── */
 
             await sendInstagramMessage(
 
@@ -425,12 +557,18 @@ module.exports = {
             )
 
 
-        } catch (err) {
+            logger.event(
 
+                `Instagram: ${sender.split('@')[0]} → ${enviados} archivo(s)`
+
+            )
+
+
+        } catch (err) {
 
             logger.error(
 
-                `Error instagram: ${err.message}`
+                `Error instagram: ${err.stack || err.message}`
 
             )
 
@@ -444,6 +582,7 @@ module.exports = {
                     `Instagram API status: ${err.response.status}`
 
                 )
+
 
                 logger.error(
 
@@ -471,21 +610,25 @@ module.exports = {
             }
 
 
-            await sendInstagramMessage(
+            try {
 
-                sock,
+                await sendInstagramMessage(
 
-                from,
+                    sock,
 
-                ui.error(
+                    from,
 
-                    'ERROR DE INSTAGRAM',
+                    ui.error(
 
-                    'No se pudo completar la descarga del contenido.'
+                        'ERROR DE INSTAGRAM',
+
+                        'No se pudo completar la descarga del contenido.'
+
+                    )
 
                 )
 
-            )
+            } catch {}
 
         }
 

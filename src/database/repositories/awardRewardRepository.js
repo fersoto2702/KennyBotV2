@@ -1,4 +1,91 @@
-const { pool } = require('../mysql')
+const {
+    pool
+} = require('../mysql')
+
+
+function validatePositiveInteger(
+    value,
+    name
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    if (
+        !Number.isInteger(number) ||
+        number <= 0
+    ) {
+
+        throw new Error(
+            `${name} inválido: ${value}`
+        )
+
+    }
+
+
+    return number
+
+}
+
+
+function normalizeNullableInteger(
+    value,
+    name
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ''
+    ) {
+
+        return null
+
+    }
+
+
+    return validatePositiveInteger(
+        value,
+        name
+    )
+
+}
+
+
+function normalizeLimit(
+    value,
+    fallback = 50,
+    max = 500
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return fallback
+
+    }
+
+
+    return Math.max(
+        1,
+        Math.min(
+            max,
+            Math.floor(number)
+        )
+    )
+
+}
+
 
 async function getAwardRewards(
     awardId,
@@ -6,8 +93,25 @@ async function getAwardRewards(
     conn = pool
 ) {
 
-    const [rows] =
+    const id =
+        validatePositiveInteger(
+            awardId,
+            'awardId'
+        )
+
+
+    const normalizedSeasonId =
+        normalizeNullableInteger(
+            seasonId,
+            'seasonId'
+        )
+
+
+    const [
+        rows
+    ] =
         await conn.execute(
+
             `
             SELECT
                 ar.id,
@@ -51,42 +155,84 @@ async function getAwardRewards(
                 END,
                 ar.id ASC
             `,
+
             [
-                awardId,
-                seasonId,
-                seasonId
+                id,
+                normalizedSeasonId,
+                normalizedSeasonId
             ]
+
         )
 
-    if (seasonId !== null) {
+
+    const rewards =
+        Array.isArray(rows)
+            ? rows
+            : []
+
+
+    /*
+        Si existen recompensas específicas
+        de temporada, reemplazan a las globales.
+    */
+
+    if (
+        normalizedSeasonId !== null
+    ) {
 
         const specific =
-            rows.filter(
+            rewards.filter(
+
                 reward =>
-                    Number(reward.season_id) ===
-                    Number(seasonId)
+
+                    reward.season_id !== null &&
+
+                    Number(
+                        reward.season_id
+                    ) ===
+                    normalizedSeasonId
+
             )
 
 
-        if (specific.length) {
+        if (
+            specific.length > 0
+        ) {
+
             return specific
+
         }
+
     }
 
 
-    return rows.filter(
+    return rewards.filter(
+
         reward =>
             reward.season_id === null
+
     )
+
 }
+
 
 async function getMemberAwardForRewards(
     memberAwardId,
     conn = pool
 ) {
 
-    const [rows] =
+    const id =
+        validatePositiveInteger(
+            memberAwardId,
+            'memberAwardId'
+        )
+
+
+    const [
+        rows
+    ] =
         await conn.execute(
+
             `
             SELECT
                 ma.id,
@@ -113,26 +259,55 @@ async function getMemberAwardForRewards(
 
             LIMIT 1
             `,
-            [memberAwardId]
+
+            [
+                id
+            ]
+
         )
 
 
-    return rows[0] || null
+    return (
+        rows?.[0] ||
+        null
+    )
+
 }
+
 
 async function prepareRewardGrants(
     memberAwardId
 ) {
 
+    const id =
+        validatePositiveInteger(
+            memberAwardId,
+            'memberAwardId'
+        )
+
+
     const conn =
         await pool.getConnection()
+
+
+    let transactionFinished =
+        false
+
 
     try {
 
         await conn.beginTransaction()
 
-        const [memberAwardRows] =
+
+        /* ─────────────────────────────
+           MEMBER AWARD
+        ───────────────────────────── */
+
+        const [
+            memberAwardRows
+        ] =
             await conn.execute(
+
                 `
                 SELECT
                     ma.id,
@@ -147,21 +322,43 @@ async function prepareRewardGrants(
 
                 FOR UPDATE
                 `,
-                [memberAwardId]
+
+                [
+                    id
+                ]
+
             )
 
 
-        if (!memberAwardRows.length) {
+        if (
+            !Array.isArray(
+                memberAwardRows
+            ) ||
+            memberAwardRows.length === 0
+        ) {
 
             await conn.rollback()
 
+            transactionFinished =
+                true
+
+
             return {
-                prepared: false,
+
+                prepared:
+                    false,
+
                 reason:
                     'MEMBER_AWARD_NOT_FOUND',
-                created: 0,
-                grants: []
+
+                created:
+                    0,
+
+                grants:
+                    []
+
             }
+
         }
 
 
@@ -170,51 +367,114 @@ async function prepareRewardGrants(
 
 
         if (
-            Number(memberAward.enabled) !== 1
+            Number(
+                memberAward.enabled
+            ) !== 1
         ) {
 
             await conn.rollback()
 
+            transactionFinished =
+                true
+
+
             return {
-                prepared: false,
+
+                prepared:
+                    false,
+
                 reason:
                     'MEMBER_AWARD_DISABLED',
-                created: 0,
-                grants: []
+
+                created:
+                    0,
+
+                grants:
+                    []
+
             }
+
         }
 
+
+        /* ─────────────────────────────
+           RECOMPENSAS
+        ───────────────────────────── */
 
         const rewards =
             await getAwardRewards(
+
                 memberAward.award_id,
+
                 memberAward.season_id,
+
                 conn
+
             )
 
 
-        if (!rewards.length) {
+        if (
+            rewards.length === 0
+        ) {
 
             await conn.commit()
 
+            transactionFinished =
+                true
+
+
             return {
-                prepared: true,
+
+                prepared:
+                    true,
+
                 reason:
                     'NO_REWARDS_CONFIGURED',
-                created: 0,
-                grants: []
+
+                created:
+                    0,
+
+                grants:
+                    []
+
             }
+
         }
 
 
-        let created = 0
+        /* ─────────────────────────────
+           CREAR GRANTS
+        ───────────────────────────── */
 
-        for (const reward of rewards) {
+        let created =
+            0
+
+
+        for (
+            const reward of rewards
+        ) {
+
+            if (
+                !reward ||
+                !reward.id
+            ) {
+
+                continue
+
+            }
+
 
             const quantity =
                 Math.max(
+
                     1,
-                    Number(reward.quantity) || 1
+
+                    Math.floor(
+                        Number(
+                            reward.quantity
+                        ) || 1
+                    )
+
                 )
 
 
@@ -224,8 +484,11 @@ async function prepareRewardGrants(
                 rewardIndex++
             ) {
 
-                const [result] =
+                const [
+                    result
+                ] =
                     await conn.execute(
+
                         `
                         INSERT IGNORE INTO
                             kb_member_reward_grants
@@ -238,25 +501,41 @@ async function prepareRewardGrants(
                         )
                         VALUES (?, ?, ?, ?, 'PENDING')
                         `,
+
                         [
                             memberAward.id,
                             reward.id,
                             memberAward.member_id,
                             rewardIndex
                         ]
+
                     )
 
 
                 if (
-                    Number(result.affectedRows) === 1
+                    Number(
+                        result.affectedRows
+                    ) === 1
                 ) {
+
                     created++
+
                 }
+
             }
+
         }
 
-        const [grants] =
+
+        /* ─────────────────────────────
+           CONSULTAR GRANTS
+        ───────────────────────────── */
+
+        const [
+            grantsRows
+        ] =
             await conn.execute(
+
                 `
                 SELECT
                     g.id,
@@ -294,15 +573,32 @@ async function prepareRewardGrants(
                     g.award_reward_id ASC,
                     g.reward_index ASC
                 `,
-                [memberAward.id]
+
+                [
+                    memberAward.id
+                ]
+
             )
+
+
+        const grants =
+            Array.isArray(
+                grantsRows
+            )
+                ? grantsRows
+                : []
 
 
         await conn.commit()
 
+        transactionFinished =
+            true
+
 
         return {
-            prepared: true,
+
+            prepared:
+                true,
 
             reason:
                 created > 0
@@ -310,40 +606,56 @@ async function prepareRewardGrants(
                     : 'GRANTS_ALREADY_EXIST',
 
             created,
+
             grants
+
         }
 
 
     } catch (error) {
 
-        try {
-            await conn.rollback()
-        } catch (_) {}
+        if (
+            !transactionFinished
+        ) {
+
+            try {
+
+                await conn.rollback()
+
+            } catch {}
+
+        }
+
 
         throw error
+
 
     } finally {
 
         conn.release()
 
     }
+
 }
+
 
 async function getPendingRewardGrants(
     limit = 50
 ) {
 
     const safeLimit =
-        Math.max(
-            1,
-            Math.min(
-                500,
-                Number(limit) || 50
-            )
+        normalizeLimit(
+            limit,
+            50,
+            500
         )
 
-    const [rows] =
+
+    const [
+        rows
+    ] =
         await pool.query(
+
             `
             SELECT
                 g.id,
@@ -394,16 +706,25 @@ async function getPendingRewardGrants(
 
             LIMIT ${safeLimit}
             `
+
         )
 
 
-    return rows
+    return Array.isArray(rows)
+        ? rows
+        : []
+
 }
 
 
 module.exports = {
+
     getAwardRewards,
+
     getMemberAwardForRewards,
+
     prepareRewardGrants,
+
     getPendingRewardGrants
+
 }

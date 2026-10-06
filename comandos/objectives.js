@@ -17,128 +17,316 @@ const {
     '../src/services/objectiveProgressService'
 )
 
-function getIdentity(msg) {
+const logger =
+    require('../src/utils/logger')
+
+const ui =
+    require('../src/utils/ui')
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+
+function getIdentity(
+    msg
+) {
 
     const userJid =
-        msg.key.participant ||
-        msg.participant ||
-        msg.key.remoteJid
+        normalizeJid(
+
+            msg.key?.participant ||
+
+            msg.participant ||
+
+            msg.key?.remoteJid
+
+        )
+
 
     const altJid =
-        msg.key.participantAlt ||
-        msg.participantAlt ||
-        null
+        normalizeJid(
+
+            msg.key?.participantAlt ||
+
+            msg.participantAlt ||
+
+            null
+
+        )
+
 
     const displayName =
-        msg.pushName ||
+        String(
+            msg.pushName || ''
+        )
+            .trim() ||
         null
 
+
     return {
+
         userJid,
+
         altJid,
+
         displayName
+
     }
+
 }
 
-function getStatusIcon(status) {
 
-    if (status === 'COMPLETED') {
-        return '✅'
-    }
+function safeText(
+    value,
+    fallback = 'Desconocido'
+) {
 
-    if (status === 'CLAIMED') {
-        return '🎁'
-    }
+    const text =
+        String(
+            value ?? ''
+        )
+            .trim()
 
-    if (status === 'EXPIRED') {
-        return '⌛'
-    }
 
-    if (status === 'CANCELLED') {
-        return '🚫'
-    }
+    return text ||
+        fallback
 
-    return '🎯'
 }
 
-function getPeriodLabel(periodType) {
 
-    const labels = {
-        DAILY: 'Diario',
-        WEEKLY: 'Semanal',
-        SEASON: 'Temporada',
-        PERMANENT: 'Permanente',
-        EVENT: 'Evento'
+function safeNumber(
+    value,
+    fallback = 0
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    return Number.isFinite(number)
+        ? number
+        : fallback
+
+}
+
+
+function getStatusIcon(
+    status
+) {
+
+    const icons = {
+
+        IN_PROGRESS:
+            '🎯',
+
+        COMPLETED:
+            '✅',
+
+        CLAIMED:
+            '🎁',
+
+        EXPIRED:
+            '⌛',
+
+        CANCELLED:
+            '🚫'
+
     }
+
 
     return (
+        icons[status] ||
+        '🎯'
+    )
+
+}
+
+
+function getPeriodLabel(
+    periodType
+) {
+
+    const labels = {
+
+        DAILY:
+            'Diario',
+
+        WEEKLY:
+            'Semanal',
+
+        SEASON:
+            'Temporada',
+
+        PERMANENT:
+            'Permanente',
+
+        EVENT:
+            'Evento'
+
+    }
+
+
+    return (
+
         labels[periodType] ||
-        periodType
+
+        safeText(
+            periodType,
+            'Desconocido'
+        )
+
     )
+
 }
 
-function getStatusLabel(status) {
+
+function getStatusLabel(
+    status
+) {
 
     const labels = {
-        IN_PROGRESS: 'En progreso',
-        COMPLETED: 'Completado',
-        CLAIMED: 'Reclamado',
-        EXPIRED: 'Expirado',
-        CANCELLED: 'Cancelado'
+
+        IN_PROGRESS:
+            'En progreso',
+
+        COMPLETED:
+            'Completado',
+
+        CLAIMED:
+            'Reclamado',
+
+        EXPIRED:
+            'Expirado',
+
+        CANCELLED:
+            'Cancelado'
+
     }
 
+
     return (
+
         labels[status] ||
-        status
+
+        safeText(
+            status,
+            'Desconocido'
+        )
+
     )
+
 }
+
 
 function createProgressBar(
     current,
     target
 ) {
 
-    const totalBlocks = 10
+    const totalBlocks =
+        10
+
 
     const safeTarget =
         Math.max(
+
             1,
-            Number(target) || 1
+
+            safeNumber(
+                target,
+                1
+            )
+
         )
+
 
     const safeCurrent =
         Math.max(
+
             0,
-            Number(current) || 0
+
+            safeNumber(
+                current,
+                0
+            )
+
         )
+
 
     const ratio =
         Math.min(
+
             1,
+
             safeCurrent /
             safeTarget
+
         )
+
 
     const filled =
-        Math.round(
-            ratio *
-            totalBlocks
+        Math.min(
+
+            totalBlocks,
+
+            Math.max(
+
+                0,
+
+                Math.round(
+                    ratio *
+                    totalBlocks
+                )
+
+            )
+
         )
 
+
     return (
-        '█'.repeat(filled) +
+
+        '█'.repeat(
+            filled
+        )
+
+        +
+
         '░'.repeat(
             totalBlocks -
             filled
         )
+
     )
+
 }
 
+
 module.exports = {
-    name: 'objectives',
+
+    name:
+        'objectives',
 
     aliases: [
-        'objectives',
         'objetivos',
         'objetivo'
     ],
@@ -149,213 +337,495 @@ module.exports = {
     category:
         'perfil',
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
+
         sock,
         msg,
         from,
-        prefix
+        prefix = '.'
+
     }) {
 
-        const {
-            userJid,
-            altJid,
-            displayName
-        } =
-            getIdentity(msg)
+        try {
 
-        if (!userJid) {
+            /* ─────────────────────────────
+               IDENTIDAD
+            ───────────────────────────── */
 
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ No pude identificar tu cuenta.'
-                }
+            const {
+
+                userJid,
+
+                altJid,
+
+                displayName
+
+            } =
+                getIdentity(
+                    msg
+                )
+
+
+            if (!userJid) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE CUENTA',
+
+                                'No pude identificar tu cuenta.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               PERFIL
+            ───────────────────────────── */
+
+            await ensureMember(
+
+                userJid,
+
+                altJid,
+
+                displayName
+
             )
-        }
 
-        await ensureMember(
-            userJid,
-            altJid,
-            displayName
-        )
 
-        const member =
-            await getMemberByJid(
-                userJid
-            ) ||
-            (
-                altJid
-                    ? await getMemberByJid(
-                        altJid
-                    )
-                    : null
-            )
+            const member =
+                await getMemberByJid(
+                    userJid
+                )
 
-        if (!member) {
+                ||
 
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ No pude cargar tu perfil.'
-                }
-            )
-        }
+                (
+                    altJid
 
-        await syncMemberObjectives(
-            member.id
-        )
+                        ? await getMemberByJid(
+                            altJid
+                        )
 
-        const objectives =
-            await getMemberObjectives(
+                        : null
+                )
+
+
+            if (!member) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No pude cargar tu perfil.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               SINCRONIZAR OBJETIVOS
+            ───────────────────────────── */
+
+            await syncMemberObjectives(
                 member.id
             )
 
-        if (!objectives.length) {
 
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text: [
-                        '╭─〔 🎯 OBJETIVOS 〕',
-                        '│',
-                        '│ No tienes objetivos disponibles',
-                        '│ en este momento.',
-                        '│',
-                        '╰─────────────'
-                    ].join('\n')
+            /* ─────────────────────────────
+               OBTENER OBJETIVOS
+            ───────────────────────────── */
+
+            const result =
+                await getMemberObjectives(
+                    member.id
+                )
+
+
+            const objectives =
+                Array.isArray(
+                    result
+                )
+                    ? result
+                    : []
+
+
+            if (
+                objectives.length === 0
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.info(
+
+                                'OBJETIVOS',
+
+                                [],
+
+                                'No tienes objetivos disponibles en este momento.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               OBJETIVOS ACTIVOS
+            ───────────────────────────── */
+
+            const active =
+                objectives.filter(
+
+                    objective =>
+
+                        objective &&
+                        (
+                            objective.status ===
+                            'IN_PROGRESS'
+
+                            ||
+
+                            objective.status ===
+                            'COMPLETED'
+                        )
+
+                )
+
+
+            if (
+                active.length === 0
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.info(
+
+                                'OBJETIVOS',
+
+                                [],
+
+                                [
+                                    'No tienes objetivos activos.',
+                                    '',
+                                    'Los objetivos completados, reclamados o expirados siguen guardados en tu historial.'
+                                ].join('\n')
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ENCABEZADO
+            ───────────────────────────── */
+
+            const playerName =
+                safeText(
+
+                    member.display_name ||
+
+                    displayName,
+
+                    'Jugador'
+
+                )
+
+
+            const lines = [
+
+                'ㅤ۟∩　ׅ　🎯　ׅ　*OBJETIVOS*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Jugador:* ${playerName}`,
+
+                `𖣣ֶㅤ֯⌗ 📋  ׄ ⬭ *Activos:* ${active.length}`,
+
+                ''
+
+            ]
+
+
+            /* ─────────────────────────────
+               LISTA
+            ───────────────────────────── */
+
+            for (
+                let i = 0;
+                i < active.length;
+                i++
+            ) {
+
+                const objective =
+                    active[i]
+
+
+                const target =
+                    Math.max(
+
+                        0,
+
+                        safeNumber(
+                            objective.target_value,
+                            0
+                        )
+
+                    )
+
+
+                const rawCurrent =
+                    Math.max(
+
+                        0,
+
+                        safeNumber(
+                            objective.current_value,
+                            0
+                        )
+
+                    )
+
+
+                const current =
+                    target > 0
+
+                        ? Math.min(
+                            rawCurrent,
+                            target
+                        )
+
+                        : rawCurrent
+
+
+                const icon =
+                    getStatusIcon(
+                        objective.status
+                    )
+
+
+                const bar =
+                    createProgressBar(
+
+                        current,
+
+                        target
+
+                    )
+
+
+                const objectiveName =
+                    safeText(
+
+                        objective.objective_name,
+
+                        `Objetivo #${objective.id ?? '?'}`
+                    )
+
+
+                const objectiveId =
+                    safeText(
+                        objective.id,
+                        '?'
+                    )
+
+
+                lines.push(
+
+                    `ㅤ۟∩　ׅ　${icon}　ׅ　*${objectiveName}*`,
+
+                    '',
+
+                    `𖣣ֶㅤ֯⌗ 🆔  ׄ ⬭ *ID:* ${objectiveId}`
+
+                )
+
+
+                if (
+                    objective.objective_description
+                ) {
+
+                    lines.push(
+
+                        `𖣣ֶㅤ֯⌗ ✎  ׄ ⬭ *Descripción:* ${safeText(
+                            objective.objective_description
+                        )}`
+
+                    )
+
                 }
-            )
-        }
 
-        const active =
-            objectives.filter(
-                objective =>
+
+                lines.push(
+
+                    `𖣣ֶㅤ֯⌗ 📊  ׄ ⬭ *Progreso:* ${bar}`,
+
+                    `𖣣ֶㅤ֯⌗ 🔢  ׄ ⬭ *Avance:* ${current}/${target}`,
+
+                    `𖣣ֶㅤ֯⌗ 📅  ׄ ⬭ *Periodo:* ${getPeriodLabel(
+                        objective.period_type
+                    )}`,
+
+                    `𖣣ֶㅤ֯⌗ 📌  ׄ ⬭ *Estado:* ${getStatusLabel(
+                        objective.status
+                    )}`
+
+                )
+
+
+                if (
                     objective.status ===
-                        'IN_PROGRESS' ||
-                    objective.status ===
-                        'COMPLETED'
-            )
+                    'COMPLETED'
+                ) {
 
-        if (!active.length) {
+                    lines.push(
 
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text: [
-                        '╭─〔 🎯 OBJETIVOS 〕',
-                        '│',
-                        '│ No tienes objetivos activos.',
-                        '│',
-                        '│ Los objetivos completados y',
-                        '│ reclamados siguen guardados',
-                        '│ en tu historial.',
-                        '│',
-                        '╰─────────────'
-                    ].join('\n')
+                        `╰─ 𓂃 🎁 Reclamar: ${prefix}claim ${objective.id}`
+
+                    )
+
                 }
-            )
-        }
 
-        const lines = [
-            '╭─〔 🎯 OBJETIVOS 〕',
-            '│',
-            `│ 👤 ${member.display_name || displayName || 'Jugador'}`,
-            '│'
-        ]
 
-        for (
-            let i = 0;
-            i < active.length;
-            i++
-        ) {
+                if (
+                    i <
+                    active.length - 1
+                ) {
 
-            const objective =
-                active[i]
+                    lines.push(
+                        '',
+                        '━━━━━━━━━━━━━━━━━━━━━━━━━━',
+                        ''
+                    )
 
-            const current =
-                Math.min(
-                    Number(
-                        objective.current_value
-                    ) || 0,
-                    Number(
-                        objective.target_value
-                    ) || 0
-                )
+                }
 
-            const target =
-                Number(
-                    objective.target_value
-                ) || 0
+            }
 
-            const icon =
-                getStatusIcon(
-                    objective.status
-                )
 
-            const bar =
-                createProgressBar(
-                    current,
-                    target
-                )
+            /* ─────────────────────────────
+               FOOTER
+            ───────────────────────────── */
 
             lines.push(
-                `│ ${icon} *${objective.objective_name}*`
+
+                '',
+
+                '╰─ 𓂃 KennyBot V2'
+
             )
 
-            if (
-                objective.objective_description
-            ) {
 
-                lines.push(
-                    `│ ${objective.objective_description}`
-                )
-            }
+            /* ─────────────────────────────
+               ENVIAR
+            ───────────────────────────── */
 
-            lines.push(
-                `│ ${bar}`,
-                `│ ${current}/${target}`,
-                `│ 📅 ${getPeriodLabel(objective.period_type)}`,
-                `│ 📌 ${getStatusLabel(objective.status)}`
+            await sock.safeSendMessage(
+
+                from,
+
+                {
+
+                    text:
+                        lines
+                            .filter(Boolean)
+                            .join('\n')
+
+                }
+
             )
 
-            if (
-                objective.status ===
-                'COMPLETED'
-            ) {
 
-                lines.push(
-                    `│ 🎁 Usa ${prefix}claim ${objective.id}`
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Objectives consultados: member=${member.id} | total=${objectives.length} | activos=${active.length}`
+
+            )
+
+
+        } catch (err) {
+
+            logger.error(
+
+                `Error objectives: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE OBJETIVOS',
+
+                                'Ocurrió un error al cargar tus objetivos.'
+
+                            )
+
+                    }
+
                 )
-            }
 
-            if (
-                i <
-                active.length - 1
-            ) {
+            } catch {}
 
-                lines.push(
-                    '│',
-                    '├─────────────',
-                    '│'
-                )
-            }
         }
 
-        lines.push(
-            '│',
-            '╰─────────────'
-        )
-
-        await sock.safeSendMessage(
-            from,
-            {
-                text:
-                    lines.join('\n')
-            }
-        )
     }
+
 }

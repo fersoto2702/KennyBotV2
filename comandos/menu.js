@@ -1,11 +1,9 @@
-const os =
-    require('os')
-
 const comandos =
     require('../src/utils/commandRegistry')
 
-const ui =
-    require('../src/utils/ui')
+const logger =
+    require('../src/utils/logger')
+
 
 const categoryConfig = {
 
@@ -57,9 +55,15 @@ const categoryConfig = {
     admin: {
         emoji: '🛡️',
         label: '𝐀𝐃𝐌𝐈𝐍'
+    },
+
+    owner: {
+        emoji: '👑',
+        label: '𝐎𝐖𝐍𝐄𝐑'
     }
 
 }
+
 
 const categoryOrder = [
     'general',
@@ -71,31 +75,106 @@ const categoryOrder = [
     'grupos',
     'bienvenida',
     'configuración',
-    'admin'
+    'admin',
+    'owner'
 ]
 
-const formatUptime = seconds => {
+
+function formatUptime(
+    seconds
+) {
 
     const d =
-        Math.floor(seconds / 86400)
+        Math.floor(
+            seconds / 86400
+        )
 
     const h =
-        Math.floor(seconds % 86400 / 3600)
+        Math.floor(
+            seconds % 86400 / 3600
+        )
 
     const m =
-        Math.floor(seconds % 3600 / 60)
+        Math.floor(
+            seconds % 3600 / 60
+        )
 
     const s =
-        Math.floor(seconds % 60)
+        Math.floor(
+            seconds % 60
+        )
+
 
     return [
-        d ? `${d}d` : '',
-        h ? `${h}h` : '',
-        m ? `${m}m` : '',
+
+        d
+            ? `${d}d`
+            : '',
+
+        h
+            ? `${h}h`
+            : '',
+
+        m
+            ? `${m}m`
+            : '',
+
         `${s}s`
-    ].filter(Boolean).join(' ')
+
+    ]
+        .filter(Boolean)
+        .join(' ')
 
 }
+
+
+function safeText(
+    value,
+    fallback
+) {
+
+    const text =
+        String(
+            value ?? ''
+        )
+            .trim()
+
+
+    return text ||
+        fallback
+
+}
+
+
+function getGreeting() {
+
+    const hour =
+        new Date()
+            .getHours()
+
+
+    if (
+        hour < 12
+    ) {
+
+        return '🌅 Buenos días'
+
+    }
+
+
+    if (
+        hour < 18
+    ) {
+
+        return '☀️ Buenas tardes'
+
+    }
+
+
+    return '🌙 Buenas noches'
+
+}
+
 
 module.exports = {
 
@@ -115,144 +194,406 @@ module.exports = {
     category:
         'general',
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
+
         sock,
         from,
-        settings
+        settings = {}
+
     }) {
 
         try {
 
-            const categories = {}
+            /* ─────────────────────────────
+               CATEGORÍAS
+            ───────────────────────────── */
 
-            for (const [key, command] of comandos) {
+            const categories =
+                {}
 
-                if (key !== command.name) continue
-                if (command.hidden) continue
 
-                const category =
-                    (command.category || 'general').toLowerCase()
+            for (
+                const [key, command]
+                of comandos
+            ) {
 
-                if (!categories[category]) {
-                    categories[category] = []
+                if (
+                    !command ||
+                    typeof command !== 'object'
+                ) {
+
+                    continue
+
                 }
 
-                categories[category].push(command)
+
+                /*
+                    Evitar aliases duplicados.
+                */
+
+                if (
+                    key !== command.name
+                ) {
+
+                    continue
+
+                }
+
+
+                /*
+                    Comandos ocultos no aparecen.
+                */
+
+                if (
+                    command.hidden
+                ) {
+
+                    continue
+
+                }
+
+
+                const category =
+                    String(
+                        command.category ||
+                        'general'
+                    )
+                        .toLowerCase()
+                        .trim()
+
+
+                if (
+                    !categories[
+                        category
+                    ]
+                ) {
+
+                    categories[
+                        category
+                    ] = []
+
+                }
+
+
+                categories[
+                    category
+                ]
+                    .push(
+                        command
+                    )
 
             }
 
-            for (const category in categories) {
 
-                categories[category].sort(
-                    (a, b) =>
-                        a.name.localeCompare(b.name)
-                )
+            /* ─────────────────────────────
+               ORDENAR COMANDOS
+            ───────────────────────────── */
+
+            for (
+                const category
+                in categories
+            ) {
+
+                categories[
+                    category
+                ]
+                    .sort(
+
+                        (a, b) =>
+
+                            String(
+                                a.name
+                            )
+                                .localeCompare(
+                                    String(
+                                        b.name
+                                    ),
+                                    'es',
+                                    {
+                                        sensitivity:
+                                            'base'
+                                    }
+                                )
+
+                    )
 
             }
+
+
+            /* ─────────────────────────────
+               TOTAL
+            ───────────────────────────── */
 
             const total =
-                [...comandos.entries()]
-                    .filter(
-                        ([key, cmd]) =>
-                            key === cmd.name &&
-                            !cmd.hidden
-                    )
-                    .length
+                Object.values(
+                    categories
+                )
+                    .reduce(
 
-            const hour =
-                new Date().getHours()
+                        (
+                            accumulator,
+                            commands
+                        ) =>
+
+                            accumulator +
+                            commands.length,
+
+                        0
+
+                    )
+
+
+            /* ─────────────────────────────
+               DATOS DEL BOT
+            ───────────────────────────── */
 
             const greeting =
-                hour < 12
-                    ? '🌅 Buenos días'
-                : hour < 18
-                    ? '☀ Buenas tardes'
-                    : '🌙 Buenas noches'
+                getGreeting()
+
+
+            const memory =
+                process.memoryUsage()
+
 
             const ramUsed =
                 (
-                    process.memoryUsage()
-                        .heapUsed /
+                    memory.heapUsed /
                     1024 /
                     1024
-                ).toFixed(2)
+                )
+                    .toFixed(2)
+
+
+            const ramTotal =
+                (
+                    memory.heapTotal /
+                    1024 /
+                    1024
+                )
+                    .toFixed(2)
+
 
             const uptime =
-                formatUptime(process.uptime())
+                formatUptime(
+                    process.uptime()
+                )
 
-        let text =
 
-`୨୧ ─────────── ୨୧
+            const botName =
+                safeText(
 
-⌗ 𝐊𝐄𝐍𝐍𝐘𝐁𝐎𝐓 𝐕𝟐
+                    settings.botName,
 
-✦ ${greeting}
-✦ 𝐏𝐫𝐞𝐟𝐢𝐣𝐨𝐬: / . #
-✦ 𝐂𝐨𝐦𝐚𝐧𝐝𝐨𝐬: ${total}
-✦ 𝐔𝐩𝐭𝐢𝐦𝐞: ${uptime}
-✦ 𝐑𝐀𝐌: ${ramUsed} MB
-✦ 𝐍𝐨𝐝𝐞: ${process.version}
+                    'KennyBot V2'
 
-୨୧ ─────────── ୨୧
-`
+                )
 
-const orderedCategories = [
-    ...categoryOrder.filter(c => categories[c]),
-    ...Object.keys(categories).filter(
-        c => !categoryOrder.includes(c)
-    )
-]
 
-for (const category of orderedCategories) {
+            /* ─────────────────────────────
+               CABECERA
+            ───────────────────────────── */
 
-    const cmds =
-        categories[category]
+            let text = [
 
-    if (!cmds?.length) continue
+                'ㅤ۟∩　ׅ　🤖　ׅ　*KENNYBOT V2*　ׄᰙ',
 
-    const config =
-        categoryConfig[category] ||
-        {
-            emoji: '📁',
-            label:
-                category.charAt(0).toUpperCase() +
-                category.slice(1)
-        }
+                '',
 
-    text +=
+                `𖣣ֶㅤ֯⌗ 🌅  ׄ ⬭ *Saludo:* ${greeting.replace(/^[^\s]+\s*/, '')}`,
 
-`\n⌗ ${config.label} [${cmds.length}]\n\n`
+                `𖣣ֶㅤ֯⌗ ⌨️  ׄ ⬭ *Prefijos:* / . #`,
 
-    for (const cmd of cmds) {
+                `𖣣ֶㅤ֯⌗ 📚  ׄ ⬭ *Comandos:* ${total}`,
 
-        text +=
-`✦ .${cmd.name}\n`
+                `𖣣ֶㅤ֯⌗ ⏱️  ׄ ⬭ *Uptime:* ${uptime}`,
 
-    }
+                `𖣣ֶㅤ֯⌗ 🧠  ׄ ⬭ *RAM:* ${ramUsed} / ${ramTotal} MB`,
 
-    text += '\n'
+                `𖣣ֶㅤ֯⌗ 🟢  ׄ ⬭ *Node:* ${process.version}`,
 
-}
+                '',
 
-text +=
+                '━━━━━━━━━━━━━━━━━━━━━━━━━━'
 
-`୨୧ ─────────── ୨୧
+            ]
+                .join('\n')
 
-✧ 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐊𝐞𝐧𝐧𝐲
-✧ ${settings.botName}
 
-୨୧ ─────────── ୨୧`
+            /* ─────────────────────────────
+               ORDEN DE CATEGORÍAS
+            ───────────────────────────── */
+
+            const orderedCategories = [
+
+                ...categoryOrder.filter(
+
+                    category =>
+                        categories[
+                            category
+                        ]?.length
+
+                ),
+
+                ...Object.keys(
+                    categories
+                )
+                    .filter(
+
+                        category =>
+                            !categoryOrder.includes(
+                                category
+                            )
+
+                    )
+
+            ]
+
+
+            /* ─────────────────────────────
+               SECCIONES
+            ───────────────────────────── */
+
+            for (
+                const category
+                of orderedCategories
+            ) {
+
+                const cmds =
+                    categories[
+                        category
+                    ]
+
+
+                if (
+                    !cmds?.length
+                ) {
+
+                    continue
+
+                }
+
+
+                const config =
+                    categoryConfig[
+                        category
+                    ]
+
+                    ||
+
+                    {
+
+                        emoji:
+                            '📁',
+
+                        label:
+                            category
+                                .charAt(0)
+                                .toUpperCase()
+
+                            +
+
+                            category
+                                .slice(1)
+
+                    }
+
+
+                text += [
+
+                    '',
+
+                    `ㅤ۟∩　ׅ　${config.emoji}　ׅ　*${config.label}*　ׄᰙ`,
+
+                    '',
+
+                    ...cmds.map(
+
+                        command =>
+                            `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ .${command.name}`
+
+                    ),
+
+                    '',
+
+                    '━━━━━━━━━━━━━━━━━━━━━━━━━━'
+
+                ]
+                    .join('\n')
+
+            }
+
+
+            /* ─────────────────────────────
+               FOOTER
+            ───────────────────────────── */
+
+            text += [
+
+                '',
+
+                '╰─ 𓂃 Powered by Kenny',
+
+                `╰─ 𓂃 ${botName}`
+
+            ]
+                .join('\n')
+
+
+            /* ─────────────────────────────
+               ENVIAR
+            ───────────────────────────── */
 
             await sock.safeSendMessage(
+
                 from,
-                { text }
+
+                {
+                    text
+                }
+
             )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Menu consultado | comandos=${total} | categorias=${orderedCategories.length}`
+
+            )
+
 
         } catch (err) {
 
-            console.log(err)
+            logger.error(
+
+                `Error menu: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            '❌ No se pudo cargar el menú.'
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

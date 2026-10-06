@@ -15,7 +15,115 @@ const testGroups = [
     '120363425530676036@g.us'
 ]
 
+
+function normalizeGroupJid(jid) {
+
+    if (!jid) {
+        return null
+    }
+
+    const value =
+        String(jid)
+            .trim()
+
+    if (
+        !value.endsWith('@g.us')
+    ) {
+        return null
+    }
+
+    return value
+}
+
+
+function cleanGroupList(list) {
+
+    return [
+        ...new Set(
+            list
+                .map(normalizeGroupJid)
+                .filter(Boolean)
+        )
+    ]
+}
+
+
+const normalizedProductionGroups =
+    cleanGroupList(
+        productionGroups
+    )
+
+const normalizedTestGroups =
+    cleanGroupList(
+        testGroups
+    )
+
+
+const allGroups =
+    [
+        ...new Set([
+            ...normalizedProductionGroups,
+            ...normalizedTestGroups
+        ])
+    ]
+
+
+function isProductionGroup(jid) {
+
+    const normalized =
+        normalizeGroupJid(jid)
+
+    return Boolean(
+        normalized &&
+        normalizedProductionGroups.includes(
+            normalized
+        )
+    )
+}
+
+
+function isTestGroup(jid) {
+
+    const normalized =
+        normalizeGroupJid(jid)
+
+    return Boolean(
+        normalized &&
+        normalizedTestGroups.includes(
+            normalized
+        )
+    )
+}
+
+
+function isAllowedGroup(jid) {
+
+    const normalized =
+        normalizeGroupJid(jid)
+
+    return Boolean(
+        normalized &&
+        allGroups.includes(
+            normalized
+        )
+    )
+}
+
+
 module.exports = {
-    productionGroups,
-    testGroups
+
+    productionGroups:
+        normalizedProductionGroups,
+
+    testGroups:
+        normalizedTestGroups,
+
+    allGroups,
+
+    isProductionGroup,
+
+    isTestGroup,
+
+    isAllowedGroup
+
 }

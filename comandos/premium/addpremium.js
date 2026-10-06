@@ -10,11 +10,210 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
+
 const premiumPath =
     path.join(
         __dirname,
         '../../database/premium.json'
     )
+
+
+function ensurePremiumFile() {
+
+    const directory =
+        path.dirname(
+            premiumPath
+        )
+
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+
+    if (
+        !fs.existsSync(
+            premiumPath
+        )
+    ) {
+
+        fs.writeFileSync(
+            premiumPath,
+            JSON.stringify(
+                [],
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function readPremium() {
+
+    ensurePremiumFile()
+
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    premiumPath,
+                    'utf8'
+                )
+            )
+
+
+        return Array.isArray(data)
+            ? data
+            : []
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo premium.json: ${err.message}`
+        )
+
+        return []
+
+    }
+
+}
+
+
+function savePremium(
+    premium
+) {
+
+    fs.writeFileSync(
+        premiumPath,
+        JSON.stringify(
+            premium,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+
+function getNumber(
+    jid
+) {
+
+    return String(
+        jid || ''
+    )
+        .split('@')[0]
+        .split(':')[0]
+
+}
+
+
+function getContextInfo(
+    msg
+) {
+
+    return (
+
+        msg.message
+            ?.extendedTextMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.imageMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.videoMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.documentMessage
+            ?.contextInfo
+
+        ||
+
+        {}
+
+    )
+
+}
+
+
+function resolveTarget(
+    msg
+) {
+
+    const contextInfo =
+        getContextInfo(
+            msg
+        )
+
+
+    const mentioned =
+        contextInfo
+            ?.mentionedJid
+            ?.[0]
+
+
+    const quotedParticipant =
+        contextInfo
+            ?.participant
+
+
+    return normalizeJid(
+
+        mentioned ||
+        quotedParticipant
+
+    )
+
+}
+
 
 module.exports = {
 
@@ -33,108 +232,226 @@ module.exports = {
     category:
         'perfil',
 
-    ownerOnly: true,
+    ownerOnly:
+        true,
+
 
     async execute({
+
         sock,
         from,
         msg
+
     }) {
 
         try {
 
+            /* ─────────────────────────────
+               OBJETIVO
+            ───────────────────────────── */
+
             const target =
-                msg.message
-                ?.extendedTextMessage
-                ?.contextInfo
-                ?.mentionedJid?.[0]
+                resolveTarget(
+                    msg
+                )
+
 
             if (!target) {
 
                 return await sock.sendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.warn(
+
                                 'USUARIO REQUERIDO',
-                                'Uso: /addpremium @usuario'
+
+                                [
+                                    'Menciona a un usuario o responde a su mensaje.',
+                                    '',
+                                    'Uso:',
+                                    '/addpremium @usuario',
+                                    '',
+                                    'También puedes responder a un mensaje con:',
+                                    '/addpremium'
+                                ].join('\n')
+
                             )
+
                     }
+
                 )
 
             }
 
-            if (!fs.existsSync(premiumPath)) {
-                fs.writeFileSync(
-                    premiumPath,
-                    JSON.stringify([], null, 2)
-                )
-            }
 
-            let premium = []
+            /* ─────────────────────────────
+               PREMIUM
+            ───────────────────────────── */
 
-            try {
+            const premium =
+                readPremium()
 
-                premium =
-                    JSON.parse(
-                        fs.readFileSync(premiumPath)
+
+            const normalizedPremium =
+                premium
+                    .map(
+                        normalizeJid
                     )
+                    .filter(Boolean)
 
-                if (!Array.isArray(premium)) {
-                    premium = []
-                }
 
-            } catch {
-                premium = []
-            }
+            const alreadyPremium =
+                normalizedPremium.includes(
+                    target
+                )
 
-            if (premium.includes(target)) {
+
+            if (
+                alreadyPremium
+            ) {
 
                 return await sock.sendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.warn(
+
                                 'YA ES PREMIUM',
-                                `@${target.split('@')[0]} ya tiene premium.`
+
+                                `@${getNumber(target)} ya tiene acceso premium.`
+
                             ),
-                        mentions: [target]
+
+                        mentions: [
+                            target
+                        ]
+
                     }
+
                 )
 
             }
 
-            premium.push(target)
 
-            fs.writeFileSync(
-                premiumPath,
-                JSON.stringify(premium, null, 2)
+            /* ─────────────────────────────
+               AGREGAR
+            ───────────────────────────── */
+
+            normalizedPremium.push(
+                target
             )
+
+
+            const uniquePremium = [
+
+                ...new Set(
+                    normalizedPremium
+                )
+
+            ]
+
+
+            savePremium(
+                uniquePremium
+            )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
 
             logger.event(
-                `Premium agregado: ${target.split('@')[0]}`
+
+                `Premium agregado: ${getNumber(target)}`
+
             )
 
-            await sock.sendMessage(
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            return await sock.sendMessage(
+
                 from,
+
                 {
+
                     text:
                         ui.success(
-                            'PREMIUM AGREGADO',
+
+                            '💎 PREMIUM AGREGADO',
+
                             [
-                                ['Usuario', `@${target.split('@')[0]}`],
-                                ['Estado', '💎 PREMIUM']
-                            ]
+
+                                [
+                                    'Usuario',
+                                    `@${getNumber(target)}`
+                                ],
+
+                                [
+                                    'Estado',
+                                    '💎 PREMIUM'
+                                ],
+
+                                [
+                                    'Acceso',
+                                    '● ACTIVADO'
+                                ]
+
+                            ],
+
+                            'El usuario recibió acceso premium correctamente.'
+
                         ),
-                    mentions: [target]
+
+                    mentions: [
+                        target
+                    ]
+
                 }
+
             )
+
 
         } catch (err) {
 
             logger.error(
-                `Error addpremium: ${err.message}`
+
+                `Error addpremium: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PREMIUM',
+
+                                'No se pudo agregar al usuario a premium.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

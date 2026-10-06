@@ -345,12 +345,59 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
         ...(config.name || {})
     }
 
-    const stats = {
+    const statsDefaults = {
         valueCenterX: [52, 141.6],
         labelX: [68, 156.8],
         rowsY: [224.7, 250.1, 275.5],
         valueSize: 21.4,
-        labelSize: 21.4,
+        labelSize: 21.4
+    }
+
+    // Centrado automático: si el estilo define statsBlock { top, bottom, centerX? }
+    // (los bordes del bloque de stats en ESA plantilla, a tamaño de carta),
+    // las 3 filas y las 2 columnas se centran solas dentro del bloque.
+    // Lo que se escriba en condensedText.stats tiene prioridad sobre esto.
+    let statsAuto = {}
+
+    if (config.statsBlock) {
+        const valueSize = config.stats?.valueSize ?? statsDefaults.valueSize
+
+        const digitHeight = valueSize * 0.678
+
+        const blockHeight =
+            config.statsBlock.bottom -
+            config.statsBlock.top
+
+        const margin = blockHeight * 0.085
+
+        const pitch =
+            (blockHeight - margin * 2 - digitHeight) / 2
+
+        const firstBaseline =
+            config.statsBlock.top + margin + digitHeight
+
+        const centerX = config.statsBlock.centerX ?? 113.5
+
+        statsAuto = {
+            rowsY: [
+                firstBaseline,
+                firstBaseline + pitch,
+                firstBaseline + pitch * 2
+            ],
+            valueCenterX: [
+                centerX - 58.5,
+                centerX + 20.9
+            ],
+            labelX: [
+                centerX - 40.1,
+                centerX + 39.3
+            ]
+        }
+    }
+
+    const stats = {
+        ...statsDefaults,
+        ...statsAuto,
         ...(config.stats || {})
     }
 

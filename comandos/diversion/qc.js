@@ -1,335 +1,122 @@
-const sharp =
-    require('sharp')
+const axios = require('axios')
+const sharp = require('sharp')
 
-const logger =
-    require('../../src/utils/logger')
+const logger = require('../../src/utils/logger')
+const ui = require('../../src/utils/ui')
 
-const ui =
-    require('../../src/utils/ui')
-
-
-/* ─────────────────────────────
-   ESCAPAR TEXTO PARA SVG
-───────────────────────────── */
-
-function escapeXml(text = '') {
-
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;')
-
+function jidToNumber(jid = '') {
+    return String(jid).split('@')[0].split(':')[0]
 }
 
+function getTextFromMessage(message) {
+    if (!message) return ''
 
-/* ─────────────────────────────
-   DIVIDIR TEXTO EN LÍNEAS
-───────────────────────────── */
+    if (message.conversation)
+        return message.conversation
 
-function wrapText(
+    if (message.extendedTextMessage?.text)
+        return message.extendedTextMessage.text
+
+    if (message.imageMessage?.caption)
+        return message.imageMessage.caption
+
+    if (message.videoMessage?.caption)
+        return message.videoMessage.caption
+
+    if (message.documentMessage?.caption)
+        return message.documentMessage.caption
+
+    if (message.buttonsResponseMessage?.selectedDisplayText)
+        return message.buttonsResponseMessage.selectedDisplayText
+
+    if (message.listResponseMessage?.title)
+        return message.listResponseMessage.title
+
+    return ''
+}
+
+async function getProfilePhotoUrl(sock, jid) {
+    try {
+        return await sock.profilePictureUrl(jid, 'image')
+    } catch {
+        return 'https://i.ibb.co/4pDNDk1/avatar-contact.png'
+    }
+}
+
+async function generateQuoteSticker({
+    sock,
+    authorJid,
+    authorName,
     text,
-    maxLength = 24
-) {
-
-    const words =
-        String(text)
-            .trim()
-            .split(/\s+/)
-
-    const lines = []
-
-    let current = ''
-
-    for (const word of words) {
-
-        const next =
-            current
-                ? `${current} ${word}`
-                : word
-
-        if (
-            next.length > maxLength &&
-            current
-        ) {
-
-            lines.push(current)
-
-            current = word
-
-        } else {
-
-            current = next
-
-        }
-
-    }
-
-    if (current) {
-        lines.push(current)
-    }
-
-    return lines.slice(0, 8)
-
-}
-
-
-/* ─────────────────────────────
-   OBTENER TEXTO DEL MENSAJE
-───────────────────────────── */
-
-function getQuotedText(quoted) {
-
-    if (!quoted)
-        return null
-
-
-    if (
-        typeof quoted.conversation === 'string'
-    ) {
-
-        return quoted.conversation
-
-    }
-
-
-    if (
-        quoted.extendedTextMessage?.text
-    ) {
-
-        return quoted.extendedTextMessage.text
-
-    }
-
-
-    if (
-        quoted.imageMessage?.caption
-    ) {
-
-        return quoted.imageMessage.caption
-
-    }
-
-
-    if (
-        quoted.videoMessage?.caption
-    ) {
-
-        return quoted.videoMessage.caption
-
-    }
-
-
-    if (
-        quoted.documentMessage?.caption
-    ) {
-
-        return quoted.documentMessage.caption
-
-    }
-
-
-    return null
-
-}
-
-
-/* ─────────────────────────────
-   CREAR STICKER
-───────────────────────────── */
-
-async function createQuoteSticker({
-
-    text,
-    author
-
+    replyName,
+    replyText
 }) {
+    const avatarUrl = await getProfilePhotoUrl(sock, authorJid)
 
-    const WIDTH = 512
-    const HEIGHT = 512
-
-    const cleanText =
-        String(text)
-            .replace(/\s+/g, ' ')
-            .trim()
-
-    const limitedText =
-        cleanText.length > 300
-            ? `${cleanText.slice(0, 297)}...`
-            : cleanText
-
-
-    let lines =
-        wrapText(
-            limitedText,
-            26
-        )
-
-
-    /*
-        Ajustamos el tamaño dependiendo
-        de cuánto texto tenga la cita.
-    */
-
-    let fontSize = 38
-
-    if (limitedText.length > 80)
-        fontSize = 34
-
-    if (limitedText.length > 140)
-        fontSize = 29
-
-    if (limitedText.length > 220)
-        fontSize = 25
-
-
-    lines =
-        wrapText(
-            limitedText,
-            fontSize >= 34
-                ? 24
-                : 31
-        )
-
-
-    const lineHeight =
-        fontSize + 12
-
-
-    const totalTextHeight =
-        lines.length *
-        lineHeight
-
-
-    const startY =
-        Math.max(
-            140,
-            (HEIGHT - totalTextHeight) / 2
-        )
-
-
-    const textSvg =
-        lines
-            .map(
-                (line, index) => {
-
-                    const y =
-                        startY +
-                        (
-                            index *
-                            lineHeight
-                        )
-
-                    return `
-                        <text
-                            x="256"
-                            y="${y}"
-                            text-anchor="middle"
-                            font-family="Arial, sans-serif"
-                            font-size="${fontSize}"
-                            font-weight="600"
-                            fill="#FFFFFF"
-                        >
-                            ${escapeXml(line)}
-                        </text>
-                    `
-
-                }
-            )
-            .join('\n')
-
-
-    const svg = `
-
-        <svg
-            width="${WIDTH}"
-            height="${HEIGHT}"
-            viewBox="0 0 ${WIDTH} ${HEIGHT}"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-
-            <!-- Fondo -->
-
-            <rect
-                width="512"
-                height="512"
-                rx="45"
-                fill="#111111"
-            />
-
-
-            <!-- Decoración -->
-
-            <circle
-                cx="256"
-                cy="82"
-                r="42"
-                fill="#252525"
-            />
-
-            <text
-                x="256"
-                y="98"
-                text-anchor="middle"
-                font-family="Arial, sans-serif"
-                font-size="48"
-                fill="#FFFFFF"
-            >
-                “
-            </text>
-
-
-            <!-- Cita -->
-
-            ${textSvg}
-
-
-            <!-- Autor -->
-
-            <text
-                x="256"
-                y="455"
-                text-anchor="middle"
-                font-family="Arial, sans-serif"
-                font-size="24"
-                font-weight="700"
-                fill="#D5D5D5"
-            >
-                — ${escapeXml(author)}
-            </text>
-
-        </svg>
-
-    `
-
-
-    return await sharp(
-        Buffer.from(svg)
-    )
-        .resize(
-            512,
-            512,
+    const payload = {
+        type: 'quote',
+        format: 'png',
+        backgroundColor: '#0b141a',
+        width: 512,
+        height: 768,
+        scale: 2,
+        messages: [
             {
-                fit: 'contain'
+                entities: [],
+                avatar: true,
+                from: {
+                    id: 1,
+                    name: authorName,
+                    photo: {
+                        url: avatarUrl
+                    }
+                },
+                text,
+                replyMessage:
+                    replyText
+                        ? {
+                            name: replyName || 'Mensaje',
+                            text: replyText
+                        }
+                        : undefined
             }
+        ]
+    }
+
+    const response = await axios.post(
+        'https://bot.lyo.su/quote/generate',
+        payload,
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            timeout: 30000
+        }
+    )
+
+    if (!response.data?.result?.image) {
+        throw new Error('La API de quote no devolvió imagen')
+    }
+
+    const imageBuffer =
+        Buffer.from(
+            response.data.result.image,
+            'base64'
         )
-        .webp({
-            quality: 90
-        })
-        .toBuffer()
 
+    const stickerBuffer =
+        await sharp(imageBuffer)
+            .webp({
+                quality: 95
+            })
+            .toBuffer()
+
+    return stickerBuffer
 }
-
-
-/* ─────────────────────────────
-   COMANDO
-───────────────────────────── */
 
 module.exports = {
 
-    name:
-        'qc',
+    name: 'qc',
 
     aliases: [
         'quote',
@@ -337,206 +124,166 @@ module.exports = {
     ],
 
     description:
-        'Convierte un mensaje respondido en sticker',
+        'Genera un sticker de cita a partir de un mensaje respondido',
 
     category:
         'diversion',
 
-    cooldown:
-        3,
-
+    cooldown: 3,
 
     async execute({
-
         sock,
         from,
         msg
-
     }) {
 
         try {
 
-            /* ─────────────────────────────
-               CONTEXTO DEL MENSAJE
-            ───────────────────────────── */
-
             const contextInfo =
-
                 msg.message
                     ?.extendedTextMessage
                     ?.contextInfo
-
 
             const quoted =
                 contextInfo
                     ?.quotedMessage
 
-
-            /* ─────────────────────────────
-               VALIDAR RESPUESTA
-            ───────────────────────────── */
-
             if (!quoted) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'MENSAJE REQUERIDO',
-
-                                'Responde a un mensaje de texto y usa /qc'
-
+                                'Responde a un mensaje y usa /qc'
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               EXTRAER TEXTO
-            ───────────────────────────── */
-
             const quoteText =
-                getQuotedText(quoted)
-
+                getTextFromMessage(quoted)
 
             if (!quoteText) {
 
                 return await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'NO COMPATIBLE',
-
-                                'El mensaje respondido no contiene texto para convertir en sticker.'
-
+                                'Solo puedo generar citas de mensajes que tengan texto o caption.'
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               AUTOR DEL MENSAJE
-            ───────────────────────────── */
-
-            const authorJid =
-
+            const quotedAuthor =
                 contextInfo.participant ||
+                msg.participant ||
+                msg.key.participant ||
+                msg.key.remoteJid
 
-                contextInfo.remoteJid ||
+            const sender =
+                msg.key.participant ||
+                msg.participant ||
+                msg.key.remoteJid
 
-                from
+            let authorName =
+                jidToNumber(quotedAuthor)
 
+            /*
+                Si el mensaje citado lo mandó quien ejecutó el comando,
+                usamos "Tú" como nombre.
+            */
+            if (quotedAuthor === sender) {
+                authorName = 'Tú'
+            }
 
-            const authorNumber =
+            /*
+                Detectar si el mensaje citado era respuesta a otro mensaje
+                para mostrar la mini-cita verde.
+            */
+            const nestedContext =
+                quoted.extendedTextMessage
+                    ?.contextInfo
 
-                authorJid
-                    .split('@')[0]
+            const nestedQuoted =
+                nestedContext
+                    ?.quotedMessage
 
+            const nestedText =
+                getTextFromMessage(nestedQuoted)
 
-            const author =
-                `@${authorNumber}`
+            let replyName = null
+            let replyText = null
 
+            if (nestedQuoted && nestedText) {
 
-            /* ─────────────────────────────
-               GENERAR STICKER
-            ───────────────────────────── */
+                const nestedParticipant =
+                    nestedContext.participant
 
-            const sticker =
-                await createQuoteSticker({
+                replyText = nestedText
 
-                    text:
-                        quoteText,
+                if (
+                    nestedParticipant &&
+                    nestedParticipant === sender
+                ) {
+                    replyName = 'Tú'
+                } else if (nestedParticipant) {
+                    replyName = jidToNumber(nestedParticipant)
+                } else {
+                    replyName = 'Mensaje'
+                }
+            }
 
-                    author
-
+            const stickerBuffer =
+                await generateQuoteSticker({
+                    sock,
+                    authorJid: quotedAuthor,
+                    authorName,
+                    text: quoteText,
+                    replyName,
+                    replyText
                 })
 
-
-            /* ─────────────────────────────
-               ENVIAR STICKER
-            ───────────────────────────── */
-
             await sock.sendMessage(
-
                 from,
-
                 {
-
-                    sticker
-
+                    sticker: stickerBuffer
                 },
-
                 {
-
-                    quoted:
-                        msg
-
+                    quoted: msg
                 }
-
             )
-
-
-            /* ─────────────────────────────
-               LOG
-            ───────────────────────────── */
 
             logger.event(
-
-                `QC generado: ${authorNumber}`
-
+                `QC usado: ${jidToNumber(quotedAuthor)}`
             )
-
 
         } catch (err) {
 
             logger.error(
-
                 `Error qc: ${err.stack || err.message}`
-
             )
-
 
             try {
 
                 await sock.sendMessage(
-
                     from,
-
                     {
-
                         text:
                             ui.error(
-
-                                'ERROR QC',
-
-                                'No se pudo convertir el mensaje en sticker.'
-
+                                'ERROR',
+                                'No se pudo generar el sticker de cita.'
                             )
-
                     }
-
                 )
 
             } catch {}
-
         }
 
     }

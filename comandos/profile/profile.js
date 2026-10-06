@@ -13,6 +13,7 @@ const getRank =
 const ui =
     require('../../src/utils/ui')
 
+
 const badgesPath =
     path.join(
         __dirname,
@@ -37,6 +38,295 @@ const inventoryPath =
         '../../database/inventory.json'
     )
 
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+
+function getNumber(
+    jid
+) {
+
+    return String(
+        jid || ''
+    )
+        .split('@')[0]
+        .split(':')[0]
+
+}
+
+
+function ensureJsonFile(
+    file
+) {
+
+    const directory =
+        path.dirname(
+            file
+        )
+
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive: true
+            }
+        )
+
+    }
+
+
+    if (
+        !fs.existsSync(
+            file
+        )
+    ) {
+
+        fs.writeFileSync(
+            file,
+            JSON.stringify(
+                {},
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+    }
+
+}
+
+
+function safeRead(
+    file
+) {
+
+    ensureJsonFile(
+        file
+    )
+
+
+    try {
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    file,
+                    'utf8'
+                )
+            )
+
+
+        return (
+            data &&
+            typeof data === 'object' &&
+            !Array.isArray(data)
+        )
+            ? data
+            : {}
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo ${path.basename(file)}: ${err.message}`
+        )
+
+        return {}
+
+    }
+
+}
+
+
+function safeWrite(
+    file,
+    data
+) {
+
+    fs.writeFileSync(
+        file,
+        JSON.stringify(
+            data,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+
+function normalizeNumericValue(
+    value,
+    fallback = 0
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    return Number.isFinite(number)
+        ? number
+        : fallback
+
+}
+
+
+function findExistingKey(
+    database,
+    jid
+) {
+
+    const normalizedTarget =
+        normalizeJid(
+            jid
+        )
+
+
+    if (!normalizedTarget) {
+
+        return null
+
+    }
+
+
+    return Object.keys(
+        database
+    )
+        .find(
+
+            key =>
+                normalizeJid(
+                    key
+                ) ===
+                normalizedTarget
+
+        ) || null
+
+}
+
+
+function migrateKey(
+    database,
+    sender
+) {
+
+    const normalizedSender =
+        normalizeJid(
+            sender
+        )
+
+
+    if (!normalizedSender) {
+
+        return {
+            key: null,
+            changed: false
+        }
+
+    }
+
+
+    const existingKey =
+        findExistingKey(
+            database,
+            normalizedSender
+        )
+
+
+    if (!existingKey) {
+
+        return {
+            key: normalizedSender,
+            changed: false
+        }
+
+    }
+
+
+    if (
+        existingKey ===
+        normalizedSender
+    ) {
+
+        return {
+            key: normalizedSender,
+            changed: false
+        }
+
+    }
+
+
+    database[normalizedSender] =
+        database[existingKey]
+
+
+    delete database[
+        existingKey
+    ]
+
+
+    return {
+        key: normalizedSender,
+        changed: true
+    }
+
+}
+
+
+function formatArray(
+    items,
+    emptyText
+) {
+
+    if (
+        !Array.isArray(items) ||
+        items.length === 0
+    ) {
+
+        return emptyText
+
+    }
+
+
+    return items
+        .map(
+            item =>
+                String(item)
+                    .trim()
+        )
+        .filter(Boolean)
+        .join(', ') ||
+        emptyText
+
+}
+
+
 module.exports = {
 
     name:
@@ -54,69 +344,374 @@ module.exports = {
     category:
         'perfil',
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
+
         sock,
         from,
         msg
+
     }) {
 
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
-                msg.key.participant ||
-                msg.key.remoteJid
+                normalizeJid(
 
-            for (const file of [
-                economyPath,
-                levelsPath,
-                inventoryPath,
-                badgesPath
-            ]) {
+                    msg.key.participant ||
 
-                if (!fs.existsSync(file)) {
-                    fs.writeFileSync(
-                        file,
-                        JSON.stringify({}, null, 2)
-                    )
-                }
+                    msg.participant ||
+
+                    msg.key.remoteJid
+
+                )
+
+
+            if (!sender) {
+
+                return await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No se pudo identificar al usuario.'
+
+                            )
+
+                    }
+
+                )
 
             }
 
-            const safeRead = file => {
-                try {
-                    return JSON.parse(
-                        fs.readFileSync(file)
-                    )
-                } catch {
-                    return {}
-                }
-            }
+
+            /* ─────────────────────────────
+               LEER BASES
+            ───────────────────────────── */
 
             const economy =
-                safeRead(economyPath)
+                safeRead(
+                    economyPath
+                )
 
             const levels =
-                safeRead(levelsPath)
+                safeRead(
+                    levelsPath
+                )
 
             const inventory =
-                safeRead(inventoryPath)
+                safeRead(
+                    inventoryPath
+                )
 
             const badges =
-                safeRead(badgesPath)
+                safeRead(
+                    badgesPath
+                )
 
-            if (!economy[sender]) economy[sender] = { coins: 0, bank: 0 }
-            if (!levels[sender]) levels[sender] = { xp: 0, level: 1 }
-            if (!inventory[sender]) inventory[sender] = []
-            if (!badges[sender]) badges[sender] = []
 
-            if (typeof economy[sender].coins !== 'number') economy[sender].coins = 0
-            if (typeof economy[sender].bank !== 'number') economy[sender].bank = 0
-            if (typeof levels[sender].xp !== 'number') levels[sender].xp = 0
-            if (typeof levels[sender].level !== 'number') levels[sender].level = 1
-            if (!Array.isArray(inventory[sender])) inventory[sender] = []
-            if (!Array.isArray(badges[sender])) badges[sender] = []
+            /* ─────────────────────────────
+               MIGRAR CLAVES ANTIGUAS
+            ───────────────────────────── */
+
+            const economyMigration =
+                migrateKey(
+                    economy,
+                    sender
+                )
+
+            const levelsMigration =
+                migrateKey(
+                    levels,
+                    sender
+                )
+
+            const inventoryMigration =
+                migrateKey(
+                    inventory,
+                    sender
+                )
+
+            const badgesMigration =
+                migrateKey(
+                    badges,
+                    sender
+                )
+
+
+            let economyChanged =
+                economyMigration.changed
+
+            let levelsChanged =
+                levelsMigration.changed
+
+            let inventoryChanged =
+                inventoryMigration.changed
+
+            let badgesChanged =
+                badgesMigration.changed
+
+
+            /* ─────────────────────────────
+               ECONOMÍA
+            ───────────────────────────── */
+
+            if (
+                !economy[sender] ||
+                typeof economy[sender] !== 'object' ||
+                Array.isArray(
+                    economy[sender]
+                )
+            ) {
+
+                economy[sender] = {
+
+                    coins: 0,
+
+                    bank: 0
+
+                }
+
+                economyChanged =
+                    true
+
+            }
+
+
+            const normalizedCoins =
+                normalizeNumericValue(
+
+                    economy[sender].coins,
+
+                    0
+
+                )
+
+
+            const normalizedBank =
+                normalizeNumericValue(
+
+                    economy[sender].bank,
+
+                    0
+
+                )
+
+
+            if (
+                economy[sender].coins !==
+                normalizedCoins
+            ) {
+
+                economy[sender].coins =
+                    normalizedCoins
+
+                economyChanged =
+                    true
+
+            }
+
+
+            if (
+                economy[sender].bank !==
+                normalizedBank
+            ) {
+
+                economy[sender].bank =
+                    normalizedBank
+
+                economyChanged =
+                    true
+
+            }
+
+
+            /* ─────────────────────────────
+               NIVELES
+            ───────────────────────────── */
+
+            if (
+                !levels[sender] ||
+                typeof levels[sender] !== 'object' ||
+                Array.isArray(
+                    levels[sender]
+                )
+            ) {
+
+                levels[sender] = {
+
+                    xp: 0,
+
+                    level: 1
+
+                }
+
+                levelsChanged =
+                    true
+
+            }
+
+
+            const normalizedXp =
+                normalizeNumericValue(
+
+                    levels[sender].xp,
+
+                    0
+
+                )
+
+
+            const normalizedLevel =
+                Math.max(
+
+                    1,
+
+                    normalizeNumericValue(
+
+                        levels[sender].level,
+
+                        1
+
+                    )
+
+                )
+
+
+            if (
+                levels[sender].xp !==
+                normalizedXp
+            ) {
+
+                levels[sender].xp =
+                    normalizedXp
+
+                levelsChanged =
+                    true
+
+            }
+
+
+            if (
+                levels[sender].level !==
+                normalizedLevel
+            ) {
+
+                levels[sender].level =
+                    normalizedLevel
+
+                levelsChanged =
+                    true
+
+            }
+
+
+            /* ─────────────────────────────
+               INVENTARIO
+            ───────────────────────────── */
+
+            if (
+                !Array.isArray(
+                    inventory[sender]
+                )
+            ) {
+
+                inventory[sender] =
+                    []
+
+                inventoryChanged =
+                    true
+
+            }
+
+
+            /* ─────────────────────────────
+               BADGES
+            ───────────────────────────── */
+
+            if (
+                !Array.isArray(
+                    badges[sender]
+                )
+            ) {
+
+                badges[sender] =
+                    []
+
+                badgesChanged =
+                    true
+
+            }
+
+
+            /* ─────────────────────────────
+               GUARDAR SOLO SI CAMBIÓ
+            ───────────────────────────── */
+
+            if (
+                economyChanged
+            ) {
+
+                safeWrite(
+                    economyPath,
+                    economy
+                )
+
+            }
+
+
+            if (
+                levelsChanged
+            ) {
+
+                safeWrite(
+                    levelsPath,
+                    levels
+                )
+
+            }
+
+
+            if (
+                inventoryChanged
+            ) {
+
+                safeWrite(
+                    inventoryPath,
+                    inventory
+                )
+
+            }
+
+
+            if (
+                badgesChanged
+            ) {
+
+                safeWrite(
+                    badgesPath,
+                    badges
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               DATOS DEL PERFIL
+            ───────────────────────────── */
 
             const wallet =
                 economy[sender].coins
@@ -125,7 +720,8 @@ module.exports = {
                 economy[sender].bank
 
             const total =
-                wallet + bank
+                wallet +
+                bank
 
             const level =
                 levels[sender].level
@@ -134,71 +730,247 @@ module.exports = {
                 levels[sender].xp
 
             const rankName =
-                getRank(level)
+                getRank(
+                    level
+                )
 
-            let users =
-                Object.entries(levels)
+
+            /* ─────────────────────────────
+               RANKING GLOBAL
+            ───────────────────────────── */
+
+            const users =
+                Object.entries(
+                    levels
+                )
+                    .filter(
+
+                        ([
+                            id,
+                            data
+                        ]) =>
+
+                            Boolean(
+                                normalizeJid(
+                                    id
+                                )
+                            )
+
+                            &&
+
+                            data &&
+                            typeof data === 'object'
+
+                    )
+
 
             users.sort(
-                (a, b) =>
-                    (b[1]?.xp || 0) -
-                    (a[1]?.xp || 0)
+
+                (a, b) => {
+
+                    const levelA =
+                        normalizeNumericValue(
+                            a[1]?.level,
+                            1
+                        )
+
+                    const levelB =
+                        normalizeNumericValue(
+                            b[1]?.level,
+                            1
+                        )
+
+
+                    if (
+                        levelB !== levelA
+                    ) {
+
+                        return (
+                            levelB -
+                            levelA
+                        )
+
+                    }
+
+
+                    const xpA =
+                        normalizeNumericValue(
+                            a[1]?.xp,
+                            0
+                        )
+
+                    const xpB =
+                        normalizeNumericValue(
+                            b[1]?.xp,
+                            0
+                        )
+
+
+                    return (
+                        xpB -
+                        xpA
+                    )
+
+                }
+
             )
+
+
+            const rankIndex =
+                users.findIndex(
+
+                    ([id]) =>
+                        normalizeJid(
+                            id
+                        ) ===
+                        sender
+
+                )
+
 
             const rankPos =
-                users.findIndex(
-                    ([id]) => id === sender
-                ) + 1
+                rankIndex >= 0
+                    ? rankIndex + 1
+                    : users.length
+
+
+            /* ─────────────────────────────
+               INVENTARIO / BADGES
+            ───────────────────────────── */
 
             const invText =
-                inventory[sender].length > 0
-                    ? inventory[sender].join(', ')
-                    : 'Vacío'
+                formatArray(
+
+                    inventory[sender],
+
+                    'Vacío'
+
+                )
+
 
             const badgeText =
-                badges[sender].length > 0
-                    ? badges[sender].join(', ')
-                    : 'Sin logros'
+                formatArray(
 
-            fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2))
-            fs.writeFileSync(levelsPath, JSON.stringify(levels, null, 2))
-            fs.writeFileSync(inventoryPath, JSON.stringify(inventory, null, 2))
-            fs.writeFileSync(badgesPath, JSON.stringify(badges, null, 2))
+                    badges[sender],
+
+                    'Sin logros'
+
+                )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
 
             logger.event(
-                `Profile check: ${sender.split('@')[0]}`
+
+                `Profile check: ${getNumber(sender)}`
+
             )
 
-            await sock.sendMessage(
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            return await sock.sendMessage(
+
                 from,
+
                 {
+
                     text: [
-                        `👤 PERFIL GLOBAL`,
-                        ui.divider,
-                        `Usuario   @${sender.split('@')[0]}`,
-                        ui.divider,
-                        `Nivel     ⭐ ${level}`,
-                        `XP        ✨ ${Number(xp).toLocaleString()}`,
-                        `Rango     👑 ${rankName}`,
-                        `Global    🏆 #${rankPos} de ${users.length}`,
-                        ui.divider,
-                        `Wallet    🪙 ${wallet.toLocaleString()}`,
-                        `Banco     🏦 ${bank.toLocaleString()}`,
-                        `Total     💸 ${total.toLocaleString()}`,
-                        ui.divider,
-                        `Items     ${invText}`,
-                        `Badges    ${badgeText}`,
-                        ui.divider
-                    ].join('\n'),
-                    mentions: [sender]
+
+                        'ㅤ۟∩　ׅ　👤　ׅ　*PERFIL GLOBAL*　ׄᰙ',
+
+                        '',
+
+                        `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Usuario:* @${getNumber(sender)}`,
+
+                        '',
+
+                        'ㅤ۟∩　ׅ　⭐　ׅ　*PROGRESO*',
+
+                        '',
+
+                        `𖣣ֶㅤ֯⌗ ⭐  ׄ ⬭ *Nivel:* ${Number(level).toLocaleString()}`,
+
+                        `𖣣ֶㅤ֯⌗ ✨  ׄ ⬭ *XP:* ${Number(xp).toLocaleString()}`,
+
+                        `𖣣ֶㅤ֯⌗ 👑  ׄ ⬭ *Rango:* ${rankName}`,
+
+                        `𖣣ֶㅤ֯⌗ 🏆  ׄ ⬭ *Global:* #${rankPos} de ${users.length}`,
+
+                        '',
+
+                        'ㅤ۟∩　ׅ　💰　ׅ　*ECONOMÍA*',
+
+                        '',
+
+                        `𖣣ֶㅤ֯⌗ 🪙  ׄ ⬭ *Wallet:* ${Number(wallet).toLocaleString()}`,
+
+                        `𖣣ֶㅤ֯⌗ 🏦  ׄ ⬭ *Banco:* ${Number(bank).toLocaleString()}`,
+
+                        `𖣣ֶㅤ֯⌗ 💸  ׄ ⬭ *Total:* ${Number(total).toLocaleString()}`,
+
+                        '',
+
+                        'ㅤ۟∩　ׅ　🎒　ׅ　*COLECCIÓN*',
+
+                        '',
+
+                        `𖣣ֶㅤ֯⌗ 🎒  ׄ ⬭ *Items:* ${invText}`,
+
+                        `𖣣ֶㅤ֯⌗ 🏅  ׄ ⬭ *Badges:* ${badgeText}`,
+
+                        '',
+
+                        '╰─ 𓂃 Perfil actualizado'
+
+                    ]
+                        .filter(Boolean)
+                        .join('\n'),
+
+                    mentions: [
+                        sender
+                    ]
+
                 }
+
             )
+
 
         } catch (err) {
 
             logger.error(
-                `Error profile: ${err.message}`
+
+                `Error profile: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.sendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No se pudo cargar tu perfil.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

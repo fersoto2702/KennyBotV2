@@ -6,10 +6,74 @@ const {
     equipMemberCard
 } = require('../src/database/repositories/memberCardRepository')
 
+const logger =
+    require('../src/utils/logger')
+
+const ui =
+    require('../src/utils/ui')
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+
+function safeText(
+    value,
+    fallback = 'N/A'
+) {
+
+    const text =
+        String(
+            value ?? ''
+        )
+            .trim()
+
+
+    return text ||
+        fallback
+
+}
+
+
+function safeNumber(
+    value,
+    fallback = 0
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    return Number.isFinite(number)
+        ? number
+        : fallback
+
+}
+
 
 module.exports = {
 
-    name: 'equip',
+    name:
+        'equip',
 
     aliases: [
         'equipar',
@@ -19,165 +83,426 @@ module.exports = {
     description:
         'Equipa una carta de tu colección',
 
-    category: 'perfil',
+    category:
+        'perfil',
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
+
         sock,
         msg,
         from,
-        args
+        args = []
+
     }) {
 
         try {
 
+            /* ─────────────────────────────
+               IDENTIDAD
+            ───────────────────────────── */
+
             const sender =
-                msg.key?.participant ||
-                msg.participant ||
-                msg.key?.remoteJid
+                normalizeJid(
+
+                    msg.key?.participant ||
+
+                    msg.participant ||
+
+                    msg.key?.remoteJid
+
+                )
+
 
             const senderAlt =
-                msg.key?.participantAlt ||
-                null
+                normalizeJid(
+
+                    msg.key?.participantAlt ||
+
+                    msg.participantAlt ||
+
+                    null
+
+                )
 
 
             if (!sender) {
 
-                await sock.safeSendMessage(
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-                            '❌ No pude identificar al usuario.'
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No pude identificar al usuario.'
+
+                            )
+
                     }
+
                 )
 
-                return
             }
 
 
+            /* ─────────────────────────────
+               ID DE CARTA
+            ───────────────────────────── */
+
             const cardId =
-                Number(args?.[0])
+                Number(
+                    args[0]
+                )
 
 
             if (
-                !Number.isInteger(cardId) ||
+                !Number.isInteger(
+                    cardId
+                ) ||
                 cardId <= 0
             ) {
 
-                await sock.safeSendMessage(
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-`❌ Debes indicar el ID de la carta.
+                            ui.warn(
 
-Ejemplo:
-.equip 2
+                                'ID DE CARTA REQUERIDO',
 
-Consulta tus cartas con:
-.collection`
+                                [
+                                    'Debes indicar el ID de la carta.',
+                                    '',
+                                    'Ejemplo:',
+                                    '.equip 2',
+                                    '',
+                                    'Consulta tus cartas con:',
+                                    '.collection'
+                                ].join('\n')
+
+                            )
+
                     }
+
                 )
 
-                return
             }
 
 
+            /* ─────────────────────────────
+               PERFIL
+            ───────────────────────────── */
+
             const member =
                 await ensureMember(
+
                     sender,
+
                     senderAlt,
-                    msg.pushName || null
+
+                    msg.pushName ||
+                    null
+
                 )
 
+
+            if (!member) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No pude cargar tu perfil.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               EQUIPAR CARTA
+            ───────────────────────────── */
 
             const result =
                 await equipMemberCard(
+
                     member.id,
+
                     cardId
+
                 )
 
 
-            if (!result.success) {
+            if (
+                !result ||
+                typeof result !== 'object'
+            ) {
+
+                throw new Error(
+                    'equipMemberCard devolvió una respuesta inválida'
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ERROR AL EQUIPAR
+            ───────────────────────────── */
+
+            if (
+                !result.success
+            ) {
 
                 if (
                     result.reason ===
                     'CARD_NOT_FOUND'
                 ) {
 
-                    await sock.safeSendMessage(
+                    return await sock.safeSendMessage(
+
                         from,
+
                         {
+
                             text:
-`❌ La carta #${cardId} no existe en tu colección.`
+                                ui.warn(
+
+                                    'CARTA NO ENCONTRADA',
+
+                                    `La carta #${cardId} no existe en tu colección.`
+
+                                )
+
                         }
+
                     )
 
-                    return
                 }
 
 
-                await sock.safeSendMessage(
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-                            '❌ No pude equipar esa carta.'
+                            ui.error(
+
+                                'NO SE PUDO EQUIPAR',
+
+                                `No pude equipar esa carta.\n\nCódigo: ${safeText(
+                                    result.reason,
+                                    'UNKNOWN'
+                                )}`
+
+                            )
+
                     }
+
                 )
 
-                return
             }
 
 
-            if (!result.changed) {
+            /* ─────────────────────────────
+               DATOS DE CARTA
+            ───────────────────────────── */
 
-                await sock.safeSendMessage(
-                    from,
-                    {
-                        text:
-`⭐ ${result.card.card_name} OVR ${result.card.rating} ya está equipada.`
-                    }
+            const card =
+                result.card ||
+                {}
+
+
+            const cardName =
+                safeText(
+                    card.card_name,
+                    'Carta'
                 )
 
-                return
+
+            const rating =
+                safeNumber(
+                    card.rating
+                )
+
+
+            const family =
+                safeText(
+                    card.family,
+                    'PLAYER'
+                )
+
+
+            const promo =
+                safeText(
+                    card.promo_code,
+                    'BASE'
+                )
+
+
+            const id =
+                safeText(
+                    card.id,
+                    cardId
+                )
+
+
+            /* ─────────────────────────────
+               YA EQUIPADA
+            ───────────────────────────── */
+
+            if (
+                !result.changed
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.info(
+
+                                'CARTA YA EQUIPADA',
+
+                                [
+
+                                    [
+                                        'Carta',
+                                        cardName
+                                    ],
+
+                                    [
+                                        'OVR',
+                                        rating
+                                    ],
+
+                                    [
+                                        'ID',
+                                        id
+                                    ]
+
+                                ],
+
+                                'Esta carta ya está equipada actualmente.'
+
+                            )
+
+                    }
+
+                )
+
             }
+
+
+            /* ─────────────────────────────
+               RESPUESTA
+            ───────────────────────────── */
+
+            const text = [
+
+                'ㅤ۟∩　ׅ　⭐　ׅ　*CARD EQUIPPED*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 🃏  ׄ ⬭ *Carta:* ${cardName}`,
+
+                `𖣣ֶㅤ֯⌗ ⭐  ׄ ⬭ *OVR:* ${rating}`,
+
+                `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ *Familia:* ${family}`,
+
+                `𖣣ֶㅤ֯⌗ 🎴  ׄ ⬭ *Tipo:* ${promo}`,
+
+                `𖣣ֶㅤ֯⌗ 🆔  ׄ ⬭ *ID:* ${id}`,
+
+                '',
+
+                '╰─ 𓂃 Tu carta activa ha sido actualizada',
+
+                '╰─ 𓂃 Usa .card para verla'
+
+            ]
+                .filter(Boolean)
+                .join('\n')
 
 
             await sock.safeSendMessage(
+
                 from,
+
                 {
-                    text:
-`୨୧ ─────────── ୨୧
-⌗ 𝐂𝐀𝐑𝐃 𝐄𝐐𝐔𝐈𝐏𝐏𝐄𝐃
-
-⭐ ${result.card.card_name}
-
-✦ OVR ${result.card.rating}
-✦ ${result.card.family}
-✦ ${result.card.promo_code || 'BASE'}
-✦ ID: ${result.card.id}
-
-Tu carta activa ha sido actualizada.
-
-୨୧ ─────────── ୨୧`
+                    text
                 }
+
+            )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Card equipada: member=${member.id} | card=${id} | ${cardName} | OVR ${rating}`
+
             )
 
 
         } catch (err) {
 
-            console.error(
-                'Equip Command Error:',
-                err
+            logger.error(
+
+                `Error equip: ${err.stack || err.message}`
+
             )
 
-            await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ Ocurrió un error al equipar la carta.'
-                }
-            )
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR EQUIP',
+
+                                'Ocurrió un error al equipar la carta.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

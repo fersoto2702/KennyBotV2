@@ -1,120 +1,254 @@
-const { pool } = require('../mysql')
+const {
+    pool
+} = require('../mysql')
 
-async function getClubCount(memberId) {
-    const [rows] = await pool.execute(
-        `
-        SELECT COUNT(*) AS total
-        FROM ut_user_club uc
-        INNER JOIN ut_cards c
-            ON c.id = uc.card_id
-        WHERE uc.member_id = ?
-          AND uc.enabled = 1
-          AND c.enabled = 1
-        `,
-        [memberId]
-    )
 
-    return Number(rows[0]?.total || 0)
+function validatePositiveInteger(
+    value,
+    name
+) {
+
+    const number =
+        Number(value)
+
+    if (
+        !Number.isInteger(number) ||
+        number <= 0
+    ) {
+
+        throw new Error(
+            `${name} inválido: ${value}`
+        )
+
+    }
+
+    return number
 }
+
+
+function normalizePage(
+    value
+) {
+
+    const page =
+        Math.floor(
+            Number(value) || 1
+        )
+
+    return Math.max(
+        page,
+        1
+    )
+}
+
+
+function normalizePageSize(
+    value
+) {
+
+    const size =
+        Math.floor(
+            Number(value) || 10
+        )
+
+    return Math.max(
+        1,
+        Math.min(
+            size,
+            50
+        )
+    )
+}
+
+
+/* ─────────────────────────────
+   TOTAL DE CARTAS DEL CLUB
+───────────────────────────── */
+
+async function getClubCount(
+    memberId
+) {
+
+    const member =
+        validatePositiveInteger(
+            memberId,
+            'memberId'
+        )
+
+    const [rows] =
+        await pool.execute(
+            `
+            SELECT
+                COUNT(*) AS total
+
+            FROM ut_user_club uc
+
+            INNER JOIN ut_cards c
+                ON c.id = uc.card_id
+
+            WHERE uc.member_id = ?
+              AND uc.enabled = 1
+              AND c.enabled = 1
+            `,
+            [member]
+        )
+
+    return Number(
+        rows?.[0]?.total || 0
+    )
+}
+
+
+/* ─────────────────────────────
+   CARTAS DEL CLUB
+───────────────────────────── */
 
 async function getClubCards(
     memberId,
     page = 1,
     pageSize = 10
 ) {
+
+    const member =
+        validatePositiveInteger(
+            memberId,
+            'memberId'
+        )
+
     const numericPage =
-        Math.max(Number(page) || 1, 1)
+        normalizePage(
+            page
+        )
 
     const numericPageSize =
-        Math.max(
-            Math.min(
-                Number(pageSize) || 10,
-                50
-            ),
-            1
+        normalizePageSize(
+            pageSize
         )
 
     const offset =
-        (numericPage - 1) *
+        (
+            numericPage - 1
+        ) *
         numericPageSize
 
-    const [rows] = await pool.execute(
-        `
-        SELECT
-            uc.id AS club_entry_id,
-            uc.source,
-            uc.source_pack_id,
-            uc.obtained_at,
-            c.id AS card_id,
-            c.card_key,
-            c.rating,
-            c.position,
-            c.family,
-            c.club,
-            c.league,
-            c.image_path,
-            c.pac,
-            c.sho,
-            c.pas,
-            c.dri,
-            c.def,
-            c.phy,
-            c.div_stat,
-            c.han,
-            c.kic,
-            c.ref_stat,
-            c.spd,
-            c.pos_stat,
-            p.name AS player_name,
-            p.known_as,
-            p.nationality,
-            g.code AS game_code,
-            g.name AS game_name,
-            pr.code AS promo_code,
-            pr.name AS promo_name
-        FROM ut_user_club uc
-        INNER JOIN ut_cards c
-            ON c.id = uc.card_id
-        INNER JOIN ut_players p
-            ON p.id = c.player_id
-        INNER JOIN ut_games g
-            ON g.id = c.game_id
-        INNER JOIN ut_promos pr
-            ON pr.id = c.promo_id
-        WHERE uc.member_id = ?
-          AND uc.enabled = 1
-          AND c.enabled = 1
-        ORDER BY
-            c.rating DESC,
-            uc.obtained_at DESC,
-            uc.id DESC
-        LIMIT ?
-        OFFSET ?
-        `,
-        [
-            memberId,
-            numericPageSize,
-            offset
-        ]
-    )
+    const [rows] =
+        await pool.execute(
+            `
+            SELECT
+                uc.id AS club_entry_id,
+                uc.source,
+                uc.source_pack_id,
+                uc.obtained_at,
 
-    return rows
+                c.id AS card_id,
+                c.card_key,
+                c.rating,
+                c.position,
+                c.family,
+                c.club,
+                c.league,
+                c.image_path,
+
+                c.pac,
+                c.sho,
+                c.pas,
+                c.dri,
+                c.def,
+                c.phy,
+
+                c.div_stat,
+                c.han,
+                c.kic,
+                c.ref_stat,
+                c.spd,
+                c.pos_stat,
+
+                p.name AS player_name,
+                p.known_as,
+                p.nationality,
+
+                g.code AS game_code,
+                g.name AS game_name,
+
+                pr.code AS promo_code,
+                pr.name AS promo_name
+
+            FROM ut_user_club uc
+
+            INNER JOIN ut_cards c
+                ON c.id = uc.card_id
+
+            INNER JOIN ut_players p
+                ON p.id = c.player_id
+
+            INNER JOIN ut_games g
+                ON g.id = c.game_id
+
+            INNER JOIN ut_promos pr
+                ON pr.id = c.promo_id
+
+            WHERE uc.member_id = ?
+              AND uc.enabled = 1
+              AND c.enabled = 1
+
+            ORDER BY
+                c.rating DESC,
+                uc.obtained_at DESC,
+                uc.id DESC
+
+            LIMIT ?
+            OFFSET ?
+            `,
+            [
+                member,
+                numericPageSize,
+                offset
+            ]
+        )
+
+    return Array.isArray(rows)
+        ? rows
+        : []
 }
+
+
+/* ─────────────────────────────
+   CLUB PAGINADO
+───────────────────────────── */
 
 async function getUserClub(
     memberId,
     page = 1,
     pageSize = 10
 ) {
+
+    const member =
+        validatePositiveInteger(
+            memberId,
+            'memberId'
+        )
+
     const numericPage =
-        Math.max(Number(page) || 1, 1)
+        normalizePage(
+            page
+        )
+
+    const numericPageSize =
+        normalizePageSize(
+            pageSize
+        )
 
     const total =
-        await getClubCount(memberId)
+        await getClubCount(
+            member
+        )
 
     const totalPages =
         Math.max(
-            Math.ceil(total / pageSize),
+            Math.ceil(
+                total /
+                numericPageSize
+            ),
             1
         )
 
@@ -122,35 +256,44 @@ async function getUserClub(
         total > 0 &&
         numericPage > totalPages
     ) {
+
         return {
             cards: [],
             total,
             page: numericPage,
-            pageSize,
+            pageSize: numericPageSize,
             totalPages
         }
+
     }
 
     const cards =
         total > 0
+
             ? await getClubCards(
-                memberId,
+                member,
                 numericPage,
-                pageSize
+                numericPageSize
             )
+
             : []
 
     return {
         cards,
         total,
         page: numericPage,
-        pageSize,
+        pageSize: numericPageSize,
         totalPages
     }
 }
 
+
 module.exports = {
+
     getClubCount,
+
     getClubCards,
+
     getUserClub
+
 }

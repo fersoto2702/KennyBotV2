@@ -270,13 +270,10 @@ movember: {
             letterSpacing: 0.35
         },
 
-        stats: {
-            valueCenterX: [58, 137.4],
-            labelX: [76.4, 155.8],
-            rowsY: [227.3, 253.4, 278.3],
-            valueSize: 21.1,
-            labelSize: 21.1
-        }
+        statsBlock: {
+        top: 202,
+        bottom: 277
+    }
     },
 },
 }

@@ -6,10 +6,123 @@ const {
     getMemberCardById
 } = require('../src/database/repositories/memberCardRepository')
 
+const logger =
+    require('../src/utils/logger')
+
+const ui =
+    require('../src/utils/ui')
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+
+function safeNumber(
+    value,
+    fallback = 0
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    return Number.isFinite(number)
+        ? number
+        : fallback
+
+}
+
+
+function safeText(
+    value,
+    fallback = 'N/A'
+) {
+
+    const text =
+        String(
+            value ?? ''
+        )
+            .trim()
+
+
+    return text ||
+        fallback
+
+}
+
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+
+        return 'Desconocida'
+
+    }
+
+
+    try {
+
+        const date =
+            new Date(
+                value
+            )
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return 'Desconocida'
+
+        }
+
+
+        return date.toLocaleDateString(
+            'es-MX',
+            {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }
+        )
+
+
+    } catch {
+
+        return 'Desconocida'
+
+    }
+
+}
+
 
 module.exports = {
 
-    name: 'cardinfo',
+    name:
+        'cardinfo',
 
     aliases: [
         'infocard',
@@ -19,155 +132,408 @@ module.exports = {
     description:
         'Muestra la información de una carta de tu colección',
 
-    category: 'perfil',
+    category:
+        'perfil',
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
+
         sock,
         msg,
         from,
-        args
+        args = []
+
     }) {
 
         try {
 
+            /* ─────────────────────────────
+               USUARIO
+            ───────────────────────────── */
+
             const sender =
-                msg.key?.participant ||
-                msg.participant ||
-                msg.key?.remoteJid
+                normalizeJid(
+
+                    msg.key?.participant ||
+
+                    msg.participant ||
+
+                    msg.key?.remoteJid
+
+                )
+
 
             const senderAlt =
-                msg.key?.participantAlt ||
-                null
+                normalizeJid(
+
+                    msg.key?.participantAlt ||
+
+                    null
+
+                )
+
 
             if (!sender) {
-                return
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No pude identificar al usuario.'
+
+                            )
+
+                    }
+
+                )
+
             }
 
+
+            /* ─────────────────────────────
+               ID DE CARTA
+            ───────────────────────────── */
+
             const cardId =
-                Number(args?.[0])
+                Number(
+                    args[0]
+                )
 
 
             if (
-                !Number.isInteger(cardId) ||
+                !Number.isInteger(
+                    cardId
+                ) ||
                 cardId <= 0
             ) {
 
-                await sock.safeSendMessage(
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-`❌ Debes indicar el ID de una carta.
+                            ui.warn(
 
-Ejemplo:
-.cardinfo 2
+                                'ID DE CARTA REQUERIDO',
 
-Puedes consultar tus IDs con:
-.collection`
+                                [
+                                    'Debes indicar el ID de una carta.',
+                                    '',
+                                    'Ejemplo:',
+                                    '.cardinfo 2',
+                                    '',
+                                    'Puedes consultar tus IDs con:',
+                                    '.collection'
+                                ].join('\n')
+
+                            )
+
                     }
+
                 )
 
-                return
             }
+
+
+            /* ─────────────────────────────
+               PERFIL
+            ───────────────────────────── */
 
             const member =
                 await ensureMember(
+
                     sender,
+
                     senderAlt,
-                    msg.pushName || null
+
+                    msg.pushName ||
+                    null
+
                 )
+
+
+            if (!member) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No pude cargar tu perfil.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               CARTA
+            ───────────────────────────── */
 
             const card =
                 await getMemberCardById(
+
                     member.id,
+
                     cardId
+
                 )
 
 
             if (!card) {
 
-                await sock.safeSendMessage(
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-`❌ No encontré la carta #${cardId} en tu colección.`
+                            ui.warn(
+
+                                'CARTA NO ENCONTRADA',
+
+                                `No encontré la carta #${cardId} en tu colección.`
+
+                            )
+
                     }
+
                 )
 
-                return
             }
 
 
+            /* ─────────────────────────────
+               INFORMACIÓN
+            ───────────────────────────── */
+
             const obtained =
-                card.obtained_at
-                    ? new Date(
-                        card.obtained_at
-                    ).toLocaleDateString(
-                        'es-MX'
-                    )
-                    : 'Desconocida'
+                formatDate(
+                    card.obtained_at
+                )
 
 
             const equipped =
-                Number(card.equipped) === 1
+                Number(
+                    card.equipped
+                ) === 1
 
 
-            const text =
-`୨୧ ─────────── ୨୧
-⌗ 𝐂𝐀𝐑𝐃 𝐈𝐍𝐅𝐎
+            const cardName =
+                safeText(
+                    card.card_name,
+                    'Carta'
+                )
 
-✦ ${card.card_name}
-✦ OVR ${card.rating}
 
-୨୧ ── 𝐃𝐀𝐓𝐎𝐒 ── ୨୧
+            const family =
+                safeText(
+                    card.family,
+                    'PLAYER'
+                )
 
-✦ 𝐈𝐃: ${card.id}
-✦ 𝐅𝐚𝐦𝐢𝐥𝐢𝐚: ${card.family}
-✦ 𝐓𝐢𝐩𝐨: ${card.promo_code || 'BASE'}
-✦ 𝐄𝐬𝐭𝐚𝐝𝐨: ${equipped ? '⭐ EQUIPADA' : 'Guardada'}
 
-୨୧ ── 𝐒𝐓𝐀𝐓𝐒 ── ୨୧
+            const promo =
+                safeText(
+                    card.promo_code,
+                    'BASE'
+                )
 
-✦ 𝐌𝐒𝐆: ${card.msg_stat}
-✦ 𝐀𝐂𝐓: ${card.act_stat}
-✦ 𝐂𝐌𝐃: ${card.cmd_stat}
-✦ 𝐑𝐀𝐂: ${card.rac_stat}
-✦ 𝐀𝐍𝐓: ${card.ant_stat}
-✦ 𝐈𝐍𝐓: ${card.int_stat}
 
-୨୧ ── 𝐇𝐈𝐒𝐓𝐎𝐑𝐈𝐀𝐋 ── ୨୧
+            const reason =
+                safeText(
+                    card.obtained_reason,
+                    'No especificado'
+                )
 
-✦ 𝐎𝐛𝐭𝐞𝐧𝐢𝐝𝐚: ${obtained}
-✦ 𝐌𝐨𝐭𝐢𝐯𝐨:
-${card.obtained_reason || 'No especificado'}
 
-୨୧ ─────────── ୨୧
-✧ KennyBot V2
-୨୧ ─────────── ୨୧`
+            const rating =
+                safeNumber(
+                    card.rating
+                )
 
+
+            const msgStat =
+                safeNumber(
+                    card.msg_stat
+                )
+
+
+            const actStat =
+                safeNumber(
+                    card.act_stat
+                )
+
+
+            const cmdStat =
+                safeNumber(
+                    card.cmd_stat
+                )
+
+
+            const racStat =
+                safeNumber(
+                    card.rac_stat
+                )
+
+
+            const antStat =
+                safeNumber(
+                    card.ant_stat
+                )
+
+
+            const intStat =
+                safeNumber(
+                    card.int_stat
+                )
+
+
+            /* ─────────────────────────────
+               TEXTO
+            ───────────────────────────── */
+
+            const text = [
+
+                'ㅤ۟∩　ׅ　🃏　ׅ　*CARD INFO*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 🃏  ׄ ⬭ *Carta:* ${cardName}`,
+
+                `𖣣ֶㅤ֯⌗ ⭐  ׄ ⬭ *OVR:* ${rating}`,
+
+                '',
+
+                'ㅤ۟∩　ׅ　📋　ׅ　*DATOS*',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 🆔  ׄ ⬭ *ID:* ${card.id}`,
+
+                `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ *Familia:* ${family}`,
+
+                `𖣣ֶㅤ֯⌗ 🎴  ׄ ⬭ *Tipo:* ${promo}`,
+
+                `𖣣ֶㅤ֯⌗ ${equipped ? '⭐' : '📦'}  ׄ ⬭ *Estado:* ${equipped ? 'EQUIPADA' : 'GUARDADA'}`,
+
+                '',
+
+                'ㅤ۟∩　ׅ　📊　ׅ　*STATS*',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 💬  ׄ ⬭ *MSG:* ${msgStat}`,
+
+                `𖣣ֶㅤ֯⌗ ⚡  ׄ ⬭ *ACT:* ${actStat}`,
+
+                `𖣣ֶㅤ֯⌗ ⚙️  ׄ ⬭ *CMD:* ${cmdStat}`,
+
+                `𖣣ֶㅤ֯⌗ 🎯  ׄ ⬭ *RAC:* ${racStat}`,
+
+                `𖣣ֶㅤ֯⌗ 🛡️  ׄ ⬭ *ANT:* ${antStat}`,
+
+                `𖣣ֶㅤ֯⌗ 🧠  ׄ ⬭ *INT:* ${intStat}`,
+
+                '',
+
+                'ㅤ۟∩　ׅ　📜　ׅ　*HISTORIAL*',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 📅  ׄ ⬭ *Obtenida:* ${obtained}`,
+
+                `𖣣ֶㅤ֯⌗ ✎  ׄ ⬭ *Motivo:* ${reason}`,
+
+                '',
+
+                '╰─ 𓂃 KennyBot V2'
+
+            ]
+                .filter(Boolean)
+                .join('\n')
+
+
+            /* ─────────────────────────────
+               ENVIAR
+            ───────────────────────────── */
 
             await sock.safeSendMessage(
+
                 from,
+
                 {
                     text
                 }
+
             )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `CardInfo consultada: member=${member.id} | card=${card.id} | ${cardName} | OVR ${rating}`
+
+            )
+
 
         } catch (err) {
 
-            console.error(
-                'CardInfo Command Error:',
-                err
+            logger.error(
+
+                `Error cardinfo: ${err.stack || err.message}`
+
             )
 
-            await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ Ocurrió un error al consultar la carta.'
-                }
-            )
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR CARDINFO',
+
+                                'Ocurrió un error al consultar la carta.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

@@ -5,19 +5,187 @@ const path =
     require('path')
 
 const isGroupAdmin =
-    require('../src/utils/isAdmin')
+    require('../../src/utils/isAdmin')
 
 const logger =
-    require('../src/utils/logger')
+    require('../../src/utils/logger')
 
 const ui =
-    require('../src/utils/ui')
+    require('../../src/utils/ui')
+
 
 const dbPath =
     path.join(
         __dirname,
         '../../database/antilink.json'
     )
+
+
+function ensureDb() {
+
+    try {
+
+        const directory =
+            path.dirname(
+                dbPath
+            )
+
+
+        if (
+            !fs.existsSync(
+                directory
+            )
+        ) {
+
+            fs.mkdirSync(
+                directory,
+                {
+                    recursive: true
+                }
+            )
+
+        }
+
+
+        if (
+            !fs.existsSync(
+                dbPath
+            )
+        ) {
+
+            fs.writeFileSync(
+                dbPath,
+                JSON.stringify(
+                    [],
+                    null,
+                    2
+                ),
+                'utf8'
+            )
+
+        }
+
+
+        const data =
+            JSON.parse(
+                fs.readFileSync(
+                    dbPath,
+                    'utf8'
+                )
+            )
+
+
+        return Array.isArray(data)
+            ? data
+            : []
+
+
+    } catch (err) {
+
+        logger.error(
+            `Error leyendo antilink.json: ${err.message}`
+        )
+
+        return []
+
+    }
+
+}
+
+
+function saveDb(
+    data
+) {
+
+    fs.writeFileSync(
+        dbPath,
+        JSON.stringify(
+            data,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+
+function cleanGroups(
+    data
+) {
+
+    return [
+
+        ...new Set(
+
+            data.filter(
+                item =>
+                    typeof item === 'string' &&
+                    item.endsWith('@g.us')
+            )
+
+        )
+
+    ]
+
+}
+
+
+async function checkGroup(
+    sock,
+    from,
+    msg
+) {
+
+    if (
+        !from ||
+        !from.endsWith('@g.us')
+    ) {
+
+        return 'not_group'
+
+    }
+
+
+    const sender =
+
+        msg.key.participant ||
+
+        msg.participant ||
+
+        msg.key.remoteJid
+
+
+    if (!sender) {
+
+        return 'no_sender'
+
+    }
+
+
+    const admin =
+        await isGroupAdmin(
+
+            sock,
+
+            from,
+
+            sender
+
+        )
+
+
+    if (!admin) {
+
+        return 'not_admin'
+
+    }
+
+
+    return 'ok'
+
+}
+
 
 module.exports = {
 
@@ -36,178 +204,413 @@ module.exports = {
     category:
         'admin',
 
-    adminOnly: true,
+    adminOnly:
+        true,
 
-    groupOnly: true,
+    groupOnly:
+        true,
+
 
     async execute({
+
         sock,
         from,
-        args,
+        args = [],
         msg
+
     }) {
 
         try {
 
-            if (!from.endsWith('@g.us')) {
+            const check =
+                await checkGroup(
 
-                return await sock.sendMessage(
-                    from,
-                    {
-                        text:
-                            ui.error(
-                                'SOLO GRUPOS',
-                                'Este comando solo funciona en grupos.'
-                            )
-                    }
-                )
-
-            }
-
-            const sender =
-                msg.key.participant ||
-                msg.participant
-
-            const admin =
-                await isGroupAdmin(
                     sock,
+
                     from,
-                    sender
+
+                    msg
+
                 )
 
-            if (!admin) {
 
-                return await sock.sendMessage(
+            if (
+                check ===
+                'not_group'
+            ) {
+
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.error(
-                                'ACCESO DENEGADO',
-                                'Solo administradores pueden usar este comando.'
+
+                                'SOLO GRUPOS',
+
+                                'Este comando solo funciona en grupos.'
+
                             )
+
                     }
+
                 )
 
             }
 
-            if (!fs.existsSync(dbPath)) {
-                fs.writeFileSync(
-                    dbPath,
-                    JSON.stringify([], null, 2)
+
+            if (
+                check ===
+                'no_sender'
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No se pudo identificar al usuario que ejecutó el comando.'
+
+                            )
+
+                    }
+
                 )
+
             }
 
-            let data = []
 
-            try {
+            if (
+                check ===
+                'not_admin'
+            ) {
 
-                data =
-                    JSON.parse(
-                        fs.readFileSync(dbPath)
-                    )
+                return await sock.safeSendMessage(
 
-                if (!Array.isArray(data)) {
-                    data = []
-                }
+                    from,
 
-            } catch {
-                data = []
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ACCESO DENEGADO',
+
+                                'Solo administradores pueden usar este comando.'
+
+                            )
+
+                    }
+
+                )
+
             }
 
-            data =
-                [...new Set(data)]
+
+            let data =
+                cleanGroups(
+                    ensureDb()
+                )
+
 
             const option =
-                args[0]?.toLowerCase()
+                String(
+                    args[0] || ''
+                )
+                    .trim()
+                    .toLowerCase()
 
-            if (option === 'on') {
 
-                if (!data.includes(from)) {
-                    data.push(from)
+            /* ─────────────────────────────
+               ACTIVAR
+            ───────────────────────────── */
+
+            if (
+                option === 'on'
+            ) {
+
+                const alreadyEnabled =
+                    data.includes(
+                        from
+                    )
+
+
+                if (
+                    alreadyEnabled
+                ) {
+
+                    return await sock.safeSendMessage(
+
+                        from,
+
+                        {
+
+                            text:
+                                ui.info(
+
+                                    'ANTILINK',
+
+                                    [
+                                        [
+                                            'Estado',
+                                            '● ACTIVADO'
+                                        ]
+                                    ],
+
+                                    'AntiLink ya estaba activado en este grupo.'
+
+                                )
+
+                        }
+
+                    )
+
                 }
 
-                fs.writeFileSync(
-                    dbPath,
-                    JSON.stringify(data, null, 2)
+
+                data.push(
+                    from
                 )
 
-                logger.event(
-                    `AntiLink ON: ${from.split('@')[0]}`
-                )
-
-                return await sock.sendMessage(
-                    from,
-                    {
-                        text:
-                            ui.success(
-                                'ANTILINK ACTIVADO',
-                                [
-                                    ['Estado', '● ACTIVADO'],
-                                    ['Protección', 'Links bloqueados']
-                                ]
-                            )
-                    }
-                )
-
-            }
-
-            if (option === 'off') {
 
                 data =
-                    data.filter(id => id !== from)
+                    cleanGroups(
+                        data
+                    )
 
-                fs.writeFileSync(
-                    dbPath,
-                    JSON.stringify(data, null, 2)
+
+                saveDb(
+                    data
                 )
+
 
                 logger.event(
-                    `AntiLink OFF: ${from.split('@')[0]}`
+
+                    `AntiLink ON: ${from.split('@')[0]}`
+
                 )
 
-                return await sock.sendMessage(
+
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
                             ui.success(
-                                'ANTILINK DESACTIVADO',
+
+                                'ANTILINK ACTIVADO',
+
                                 [
-                                    ['Estado', '○ DESACTIVADO']
-                                ]
+
+                                    [
+                                        'Estado',
+                                        '● ACTIVADO'
+                                    ],
+
+                                    [
+                                        'Protección',
+                                        'Links bloqueados'
+                                    ]
+
+                                ],
+
+                                'La protección AntiLink fue activada correctamente.'
+
                             )
+
                     }
+
                 )
 
             }
 
-            const enabled =
-                data.includes(from)
 
-            await sock.sendMessage(
+            /* ─────────────────────────────
+               DESACTIVAR
+            ───────────────────────────── */
+
+            if (
+                option === 'off'
+            ) {
+
+                const wasEnabled =
+                    data.includes(
+                        from
+                    )
+
+
+                if (
+                    !wasEnabled
+                ) {
+
+                    return await sock.safeSendMessage(
+
+                        from,
+
+                        {
+
+                            text:
+                                ui.info(
+
+                                    'ANTILINK',
+
+                                    [
+                                        [
+                                            'Estado',
+                                            '○ DESACTIVADO'
+                                        ]
+                                    ],
+
+                                    'AntiLink ya estaba desactivado en este grupo.'
+
+                                )
+
+                        }
+
+                    )
+
+                }
+
+
+                data =
+                    data.filter(
+
+                        id =>
+                            id !== from
+
+                    )
+
+
+                saveDb(
+                    data
+                )
+
+
+                logger.event(
+
+                    `AntiLink OFF: ${from.split('@')[0]}`
+
+                )
+
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.success(
+
+                                'ANTILINK DESACTIVADO',
+
+                                [
+
+                                    [
+                                        'Estado',
+                                        '○ DESACTIVADO'
+                                    ]
+
+                                ],
+
+                                'La protección AntiLink fue desactivada correctamente.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ESTADO
+            ───────────────────────────── */
+
+            const enabled =
+                data.includes(
+                    from
+                )
+
+
+            return await sock.safeSendMessage(
+
                 from,
+
                 {
+
                     text:
                         ui.info(
+
                             'ANTILINK',
+
                             [
+
                                 [
                                     'Estado',
                                     enabled
                                         ? '● ACTIVADO'
                                         : '○ DESACTIVADO'
                                 ],
-                                ['Grupo', from.split('@')[0]]
+
+                                [
+                                    'Grupo',
+                                    from.split('@')[0]
+                                ]
+
                             ],
+
                             'Uso: /antilink on · /antilink off'
+
                         )
+
                 }
+
             )
+
 
         } catch (err) {
 
             logger.error(
-                `Error antilink: ${err.message}`
+
+                `Error antilink: ${err.stack || err.message}`
+
             )
+
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR ANTILINK',
+
+                                'No se pudo actualizar la configuración AntiLink.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

@@ -7,10 +7,99 @@ const {
     getMemberCards
 } = require('../src/database/repositories/memberCardRepository')
 
+const logger =
+    require('../src/utils/logger')
+
+const ui =
+    require('../src/utils/ui')
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+
+function safeText(
+    value,
+    fallback = 'N/A'
+) {
+
+    const text =
+        String(
+            value ?? ''
+        )
+            .trim()
+
+
+    return text ||
+        fallback
+
+}
+
+
+function safeNumber(
+    value,
+    fallback = 0
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    return Number.isFinite(number)
+        ? number
+        : fallback
+
+}
+
+
+function getDateValue(
+    value
+) {
+
+    if (!value) {
+
+        return 0
+
+    }
+
+
+    const time =
+        new Date(
+            value
+        )
+            .getTime()
+
+
+    return Number.isFinite(time)
+        ? time
+        : 0
+
+}
+
 
 module.exports = {
 
-    name: 'collection',
+    name:
+        'collection',
 
     aliases: [
         'coleccion',
@@ -21,172 +110,398 @@ module.exports = {
     description:
         'Muestra tu colección de cartas de KennyBot',
 
-    category: 'perfil',
+    category:
+        'perfil',
 
-    cooldown: 5,
+    cooldown:
+        5,
+
 
     async execute({
+
         sock,
         msg,
         from
+
     }) {
 
         try {
 
-            // Identidad del usuario
+            /* ─────────────────────────────
+               IDENTIDAD
+            ───────────────────────────── */
+
             const sender =
-                msg.key?.participant ||
-                msg.participant ||
-                msg.key?.remoteJid
+                normalizeJid(
+
+                    msg.key?.participant ||
+
+                    msg.participant ||
+
+                    msg.key?.remoteJid
+
+                )
+
 
             const senderAlt =
-                msg.key?.participantAlt ||
-                null
+                normalizeJid(
+
+                    msg.key?.participantAlt ||
+
+                    msg.participantAlt ||
+
+                    null
+
+                )
+
 
             if (!sender) {
 
-                await sock.safeSendMessage(
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-                            '❌ No pude identificar al usuario.'
+                            ui.error(
+
+                                'ERROR DE USUARIO',
+
+                                'No pude identificar al usuario.'
+
+                            )
+
                     }
+
                 )
 
-                return
             }
 
 
-            // Garantizar que exista como miembro
+            /* ─────────────────────────────
+               PERFIL
+            ───────────────────────────── */
+
             const member =
                 await ensureMember(
+
                     sender,
+
                     senderAlt,
-                    msg.pushName || null
+
+                    msg.pushName ||
+                    null
+
                 )
+
 
             if (!member) {
 
-                await sock.safeSendMessage(
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-                            '❌ No pude cargar tu perfil.'
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No pude cargar tu perfil.'
+
+                            )
+
                     }
+
                 )
 
-                return
             }
 
 
-            // Garantizar Gold Rare inicial
+            /* ─────────────────────────────
+               CARTA INICIAL
+            ───────────────────────────── */
+
             await ensureInitialGoldCard(
                 member.id
             )
 
 
-            // Obtener todas sus cartas
-            const cards =
+            /* ─────────────────────────────
+               COLECCIÓN
+            ───────────────────────────── */
+
+            const result =
                 await getMemberCards(
                     member.id
                 )
 
-            if (!cards.length) {
 
-                await sock.safeSendMessage(
+            const cards =
+                Array.isArray(
+                    result
+                )
+                    ? result
+                    : []
+
+
+            if (
+                cards.length === 0
+            ) {
+
+                return await sock.safeSendMessage(
+
                     from,
+
                     {
+
                         text:
-                            '❌ Todavía no tienes cartas.'
+                            ui.warn(
+
+                                'SIN CARTAS',
+
+                                'Todavía no tienes cartas en tu colección.'
+
+                            )
+
                     }
+
                 )
 
-                return
             }
 
 
-            // Equipada primero.
-            // Después, las más recientes.
+            /* ─────────────────────────────
+               ORDENAR CARTAS
+            ───────────────────────────── */
+
             const orderedCards =
-                [...cards].sort((a, b) => {
+                [...cards]
+                    .sort(
 
-                    const equippedDifference =
-                        Number(b.equipped) -
-                        Number(a.equipped)
+                        (a, b) => {
 
-                    if (equippedDifference !== 0) {
-                        return equippedDifference
-                    }
+                            const equippedDifference =
 
-                    return (
-                        new Date(b.obtained_at) -
-                        new Date(a.obtained_at)
+                                Number(
+                                    b?.equipped
+                                )
+
+                                -
+
+                                Number(
+                                    a?.equipped
+                                )
+
+
+                            if (
+                                equippedDifference !== 0
+                            ) {
+
+                                return equippedDifference
+
+                            }
+
+
+                            return (
+
+                                getDateValue(
+                                    b?.obtained_at
+                                )
+
+                                -
+
+                                getDateValue(
+                                    a?.obtained_at
+                                )
+
+                            )
+
+                        }
+
                     )
-                })
 
 
-            let text =
-`୨୧ ─────────── ୨୧
-⌗ 𝐂𝐀𝐑𝐃 𝐂𝐎𝐋𝐋𝐄𝐂𝐓𝐈𝐎𝐍
+            /* ─────────────────────────────
+               NOMBRE DEL MIEMBRO
+            ───────────────────────────── */
 
-✦ 𝐌𝐢𝐞𝐦𝐛𝐫𝐨:
-${member.display_name || msg.pushName || 'Usuario'}
+            const memberName =
+                safeText(
 
-✦ 𝐂𝐚𝐫𝐭𝐚𝐬: ${orderedCards.length}
+                    member.display_name ||
 
-୨୧ ─────────── ୨୧
+                    msg.pushName,
 
-`
+                    'Usuario'
 
-
-            orderedCards.forEach(
-                (card, index) => {
-
-                    const equipped =
-                        Number(card.equipped) === 1
-
-                    text +=
-`${index + 1}. ${equipped ? '⭐ ' : ''}${card.card_name}
-
-   ✦ OVR ${card.rating}
-   ✦ ${card.family}
-   ✦ ${card.promo_code || 'BASE'}
-   ✦ ID: ${card.id}
-   ${equipped ? '✦ EQUIPADA' : ''}
-
-`
-                }
-            )
+                )
 
 
-            text +=
-`୨୧ ─────────── ୨୧
-✧ ⭐ = Carta equipada
-✧ KennyBot V2
-୨୧ ─────────── ୨୧`
+            /* ─────────────────────────────
+               FILAS DE CARTAS
+            ───────────────────────────── */
 
+            const rows =
+                orderedCards
+                    .map(
+
+                        (
+                            card,
+                            index
+                        ) => {
+
+                            const equipped =
+                                Number(
+                                    card?.equipped
+                                ) === 1
+
+
+                            const cardName =
+                                safeText(
+                                    card?.card_name,
+                                    'Carta'
+                                )
+
+
+                            const rating =
+                                safeNumber(
+                                    card?.rating
+                                )
+
+
+                            const family =
+                                safeText(
+                                    card?.family,
+                                    'PLAYER'
+                                )
+
+
+                            const promo =
+                                safeText(
+                                    card?.promo_code,
+                                    'BASE'
+                                )
+
+
+                            const id =
+                                safeText(
+                                    card?.id,
+                                    '?'
+                                )
+
+
+                            return [
+
+                                `𖣣ֶㅤ֯⌗ ${equipped ? '⭐' : '🃏'}  ׄ ⬭ *#${index + 1} ${cardName}*`,
+
+                                `╰─ 𓂃 OVR ${rating} · ${family} · ${promo}`,
+
+                                `╰─ 𓂃 ID: ${id}${equipped ? ' · EQUIPADA' : ''}`
+
+                            ]
+                                .join('\n')
+
+                        }
+
+                    )
+                    .join('\n\n')
+
+
+            /* ─────────────────────────────
+               TEXTO FINAL
+            ───────────────────────────── */
+
+            const text = [
+
+                'ㅤ۟∩　ׅ　🃏　ׅ　*CARD COLLECTION*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Miembro:* ${memberName}`,
+
+                `𖣣ֶㅤ֯⌗ 🎴  ׄ ⬭ *Cartas:* ${orderedCards.length}`,
+
+                '',
+
+                'ㅤ۟∩　ׅ　📚　ׅ　*COLECCIÓN*',
+
+                '',
+
+                rows,
+
+                '',
+
+                '╰─ 𓂃 ⭐ = Carta equipada',
+
+                '╰─ 𓂃 Usa .cardinfo ID para ver una carta',
+
+                '╰─ 𓂃 KennyBot V2'
+
+            ]
+                .filter(Boolean)
+                .join('\n')
+
+
+            /* ─────────────────────────────
+               ENVIAR
+            ───────────────────────────── */
 
             await sock.safeSendMessage(
+
                 from,
+
                 {
                     text
                 }
+
             )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Collection consultada: member=${member.id} | ${memberName} | cards=${orderedCards.length}`
+
+            )
+
 
         } catch (err) {
 
-            console.error(
-                'Collection Command Error:',
-                err
+            logger.error(
+
+                `Error collection: ${err.stack || err.message}`
+
             )
 
-            await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ Ocurrió un error al cargar tu colección.'
-                }
-            )
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE COLECCIÓN',
+
+                                'Ocurrió un error al cargar tu colección.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
 
         }
 

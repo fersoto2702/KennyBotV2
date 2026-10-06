@@ -11,30 +11,114 @@ const {
     '../src/services/objectiveRewardService'
 )
 
-function getIdentity(msg) {
+const logger =
+    require('../src/utils/logger')
 
-    const userJid =
-        msg.key.participant ||
-        msg.participant ||
-        msg.key.remoteJid
+const ui =
+    require('../src/utils/ui')
 
-    const altJid =
-        msg.key.participantAlt ||
-        msg.participantAlt ||
-        null
 
-    const displayName =
-        msg.pushName ||
-        null
+function normalizeJid(
+    jid
+) {
 
-    return {
-        userJid,
-        altJid,
-        displayName
+    if (!jid) {
+
+        return null
+
     }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
 }
 
-function getRewardLabel(grant) {
+
+function getIdentity(
+    msg
+) {
+
+    const userJid =
+        normalizeJid(
+
+            msg.key?.participant ||
+
+            msg.participant ||
+
+            msg.key?.remoteJid
+
+        )
+
+
+    const altJid =
+        normalizeJid(
+
+            msg.key?.participantAlt ||
+
+            msg.participantAlt ||
+
+            null
+
+        )
+
+
+    const displayName =
+        String(
+            msg.pushName || ''
+        )
+            .trim() ||
+        null
+
+
+    return {
+
+        userJid,
+
+        altJid,
+
+        displayName
+
+    }
+
+}
+
+
+function safeText(
+    value,
+    fallback = 'Desconocido'
+) {
+
+    const text =
+        String(
+            value ?? ''
+        )
+            .trim()
+
+
+    return text ||
+        fallback
+
+}
+
+
+function getRewardLabel(
+    grant
+) {
+
+    if (
+        !grant ||
+        typeof grant !== 'object'
+    ) {
+
+        return '🎁 Recompensa'
+
+    }
+
 
     if (
         grant.reward_type ===
@@ -42,18 +126,32 @@ function getRewardLabel(grant) {
     ) {
 
         const family =
-            grant.card_family ||
-            'PLAYER'
+            safeText(
+                grant.card_family,
+                'PLAYER'
+            )
+
 
         const rating =
-            grant.card_rating
-                ? ` ${grant.card_rating}`
+            Number(
+                grant.card_rating
+            )
+
+
+        const ratingText =
+            Number.isFinite(
+                rating
+            )
+                ? ` ${rating}`
                 : ''
 
+
         return (
-            `🃏 Carta ${family}${rating}`
+            `🃏 Carta ${family}${ratingText}`
         )
+
     }
+
 
     if (
         grant.reward_type ===
@@ -61,16 +159,21 @@ function getRewardLabel(grant) {
     ) {
 
         return '📦 Sobre Ultimate Team'
+
     }
 
+
     return '🎁 Recompensa'
+
 }
 
+
 module.exports = {
-    name: 'claim',
+
+    name:
+        'claim',
 
     aliases: [
-        'claim',
         'reclamar'
     ],
 
@@ -80,235 +183,497 @@ module.exports = {
     category:
         'perfil',
 
-    cooldown: 3,
+    cooldown:
+        3,
+
 
     async execute({
+
         sock,
         msg,
         from,
-        args,
-        prefix
+        args = [],
+        prefix = '.'
+
     }) {
 
-        const {
-            userJid,
-            altJid,
-            displayName
-        } =
-            getIdentity(msg)
+        try {
 
-        if (!userJid) {
+            /* ─────────────────────────────
+               IDENTIDAD
+            ───────────────────────────── */
 
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ No pude identificar tu cuenta.'
-                }
+            const {
+
+                userJid,
+
+                altJid,
+
+                displayName
+
+            } =
+                getIdentity(
+                    msg
+                )
+
+
+            if (!userJid) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE CUENTA',
+
+                                'No pude identificar tu cuenta.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ID DEL OBJETIVO
+            ───────────────────────────── */
+
+            const objectiveId =
+                Number(
+                    args[0]
+                )
+
+
+            if (
+                !Number.isInteger(
+                    objectiveId
+                ) ||
+                objectiveId <= 0
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.warn(
+
+                                'ID DE OBJETIVO REQUERIDO',
+
+                                [
+                                    'Debes indicar el ID del objetivo.',
+                                    '',
+                                    `Ejemplo: ${prefix}claim 27`,
+                                    '',
+                                    `Usa ${prefix}objectives para consultar tus objetivos.`
+                                ].join('\n')
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ASEGURAR PERFIL
+            ───────────────────────────── */
+
+            await ensureMember(
+
+                userJid,
+
+                altJid,
+
+                displayName
+
             )
-        }
 
-        const objectiveId =
-            Number(
-                args?.[0]
-            )
 
-        if (
-            !Number.isInteger(
-                objectiveId
-            ) ||
-            objectiveId <= 0
-        ) {
+            const member =
+                await getMemberByJid(
+                    userJid
+                )
 
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text: [
-                        '╭─〔 🎁 RECLAMAR 〕',
-                        '│',
-                        '│ Debes indicar el ID del objetivo.',
-                        '│',
-                        `│ Ejemplo: ${prefix}claim 27`,
-                        '│',
-                        `│ Usa ${prefix}objectives para`,
-                        '│ consultar tus objetivos.',
-                        '│',
-                        '╰─────────────'
-                    ].join('\n')
-                }
-            )
-        }
+                ||
 
-        await ensureMember(
-            userJid,
-            altJid,
-            displayName
-        )
+                (
+                    altJid
 
-        const member =
-            await getMemberByJid(
-                userJid
-            ) ||
-            (
-                altJid
-                    ? await getMemberByJid(
-                        altJid
+                        ? await getMemberByJid(
+                            altJid
+                        )
+
+                        : null
+                )
+
+
+            if (!member) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No pude cargar tu perfil.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               RECLAMAR
+            ───────────────────────────── */
+
+            const result =
+                await claimObjective(
+
+                    member.id,
+
+                    objectiveId
+
+                )
+
+
+            if (
+                !result ||
+                typeof result !== 'object'
+            ) {
+
+                throw new Error(
+                    'claimObjective devolvió una respuesta inválida'
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               NO PROCESADO
+            ───────────────────────────── */
+
+            if (
+                !result.processed
+            ) {
+
+                if (
+                    result.reason ===
+                    'MEMBER_OBJECTIVE_NOT_FOUND'
+                ) {
+
+                    return await sock.safeSendMessage(
+
+                        from,
+
+                        {
+
+                            text:
+                                ui.warn(
+
+                                    'OBJETIVO NO ENCONTRADO',
+
+                                    [
+                                        'Ese objetivo no existe o no pertenece a tu cuenta.',
+                                        '',
+                                        `Usa ${prefix}objectives para consultar tus objetivos.`
+                                    ].join('\n')
+
+                                )
+
+                        }
+
                     )
-                    : null
-            )
 
-        if (!member) {
-
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ No pude cargar tu perfil.'
                 }
-            )
-        }
 
-        const result =
-            await claimObjective(
-                member.id,
-                objectiveId
-            )
 
-        if (!result.processed) {
+                if (
+                    result.reason ===
+                    'OBJECTIVE_NOT_COMPLETED'
+                ) {
+
+                    return await sock.safeSendMessage(
+
+                        from,
+
+                        {
+
+                            text:
+                                ui.info(
+
+                                    'OBJETIVO EN PROGRESO',
+
+                                    [
+
+                                        [
+                                            'Estado',
+                                            safeText(
+                                                result.status,
+                                                'IN_PROGRESS'
+                                            )
+                                        ]
+
+                                    ],
+
+                                    'Todavía no puedes reclamar esta recompensa.'
+
+                                )
+
+                        }
+
+                    )
+
+                }
+
+
+                if (
+                    result.reason ===
+                    'OBJECTIVE_HAS_NO_REWARDS'
+                ) {
+
+                    return await sock.safeSendMessage(
+
+                        from,
+
+                        {
+
+                            text:
+                                ui.warn(
+
+                                    'SIN RECOMPENSAS',
+
+                                    'El objetivo está completado, pero no tiene recompensas configuradas.'
+
+                                )
+
+                        }
+
+                    )
+
+                }
+
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR AL RECLAMAR',
+
+                                `No fue posible reclamar la recompensa.\n\nCódigo: ${safeText(
+                                    result.reason,
+                                    'UNKNOWN'
+                                )}`
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               RECOMPENSAS
+            ───────────────────────────── */
+
+            const grants =
+                Array.isArray(
+                    result.grants
+                )
+                    ? result.grants
+                    : []
+
+
+            /* ─────────────────────────────
+               YA RECLAMADO
+            ───────────────────────────── */
 
             if (
-                result.reason ===
-                'MEMBER_OBJECTIVE_NOT_FOUND'
+                result.alreadyClaimed
             ) {
 
                 return await sock.safeSendMessage(
+
                     from,
+
                     {
-                        text: [
-                            '╭─〔 ❌ OBJETIVO 〕',
-                            '│',
-                            '│ Ese objetivo no existe',
-                            '│ o no pertenece a tu cuenta.',
-                            '│',
-                            `│ Usa ${prefix}objectives`,
-                            '│ para consultar los tuyos.',
-                            '│',
-                            '╰─────────────'
-                        ].join('\n')
+
+                        text:
+                            ui.info(
+
+                                'RECOMPENSA YA RECLAMADA',
+
+                                [
+
+                                    [
+                                        'Objetivo',
+                                        safeText(
+                                            result.objectiveName,
+                                            `#${objectiveId}`
+                                        )
+                                    ],
+
+                                    [
+                                        'Recompensas',
+                                        grants.length
+                                    ]
+
+                                ],
+
+                                'Este objetivo ya había sido reclamado.'
+
+                            )
+
                     }
+
                 )
+
             }
 
-            if (
-                result.reason ===
-                'OBJECTIVE_NOT_COMPLETED'
-            ) {
 
-                return await sock.safeSendMessage(
-                    from,
-                    {
-                        text: [
-                            '╭─〔 ⏳ OBJETIVO 〕',
-                            '│',
-                            '│ Todavía no puedes reclamar',
-                            '│ esta recompensa.',
-                            '│',
-                            `│ Estado: ${result.status || 'IN_PROGRESS'}`,
-                            '│',
-                            '╰─────────────'
-                        ].join('\n')
-                    }
-                )
-            }
+            /* ─────────────────────────────
+               LISTA DE RECOMPENSAS
+            ───────────────────────────── */
 
-            if (
-                result.reason ===
-                'OBJECTIVE_HAS_NO_REWARDS'
-            ) {
+            const rewardLines =
+                grants.length > 0
 
-                return await sock.safeSendMessage(
-                    from,
-                    {
-                        text: [
-                            '╭─〔 ⚠️ OBJETIVO 〕',
-                            '│',
-                            '│ El objetivo está completado,',
-                            '│ pero no tiene recompensas',
-                            '│ configuradas.',
-                            '│',
-                            '╰─────────────'
-                        ].join('\n')
-                    }
-                )
-            }
+                    ? grants.map(
 
-            return await sock.safeSendMessage(
+                        (
+                            grant,
+                            index
+                        ) =>
+                            `𖣣ֶㅤ֯⌗ 🎁  ׄ ⬭ *${index + 1}.* ${getRewardLabel(grant)}`
+
+                    )
+
+                    : [
+                        '╰─ 𓂃 Sin detalles de recompensa'
+                    ]
+
+
+            /* ─────────────────────────────
+               RESPUESTA FINAL
+            ───────────────────────────── */
+
+            const text = [
+
+                'ㅤ۟∩　ׅ　🎉　ׅ　*OBJETIVO COMPLETADO*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 🎯  ׄ ⬭ *Objetivo:* ${safeText(
+                    result.objectiveName,
+                    `#${objectiveId}`
+                )}`,
+
+                `𖣣ֶㅤ֯⌗ 🆔  ׄ ⬭ *ID:* ${objectiveId}`,
+
+                '',
+
+                'ㅤ۟∩　ׅ　🎁　ׅ　*RECOMPENSAS*',
+
+                '',
+
+                ...rewardLines,
+
+                '',
+
+                '𖣣ֶㅤ֯⌗ ✅  ׄ ⬭ *Estado:* ENTREGADA',
+
+                '',
+
+                '╰─ 𓂃 Recompensa reclamada correctamente'
+
+            ]
+                .filter(Boolean)
+                .join('\n')
+
+
+            await sock.safeSendMessage(
+
                 from,
+
                 {
-                    text: [
-                        '╭─〔 ❌ ERROR 〕',
-                        '│',
-                        '│ No fue posible reclamar',
-                        '│ esta recompensa.',
-                        '│',
-                        `│ Código: ${result.reason || 'UNKNOWN'}`,
-                        '│',
-                        '╰─────────────'
-                    ].join('\n')
+                    text
                 }
+
             )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Objective claimed: member=${member.id} | objective=${objectiveId} | rewards=${grants.length}`
+
+            )
+
+
+        } catch (err) {
+
+            logger.error(
+
+                `Error claim: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR CLAIM',
+
+                                'Ocurrió un error al reclamar la recompensa.'
+
+                            )
+
+                    }
+
+                )
+
+            } catch {}
+
         }
 
-        const grants =
-            result.grants || []
-
-        if (
-            result.alreadyClaimed
-        ) {
-
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text: [
-                        '╭─〔 🎁 RECOMPENSA 〕',
-                        '│',
-                        '│ Este objetivo ya había',
-                        '│ sido reclamado.',
-                        '│',
-                        `│ Recompensas: ${grants.length}`,
-                        '│',
-                        '╰─────────────'
-                    ].join('\n')
-                }
-            )
-        }
-
-        const rewardLines =
-            grants.map(
-                grant =>
-                    `│ ${getRewardLabel(grant)}`
-            )
-
-        const text = [
-            '╭─〔 🎉 OBJETIVO COMPLETADO 〕',
-            '│',
-            `│ ${result.objectiveName || 'Objetivo'}`,
-            '│',
-            '│ Recompensa reclamada:',
-            '│',
-            ...rewardLines,
-            '│',
-            '│ Estado de entrega:',
-            '│ ⏳ Procesando',
-            '│',
-            '╰─────────────'
-        ].join('\n')
-
-        await sock.safeSendMessage(
-            from,
-            {
-                text
-            }
-        )
     }
+
 }

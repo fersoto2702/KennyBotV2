@@ -8,7 +8,8 @@ const ui =
     require('../../src/utils/ui')
 
 const {
-    PhoneNumberUtil
+    PhoneNumberUtil,
+    PhoneNumberFormat
 } = require('google-libphonenumber')
 
 
@@ -20,7 +21,17 @@ const MAX_MENTIONS =
     1000
 
 
-function isoToFlag(iso) {
+const SECTION_DIVIDER =
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━'
+
+
+/* ─────────────────────────────
+   BANDERA DESDE ISO
+───────────────────────────── */
+
+function isoToFlag(
+    iso
+) {
 
     if (
         !iso ||
@@ -32,57 +43,329 @@ function isoToFlag(iso) {
     }
 
 
-    return [...iso.toUpperCase()]
+    return [
+        ...iso.toUpperCase()
+    ]
         .map(
+
             char =>
                 String.fromCodePoint(
+
                     0x1F1E6 -
                     65 +
                     char.charCodeAt(0)
+
                 )
+
         )
         .join('')
 
 }
 
 
-function normalizeJid(participant) {
+/* ─────────────────────────────
+   NORMALIZAR JID
+───────────────────────────── */
 
-    if (!participant)
+function cleanJid(
+    jid
+) {
+
+    if (!jid) {
+
         return null
 
+    }
 
-    return (
-        participant.phoneNumber ||
-        participant.id ||
-        null
-    )
+
+    return String(jid)
+        .replace(
+            /:\d+@/,
+            '@'
+        )
 
 }
 
 
-function getNumberFromJid(jid = '') {
+/* ─────────────────────────────
+   OBTENER JIDS DE PARTICIPANTE
+───────────────────────────── */
+
+function getParticipantJids(
+    participant
+) {
+
+    if (!participant) {
+
+        return []
+
+    }
+
+
+    return [
+
+        participant.phoneNumber,
+
+        participant.id,
+
+        participant.lid
+
+    ]
+        .filter(Boolean)
+        .map(
+            cleanJid
+        )
+
+}
+
+
+/* ─────────────────────────────
+   MEJOR JID PARA MOSTRAR
+───────────────────────────── */
+
+function getBestJid(
+    participant
+) {
+
+    if (!participant) {
+
+        return null
+
+    }
+
+
+    /*
+        Prioridad:
+
+        1. phoneNumber
+        2. id normal
+        3. lid
+        4. id
+    */
+
+
+    if (
+        participant.phoneNumber
+    ) {
+
+        return cleanJid(
+            participant.phoneNumber
+        )
+
+    }
+
+
+    if (
+        participant.id &&
+        !String(
+            participant.id
+        ).endsWith('@lid')
+    ) {
+
+        return cleanJid(
+            participant.id
+        )
+
+    }
+
+
+    if (
+        participant.lid
+    ) {
+
+        return cleanJid(
+            participant.lid
+        )
+
+    }
+
+
+    if (
+        participant.id
+    ) {
+
+        return cleanJid(
+            participant.id
+        )
+
+    }
+
+
+    return null
+
+}
+
+
+/* ─────────────────────────────
+   NÚMERO DESDE JID
+───────────────────────────── */
+
+function getNumberFromJid(
+    jid = ''
+) {
 
     return String(jid)
         .split('@')[0]
-        .replace(/\D/g, '')
+        .split(':')[0]
+        .replace(
+            /\D/g,
+            ''
+        )
 
 }
 
 
-function getFlag(jid) {
+/* ─────────────────────────────
+   DETECTAR LID
+───────────────────────────── */
+
+function isLid(
+    jid
+) {
+
+    return String(
+        jid || ''
+    )
+        .endsWith(
+            '@lid'
+        )
+
+}
+
+
+/* ─────────────────────────────
+   NORMALIZAR NÚMERO TELEFÓNICO
+───────────────────────────── */
+
+function normalizePhoneNumber(
+    jid
+) {
+
+    let number =
+        getNumberFromJid(
+            jid
+        )
+
+
+    if (!number) {
+
+        return ''
+
+    }
+
+
+    /*
+        Algunos JIDs antiguos mexicanos
+        todavía pueden aparecer como:
+
+        5216681234567
+
+        Se convierte para mostrar:
+
+        +52 668 123 4567
+    */
+
+    if (
+        number.startsWith('521') &&
+        number.length === 13
+    ) {
+
+        number =
+            '52' +
+            number.slice(3)
+
+    }
+
+
+    return number
+
+}
+
+
+/* ─────────────────────────────
+   FORMATO INTERNACIONAL
+───────────────────────────── */
+
+function formatPhoneNumber(
+    jid
+) {
+
+    if (!jid) {
+
+        return 'Desconocido'
+
+    }
+
+
+    if (
+        isLid(
+            jid
+        )
+    ) {
+
+        return `@${getNumberFromJid(jid)}`
+
+    }
+
+
+    const number =
+        normalizePhoneNumber(
+            jid
+        )
+
+
+    if (!number) {
+
+        return 'Desconocido'
+
+    }
+
 
     try {
 
-        /*
-            @lid no siempre contiene un número
-            telefónico real, así que ahí no
-            intentamos resolver país.
-        */
+        const parsed =
+            phoneUtil.parse(
+                `+${number}`
+            )
+
+
+        if (
+            phoneUtil.isPossibleNumber(
+                parsed
+            )
+        ) {
+
+            return phoneUtil.format(
+
+                parsed,
+
+                PhoneNumberFormat.INTERNATIONAL
+
+            )
+
+        }
+
+    } catch {}
+
+
+    return `+${number}`
+
+}
+
+
+/* ─────────────────────────────
+   BANDERA DEL NÚMERO
+───────────────────────────── */
+
+function getFlag(
+    jid
+) {
+
+    try {
 
         if (
             !jid ||
-            jid.endsWith('@lid')
+            isLid(jid)
         ) {
 
             return '🌐'
@@ -91,11 +374,16 @@ function getFlag(jid) {
 
 
         const number =
-            getNumberFromJid(jid)
+            normalizePhoneNumber(
+                jid
+            )
 
 
-        if (!number)
+        if (!number) {
+
             return '🌐'
+
+        }
 
 
         const parsed =
@@ -124,42 +412,228 @@ function getFlag(jid) {
 }
 
 
-function getDisplayUser(jid) {
+/* ─────────────────────────────
+   BUSCAR PARTICIPANTE
+───────────────────────────── */
 
-    if (!jid)
-        return '@desconocido'
+function findParticipantByJid(
+    participants,
+    jid
+) {
+
+    const target =
+        cleanJid(
+            jid
+        )
 
 
-    if (
-        jid.endsWith('@lid')
-    ) {
+    if (!target) {
 
-        return `@${jid.split('@')[0]}`
+        return null
 
     }
 
 
-    const number =
-        getNumberFromJid(jid)
+    /*
+        Coincidencia directa entre:
+
+        id
+        phoneNumber
+        lid
+    */
+
+    const exact =
+        participants.find(
+
+            participant => {
+
+                const candidates =
+                    getParticipantJids(
+                        participant
+                    )
 
 
-    return number
-        ? `@${number}`
-        : '@desconocido'
+                return candidates.includes(
+                    target
+                )
+
+            }
+
+        )
+
+
+    if (
+        exact
+    ) {
+
+        return exact
+
+    }
+
+
+    /*
+        Si tenemos un número telefónico,
+        hacemos una comparación secundaria
+        por número.
+
+        No hacemos esto con un LID.
+    */
+
+    if (
+        !isLid(
+            target
+        )
+    ) {
+
+        const targetNumber =
+            getNumberFromJid(
+                target
+            )
+
+
+        return participants.find(
+
+            participant => {
+
+                const candidates =
+                    getParticipantJids(
+                        participant
+                    )
+
+
+                return candidates.some(
+
+                    candidate => {
+
+                        if (
+                            isLid(
+                                candidate
+                            )
+                        ) {
+
+                            return false
+
+                        }
+
+
+                        return (
+                            getNumberFromJid(
+                                candidate
+                            ) ===
+                            targetNumber
+                        )
+
+                    }
+
+                )
+
+            }
+
+        ) || null
+
+    }
+
+
+    return null
 
 }
 
 
-function uniqueJids(jids = []) {
+/* ─────────────────────────────
+   DISPLAY DE PARTICIPANTE
+───────────────────────────── */
+
+function getParticipantDisplay(
+    participant
+) {
+
+    const jid =
+        getBestJid(
+            participant
+        )
+
+
+    if (!jid) {
+
+        return '@desconocido'
+
+    }
+
+
+    /*
+        Si solo tenemos un LID,
+        no fingimos que sea teléfono.
+    */
+
+    if (
+        isLid(
+            jid
+        )
+    ) {
+
+        return `@${getNumberFromJid(jid)}`
+
+    }
+
+
+    /*
+        IMPORTANTE:
+
+        Dejamos la mención real @numero
+        para que WhatsApp pueda resolver
+        el nombre/contacto.
+
+        Después mostramos el teléfono
+        correctamente separado.
+    */
+
+    const mentionNumber =
+        getNumberFromJid(
+            jid
+        )
+
+
+    const formattedNumber =
+        formatPhoneNumber(
+            jid
+        )
+
+
+    return (
+        `@${mentionNumber}  ·  ${formattedNumber}`
+    )
+
+}
+
+
+/* ─────────────────────────────
+   JIDS ÚNICOS
+───────────────────────────── */
+
+function uniqueJids(
+    jids = []
+) {
 
     return [
+
         ...new Set(
-            jids.filter(Boolean)
+
+            jids
+                .filter(Boolean)
+                .map(
+                    cleanJid
+                )
+
         )
+
     ]
 
 }
 
+
+/* ─────────────────────────────
+   COMANDO
+───────────────────────────── */
 
 module.exports = {
 
@@ -235,15 +709,18 @@ module.exports = {
             try {
 
                 await sock.sendPresenceUpdate(
+
                     'composing',
+
                     from
+
                 )
 
             } catch {}
 
 
             /* ─────────────────────────────
-               USUARIO
+               USUARIO QUE EJECUTÓ
             ───────────────────────────── */
 
             const sender =
@@ -287,7 +764,9 @@ module.exports = {
                 await isGroupAdmin(
 
                     sock,
+
                     from,
+
                     sender
 
                 )
@@ -367,6 +846,59 @@ module.exports = {
 
 
             /* ─────────────────────────────
+               RESOLVER EJECUTOR
+            ───────────────────────────── */
+
+            const senderParticipant =
+                findParticipantByJid(
+
+                    participants,
+
+                    sender
+
+                )
+
+
+            const senderDisplayJid =
+
+                senderParticipant?.phoneNumber ||
+
+                (
+                    senderParticipant
+                        ? getBestJid(
+                            senderParticipant
+                        )
+                        : null
+                ) ||
+
+                cleanJid(
+                    sender
+                )
+
+
+            const senderPushName =
+                String(
+                    msg.pushName || ''
+                )
+                    .trim()
+
+
+            const senderFormattedNumber =
+                formatPhoneNumber(
+                    senderDisplayJid
+                )
+
+
+            const senderDisplay =
+
+                senderPushName
+
+                    ? `${senderPushName} (${senderFormattedNumber})`
+
+                    : senderFormattedNumber
+
+
+            /* ─────────────────────────────
                PARTICIPANTES VÁLIDOS
             ───────────────────────────── */
 
@@ -374,110 +906,160 @@ module.exports = {
 
                 participants
 
-                    .map(participant => {
+                    .map(
 
-                        const jid =
-                            normalizeJid(
-                                participant
-                            )
+                        participant => {
+
+                            const jid =
+                                getBestJid(
+                                    participant
+                                )
 
 
-                        return {
-                            ...participant,
-                            jid
+                            return {
+
+                                ...participant,
+
+                                jid
+
+                            }
+
                         }
 
-                    })
+                    )
 
                     .filter(
+
                         participant =>
                             Boolean(
                                 participant.jid
                             )
+
                     )
 
 
             const limitedParticipants =
                 validParticipants.slice(
+
                     0,
+
                     MAX_MENTIONS
-                )
-
-
-            const admins =
-
-                limitedParticipants.filter(
-                    participant =>
-                        participant.admin === 'admin' ||
-                        participant.admin === 'superadmin'
-                )
-
-
-            const members =
-
-                limitedParticipants.filter(
-                    participant =>
-                        !participant.admin
-                )
-
-
-            const mentions =
-                uniqueJids(
-
-                    limitedParticipants.map(
-                        participant =>
-                            participant.jid
-                    )
 
                 )
 
 
             /* ─────────────────────────────
-               LISTA DE ADMINS
+               ADMINISTRADORES
+            ───────────────────────────── */
+
+            const admins =
+                limitedParticipants.filter(
+
+                    participant =>
+
+                        participant.admin === 'admin' ||
+
+                        participant.admin === 'superadmin'
+
+                )
+
+
+            /* ─────────────────────────────
+               MIEMBROS
+            ───────────────────────────── */
+
+            const members =
+                limitedParticipants.filter(
+
+                    participant =>
+                        !participant.admin
+
+                )
+
+
+            /* ─────────────────────────────
+               MENCIONES
+            ───────────────────────────── */
+
+            const participantMentions =
+                limitedParticipants
+                    .map(
+                        participant =>
+                            participant.jid
+                    )
+                    .filter(Boolean)
+
+
+            const mentions =
+                uniqueJids([
+
+                    ...participantMentions,
+
+                    senderDisplayJid
+
+                ])
+                    .slice(
+                        0,
+                        MAX_MENTIONS
+                    )
+
+
+            /* ─────────────────────────────
+               LISTA ADMINISTRADORES
             ───────────────────────────── */
 
             const adminList =
-
                 admins.length
 
-                    ? admins.map(
-                        participant => {
+                    ? admins
+                        .map(
 
-                            const jid =
-                                participant.jid
+                            participant => {
+
+                                const jid =
+                                    participant.jid
 
 
-                            return (
-                                `𖣣ֶㅤ֯⌗ 👑 ${getFlag(jid)}  ׄ ⬭ ${getDisplayUser(jid)}`
-                            )
+                                return (
 
-                        }
-                    ).join('\n')
+                                    `𖣣ֶㅤ֯⌗ 👑 ${getFlag(jid)}  ׄ ⬭ ${getParticipantDisplay(participant)}`
+
+                                )
+
+                            }
+
+                        )
+                        .join('\n')
 
                     : '╰─ 𓂃 Sin administradores'
 
 
             /* ─────────────────────────────
-               LISTA DE MIEMBROS
+               LISTA MIEMBROS
             ───────────────────────────── */
 
             const memberList =
-
                 members.length
 
-                    ? members.map(
-                        participant => {
+                    ? members
+                        .map(
 
-                            const jid =
-                                participant.jid
+                            participant => {
+
+                                const jid =
+                                    participant.jid
 
 
-                            return (
-                                `𖣣ֶㅤ֯⌗ 👤 ${getFlag(jid)}  ׄ ⬭ ${getDisplayUser(jid)}`
-                            )
+                                return (
 
-                        }
-                    ).join('\n')
+                                    `𖣣ֶㅤ֯⌗ 👤 ${getFlag(jid)}  ׄ ⬭ ${getParticipantDisplay(participant)}`
+
+                                )
+
+                            }
+
+                        )
+                        .join('\n')
 
                     : '╰─ 𓂃 Sin miembros'
 
@@ -500,22 +1082,41 @@ module.exports = {
 
                 '',
 
-                'ㅤ۟∩　ׅ　👑　ׅ　*ADMINISTRADORES*',
+                SECTION_DIVIDER,
+
                 '',
+
+                'ㅤ۟∩　ׅ　👑　ׅ　*ADMINISTRADORES*',
+
+                '',
+
                 adminList,
 
                 '',
 
-                'ㅤ۟∩　ׅ　👥　ׅ　*MIEMBROS*',
+                SECTION_DIVIDER,
+
                 '',
+
+                'ㅤ۟∩　ׅ　👥　ׅ　*MIEMBROS*',
+
+                '',
+
                 memberList,
 
+                '',
+
+                SECTION_DIVIDER,
+
                 participants.length > MAX_MENTIONS
-                    ? `\n╰─ 𓂃 ⚠️ Solo se mencionaron los primeros ${MAX_MENTIONS} usuarios.`
+
+                    ? `╰─ 𓂃 ⚠️ Solo se mencionaron los primeros ${MAX_MENTIONS} usuarios.`
+
                     : '',
 
                 '',
-                `╰─ 𓂃 Ejecutado por ${getDisplayUser(sender)}`
+
+                `╰─ 𓂃 Ejecutado por ${senderDisplay}`
 
             ]
                 .filter(Boolean)
@@ -534,8 +1135,7 @@ module.exports = {
 
                     text,
 
-                    mentions:
-                        mentions
+                    mentions
 
                 }
 
@@ -548,7 +1148,7 @@ module.exports = {
 
             logger.event(
 
-                `Tagall usado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentions.length} menciones`
+                `Tagall usado en ${from.split('@')[0]} por ${senderFormattedNumber} | ${mentions.length} menciones`
 
             )
 

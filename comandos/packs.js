@@ -12,78 +12,221 @@ const {
     '../src/database/repositories/userPackRepository'
 )
 
-function getIdentity(msg) {
+const logger =
+    require('../src/utils/logger')
+
+const ui =
+    require('../src/utils/ui')
+
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+
+    return String(jid)
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+
+function getIdentity(
+    msg
+) {
+
     const userJid =
-        msg.key.participant ||
-        msg.participant ||
-        msg.key.remoteJid
+        normalizeJid(
+
+            msg.key?.participant ||
+
+            msg.participant ||
+
+            msg.key?.remoteJid
+
+        )
+
 
     const altJid =
-        msg.key.participantAlt ||
-        msg.participantAlt ||
-        null
+        normalizeJid(
+
+            msg.key?.participantAlt ||
+
+            msg.participantAlt ||
+
+            null
+
+        )
+
 
     const displayName =
-        msg.pushName ||
+        String(
+            msg.pushName || ''
+        )
+            .trim() ||
         null
 
+
     return {
+
         userJid,
+
         altJid,
+
         displayName
+
     }
+
 }
 
-function getPackStatus(status) {
+
+function safeText(
+    value,
+    fallback = 'Desconocido'
+) {
+
+    const text =
+        String(
+            value ?? ''
+        )
+            .trim()
+
+
+    return text ||
+        fallback
+
+}
+
+
+function safeNumber(
+    value,
+    fallback = 0
+) {
+
+    const number =
+        Number(
+            value
+        )
+
+
+    return Number.isFinite(number)
+        ? number
+        : fallback
+
+}
+
+
+function getPackStatus(
+    status
+) {
+
     const statuses = {
+
         UNOPENED:
             '🔒 Sin abrir',
+
         PENDING_SELECTION:
             '🎴 Selección pendiente',
+
         CLAIMED:
             '✅ Reclamado',
+
         EXPIRED:
             '⌛ Expirado',
+
         CANCELLED:
             '🚫 Cancelado'
+
     }
+
 
     return (
+
         statuses[status] ||
-        status
+
+        safeText(
+            status,
+            'Desconocido'
+        )
+
     )
+
 }
 
-function formatDate(value) {
+
+function formatDate(
+    value
+) {
+
     if (!value) {
+
         return 'Sin fecha'
+
     }
 
+
     const date =
-        new Date(value)
+        new Date(
+            value
+        )
+
 
     if (
         Number.isNaN(
             date.getTime()
         )
     ) {
+
         return 'Sin fecha'
+
     }
 
-    return date.toLocaleString(
-        'es-MX',
-        {
-            dateStyle: 'medium',
-            timeStyle: 'short'
-        }
-    )
+
+    try {
+
+        return date.toLocaleString(
+
+            'es-MX',
+
+            {
+
+                dateStyle:
+                    'medium',
+
+                timeStyle:
+                    'short'
+
+            }
+
+        )
+
+
+    } catch {
+
+        return date.toLocaleString(
+            'es-MX'
+        )
+
+    }
+
 }
 
+
 module.exports = {
-    name: 'packs',
+
+    name:
+        'packs',
 
     aliases: [
-        'packs',
         'sobres',
         'picks',
         'playerpicks'
@@ -95,167 +238,483 @@ module.exports = {
     category:
         'ultimate-team',
 
-    cooldown: 3,
+    cooldown:
+        3,
+
 
     async execute({
+
         sock,
         msg,
         from,
-        prefix
+        prefix = '.'
+
     }) {
-        const {
-            userJid,
-            altJid,
-            displayName
-        } =
-            getIdentity(msg)
 
-        if (!userJid) {
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ No pude identificar tu cuenta.'
-                }
-            )
-        }
+        try {
 
-        await ensureMember(
-            userJid,
-            altJid,
-            displayName
-        )
+            /* ─────────────────────────────
+               IDENTIDAD
+            ───────────────────────────── */
 
-        const member =
-            await getMemberByJid(
-                userJid
-            ) ||
-            (
-                altJid
-                    ? await getMemberByJid(
-                        altJid
-                    )
-                    : null
-            )
+            const {
 
-        if (!member) {
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text:
-                        '❌ No pude cargar tu perfil.'
-                }
-            )
-        }
+                userJid,
 
-        const [
-            packs,
-            counts
-        ] =
-            await Promise.all([
-                getUserPacks(
-                    member.id
-                ),
-                getUserPackCounts(
-                    member.id
+                altJid,
+
+                displayName
+
+            } =
+                getIdentity(
+                    msg
                 )
-            ])
 
-        if (!packs.length) {
-            return await sock.safeSendMessage(
-                from,
-                {
-                    text: [
-                        '╭─〔 🎁 PLAYER PICKS 〕',
-                        '│',
-                        `│ 👤 ${member.display_name || displayName || 'Jugador'}`,
-                        '│',
-                        '│ No tienes Player Picks',
-                        '│ disponibles.',
-                        '│',
-                        `│ ✅ Reclamados: ${counts.claimed}`,
-                        '│',
-                        '╰─────────────'
-                    ].join('\n')
-                }
+
+            if (!userJid) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE CUENTA',
+
+                                'No pude identificar tu cuenta.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               PERFIL
+            ───────────────────────────── */
+
+            await ensureMember(
+
+                userJid,
+
+                altJid,
+
+                displayName
+
             )
-        }
 
-        const lines = [
-            '╭─〔 🎁 PLAYER PICKS 〕',
-            '│',
-            `│ 👤 ${member.display_name || displayName || 'Jugador'}`,
-            `│ 📦 Sin abrir: ${counts.unopened}`,
-            `│ 🎴 Selección pendiente: ${counts.pendingSelection}`,
-            '│'
-        ]
 
-        for (
-            let i = 0;
-            i < packs.length;
-            i++
-        ) {
-            const pack =
-                packs[i]
+            const member =
+                await getMemberByJid(
+                    userJid
+                )
+
+                ||
+
+                (
+                    altJid
+
+                        ? await getMemberByJid(
+                            altJid
+                        )
+
+                        : null
+                )
+
+
+            if (!member) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PERFIL',
+
+                                'No pude cargar tu perfil.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               OBTENER PACKS
+            ───────────────────────────── */
+
+            const [
+                packsResult,
+                countsResult
+            ] =
+                await Promise.all([
+
+                    getUserPacks(
+                        member.id
+                    ),
+
+                    getUserPackCounts(
+                        member.id
+                    )
+
+                ])
+
+
+            const packs =
+                Array.isArray(
+                    packsResult
+                )
+                    ? packsResult
+                    : []
+
+
+            const counts =
+                countsResult &&
+                typeof countsResult === 'object'
+
+                    ? countsResult
+
+                    : {}
+
+
+            const unopened =
+                safeNumber(
+                    counts.unopened
+                )
+
+
+            const pendingSelection =
+                safeNumber(
+                    counts.pendingSelection
+                )
+
+
+            const claimed =
+                safeNumber(
+                    counts.claimed
+                )
+
+
+            const expired =
+                safeNumber(
+                    counts.expired
+                )
+
+
+            const cancelled =
+                safeNumber(
+                    counts.cancelled
+                )
+
+
+            /* ─────────────────────────────
+               SIN PACKS
+            ───────────────────────────── */
+
+            if (
+                packs.length === 0
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.info(
+
+                                'PLAYER PICKS',
+
+                                [
+
+                                    [
+                                        'Jugador',
+                                        safeText(
+                                            member.display_name ||
+                                            displayName,
+                                            'Jugador'
+                                        )
+                                    ],
+
+                                    [
+                                        'Reclamados',
+                                        claimed
+                                    ]
+
+                                ],
+
+                                'No tienes Player Picks disponibles.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            /* ─────────────────────────────
+               ENCABEZADO
+            ───────────────────────────── */
+
+            const playerName =
+                safeText(
+
+                    member.display_name ||
+
+                    displayName,
+
+                    'Jugador'
+
+                )
+
+
+            const lines = [
+
+                'ㅤ۟∩　ׅ　🎁　ׅ　*PLAYER PICKS*　ׄᰙ',
+
+                '',
+
+                `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Jugador:* ${playerName}`,
+
+                `𖣣ֶㅤ֯⌗ 📦  ׄ ⬭ *Sin abrir:* ${unopened}`,
+
+                `𖣣ֶㅤ֯⌗ 🎴  ׄ ⬭ *Selección pendiente:* ${pendingSelection}`,
+
+                `𖣣ֶㅤ֯⌗ ✅  ׄ ⬭ *Reclamados:* ${claimed}`,
+
+                `𖣣ֶㅤ֯⌗ ⌛  ׄ ⬭ *Expirados:* ${expired}`,
+
+                `𖣣ֶㅤ֯⌗ 🚫  ׄ ⬭ *Cancelados:* ${cancelled}`,
+
+                ''
+
+            ]
+
+
+            /* ─────────────────────────────
+               LISTA DE PACKS
+            ───────────────────────────── */
+
+            for (
+                let i = 0;
+                i < packs.length;
+                i++
+            ) {
+
+                const pack =
+                    packs[i]
+
+
+                if (
+                    !pack ||
+                    typeof pack !== 'object'
+                ) {
+
+                    continue
+
+                }
+
+
+                const packId =
+                    safeText(
+                        pack.id,
+                        '?'
+                    )
+
+
+                const packName =
+                    safeText(
+                        pack.pack_name,
+                        'Player Pick'
+                    )
+
+
+                const poolName =
+                    safeText(
+                        pack.pool_name,
+                        'Desconocido'
+                    )
+
+
+                const status =
+                    safeText(
+                        pack.status,
+                        'UNKNOWN'
+                    )
+
+
+                lines.push(
+
+                    `ㅤ۟∩　ׅ　🎁　ׅ　*#${packId} — ${packName}*`,
+
+                    '',
+
+                    `𖣣ֶㅤ֯⌗ 📌  ׄ ⬭ *Estado:* ${getPackStatus(
+                        status
+                    )}`,
+
+                    `𖣣ֶㅤ֯⌗ 🗂️  ׄ ⬭ *Pool:* ${poolName}`,
+
+                    `𖣣ֶㅤ֯⌗ 📅  ׄ ⬭ *Obtenido:* ${formatDate(
+                        pack.obtained_at
+                    )}`
+
+                )
+
+
+                if (
+                    pack.obtained_reason
+                ) {
+
+                    lines.push(
+
+                        `𖣣ֶㅤ֯⌗ 🎯  ׄ ⬭ *Motivo:* ${safeText(
+                            pack.obtained_reason
+                        )}`
+
+                    )
+
+                }
+
+
+                if (
+                    status ===
+                    'UNOPENED'
+                ) {
+
+                    lines.push(
+
+                        `╰─ 𓂃 ▶️ Abrir: ${prefix}openpack ${packId}`
+
+                    )
+
+                }
+
+
+                if (
+                    status ===
+                    'PENDING_SELECTION'
+                ) {
+
+                    lines.push(
+
+                        `╰─ 𓂃 🎴 Continuar: ${prefix}pick ${packId} <opción>`
+
+                    )
+
+                }
+
+
+                if (
+                    i <
+                    packs.length - 1
+                ) {
+
+                    lines.push(
+                        '',
+                        '━━━━━━━━━━━━━━━━━━━━━━━━━━',
+                        ''
+                    )
+
+                }
+
+            }
+
+
+            /* ─────────────────────────────
+               FOOTER
+            ───────────────────────────── */
 
             lines.push(
-                `│ 🎁 *#${pack.id} — ${pack.pack_name}*`,
-                `│ ${getPackStatus(pack.status)}`,
-                `│ 🗂 Pool: ${pack.pool_name}`,
-                `│ 📅 ${formatDate(pack.obtained_at)}`
+
+                '',
+
+                '╰─ 𓂃 KennyBot V2'
+
             )
 
-            if (
-                pack.obtained_reason
-            ) {
-                lines.push(
-                    `│ 🎯 ${pack.obtained_reason}`
-                )
-            }
 
-            lines.push('│')
+            /* ─────────────────────────────
+               ENVIAR
+            ───────────────────────────── */
 
-            if (
-                pack.status ===
-                'UNOPENED'
-            ) {
-                lines.push(
-                    `│ ▶️ ${prefix}openpack ${pack.id}`
-                )
-            }
+            await sock.safeSendMessage(
 
-            if (
-                pack.status ===
-                'PENDING_SELECTION'
-            ) {
-                lines.push(
-                    `│ 🎴 ${prefix}pick ${pack.id}`
-                )
-            }
+                from,
 
-            if (
-                i <
-                packs.length - 1
-            ) {
-                lines.push(
-                    '│',
-                    '├─────────────',
-                    '│'
+                {
+
+                    text:
+                        lines
+                            .filter(Boolean)
+                            .join('\n')
+
+                }
+
+            )
+
+
+            /* ─────────────────────────────
+               LOG
+            ───────────────────────────── */
+
+            logger.event(
+
+                `Packs consultados: member=${member.id} | total=${packs.length} | unopened=${unopened} | pending=${pendingSelection}`
+
+            )
+
+
+        } catch (err) {
+
+            logger.error(
+
+                `Error packs: ${err.stack || err.message}`
+
+            )
+
+
+            try {
+
+                await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'ERROR DE PLAYER PICKS',
+
+                                'No se pudieron cargar tus Player Picks.'
+
+                            )
+
+                    }
+
                 )
-            }
+
+            } catch {}
+
         }
 
-        lines.push(
-            '│',
-            '╰─────────────'
-        )
-
-        await sock.safeSendMessage(
-            from,
-            {
-                text:
-                    lines.join('\n')
-            }
-        )
     }
+
 }
