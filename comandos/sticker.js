@@ -13,7 +13,7 @@ const {
 } = require('util')
 
 const {
-    downloadMediaMessage
+    downloadContentFromMessage
 } = require('@whiskeysockets/baileys')
 
 const sharp =
@@ -37,33 +37,17 @@ const {
     getRemainingTime
 } = require('../src/system/rateLimiter')
 
-
 const execFileAsync =
     promisify(
         execFile
     )
 
-
 const MAX_MEDIA_MB =
     20
-
-const MAX_VIDEO_SECONDS =
-    10
-
-
-/*
-    Puedes definir:
-
-    FFMPEG_PATH=C:\ffmpeg\bin\ffmpeg.exe
-
-    Si no existe la variable, intentará
-    utilizar "ffmpeg" desde el PATH.
-*/
 
 const FFMPEG_PATH =
     process.env.FFMPEG_PATH ||
     'ffmpeg'
-
 
 function normalizeJid(
     jid
@@ -75,8 +59,9 @@ function normalizeJid(
 
     }
 
-
-    return String(jid)
+    return String(
+        jid
+    )
         .trim()
         .replace(
             /:\d+@/,
@@ -85,19 +70,45 @@ function normalizeJid(
 
 }
 
-
 function getNumber(
     jid
 ) {
 
     return String(
-        jid || ''
+        normalizeJid(
+            jid
+        ) ||
+        ''
     )
         .split('@')[0]
-        .split(':')[0]
 
 }
 
+function getBotProfileId(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.id ||
+        sock?.botProfileId ||
+        'main'
+    )
+        .trim()
+        .toLowerCase()
+
+}
+
+function getBotName(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
 
 function safeDelete(
     file
@@ -122,7 +133,6 @@ function safeDelete(
 
 }
 
-
 function ensureTempDirectory(
     file
 ) {
@@ -131,7 +141,6 @@ function ensureTempDirectory(
         path.dirname(
             file
         )
-
 
     if (
         !fs.existsSync(
@@ -142,7 +151,8 @@ function ensureTempDirectory(
         fs.mkdirSync(
             directory,
             {
-                recursive: true
+                recursive:
+                    true
             }
         )
 
@@ -150,10 +160,30 @@ function ensureTempDirectory(
 
 }
 
+async function sendStickerMessage(
+    sock,
+    jid,
+    content
+) {
 
-/* ─────────────────────────────
-   DESENVOLVER MENSAJES
-───────────────────────────── */
+    if (
+        typeof sock.safeSendMessage ===
+        'function'
+    ) {
+
+        return await sock.safeSendMessage(
+            jid,
+            content
+        )
+
+    }
+
+    return await sock.sendMessage(
+        jid,
+        content
+    )
+
+}
 
 function unwrapMessageContent(
     message
@@ -162,19 +192,19 @@ function unwrapMessageContent(
     let current =
         message
 
-
     for (
         let i = 0;
         i < 10;
         i++
     ) {
 
-        if (!current) {
+        if (
+            !current
+        ) {
 
             return null
 
         }
-
 
         if (
             current.ephemeralMessage
@@ -189,7 +219,6 @@ function unwrapMessageContent(
 
         }
 
-
         if (
             current.viewOnceMessage
                 ?.message
@@ -202,7 +231,6 @@ function unwrapMessageContent(
             continue
 
         }
-
 
         if (
             current.viewOnceMessageV2
@@ -217,7 +245,6 @@ function unwrapMessageContent(
 
         }
 
-
         if (
             current.viewOnceMessageV2Extension
                 ?.message
@@ -230,7 +257,6 @@ function unwrapMessageContent(
             continue
 
         }
-
 
         if (
             current.documentWithCaptionMessage
@@ -245,20 +271,13 @@ function unwrapMessageContent(
 
         }
 
-
         break
 
     }
 
-
     return current
 
 }
-
-
-/* ─────────────────────────────
-   CONTEXT INFO
-───────────────────────────── */
 
 function getContextInfo(
     msg
@@ -269,56 +288,37 @@ function getContextInfo(
             msg?.message
         )
 
-
-    if (!message) {
+    if (
+        !message
+    ) {
 
         return null
 
     }
 
-
     return (
-
         message.extendedTextMessage
             ?.contextInfo
-
         ||
-
         message.imageMessage
             ?.contextInfo
-
         ||
-
         message.videoMessage
             ?.contextInfo
-
         ||
-
         message.documentMessage
             ?.contextInfo
-
         ||
-
         message.audioMessage
             ?.contextInfo
-
         ||
-
         message.stickerMessage
             ?.contextInfo
-
         ||
-
         null
-
     )
 
 }
-
-
-/* ─────────────────────────────
-   MENSAJE RESPONDIDO
-───────────────────────────── */
 
 function getQuotedMessage(
     msg
@@ -329,7 +329,6 @@ function getQuotedMessage(
             msg
         )
 
-
     if (
         !contextInfo?.quotedMessage
     ) {
@@ -338,17 +337,11 @@ function getQuotedMessage(
 
     }
 
-
     return unwrapMessageContent(
         contextInfo.quotedMessage
     )
 
 }
-
-
-/* ─────────────────────────────
-   DETECTAR MEDIA
-───────────────────────────── */
 
 function getMediaMessage(
     msg
@@ -359,135 +352,122 @@ function getMediaMessage(
             msg?.message
         )
 
-
     const quotedMessage =
         getQuotedMessage(
             msg
         )
-
-
-    /*
-        Primero damos prioridad al mensaje
-        citado porque normalmente el usuario:
-
-        responde imagen/video
-        ↓
-        escribe .sticker
-    */
 
     if (
         quotedMessage?.imageMessage
     ) {
 
         return {
-
             type:
                 'image',
 
             content:
                 quotedMessage.imageMessage,
 
-            message: {
-                imageMessage:
-                    quotedMessage.imageMessage
-            },
-
             quoted:
                 true
-
         }
 
     }
-
 
     if (
         quotedMessage?.videoMessage
     ) {
 
         return {
-
             type:
                 'video',
 
             content:
                 quotedMessage.videoMessage,
 
-            message: {
-                videoMessage:
-                    quotedMessage.videoMessage
-            },
-
             quoted:
                 true
-
         }
 
     }
-
-
-    /*
-        También puede enviarse una imagen/video
-        directamente con .sticker en el caption.
-    */
 
     if (
         directMessage?.imageMessage
     ) {
 
         return {
-
             type:
                 'image',
 
             content:
                 directMessage.imageMessage,
 
-            message: {
-                imageMessage:
-                    directMessage.imageMessage
-            },
-
             quoted:
                 false
-
         }
 
     }
-
 
     if (
         directMessage?.videoMessage
     ) {
 
         return {
-
             type:
                 'video',
 
             content:
                 directMessage.videoMessage,
 
-            message: {
-                videoMessage:
-                    directMessage.videoMessage
-            },
-
             quoted:
                 false
-
         }
 
     }
-
 
     return null
 
 }
 
+async function downloadMedia(
+    media
+) {
 
-/* ─────────────────────────────
-   IMAGEN → WEBP
-───────────────────────────── */
+    const stream =
+        await downloadContentFromMessage(
+            media.content,
+            media.type
+        )
+
+    const chunks = []
+
+    for await (
+        const chunk
+        of stream
+    ) {
+
+        chunks.push(
+            Buffer.from(
+                chunk
+            )
+        )
+
+    }
+
+    if (
+        chunks.length ===
+        0
+    ) {
+
+        return null
+
+    }
+
+    return Buffer.concat(
+        chunks
+    )
+
+}
 
 async function convertImageToSticker(
     buffer,
@@ -534,42 +514,30 @@ async function convertImageToSticker(
 
 }
 
-
-/* ─────────────────────────────
-   VIDEO → WEBP
-───────────────────────────── */
-
 async function convertVideoToSticker(
     inputPath,
     outputPath
 ) {
 
     const filter = [
-
         'fps=15',
-
         'scale=512:512:force_original_aspect_ratio=decrease',
-
         'pad=512:512:(ow-iw)/2:(oh-ih)/2:color=0x00000000'
-
     ]
         .join(',')
 
-
     await execFileAsync(
-
         FFMPEG_PATH,
-
         [
             '-y',
 
+            '-hide_banner',
+
+            '-loglevel',
+            'error',
+
             '-i',
             inputPath,
-
-            '-t',
-            String(
-                MAX_VIDEO_SECONDS
-            ),
 
             '-vf',
             filter,
@@ -596,19 +564,18 @@ async function convertVideoToSticker(
 
             outputPath
         ],
-
         {
             windowsHide:
                 true,
 
             maxBuffer:
-                10 * 1024 * 1024
+                50 *
+                1024 *
+                1024
         }
-
     )
 
 }
-
 
 module.exports = {
 
@@ -626,10 +593,13 @@ module.exports = {
 
     category:
         'general',
-async execute({
+
+    async execute({
 
         sock,
+
         msg,
+
         from
 
     }) {
@@ -640,12 +610,7 @@ async execute({
         let outputPath =
             null
 
-
         try {
-
-            /* ─────────────────────────────
-               USUARIO
-            ───────────────────────────── */
 
             const sender =
                 normalizeJid(
@@ -658,307 +623,161 @@ async execute({
 
                 )
 
+            if (
+                !sender
+            ) {
 
-            if (!sender) {
-
-                return await sock.safeSendMessage(
-
+                return await sendStickerMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR DE USUARIO',
-
                                 'No pude identificar al usuario.'
-
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               RATE LIMIT
-            ───────────────────────────── */
+            const botProfileId =
+                getBotProfileId(
+                    sock
+                )
 
             if (
                 isLimited(
                     sender,
-                    'stickers'
+                    'stickers',
+                    botProfileId
                 )
             ) {
 
                 const left =
                     getRemainingTime(
-
                         sender,
-
-                        'stickers'
-
+                        'stickers',
+                        botProfileId
                     )
 
-
-                return await sock.safeSendMessage(
-
+                return await sendStickerMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'RATE LIMIT',
-
                                 `Demasiados stickers.\n\nEspera ${left}s.`
-
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               PRESENCIA
-            ───────────────────────────── */
-
             try {
 
                 await sock.sendPresenceUpdate(
-
                     'composing',
-
                     from
-
                 )
 
             } catch {}
-
-
-            /* ─────────────────────────────
-               DETECTAR MEDIA
-            ───────────────────────────── */
 
             const media =
                 getMediaMessage(
                     msg
                 )
 
+            if (
+                !media
+            ) {
 
-            if (!media) {
-
-                return await sock.safeSendMessage(
-
+                return await sendStickerMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'MEDIA REQUERIDA',
-
                                 [
                                     'Responde a una imagen o video con .sticker.',
                                     '',
                                     'También puedes enviar una imagen o video con .sticker en el texto/caption.',
                                     '',
-                                    `Videos: máximo ${MAX_VIDEO_SECONDS} segundos.`
-                                ].join('\n')
-
+                                    'Los videos no tienen un límite de duración impuesto por KennyBot.'
+                                ]
+                                    .join(
+                                        '\n'
+                                    )
                             )
-
                     }
-
                 )
 
             }
-
 
             logger.info(
-
-                `Sticker media detectada: tipo=${media.type} | quoted=${media.quoted}`
-
+                `${getBotName(sock)} | Sticker media detectada: tipo=${media.type} | quoted=${media.quoted}`
             )
 
-
-            /* ─────────────────────────────
-               DURACIÓN DEL VIDEO
-            ───────────────────────────── */
-
-            if (
-                media.type ===
-                'video'
-            ) {
-
-                const seconds =
-                    Number(
-                        media.content?.seconds
-                    ) || 0
-
-
-                if (
-                    seconds >
-                    MAX_VIDEO_SECONDS
-                ) {
-
-                    return await sock.safeSendMessage(
-
-                        from,
-
-                        {
-
-                            text:
-                                ui.error(
-
-                                    'VIDEO DEMASIADO LARGO',
-
-                                    `Máximo ${MAX_VIDEO_SECONDS} segundos.`
-
-                                )
-
-                        }
-
-                    )
-
-                }
-
-            }
-
-
-            /* ─────────────────────────────
-               DESCARGAR MEDIA
-            ───────────────────────────── */
-
             const buffer =
-                await downloadMediaMessage(
-
-                    {
-                        key:
-                            msg.key,
-
-                        message:
-                            media.message
-                    },
-
-                    'buffer',
-
-                    {},
-
-                    {
-                        logger: {
-                            info:
-                                () => {},
-
-                            warn:
-                                () => {},
-
-                            error:
-                                () => {}
-                        },
-
-                        reuploadRequest:
-                            sock.updateMediaMessage
-                    }
-
+                await downloadMedia(
+                    media
                 )
-
 
             if (
                 !buffer ||
                 !Buffer.isBuffer(
                     buffer
-                )
+                ) ||
+                buffer.length ===
+                    0
             ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendStickerMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR DE DESCARGA',
-
                                 'No se pudo descargar la imagen o video.'
-
                             )
-
                     }
-
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               TAMAÑO
-            ───────────────────────────── */
 
             if (
                 isMediaTooLarge(
-
                     buffer.length,
-
                     MAX_MEDIA_MB
-
                 )
             ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendStickerMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ARCHIVO DEMASIADO PESADO',
-
-                                `Máximo ${MAX_MEDIA_MB} MB.`
-
+                                `El archivo supera el límite de seguridad de ${MAX_MEDIA_MB} MB.`
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               ARCHIVO DE SALIDA
-            ───────────────────────────── */
-
             outputPath =
                 generateTempFile(
-
                     'sticker',
-
                     'webp'
-
                 )
-
 
             ensureTempDirectory(
                 outputPath
             )
-
-
-            /* ─────────────────────────────
-               IMAGEN
-            ───────────────────────────── */
 
             if (
                 media.type ===
@@ -966,60 +785,33 @@ async execute({
             ) {
 
                 await convertImageToSticker(
-
                     buffer,
-
                     outputPath
-
                 )
 
-            }
-
-
-            /* ─────────────────────────────
-               VIDEO
-            ───────────────────────────── */
-
-            else {
+            } else {
 
                 inputPath =
                     generateTempFile(
-
                         'sticker-video',
-
                         'mp4'
-
                     )
-
 
                 ensureTempDirectory(
                     inputPath
                 )
 
-
                 fs.writeFileSync(
-
                     inputPath,
-
                     buffer
-
                 )
 
-
                 await convertVideoToSticker(
-
                     inputPath,
-
                     outputPath
-
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               VALIDAR RESULTADO
-            ───────────────────────────── */
 
             if (
                 !fs.existsSync(
@@ -1033,12 +825,10 @@ async execute({
 
             }
 
-
             const stats =
                 fs.statSync(
                     outputPath
                 )
-
 
             if (
                 !stats.size
@@ -1050,139 +840,107 @@ async execute({
 
             }
 
-
-            /* ─────────────────────────────
-               ENVIAR STICKER
-            ───────────────────────────── */
-
-            await sock.safeSendMessage(
-
+            await sendStickerMessage(
+                sock,
                 from,
-
                 {
-
                     sticker:
                         fs.readFileSync(
                             outputPath
                         )
-
                 }
-
             )
 
-
-            /* ─────────────────────────────
-               LOG
-            ───────────────────────────── */
-
             logger.event(
-
-                `Sticker enviado: ${getNumber(sender)} | ` +
-
+                `${getBotName(sock)} | Sticker enviado: ${getNumber(sender)} | ` +
                 `tipo=${media.type} | ` +
-
                 `quoted=${media.quoted} | ` +
-
                 `entrada=${(
                     buffer.length /
                     1024 /
                     1024
                 ).toFixed(2)}MB | ` +
-
                 `salida=${(
                     stats.size /
                     1024
                 ).toFixed(2)}KB`
-
             )
 
-
             return true
-
 
         } catch (err) {
 
             logger.error(
-
-                `Error sticker: ${err.stack || err.message}`
-
+                `${getBotName(sock)} | Error sticker: ${err.stack || err.message}`
             )
-
 
             let message =
                 'No se pudo crear el sticker.'
 
-
-            if (
-                err.code ===
-                'ENOENT' &&
-
+            const errorText =
                 String(
-                    err.message || ''
+                    err?.message ||
+                    ''
                 )
                     .toLowerCase()
-                    .includes(
-                        'ffmpeg'
-                    )
+
+            if (
+                err?.code ===
+                    'ENOENT' ||
+                errorText.includes(
+                    'ffmpeg'
+                )
             ) {
 
                 message =
-                    'No se encontró FFmpeg para convertir el video en sticker.'
+                    'No se encontró FFmpeg o FFmpeg no pudo procesar el video.'
 
             }
 
+            if (
+                errorText.includes(
+                    'libwebp'
+                )
+            ) {
+
+                message =
+                    'La instalación de FFmpeg no tiene soporte WebP disponible.'
+
+            }
 
             try {
 
-                await sock.safeSendMessage(
-
+                await sendStickerMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR DE STICKER',
-
                                 message
-
                             )
-
                     }
-
                 )
 
             } catch {}
 
-
             return false
 
-
         } finally {
-
-            /* ─────────────────────────────
-               LIMPIEZA
-            ───────────────────────────── */
 
             safeDelete(
                 inputPath
             )
 
-
             safeDelete(
                 outputPath
             )
 
-
             try {
 
                 await sock.sendPresenceUpdate(
-
                     'paused',
-
                     from
-
                 )
 
             } catch {}

@@ -104,7 +104,9 @@ function normalizeJid(
 
     }
 
-    return String(jid)
+    return String(
+        jid
+    )
         .trim()
         .replace(
             /:\d+@/,
@@ -119,7 +121,9 @@ function isGroup(
 
     return Boolean(
         jid &&
-        jid.endsWith('@g.us')
+        jid.endsWith(
+            '@g.us'
+        )
     )
 
 }
@@ -180,10 +184,62 @@ function getBotName(
 
 }
 
+function getPrefixes() {
+
+    return (
+        Array.isArray(
+            settings?.prefixes
+        )
+            ? settings.prefixes
+            : [
+                settings?.prefix ||
+                '/'
+            ]
+    )
+        .map(
+            prefix =>
+                String(
+                    prefix ||
+                    ''
+                )
+                    .trim()
+        )
+        .filter(
+            Boolean
+        )
+
+}
+
+function getMatchedPrefix(
+    text
+) {
+
+    if (
+        typeof text !==
+        'string'
+    ) {
+
+        return null
+
+    }
+
+    return (
+        getPrefixes()
+            .find(
+                prefix =>
+                    text.startsWith(
+                        prefix
+                    )
+            )
+        ||
+        null
+    )
+
+}
+
 function getMaintenanceCommands() {
 
     return new Set(
-
         (
             Array.isArray(
                 settings?.maintenanceCommands
@@ -194,13 +250,15 @@ function getMaintenanceCommands() {
             .map(
                 value =>
                     String(
-                        value || ''
+                        value ||
+                        ''
                     )
                         .trim()
                         .toLowerCase()
             )
-            .filter(Boolean)
-
+            .filter(
+                Boolean
+            )
     )
 
 }
@@ -308,7 +366,8 @@ function readMuteDb() {
 
         if (
             !data ||
-            typeof data !== 'object' ||
+            typeof data !==
+                'object' ||
             Array.isArray(
                 data
             )
@@ -353,7 +412,9 @@ function isUserMuted(
             .map(
                 normalizeJid
             )
-            .filter(Boolean)
+            .filter(
+                Boolean
+            )
 
     const normalizedSender =
         normalizeJid(
@@ -435,6 +496,35 @@ async function syncCommandObjectives(
 
 }
 
+async function runCommand(
+    sock,
+    msg,
+    from,
+    text
+) {
+
+    return Boolean(
+        await commandHandler({
+
+            sock,
+
+            msg,
+
+            from,
+
+            text,
+
+            settings,
+
+            botProfile:
+                sock?.botProfile ||
+                null
+
+        })
+    )
+
+}
+
 module.exports =
     async (
         sock,
@@ -446,20 +536,9 @@ module.exports =
             const msg =
                 messages?.[0]
 
-            if (!msg) {
-
-                return
-
-            }
-
-            if (!msg.message) {
-
-                return
-
-            }
-
             if (
-                msg.key?.fromMe
+                !msg ||
+                !msg.message
             ) {
 
                 return
@@ -476,13 +555,21 @@ module.exports =
             }
 
             const from =
-                msg.key?.remoteJid
+                normalizeJid(
+                    msg.key?.remoteJid
+                )
 
-            if (!from) {
+            if (
+                !from
+            ) {
 
                 return
 
             }
+
+            const isFromMe =
+                msg.key?.fromMe ===
+                true
 
             const botProfileId =
                 getBotProfileId(
@@ -496,26 +583,193 @@ module.exports =
 
             const sender =
                 normalizeJid(
-                    msg.key?.participant ||
-                    msg.participant ||
-                    msg.key?.remoteJid
+
+                    isFromMe
+
+                        ? (
+                            sock?.user?.lid ||
+                            sock?.user?.id
+                        )
+
+                        : (
+                            msg.key?.participant ||
+                            msg.participant ||
+                            msg.key?.remoteJid
+                        )
+
                 )
 
             const senderAlt =
                 normalizeJid(
-                    msg.key?.participantAlt ||
-                    msg.participantAlt ||
-                    null
+
+                    isFromMe
+
+                        ? (
+                            sock?.user?.id ||
+                            sock?.user?.lid ||
+                            null
+                        )
+
+                        : (
+                            msg.key?.participantAlt ||
+                            msg.participantAlt ||
+                            null
+                        )
+
                 )
 
-            if (!sender) {
+            if (
+                !sender
+            ) {
 
                 return
 
             }
 
+            const timestamp =
+                Number(
+                    msg.messageTimestamp ||
+                    0
+                )
+
+            const now =
+                Math.floor(
+                    Date.now() /
+                    1000
+                )
+
             if (
-                isGroup(from) &&
+                timestamp &&
+                now -
+                    timestamp >
+                15
+            ) {
+
+                return
+
+            }
+
+            const messageId =
+                msg.key?.id
+
+            if (
+                !messageId
+            ) {
+
+                return
+
+            }
+
+            const processedKey =
+                [
+                    botProfileId,
+                    from,
+                    messageId
+                ]
+                    .join(
+                        ':'
+                    )
+
+            if (
+                processedMessages.has(
+                    processedKey
+                )
+            ) {
+
+                return
+
+            }
+
+            processedMessages.add(
+                processedKey
+            )
+
+            setTimeout(
+                () => {
+
+                    processedMessages.delete(
+                        processedKey
+                    )
+
+                },
+                30000
+            )
+
+            const text =
+                getText(
+                    msg
+                )
+                    ?.trim()
+
+            if (
+                !text
+            ) {
+
+                return
+
+            }
+
+            const matchedPrefix =
+                getMatchedPrefix(
+                    text
+                )
+
+            /*
+             * Mensajes enviados desde la propia
+             * cuenta conectada al bot.
+             *
+             * Solo permitimos comandos.
+             *
+             * Los mensajes normales se ignoran
+             * para evitar loops y actividad falsa.
+             */
+
+            if (
+                isFromMe
+            ) {
+
+                if (
+                    !matchedPrefix
+                ) {
+
+                    return
+
+                }
+
+                logger.event(
+                    `[${botProfileId}] SELF -> ${text}`
+                )
+
+                try {
+
+                    return await runCommand(
+                        sock,
+                        msg,
+                        from,
+                        text
+                    )
+
+                } catch (err) {
+
+                    logger.error(
+                        `${botName} | Self Command Handler Error: ${err.stack || err.message}`
+                    )
+
+                    return false
+
+                }
+
+            }
+
+            /*
+             * A partir de aquí solamente se
+             * procesan mensajes de otras cuentas.
+             */
+
+            if (
+                isGroup(
+                    from
+                ) &&
                 isUserMuted(
                     from,
                     sender,
@@ -554,82 +808,6 @@ module.exports =
                     )
 
                 }
-
-                return
-
-            }
-
-            const timestamp =
-                Number(
-                    msg.messageTimestamp ||
-                    0
-                )
-
-            const now =
-                Math.floor(
-                    Date.now() /
-                    1000
-                )
-
-            if (
-                timestamp &&
-                now - timestamp >
-                15
-            ) {
-
-                return
-
-            }
-
-            const messageId =
-                msg.key?.id
-
-            if (!messageId) {
-
-                return
-
-            }
-
-            const processedKey =
-                [
-                    botProfileId,
-                    from,
-                    messageId
-                ]
-                    .join(':')
-
-            if (
-                processedMessages.has(
-                    processedKey
-                )
-            ) {
-
-                return
-
-            }
-
-            processedMessages.add(
-                processedKey
-            )
-
-            setTimeout(
-                () => {
-
-                    processedMessages.delete(
-                        processedKey
-                    )
-
-                },
-                30000
-            )
-
-            const text =
-                getText(
-                    msg
-                )
-                    ?.trim()
-
-            if (!text) {
 
                 return
 
@@ -787,22 +965,46 @@ module.exports =
                                 `${botName} | Nueva carta desbloqueada: ${memberName} | ${unlock.card.card_name} | OVR ${unlock.card.rating}`
                             )
 
-                            await sock.safeSendMessage(
-                                from,
-                                {
-                                    text: [
-                                        'ㅤ۟∩　ׅ　🎉　ׅ　*NUEVA CARTA*　ׄᰙ',
-                                        '',
-                                        `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Jugador:* ${memberName}`,
-                                        `𖣣ֶㅤ֯⌗ 🃏  ׄ ⬭ *Carta:* ${unlock.card.card_name}`,
-                                        `𖣣ֶㅤ֯⌗ ⭐  ׄ ⬭ *OVR:* ${unlock.card.rating}`,
-                                        '',
-                                        '╰─ 𓂃 Usa .card para ver tu nueva carta'
-                                    ]
-                                        .filter(Boolean)
-                                        .join('\n')
-                                }
-                            )
+                            const unlockText = [
+                                'ㅤ۟∩　ׅ　🎉　ׅ　*NUEVA CARTA*　ׄᰙ',
+                                '',
+                                `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Jugador:* ${memberName}`,
+                                `𖣣ֶㅤ֯⌗ 🃏  ׄ ⬭ *Carta:* ${unlock.card.card_name}`,
+                                `𖣣ֶㅤ֯⌗ ⭐  ׄ ⬭ *OVR:* ${unlock.card.rating}`,
+                                '',
+                                '╰─ 𓂃 Usa .card para ver tu nueva carta'
+                            ]
+                                .filter(
+                                    Boolean
+                                )
+                                .join(
+                                    '\n'
+                                )
+
+                            if (
+                                typeof sock.safeSendMessage ===
+                                'function'
+                            ) {
+
+                                await sock.safeSendMessage(
+                                    from,
+                                    {
+                                        text:
+                                            unlockText
+                                    }
+                                )
+
+                            } else {
+
+                                await sock.sendMessage(
+                                    from,
+                                    {
+                                        text:
+                                            unlockText
+                                    }
+                                )
+
+                            }
 
                         }
 
@@ -881,27 +1083,6 @@ module.exports =
 
             }
 
-            const prefixes =
-                Array.isArray(
-                    settings.prefixes
-                )
-                    ? settings.prefixes
-                    : [
-                        settings.prefix ||
-                        '/'
-                    ]
-
-            const matchedPrefix =
-                prefixes.find(
-                    prefix =>
-                        typeof prefix ===
-                        'string' &&
-                        prefix &&
-                        text.startsWith(
-                            prefix
-                        )
-                )
-
             if (
                 !matchedPrefix
             ) {
@@ -916,24 +1097,11 @@ module.exports =
             try {
 
                 commandProcessed =
-                    Boolean(
-                        await commandHandler({
-
-                            sock,
-
-                            msg,
-
-                            from,
-
-                            text,
-
-                            settings,
-
-                            botProfile:
-                                sock.botProfile ||
-                                null
-
-                        })
+                    await runCommand(
+                        sock,
+                        msg,
+                        from,
+                        text
                     )
 
             } catch (err) {

@@ -1169365,3 +1169365,2362 @@ A todos los líderes de todas las familias únanse acá
 [20:48:14] [EVENT] PassiveCoins: 30705442644090 +8
 [20:48:16] [EVENT] 30705442644090 -> No se duerman.
 [20:51:11] [INFO] Cerrando KennyBot...
+[00:40:37] [OK] UnifiedRateLimiter cargado
+[00:40:37] [OK] Comando cargado: ban
+[00:40:37] [OK] Comando cargado: unban
+[00:40:37] [OK] Comando cargado: antilink
+[00:40:41] [OK] Comando cargado: card
+[00:40:41] [OK] Comando cargado: cardinfo
+[00:40:42] [OK] Comando cargado: claim
+[00:40:42] [OK] Comando cargado: collection
+[00:40:42] [OK] Comando cargado: antibot
+[00:40:42] [OK] Comando cargado: antifake
+[00:40:42] [OK] Comando cargado: autolevelup
+[00:40:42] [OK] Comando cargado: crush
+[00:40:42] [OK] Comando cargado: fusion
+[00:40:46] [OK] Comando cargado: qc
+[00:40:46] [OK] Comando cargado: rate
+[00:40:46] [OK] Comando cargado: ship
+[00:40:46] [OK] Comando cargado: facebook
+[00:40:46] [OK] Comando cargado: instagram
+[00:40:46] [OK] Comando cargado: pinterest
+[00:40:56] [OK] Comando cargado: play
+[00:40:56] [OK] Comando cargado: spotify
+[00:40:56] [OK] Comando cargado: tiktok
+[00:40:56] [OK] Comando cargado: ytmp3
+[00:40:56] [OK] Comando cargado: ytmp4
+[00:40:56] [OK] Comando cargado: balance
+[00:40:56] [OK] Comando cargado: buy
+[00:40:57] [WARN] Comando duplicado ignorado: buy (crime.js)
+[00:40:57] [OK] Comando cargado: daily
+[00:40:57] [OK] Comando cargado: deposit
+[00:40:57] [OK] Comando cargado: gamble
+[00:40:57] [OK] Comando cargado: inventory
+[00:40:57] [OK] Comando cargado: leaderboardmoney
+[00:40:57] [OK] Comando cargado: open
+[00:40:57] [OK] Comando cargado: pay
+[00:40:57] [OK] Comando cargado: rob
+[00:40:57] [OK] Comando cargado: shop
+[00:40:57] [OK] Comando cargado: slots
+[00:40:57] [OK] Comando cargado: withdraw
+[00:40:57] [OK] Comando cargado: work
+[00:40:57] [OK] Comando cargado: equip
+[00:40:57] [OK] Comando cargado: events
+[00:41:13] [OK] Comando cargado: exportstats
+[00:41:13] [OK] Comando cargado: inactive
+[00:41:13] [OK] Comando cargado: msgstats
+[00:41:13] [OK] Comando cargado: topmessages
+[00:41:13] [OK] Comando cargado: groups
+[00:41:13] [OK] Comando cargado: add
+[00:41:14] [OK] Comando cargado: admins
+[00:41:14] [OK] Comando cargado: demote
+[00:41:14] [OK] Comando cargado: hidetag
+[00:41:14] [OK] Comando cargado: kick
+[00:41:14] [OK] Comando cargado: mute
+[00:41:14] [OK] Comando cargado: promote
+[00:41:14] [OK] Comando cargado: tagall
+[00:41:14] [OK] Comando cargado: unwarn
+[00:41:14] [OK] Comando cargado: warn
+[00:41:14] [OK] Comando cargado: warnings
+[00:41:14] [OK] Comando cargado: welcome
+[00:41:14] [OK] Comando cargado: ia
+[00:41:14] [OK] Comando cargado: join
+[00:41:14] [OK] Comando cargado: leaderboard
+[00:41:14] [OK] Comando cargado: level
+[00:41:14] [WARN] Comando duplicado ignorado: rank (rank.js)
+[00:41:14] [OK] Comando cargado: menu
+[00:41:14] [OK] Comando cargado: myclub
+[00:41:14] [OK] Comando cargado: objectives
+[00:41:15] [OK] Comando cargado: openpack
+[00:41:15] [OK] Comando cargado: packs
+[00:41:15] [OK] Comando cargado: pick
+[00:41:15] [OK] Comando cargado: ping
+[00:41:15] [OK] Comando cargado: addpremium
+[00:41:15] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[00:41:15] [OK] Comando cargado: delpremium
+[00:41:15] [OK] Comando cargado: profile
+[00:41:15] [OK] Comando cargado: sticker
+[00:41:15] [OK] Comando cargado: addjoinmsg
+[00:41:15] [OK] Comando cargado: clearjoinmsg
+[00:41:15] [OK] Comando cargado: deljoinmsg
+[00:41:15] [OK] Comando cargado: listjoinmsg
+[00:41:16] [INFO] Iniciando sistema multi-bot...
+[00:41:16] [INFO] Instancias configuradas: main, brazil
+[00:41:16] [OK] MySQL conectado y tabla lista
+[00:41:16] [OK] Base de datos inicializada
+[00:41:16] [INFO] Iniciando 2 instancia(s): main, brazil
+[00:41:17] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[00:41:17] [OK] KennyBot | SocketManager cargado
+[00:41:17] [INFO] KennyBot BR | Usando WA v2.3000.1043857760
+[00:41:17] [OK] KennyBot BR | SocketManager cargado
+[00:41:17] [OK] KennyBot conectado
+[00:41:23] [INFO] Global Role Sync ignorado en grupo de prueba/no productivo: 120363343360264412@g.us
+[00:42:28] [WARN] KennyBot BR desconectado: 515
+[00:42:28] [INFO] KennyBot BR | Reconectando en 5 segundos...
+[00:42:33] [INFO] Socket cerrado | brazil
+[00:42:33] [INFO] KennyBot BR | Usando WA v2.3000.1043857760
+[00:42:33] [OK] KennyBot BR | SocketManager cargado
+[00:42:36] [OK] KennyBot BR conectado
+[00:42:52] [EVENT] [main] 45720447012975 -> Aiden, les logré sacar una pizca de info a skate graff 
+Aunque no confían mucho en mí como para decirme otras cosas o dejarme pasar. 
+
+Pero eso de info que saqué, es un tanto extraña
+[00:42:52] [EVENT] KennyBot | PassiveCoins: 45720447012975 +6
+[00:44:03] [EVENT] [main] 30760622928040 -> Cuenta
+[00:44:03] [EVENT] KennyBot | PassiveCoins: 30760622928040 +10
+[00:44:08] [EVENT] [main] 9063253438484 -> Se agradece
+[00:44:08] [EVENT] KennyBot | PassiveCoins: 9063253438484 +1
+[00:44:14] [EVENT] [main] 9063253438484 -> Saquen mis obsequios
+[00:44:20] [EVENT] [main] 9063253438484 -> Aviso, quiero un repe
+[00:44:44] [EVENT] [main] 45720447012975 -> Oh, i don have money
+[00:44:44] [EVENT] KennyBot | PassiveCoins: 45720447012975 +1
+[00:48:44] [EVENT] [main] 165253195264101 -> +66633376805
+[00:48:44] [EVENT] KennyBot | PassiveCoins: 165253195264101 +1
+[00:48:52] [EVENT] [main] 165253195264101 -> +666333
+[00:49:01] [EVENT] [main] 165253195264101 -> Toma itzel
+[00:49:06] [EVENT] [main] 165253195264101 -> For you
+[00:49:30] [EVENT] [main] 165253195264101 -> Claro, no es vaya un repe como los que tu quieres verdad
+[00:49:36] [EVENT] [main] 165253195264101 -> Pero vaya, es algo
+[00:49:38] [EVENT] [main] 165253195264101 -> Jsjs
+[00:49:41] [EVENT] [main] 9063253438484 -> Jajajajajaja
+[00:49:41] [EVENT] KennyBot | PassiveCoins: 9063253438484 +10
+[00:50:05] [EVENT] [main] 165253195264101 -> Gracias por existir Itzel, eres una amiga fabulosa, mi güerita favorita
+[00:50:06] [EVENT] KennyBot | PassiveCoins: 165253195264101 +6
+[00:50:11] [EVENT] [main] 79380390908143 -> Si papi que rico
+[00:50:11] [EVENT] KennyBot | PassiveCoins: 79380390908143 +7
+[00:50:14] [EVENT] [main] 79380390908143 -> 🤤🤤
+[00:50:52] [EVENT] [main] 9063253438484 -> Gracias mi cielo bello
+[00:50:52] [EVENT] KennyBot | PassiveCoins: 9063253438484 +9
+[00:50:56] [EVENT] [main] 9063253438484 -> Code
+[00:50:58] [EVENT] [main] 9063253438484 -> Jajajajajaja
+[00:51:05] [EVENT] [main] 165253195264101 -> 574-677
+[00:51:27] [EVENT] [main] 103754162552961 -> Sígueme en ig perra
+[00:51:27] [EVENT] KennyBot | PassiveCoins: 103754162552961 +2
+[00:51:52] [EVENT] [main] 79380390908143 -> Dámelo pero ya amor
+[00:51:53] [EVENT] KennyBot | PassiveCoins: 79380390908143 +1
+[00:51:57] [EVENT] [main] 79380390908143 -> No mentira.
+[00:52:14] [EVENT] [main] 79380390908143 -> No puedo mandar mensajes ahí para acosarte
+[00:52:23] [EVENT] [main] 103754162552961 -> ME MEO JAJAJA PQ?
+[00:52:30] [EVENT] [main] 103754162552961 -> Yo te mando baiby
+[00:52:30] [EVENT] KennyBot | PassiveCoins: 103754162552961 +9
+[00:52:40] [EVENT] [main] 9063253438484 -> Tenkiu mi vida
+[00:52:40] [EVENT] KennyBot | PassiveCoins: 9063253438484 +4
+[00:52:44] [EVENT] [main] 79380390908143 -> Me bloquearon el chat..
+[00:53:00] [EVENT] [main] 45720447012975 -> @lakiya_vip_tele_bot
+
+Coje, un botsito, para regalarte al menos algo
+[00:53:01] [EVENT] KennyBot | PassiveCoins: 45720447012975 +2
+[00:53:17] [EVENT] [main] 103754162552961 -> QUE HICISTE W
+[00:53:18] [EVENT] [main] 9063253438484 -> Ay gracias gracias
+[00:54:05] [EVENT] [main] 79380390908143 -> Ando desesperado como mato a ig?
+[00:54:05] [EVENT] KennyBot | PassiveCoins: 79380390908143 +9
+[00:54:37] [EVENT] [main] 79380390908143 -> Me puse a pelear con un pibe y luego me bloquearon los mensajes..
+[00:56:27] [EVENT] [main] 103754162552961 -> JAJAJA ME ENCANTA
+[00:56:27] [EVENT] KennyBot | PassiveCoins: 103754162552961 +5
+[01:01:11] [EVENT] [main] 79380390908143 -> Me hieres puta..
+[01:01:11] [EVENT] KennyBot | PassiveCoins: 79380390908143 +2
+[01:02:13] [EVENT] [main] 103754162552961 -> ??? Malparido te cortaré el pene
+[01:02:13] [EVENT] KennyBot | PassiveCoins: 103754162552961 +10
+[01:03:21] [EVENT] [main] 79380390908143 -> Primero agárralo como chupete.
+[01:03:21] [EVENT] KennyBot | PassiveCoins: 79380390908143 +7
+[01:06:11] [EVENT] [main] 103754162552961 -> Acosador ☹️
+[01:06:11] [EVENT] KennyBot | PassiveCoins: 103754162552961 +4
+[01:07:27] [EVENT] [main] 79380390908143 -> oh no..
+[01:07:27] [EVENT] KennyBot | PassiveCoins: 79380390908143 +2
+[01:07:29] [EVENT] [main] 79380390908143 -> Amor no..
+[01:07:34] [EVENT] [main] 79380390908143 -> Perdóname
+[01:10:11] [EVENT] [main] 214474023817412 -> Yo despierta a estas horas y mañana temprano debo trabajar
+[01:10:11] [EVENT] KennyBot | PassiveCoins: 214474023817412 +7
+[01:10:49] [EVENT] [main] 103754162552961 -> No vete
+[01:10:49] [EVENT] KennyBot | PassiveCoins: 103754162552961 +8
+[01:10:50] [EVENT] [main] 103754162552961 -> Amor
+[01:11:21] [EVENT] [main] 103754162552961 -> Califica mi ig 😍
+[01:11:48] [EVENT] [main] 79380390908143 -> llene de leche mi teléfono.
+[01:11:49] [EVENT] KennyBot | PassiveCoins: 79380390908143 +8
+[01:12:17] [EVENT] [main] 79380390908143 -> PORQUE TENÍA 0 0 0
+[01:12:17] [EVENT] [main] 103754162552961 -> ??? JAJAJ
+[01:12:17] [EVENT] KennyBot | PassiveCoins: 103754162552961 +4
+[01:12:20] [EVENT] [main] 79380390908143 -> LPM Q RISA
+[01:12:22] [EVENT] [main] 79380390908143 -> JAJAJJAJAJJAJAJJAJA
+[01:12:26] [EVENT] [main] 79380390908143 -> Y SUBÍA UNA NOTA
+[01:12:28] [EVENT] [main] 103754162552961 -> 😍😍
+[01:12:38] [EVENT] [main] 103754162552961 -> Pq es mi primera vez teniendo ig
+[01:12:43] [EVENT] [main] 79380390908143 -> ??
+[01:12:46] [EVENT] [main] 79380390908143 -> Déjame ser el primero
+[01:12:49] [EVENT] [main] 103754162552961 -> Y pq me da pena pasárselo a mis amigos
+[01:13:00] [EVENT] [main] 103754162552961 -> Te caiste de pequeño?
+[01:13:14] [EVENT] [main] 79380390908143 -> Sígueme en “Lolita_quiere_lechita90”
+[01:13:14] [EVENT] KennyBot | PassiveCoins: 79380390908143 +10
+[01:15:37] [EVENT] [main] 79380390908143 -> Mira amor, califica esta hermosura. ❤️
+[01:15:38] [EVENT] KennyBot | PassiveCoins: 79380390908143 +7
+[01:29:22] [EVENT] [main] 103754162552961 -> Arte
+[01:29:22] [EVENT] KennyBot | PassiveCoins: 103754162552961 +9
+[01:29:27] [EVENT] [main] 103754162552961 -> Te sentí bien
+[01:29:31] [EVENT] [main] 103754162552961 -> Yandere con el cuchillo
+[01:32:26] [EVENT] [main] 79380390908143 -> Me anda saliendo acné.
+[01:32:26] [EVENT] KennyBot | PassiveCoins: 79380390908143 +7
+[01:34:01] [EVENT] [main] 103754162552961 -> Yo
+[01:34:02] [EVENT] KennyBot | PassiveCoins: 103754162552961 +4
+[01:35:53] [EVENT] [main] 79380390908143 -> Tengo miedo a dejarlo
+[01:35:53] [EVENT] KennyBot | PassiveCoins: 79380390908143 +10
+[01:36:12] [EVENT] [main] 79380390908143 -> Pero ya está feliz con alguien mas
+[01:36:13] [EVENT] [main] 103754162552961 -> A tu novio?
+[01:36:13] [EVENT] KennyBot | PassiveCoins: 103754162552961 +2
+[01:36:26] [EVENT] [main] 103754162552961 -> Ni como defenderte
+[01:36:45] [EVENT] [main] 103754162552961 -> ???
+[01:36:46] [EVENT] [main] 103754162552961 -> QUE
+[01:36:47] [EVENT] [main] 103754162552961 -> Perro
+[01:36:50] [EVENT] [main] 103754162552961 -> Dile algo
+[01:36:53] [EVENT] [main] 103754162552961 -> QUE RABIA
+[01:37:03] [EVENT] [main] 79380390908143 -> no tengo el valor suficiente..
+[01:37:03] [EVENT] KennyBot | PassiveCoins: 79380390908143 +1
+[01:37:08] [EVENT] [main] 79380390908143 -> porque lo amo..
+[01:37:12] [EVENT] [main] 103754162552961 -> Ñiñi de lo que se pierde
+[01:37:14] [EVENT] [main] 103754162552961 -> No
+[01:37:14] [EVENT] KennyBot | PassiveCoins: 103754162552961 +1
+[01:37:16] [EVENT] [main] 103754162552961 -> No te dejes
+[01:37:19] [EVENT] [main] 103754162552961 -> Mondologo
+[01:37:20] [EVENT] [main] 79380390908143 -> Maldito Luffy te metiste en mi relación..
+[01:37:26] [EVENT] [main] 103754162552961 -> Matar
+[01:37:31] [EVENT] [main] 103754162552961 -> Ahí no es amigo
+[01:37:41] [EVENT] [main] 103754162552961 -> PERO DILE ALGO
+[01:37:50] [EVENT] [main] 79380390908143 -> yo todavía le dije..
+[01:38:00] [EVENT] [main] 79380390908143 -> que me sentía inseguro
+[01:38:04] [EVENT] [main] 79380390908143 -> que tenía miedo
+[01:38:04] [EVENT] KennyBot | PassiveCoins: 79380390908143 +9
+[01:38:13] [EVENT] [main] 79380390908143 -> que algún día me iba a cambiar
+[01:38:31] [EVENT] [main] 79380390908143 -> y que me digo?
+[01:39:17] [EVENT] [main] 103754162552961 -> PEROOO AMIGO
+[01:39:17] [EVENT] KennyBot | PassiveCoins: 103754162552961 +7
+[01:39:20] [EVENT] [main] 103754162552961 -> Amigo mírame
+[01:39:57] [EVENT] [main] 103754162552961 -> No, amiga mírame
+[01:40:00] [EVENT] [main] 103754162552961 -> Noah mirame
+[01:40:08] [EVENT] [main] 79380390908143 -> Soy trans
+[01:40:08] [EVENT] KennyBot | PassiveCoins: 79380390908143 +2
+[01:40:11] [EVENT] [main] 103754162552961 -> No
+[01:40:13] [EVENT] [main] 103754162552961 -> PERDÓN
+[01:40:17] [EVENT] [main] 103754162552961 -> Amigo
+[01:40:23] [EVENT] [main] 79380390908143 -> lpm
+[01:40:33] [EVENT] [main] 103754162552961 -> Es que como pusiste chicas
+[01:40:33] [EVENT] KennyBot | PassiveCoins: 103754162552961 +1
+[01:40:36] [EVENT] [main] 103754162552961 -> Me confundí
+[01:40:45] [EVENT] [main] 103754162552961 -> Dije el w es género fluido
+[01:41:00] [EVENT] [main] 79380390908143 -> Eso
+[01:41:16] [EVENT] [main] 79380390908143 -> Pero en fin
+[01:41:17] [EVENT] KennyBot | PassiveCoins: 79380390908143 +6
+[01:41:21] [EVENT] [main] 79380390908143 -> Ni como decirle
+[01:41:29] [EVENT] [main] 79380390908143 -> Lo que me hace sentir mal
+[01:41:40] [EVENT] [main] 79380390908143 -> Si con eso ya sé que me es infiel
+[01:41:49] [EVENT] [main] 79380390908143 -> Porque yo me quedaba días esperando su mensaje
+[01:42:01] [EVENT] [main] 79380390908143 -> mientras se la pasaba con sus amigos
+[01:46:42] [EVENT] [main] 103754162552961 -> A ver, mira, sé que es difícil, pero escuchasi alguien te es infiel y no te respeta siendo tu pareja, nunca lo hará, por más que diga que va a cambiar, no lo hará, y esto se va a repetir una y otra vez, y eso es una señal de que no es para ti. Si algo ya te cortó y aún así te aferras a ese vidrio que lastima, te va a seguir lastimando, y la primera vez que lo vas dejando duele, y mucho, pero eso no significa que no puedas avanzar. Te mereces respeto y prioridad, amor y cariño. No debe por qué preferir a sus amigos, incluso ignorarte y mucho menos ocultarte cosas, porque tarde o temprano lo sabrás, Sé que es difícil, y más porque te duele por las promesas, pero es algo que si ya te hizo con una promesa, la seguiría haciendo con todas, porque no te ama, no le importa, y es la verdad. Incluso si cambias, él seguirá siendo lo mismo, el problema no eres tú, lo es él
+[01:46:42] [EVENT] KennyBot | PassiveCoins: 103754162552961 +10
+[01:46:56] [EVENT] [main] 103754162552961 -> Me woeo a dormir
+[01:47:00] [EVENT] [main] 103754162552961 -> Deberías descansar
+[01:47:13] [EVENT] [main] 103754162552961 -> Si necesitas algo puedes decirme
+[01:50:33] [EVENT] [main] 79380390908143 -> ??voy a llorar más creo.
+[01:50:33] [EVENT] KennyBot | PassiveCoins: 79380390908143 +2
+[01:50:46] [EVENT] [main] 79380390908143 -> mi mayor miedo es amarlo tanto.
+[01:50:56] [EVENT] [main] 79380390908143 -> bien, descansa entonces
+[01:51:02] [EVENT] [main] 103754162552961 -> AMIGO NO
+[01:51:02] [EVENT] KennyBot | PassiveCoins: 103754162552961 +6
+[01:51:05] [EVENT] [main] 79380390908143 -> Yo veré si duermo un poco
+[01:51:15] [EVENT] [main] 103754162552961 -> Sisis mejor duerme
+[01:51:24] [EVENT] [main] 103754162552961 -> Y si no puedes me escribes
+[01:51:45] [EVENT] [main] 79380390908143 -> Buen
+[01:51:45] [EVENT] KennyBot | PassiveCoins: 79380390908143 +5
+[01:51:57] [EVENT] [main] 103754162552961 -> Yo m pondré a ver pornito tlavieso
+[01:52:00] [EVENT] [main] 103754162552961 -> De gays chinitos
+[01:52:18] [EVENT] [main] 79380390908143 -> LPM
+[01:52:26] [EVENT] [main] 79380390908143 -> Comparte
+[01:52:31] [EVENT] [main] 103754162552961 -> ??? Este wey
+[01:52:32] [EVENT] KennyBot | PassiveCoins: 103754162552961 +3
+[01:52:34] [EVENT] [main] 79380390908143 -> Pero me gusta más de enanitos
+[01:52:42] [EVENT] [main] 103754162552961 -> JAJAJA
+[01:53:12] [EVENT] [main] 103754162552961 -> A mí de esos de los que parecen femboys y ceos 🤤🤤
+[01:53:15] [EVENT] [main] 103754162552961 -> ME DA RISA
+[01:53:16] [EVENT] [main] 103754162552961 -> JAJAJA
+[02:00:02] [EVENT] [main] 79380390908143 -> Q RISAAA
+[02:00:02] [EVENT] KennyBot | PassiveCoins: 79380390908143 +9
+[02:00:05] [EVENT] [main] 79380390908143 -> JAJAJAJAJAJAJA
+[02:00:17] [EVENT] [main] 79380390908143 -> Yo una vez si vi esos..
+[02:00:29] [EVENT] [main] 79380390908143 -> en vez de pajearme me dio una risa
+[02:01:26] [EVENT] [main] 103754162552961 -> YO
+[02:01:26] [EVENT] KennyBot | PassiveCoins: 103754162552961 +10
+[02:01:34] [EVENT] [main] 103754162552961 -> A mí me lo mando mi ex amigo
+[02:03:08] [EVENT] [main] 103754162552961 -> Dile
+[02:03:08] [EVENT] KennyBot | PassiveCoins: 103754162552961 +8
+[02:03:10] [EVENT] [main] 103754162552961 -> Tu puedes
+[02:03:18] [EVENT] [main] 103754162552961 -> Y luego te llevo a papitos club
+[02:05:12] [EVENT] [main] 79380390908143 -> Ando buscando la otra mitad
+[02:05:12] [EVENT] KennyBot | PassiveCoins: 79380390908143 +7
+[02:05:24] [EVENT] [main] 79380390908143 -> De esa foto
+[02:05:43] [EVENT] [main] 79380390908143 -> Para restregarle cualquier mentira
+[02:05:56] [EVENT] [main] 103754162552961 -> ESO
+[02:05:56] [EVENT] KennyBot | PassiveCoins: 103754162552961 +10
+[02:08:11] [EVENT] [main] 79380390908143 -> QUE PRO SOY
+[02:08:12] [EVENT] KennyBot | PassiveCoins: 79380390908143 +2
+[02:08:14] [EVENT] [main] 79380390908143 -> LA ENCONTRÉ
+[02:08:17] [EVENT] [main] 79380390908143 -> JAAA
+[02:08:20] [EVENT] [main] 79380390908143 -> PUTOS
+[02:09:20] [EVENT] [main] 103754162552961 -> ESOOO
+[02:09:20] [EVENT] KennyBot | PassiveCoins: 103754162552961 +4
+[02:09:26] [EVENT] [main] 103754162552961 -> Cuentas chisme
+[02:12:33] [EVENT] [main] 48409297866963 -> Holaa
+[02:12:33] [EVENT] KennyBot | PassiveCoins: 48409297866963 +1
+[02:12:40] [EVENT] [main] 48409297866963 -> @all Buenos días a todos.
+[02:15:08] [EVENT] [main] 177898216538250 -> Me rindo con blurr
+[02:15:08] [EVENT] KennyBot | PassiveCoins: 177898216538250 +1
+[02:16:01] [EVENT] [main] 270742490992741 -> Necesito ayuda en mi decisión con mi marca de agua.
+[02:16:01] [EVENT] KennyBot | PassiveCoins: 270742490992741 +9
+[02:16:10] [EVENT] [main] 270742490992741 -> No más no se cuál elegir.
+[02:33:53] [EVENT] [main] 79380390908143 -> no me ha respondido
+[02:33:53] [EVENT] KennyBot | PassiveCoins: 79380390908143 +5
+[02:33:58] [EVENT] [main] 79380390908143 -> Que rabiaaa
+[02:34:12] [EVENT] [main] 79380390908143 -> Seguro está con Luffy.
+[02:37:05] [EVENT] [main] 103754162552961 -> QUE
+[02:37:05] [EVENT] KennyBot | PassiveCoins: 103754162552961 +6
+[03:56:51] [EVENT] [main] 16480276058158 -> Que.
+[03:56:51] [EVENT] KennyBot | PassiveCoins: 16480276058158 +5
+[03:57:16] [EVENT] [main] 16480276058158 -> Eran la 1 y algo, ¿Crees que estaba despierta?
+[04:39:26] [EVENT] [main] 133088906633278 -> Te das cuenta que para defenderse en todo sacan a Lin y quien es Lin no mamen es una líder más igual que todas es más Zoé hizo más impacto con Zhang que Lín
+[04:39:26] [EVENT] KennyBot | PassiveCoins: 133088906633278 +5
+[04:49:24] [EVENT] [main] 108745082302590 -> Y esa quién es?
+[04:49:24] [EVENT] KennyBot | PassiveCoins: 108745082302590 +8
+[04:52:37] [EVENT] [main] 133088906633278 -> Ahora se de que lado somos.
+[04:52:37] [EVENT] KennyBot | PassiveCoins: 133088906633278 +6
+[04:52:56] [EVENT] [main] 133088906633278 -> Gente malagradecida no las quiero aquí.
+[04:53:03] [EVENT] [main] 108745082302590 -> Sigan nuestro canal.
+
+https://whatsapp.com/channel/0029VbDpRTLDOQIft3I4Li0x
+[04:53:03] [EVENT] KennyBot | PassiveCoins: 108745082302590 +9
+[05:04:15] [EVENT] [main] 65082344108240 -> @all por qué tan callados? Odian D'Aumont o que?
+[05:04:15] [EVENT] KennyBot | PassiveCoins: 65082344108240 +3
+[05:10:01] [EVENT] [main] 177898216538250 -> No, solo ayer me quede dormido con problemas de salud
+[05:10:01] [EVENT] KennyBot | PassiveCoins: 177898216538250 +9
+[05:10:10] [EVENT] [main] 171030412808441 -> Like 💛
+
+https://vt.tiktok.com/ZSgaLfo19/
+[05:10:10] [EVENT] KennyBot | PassiveCoins: 171030412808441 +6
+[05:10:14] [EVENT] [main] 171030412808441 -> Delen like y compartan
+[05:10:23] [EVENT] [main] 177898216538250 -> Traigo mucha tos todavía, lo peor es que me duele el estómago cuando empiezo a toser
+[05:10:40] [EVENT] [main] 171030412808441 -> .tag
+[05:10:41] [CMD] KennyBot | hidetag → 171030412808441
+[05:10:53] [EVENT] [main] 171030412808441 -> .tag delen like
+[05:10:54] [CMD] KennyBot | hidetag → 171030412808441
+[05:10:56] [EVENT] Hidetag usado en 120363408941409130 por 171030412808441 | 514 menciones | texto
+[05:20:48] [EVENT] [main] 65082344108240 -> Es bebé
+[05:20:48] [EVENT] KennyBot | PassiveCoins: 65082344108240 +4
+[05:20:51] [EVENT] [main] 65082344108240 -> JAJAAJAJAJA
+[05:20:56] [EVENT] [main] 65082344108240 -> Nadaquever
+[05:21:01] [EVENT] [main] 65082344108240 -> Pero si
+[05:21:37] [EVENT] [main] 90577337082042 -> Aquí no
+[05:21:37] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[05:21:49] [EVENT] [main] 90577337082042 -> Son las
+[05:21:55] [EVENT] [main] 90577337082042 -> 14:21
+[05:28:49] [EVENT] [main] 30705442644090 -> Buenas.
+[05:28:49] [EVENT] KennyBot | PassiveCoins: 30705442644090 +2
+[05:28:51] [EVENT] [main] 30705442644090 -> Arriba.
+[05:28:54] [EVENT] [main] 30705442644090 -> Porque tan dormidos.
+[05:28:59] [EVENT] [main] 30705442644090 -> Arriba
+[05:29:01] [EVENT] [main] 30705442644090 -> .tagall
+[05:29:01] [CMD] KennyBot | tagall → 30705442644090
+[05:29:02] [EVENT] Tagall usado en 120363428619841201 por +52 992 118 5456 | 23 menciones
+[05:29:04] [EVENT] [main] 30705442644090 -> Arriba
+[05:29:04] [EVENT] [main] 30705442644090 -> *» Grupo* : 𒑠𒑠    ︓ 𝐏꯭ۗ⎯꯭𝐀꯭ۙ𝐋꯭ۣ𝐀꯭ۜ𝐂𝐈꯭𝐎   ﹔̸꯭ܳ🇫🇷ࣦ     𝐃ّ'꯭𝐀꯭ۜ𝐔ۙ𝐌ۣ𝐎̸܏𝐍𝐓      𒑰𒑰
+*» Miembros* : 23
+
+
+  ➠  @6283176127370
+  ➠  @595992955452
+  ➠  @573203981937
+  ➠  @143929219514503
+  ➠  @205265211244761
+  ➠  @5492914193736
+  ➠  @5491169825343
+  ➠  @5491151129632
+  ➠  @5219519017865
+  ➠  @5218771007582
+  ➠  @5218131308881
+  ➠  @5215561155939
+  ➠  @5215548178340
+  ➠  @5213125546127
+  ➠  @51967437510
+  ➠  @6258438500556
+  ➠  @51904903597
+  ➠  @50933490758
+  ➠  @380964902163
+  ➠  @27603014375
+  ➠  @254725317668
+  ➠  @18297077993
+[05:29:06] [EVENT] [main] 30705442644090 -> Reviviros
+[05:33:52] [EVENT] [main] 30705442644090 -> *» Grupo* : 𒑠𒑠    ︓ 𝐏꯭ۗ⎯꯭𝐀꯭ۙ𝐋꯭ۣ𝐀꯭ۜ𝐂𝐈꯭𝐎   ﹔̸꯭ܳ🇫🇷ࣦ     𝐃ّ'꯭𝐀꯭ۜ𝐔ۙ𝐌ۣ𝐎̸܏𝐍𝐓      𒑰𒑰
+*» Miembros* : 23
+
+
+  ➠  @6283176127370
+  ➠  @595992955452
+  ➠  @573203981937
+  ➠  @143929219514503
+  ➠  @205265211244761
+  ➠  @5492914193736
+  ➠  @5491169825343
+  ➠  @5491151129632
+  ➠  @5219519017865
+  ➠  @5218771007582
+  ➠  @5218131308881
+  ➠  @5215561155939
+  ➠  @5215548178340
+  ➠  @5213125546127
+  ➠  @51967437510
+  ➠  @6258438500556
+  ➠  @51904903597
+  ➠  @50933490758
+  ➠  @380964902163
+  ➠  @27603014375
+  ➠  @254725317668
+  ➠  @18297077993
+[05:33:52] [EVENT] KennyBot | PassiveCoins: 30705442644090 +8
+[05:40:18] [EVENT] [main] 177898216538250 -> HOLAA
+[05:40:18] [EVENT] KennyBot | PassiveCoins: 177898216538250 +9
+[05:46:06] [EVENT] [main] 30705442644090 -> .tag Quieren actividad?
+[05:46:06] [EVENT] KennyBot | PassiveCoins: 30705442644090 +7
+[05:46:06] [CMD] KennyBot | hidetag → 30705442644090
+[05:46:07] [EVENT] Hidetag usado en 120363428619841201 por 30705442644090 | 23 menciones | texto
+[05:46:09] [EVENT] [main] 30705442644090 -> Quieren actividad?
+
+> 𒑠𒑠    ︓ 𝐏꯭ۗ⎯꯭𝐀꯭ۙ𝐋꯭ۣ𝐀꯭ۜ𝐂𝐈꯭𝐎   ﹔̸꯭ܳ🇫🇷ࣦ     𝐃ّ'꯭𝐀꯭ۜ𝐔ۙ𝐌ۣ𝐎̸܏𝐍𝐓      𒑰𒑰 | 23 de octubre 🌙
+[05:46:17] [EVENT] [main] 30705442644090 -> Si que bueno.
+[05:46:27] [EVENT] [main] 30705442644090 -> Háganle.
+[05:46:32] [EVENT] [main] 30705442644090 -> .tag
+[05:46:32] [CMD] KennyBot | hidetag → 30705442644090
+[05:46:35] [EVENT] [main] 30705442644090 -> Háganle.
+
+> 𒑠𒑠    ︓ 𝐏꯭ۗ⎯꯭𝐀꯭ۙ𝐋꯭ۣ𝐀꯭ۜ𝐂𝐈꯭𝐎   ﹔̸꯭ܳ🇫🇷ࣦ     𝐃ّ'꯭𝐀꯭ۜ𝐔ۙ𝐌ۣ𝐎̸܏𝐍𝐓      𒑰𒑰 | 23 de octubre 🌙
+[05:46:39] [EVENT] Hidetag usado en 120363428619841201 por 30705442644090 | 23 menciones | imagen
+[05:47:25] [EVENT] [main] 5708716204094 -> Okei
+[05:47:25] [EVENT] KennyBot | PassiveCoins: 5708716204094 +2
+[05:50:02] [EVENT] [main] 177898216538250 -> Voy
+[05:50:02] [EVENT] KennyBot | PassiveCoins: 177898216538250 +9
+[05:58:34] [EVENT] [main] 90577337082042 -> @154838587449491
+[05:58:34] [EVENT] KennyBot | PassiveCoins: 90577337082042 +10
+[05:58:39] [EVENT] [main] 90577337082042 -> Mira cuánto arte este sticker
+[05:58:44] [EVENT] [main] 90577337082042 -> JAJAJAJANAN
+[05:58:45] [EVENT] [main] 90577337082042 -> Dios
+[05:59:02] [EVENT] [main] 103754162552961 -> QUE EZ esto
+[05:59:02] [EVENT] KennyBot | PassiveCoins: 103754162552961 +6
+[05:59:07] [EVENT] [main] 90577337082042 -> Valeria
+[05:59:11] [EVENT] [main] 90577337082042 -> La de antes
+[05:59:13] [EVENT] [main] 90577337082042 -> JAJAJAJAJAJANAJSN
+[05:59:50] [EVENT] [main] 177898216538250 -> Te juro q llevo rst9 buscando
+[05:59:50] [EVENT] KennyBot | PassiveCoins: 177898216538250 +9
+[06:00:17] [EVENT] [main] 103754162552961 -> JAJAJA
+[06:00:17] [EVENT] KennyBot | PassiveCoins: 103754162552961 +4
+[06:00:38] [EVENT] [main] 90577337082042 -> JAJAJAJAJA
+[06:00:38] [EVENT] KennyBot | PassiveCoins: 90577337082042 +9
+[06:00:46] [EVENT] [main] 90577337082042 -> El de kitty tmb es increíble
+[06:01:05] [EVENT] [main] 103754162552961 -> JAJAJA MEJEJFJ
+[06:01:27] [EVENT] [main] 30705442644090 -> Jsjsjs
+[06:01:28] [EVENT] KennyBot | PassiveCoins: 30705442644090 +7
+[06:04:59] [EVENT] [main] 171030412808441 -> JAJAJAKAK
+[06:04:59] [EVENT] KennyBot | PassiveCoins: 171030412808441 +1
+[06:07:40] [EVENT] [main] 171030412808441 -> Maden Lideres que merecen reconocimiento
+[06:07:40] [EVENT] KennyBot | PassiveCoins: 171030412808441 +1
+[06:18:08] [EVENT] [main] 231318969409664 -> Holis, buen dia
+[06:18:09] [EVENT] KennyBot | PassiveCoins: 231318969409664 +7
+[06:26:16] [EVENT] [main] 65082344108240 -> Elegiste una sopa de letras mal hecha
+[06:26:16] [EVENT] KennyBot | PassiveCoins: 65082344108240 +10
+[06:27:27] [EVENT] [main] 65082344108240 -> Naturalmente no van tantas así seguidas, pero si deseas realizarla no hay combinaciones existentes después de la 15
+[06:27:27] [EVENT] KennyBot | PassiveCoins: 65082344108240 +4
+[06:45:56] [EVENT] [main] 90577337082042 -> Que hago
+[06:45:56] [EVENT] KennyBot | PassiveCoins: 90577337082042 +1
+[06:46:07] [EVENT] [main] 90577337082042 -> Que miedo
+[06:47:03] [EVENT] [main] 30705442644090 -> No la hice yo, me la pasaron, siok
+[06:47:03] [EVENT] KennyBot | PassiveCoins: 30705442644090 +8
+[06:47:05] [EVENT] [main] 30705442644090 -> No revise
+[06:47:12] [EVENT] [main] 30705442644090 -> Perdón, igual les daré su estrella
+[06:49:31] [EVENT] [main] 210264486056138 -> Era yo perdón
+[06:49:31] [EVENT] KennyBot | PassiveCoins: 210264486056138 +10
+[06:50:28] [EVENT] [main] 22313059807249 -> https://chat.whatsapp.com/LbFmfMaooJD7pqB2qS8Dec?s=cl&p=i&mlu=4&ilr=4
+[06:50:28] [EVENT] KennyBot | PassiveCoins: 22313059807249 +2
+[06:51:40] [EVENT] [main] 143929219514503 -> Buenos días.
+[06:51:40] [EVENT] KennyBot | PassiveCoins: 143929219514503 +6
+[06:51:41] [EVENT] [main] 90577337082042 -> No que no eras peruano?
+[06:51:41] [EVENT] KennyBot | PassiveCoins: 90577337082042 +6
+[06:51:58] [EVENT] [main] 108745082302590 -> *THE LEGENDARY GOETIA*
+
+
+                  
+                         ` `𝖼𝖺uઠᧉ ʀᴜᴜ ɴᴇғᴇʀᴛᴀʀɪ`
+
+
+ㅤ ㅤ╲＿＿ㅤㅤ      🇫🇮   ㅤㅤㅤㅤ＿＿╱
+   
+ ㅤㅤ— sᴏʏ `ʀʏᴜᴜ`, ʟᴀ 𝖿ᥙᥒძᥲძ᥆rᥲ ᴅᴇ ɢᴏᴇᴛɪᴀ. ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤƗʋ ɑʋƗᧉnƗⲓcⲓdɑd ᧉs ꭑáઠ ϥυᧉ ხꪱᧉn᥎ᧉnꪱdɑ ᵎᵎ
+
+
+`ㅤㅤ— ᥙ́ɴᴇᴛᴇ ᴀ ɴᴜᴇsᴛʀᴀ 𝖿ᥲꭑꪱᥣꪱᥲ.`
+
+
+
+            
+*LINK*
+> https://chat.whatsapp.com/JB3vBVP8q5z1Amvt79HSyW?s=cl&p=a&mlu=4&ilr=4
+[06:51:59] [EVENT] KennyBot | PassiveCoins: 108745082302590 +2
+[06:52:00] [EVENT] [main] 90577337082042 -> Y qn es la chika esa que tienes en estados y pfp esk me enamoré
+[06:55:14] [EVENT] [main] 210264486056138 -> Esk es mi otra mitad el peruano 💜🥰
+[06:55:14] [EVENT] KennyBot | PassiveCoins: 210264486056138 +10
+[06:55:28] [EVENT] [main] 210264486056138 -> Tomie la amo es suuuper linda
+[06:55:29] [EVENT] [main] 90577337082042 -> Que
+[06:55:29] [EVENT] KennyBot | PassiveCoins: 90577337082042 +1
+[06:55:33] [EVENT] [main] 210264486056138 -> Sito
+[06:55:46] [EVENT] [main] 90577337082042 -> Quesito de Gian luca 🥰😏😍😏🥰😏🥰😏🥰😏🥰😏🥰😏🥰🤤🤤😏🤤😏😏🥰😏😏🥹
+[06:55:50] [EVENT] [main] 90577337082042 -> Perdón.
+[06:55:56] [EVENT] [main] 90577337082042 -> JAJAJAJAN
+[06:55:56] [EVENT] [main] 210264486056138 -> Te voy a bloquear..
+[06:56:03] [EVENT] [main] 90577337082042 -> Oh...
+[06:56:07] [EVENT] [main] 90577337082042 -> Xq
+[06:56:12] [EVENT] [main] 90577337082042 -> Tú eres peruano
+[06:56:12] [EVENT] [main] 210264486056138 -> Pq tengo miedo
+[06:56:13] [EVENT] [main] 210264486056138 -> Bete
+[06:56:15] [EVENT] [main] 90577337082042 -> Pero*
+[06:56:17] [EVENT] [main] 90577337082042 -> Pero*
+[06:56:20] [EVENT] [main] 90577337082042 -> Pero*
+[06:56:20] [EVENT] [main] 210264486056138 -> No yo no
+[06:56:20] [EVENT] KennyBot | PassiveCoins: 210264486056138 +9
+[06:56:23] [EVENT] [main] 90577337082042 -> Pero*
+[06:56:36] [EVENT] [main] 90577337082042 -> Bye no salía
+[06:56:36] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[06:56:45] [EVENT] [main] 210264486056138 -> Eo
+[06:56:47] [EVENT] [main] 210264486056138 -> Eeo
+[06:56:50] [EVENT] [main] 210264486056138 -> JAAJA
+[06:56:56] [EVENT] [main] 90577337082042 -> NAJDNFND TBTYBY YBTBYBYBNYBYYBG
+[06:57:04] [EVENT] [main] 90577337082042 -> Me meoeloe
+[06:57:14] [EVENT] [main] 210264486056138 -> Ke melon deke
+[06:57:15] [EVENT] [main] 90577337082042 -> Jeffrey
+[06:57:17] [EVENT] [main] 210264486056138 -> De ke avlas
+[06:57:27] [EVENT] [main] 90577337082042 -> alquería poner jejeje
+[06:57:31] [EVENT] [main] 90577337082042 -> 🫣😏🤠😏
+[06:57:33] [EVENT] [main] 90577337082042 -> Quería*
+[06:57:36] [EVENT] [main] 90577337082042 -> Taquería*
+[06:57:49] [EVENT] [main] 210264486056138 -> Quemaron a mis compañeros en el grupo d padres pq no pagan
+[06:57:49] [EVENT] KennyBot | PassiveCoins: 210264486056138 +6
+[06:57:50] [EVENT] [main] 210264486056138 -> JAJSJAJ
+[06:58:02] [EVENT] [main] 210264486056138 -> Alquería
+[06:59:11] [EVENT] [main] 90577337082042 -> Que
+[06:59:12] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[06:59:13] [EVENT] [main] 90577337082042 -> Oigan
+[06:59:27] [EVENT] [main] 210264486056138 -> So
+[06:59:27] [EVENT] KennyBot | PassiveCoins: 210264486056138 +6
+[06:59:31] [EVENT] [main] 210264486056138 -> Bete
+[06:59:51] [EVENT] [main] 90577337082042 -> Hoy una chica d eni clase le ha preguntado a otra "cual es tu color favorito" y la chica dijo "rosa"y yo que pasaba por ahí dije "melano"
+[07:00:27] [EVENT] [main] 210264486056138 -> Bri vorra la kuenta 🥰
+[07:00:28] [EVENT] KennyBot | PassiveCoins: 210264486056138 +9
+[07:00:34] [EVENT] [main] 210264486056138 -> Se me trabo el celular por tu kulpa
+[07:01:19] [INFO] Objective Maintenance | Eventos activados: 0 | Eventos finalizados: 0 | Objetivos expirados: 167 | Objetivos cancelados: 0
+[07:01:23] [EVENT] [main] 90577337082042 -> Eso es por buscar "fembois con colita de gato"
+[07:01:24] [EVENT] KennyBot | PassiveCoins: 90577337082042 +8
+[07:01:38] [EVENT] [main] 90577337082042 -> Ay mi gatito miau miau
+[07:01:59] [EVENT] [main] 90577337082042 -> No
+[07:02:23] [EVENT] [main] 210264486056138 -> 😒😒
+[07:02:23] [EVENT] KennyBot | PassiveCoins: 210264486056138 +4
+[07:02:33] [EVENT] [main] 210264486056138 -> Esk mi celular se kontrola solo i buska eso
+[07:02:39] [EVENT] [main] 210264486056138 -> Noed mi kuoa
+[07:02:42] [EVENT] [main] 210264486056138 -> Kulpa*
+[07:03:20] [EVENT] [main] 143590000959575 -> Ay ora
+[07:03:20] [EVENT] KennyBot | PassiveCoins: 143590000959575 +9
+[07:04:12] [EVENT] [main] 90577337082042 -> Neisonzisw si tus cialap
+[07:04:12] [EVENT] KennyBot | PassiveCoins: 90577337082042 +1
+[07:04:26] [EVENT] [main] 210264486056138 -> Que
+[07:04:26] [EVENT] KennyBot | PassiveCoins: 210264486056138 +9
+[07:04:28] [EVENT] [main] 210264486056138 -> So
+[07:04:40] [EVENT] [main] 90577337082042 -> Que
+[07:04:48] [EVENT] [main] 90577337082042 -> Papeado 😈👿😈👹😈👹😈🤘🏿👺🤟🏿🤘🏿👹🤟🏿👹🤟🏿
+[07:04:53] [EVENT] [main] 90577337082042 -> Xq es negro
+[07:04:57] [EVENT] [main] 210264486056138 -> So
+[07:04:59] [EVENT] [main] 210264486056138 -> Papiada
+[07:05:00] [EVENT] [main] 90577337082042 -> Es Gus
+[07:05:05] [EVENT] [main] 90577337082042 -> 👿👹👿👹😈🤟🏿😈🤟🏿😈🤟🏿👿👹
+[07:05:28] [EVENT] [main] 210264486056138 -> No te metaz kon el rei del funk porke zi te metez kon el rei del funk se la metez a los skividis toilets 💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀
+[07:05:28] [EVENT] KennyBot | PassiveCoins: 210264486056138 +4
+[07:05:33] [EVENT] [main] 210264486056138 -> No bete
+[07:05:36] [EVENT] [main] 210264486056138 -> Bos sos la negra
+[07:05:44] [EVENT] [main] 90577337082042 -> HOLAAAAAAAAAAAAAAAAAAAAAAA
+[07:05:44] [EVENT] KennyBot | PassiveCoins: 90577337082042 +7
+[07:05:58] [EVENT] [main] 24022054138077 -> BRIIIII HOLAAAAAAAAAAA
+[07:05:59] [EVENT] KennyBot | PassiveCoins: 24022054138077 +1
+[07:06:04] [EVENT] [main] 90577337082042 -> Eso dale
+[07:06:06] [EVENT] [main] 90577337082042 -> Sale"
+[07:06:19] [EVENT] [main] 90577337082042 -> COMO ESTAAAAAAAAAAAAS?🤍
+[07:06:30] [EVENT] [main] 90577337082042 -> Yo?
+[07:06:31] [EVENT] [main] 90577337082042 -> Soy
+[07:06:36] [EVENT] [main] 90577337082042 -> Europea 😭🫣😵‍💫🥹😵‍💫🫣😵‍💫👙😵👙😵‍💫👙😵😇😵😇😵😇😵😇
+[07:06:39] [EVENT] [main] 210264486056138 -> Negra
+[07:06:39] [EVENT] KennyBot | PassiveCoins: 210264486056138 +5
+[07:06:46] [EVENT] [main] 210264486056138 -> Ke tiene ke ver JAJAJJAJA
+[07:07:04] [EVENT] [main] 24022054138077 -> BIEEEEEEN ¿Y TUUU?
+[07:07:04] [EVENT] KennyBot | PassiveCoins: 24022054138077 +2
+[07:07:27] [EVENT] [main] 90577337082042 -> OZTIAAAA,ME ALEGRO,HOY TENGO CLASES DE VOLEIBOL,ME DA PENA IR
+[07:07:27] [EVENT] KennyBot | PassiveCoins: 90577337082042 +10
+[07:07:32] [EVENT] [main] 90577337082042 -> ..neverrwywu
+[07:07:41] [EVENT] [main] 210264486056138 -> Everiwowokdyysywyyw
+[07:07:41] [EVENT] KennyBot | PassiveCoins: 210264486056138 +6
+[07:07:41] [EVENT] [main] 90577337082042 -> Que no soy netrav
+[07:07:46] [EVENT] [main] 90577337082042 -> Bete sorro
+[07:07:48] [EVENT] [main] 90577337082042 -> Puto
+[07:07:53] [EVENT] [main] 90577337082042 -> Broma
+[07:07:54] [EVENT] [main] 210264486056138 -> Pero ke tiene q ver q seas europea
+[07:07:58] [EVENT] [main] 210264486056138 -> No ya
+[07:08:00] [EVENT] [main] 210264486056138 -> Te ofio
+[07:08:01] [EVENT] [main] 90577337082042 -> JAJAJSKFBERBRBRBNRNRHRRU JDJFUFJFNEBDBRVRVR Y RNJR
+[07:08:01] [EVENT] [main] 210264486056138 -> Bete
+[07:08:05] [EVENT] [main] 90577337082042 -> Que soy
+[07:08:07] [EVENT] [main] 90577337082042 -> Blanca
+[07:08:08] [EVENT] [main] 90577337082042 -> Color
+[07:08:09] [EVENT] [main] 90577337082042 -> Pared
+[07:08:11] [EVENT] [main] 210264486056138 -> Le voi a desir s tu avuela ke me desis esad kodas
+[07:08:11] [EVENT] [main] 90577337082042 -> Genética
+[07:08:12] [EVENT] [main] 210264486056138 -> Kosas
+[07:08:16] [EVENT] [main] 90577337082042 -> Cristóbal colon
+[07:08:21] [EVENT] [main] 90577337082042 -> No tengo abuela
+[07:08:31] [EVENT] [main] 90577337082042 -> Mentira
+[07:08:31] [EVENT] KennyBot | PassiveCoins: 90577337082042 +9
+[07:08:32] [EVENT] [main] 65082344108240 -> Pues por eso te puse "elegiste" no "hiciste"
+[07:08:32] [EVENT] KennyBot | PassiveCoins: 65082344108240 +8
+[07:08:33] [EVENT] [main] 210264486056138 -> Pero q tiene k ver q seas europea
+[07:08:34] [EVENT] [main] 90577337082042 -> JAJAKKSJFBRBRBL
+[07:08:36] [EVENT] [main] 210264486056138 -> Ahrw
+[07:08:39] [EVENT] [main] 90577337082042 -> Lo que no tengo es abuela
+[07:08:42] [EVENT] [main] 90577337082042 -> Ossa
+[07:08:44] [EVENT] [main] 90577337082042 -> Mamá*
+[07:08:47] [EVENT] [main] 90577337082042 -> JAJAJNASN
+[07:08:49] [EVENT] [main] 90577337082042 -> No se
+[07:08:54] [EVENT] [main] 210264486056138 -> No digas eso ke voyallorar
+[07:08:54] [EVENT] KennyBot | PassiveCoins: 210264486056138 +9
+[07:09:13] [EVENT] [main] 30705442644090 -> Ya
+[07:09:13] [EVENT] KennyBot | PassiveCoins: 30705442644090 +7
+[07:09:15] [EVENT] [main] 65082344108240 -> Y solo te explico en buen plan el porque es obvio que esta mal
+[07:09:22] [EVENT] [main] 65082344108240 -> Adoro las sopas de letras
+[07:09:28] [EVENT] [main] 90577337082042 -> Que
+[07:09:33] [EVENT] [main] 90577337082042 -> Y yo 🥹😇🥹😵😭😇😭😇😭😭😇
+[07:09:33] [EVENT] KennyBot | PassiveCoins: 90577337082042 +8
+[07:09:40] [EVENT] [main] 90577337082042 -> Me dejarse un traumatólogo
+[07:09:49] [EVENT] [main] 90577337082042 -> Boy ah denusiarte
+[07:09:51] [EVENT] [main] 210264486056138 -> Que
+[07:09:53] [EVENT] [main] 210264486056138 -> Oh..
+[07:10:26] [EVENT] [main] 90577337082042 -> Sisorro
+[07:10:44] [EVENT] [main] 90577337082042 -> Boi ah avlar del maltratador que heres
+[07:10:44] [EVENT] KennyBot | PassiveCoins: 90577337082042 +6
+[07:11:14] [EVENT] [main] 210264486056138 -> Noo
+[07:11:14] [EVENT] KennyBot | PassiveCoins: 210264486056138 +9
+[07:11:16] [EVENT] [main] 210264486056138 -> Pero
+[07:11:20] [EVENT] [main] 210264486056138 -> Si vos me maltratad
+[07:11:24] [EVENT] [main] 210264486056138 -> Me desis sorro i todo
+[07:11:27] [EVENT] [main] 210264486056138 -> 😒😒😒
+[07:11:32] [EVENT] [main] 30705442644090 -> Yaya
+[07:11:32] [EVENT] KennyBot | PassiveCoins: 30705442644090 +5
+[07:11:41] [EVENT] [main] 30705442644090 -> Haré otra
+[07:11:46] [EVENT] [main] 90577337082042 -> Io nunca shere maltratadora
+[07:11:46] [EVENT] KennyBot | PassiveCoins: 90577337082042 +3
+[07:12:05] [EVENT] [main] 90577337082042 -> Biban las lesvianas
+[07:12:24] [EVENT] [main] 210264486056138 -> Mentura
+[07:12:24] [EVENT] KennyBot | PassiveCoins: 210264486056138 +10
+[07:12:24] [EVENT] [main] 210264486056138 -> Nooo
+[07:12:25] [EVENT] [main] 210264486056138 -> Bete
+[07:12:27] [EVENT] [main] 210264486056138 -> Fuera
+[07:13:02] [EVENT] [main] 90577337082042 -> Calalte
+[07:13:02] [EVENT] KennyBot | PassiveCoins: 90577337082042 +5
+[07:13:26] [EVENT] [main] 30705442644090 -> @all hagan esta
+[07:13:26] [EVENT] KennyBot | PassiveCoins: 30705442644090 +9
+[07:13:30] [EVENT] [main] 90577337082042 -> Mallana ha la salida de clase mi padre ba a hir a pejarte
+[07:13:36] [EVENT] [main] 210264486056138 -> No m voi a caltar
+[07:13:36] [EVENT] KennyBot | PassiveCoins: 210264486056138 +7
+[07:13:42] [EVENT] [main] 210264486056138 -> Eh
+[07:13:43] [EVENT] [main] 210264486056138 -> No
+[07:14:58] [EVENT] [main] 90577337082042 -> Sierra la vova
+[07:14:58] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[07:15:14] [EVENT] [main] 90577337082042 -> No soy espejo y no me reflego
+[07:15:26] [EVENT] [main] 90577337082042 -> OAJAJANAJAJAJ
+[07:15:29] [EVENT] [main] 90577337082042 -> Q es eso
+[07:15:32] [EVENT] [main] 90577337082042 -> No se
+[07:15:36] [EVENT] [main] 90577337082042 -> Y tú sabes?
+[07:15:38] [EVENT] [main] 90577337082042 -> No
+[07:15:42] [EVENT] [main] 90577337082042 -> A oc
+[07:18:40] [EVENT] [main] 210264486056138 -> Vova
+[07:18:40] [EVENT] KennyBot | PassiveCoins: 210264486056138 +1
+[07:18:58] [EVENT] [main] 210264486056138 -> Hablaba ella sola JAJAJAJJAU
+[07:21:03] [EVENT] [main] 177898216538250 -> Awww
+[07:21:03] [EVENT] KennyBot | PassiveCoins: 177898216538250 +4
+[07:27:21] [EVENT] [main] 177898216538250 -> Bienvenidos a todos  !
+[07:27:21] [EVENT] KennyBot | PassiveCoins: 177898216538250 +3
+[07:28:03] [EVENT] [main] 177898216538250 -> Solicitan y zevdiox esta cerrada 😞
+[07:28:15] [EVENT] [main] 177898216538250 -> OUHHH ES PAPI NEIKEL
+[07:28:16] [EVENT] [main] 177898216538250 -> LSJSLSJDLJD
+[07:28:29] [EVENT] [main] 177898216538250 -> @147154857361573 solicito neiker
+[07:28:29] [EVENT] KennyBot | PassiveCoins: 177898216538250 +6
+[07:30:20] [EVENT] [main] 24022054138077 -> OSTIAAAAS, ESPERO QUE TE VAYA MUY BIEN, TU PUEDEEES
+[07:30:20] [EVENT] KennyBot | PassiveCoins: 24022054138077 +8
+[07:30:52] [EVENT] [main] 276085547757696 -> Ya
+[07:30:52] [EVENT] KennyBot | PassiveCoins: 276085547757696 +4
+[07:32:30] [EVENT] [main] 44423584948413 -> Buenos diass
+[07:32:31] [EVENT] KennyBot | PassiveCoins: 44423584948413 +5
+[07:38:18] [EVENT] [main] 143929219514503 -> Bienvenidas sean las familias. 🤏🏻
+[07:38:18] [EVENT] KennyBot | PassiveCoins: 143929219514503 +5
+[07:38:31] [EVENT] [main] 143929219514503 -> Hole, que calor, me voy a derretir.
+[07:38:32] [EVENT] [main] 177898216538250 -> Bienvenidos a la *best family* black.
+[07:38:32] [EVENT] KennyBot | PassiveCoins: 177898216538250 +1
+[07:51:17] [EVENT] [main] 177898216538250 -> Me siento feliz, pero estresado, no si editar con capcut o blurr 😞
+[07:51:17] [EVENT] KennyBot | PassiveCoins: 177898216538250 +1
+[08:02:30] [EVENT] [main] 31646124363853 -> .
+[08:02:30] [EVENT] KennyBot | PassiveCoins: 31646124363853 +2
+[08:03:20] [EVENT] [main] 154838587449491 -> Que
+[08:03:20] [EVENT] KennyBot | PassiveCoins: 154838587449491 +3
+[08:04:42] [EVENT] [main] 269020225871977 -> familias que necesitan cualquier tipo de edición tanto de imágenes o vídeo puede dirigirse a mi privado
+[08:04:43] [EVENT] KennyBot | PassiveCoins: 269020225871977 +4
+[08:06:18] [EVENT] [main] 177898216538250 -> Familias que necesitan promocion, pueden venir a mi privado.
+[08:06:19] [EVENT] KennyBot | PassiveCoins: 177898216538250 +2
+[08:08:23] [EVENT] [main] 76721755832561 -> Voy a matar a Dominik
+[08:08:23] [EVENT] KennyBot | PassiveCoins: 76721755832561 +4
+[08:08:40] [EVENT] [main] 154838587449491 -> Ya se metio con Lucas otra vez?
+[08:08:40] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[08:09:03] [EVENT] [main] 76721755832561 -> Si lo está inculcando de su mierda
+[08:09:13] [EVENT] [main] 76721755832561 -> Y ahora s ehace el víctima que tu y emma lo perdonen
+[08:09:18] [EVENT] [main] 76721755832561 -> Y disque el manipulo a lucas
+[08:09:23] [EVENT] [main] 76721755832561 -> Cuando lucas jugo con el
+[08:10:52] [EVENT] [main] 177898216538250 -> Me enkantaaa
+[08:10:52] [EVENT] KennyBot | PassiveCoins: 177898216538250 +10
+[08:11:37] [EVENT] [main] 5708716204094 -> Audiciones de Black abiertas
+[08:11:37] [EVENT] KennyBot | PassiveCoins: 5708716204094 +7
+[08:11:42] [EVENT] [main] 5708716204094 -> https://chat.whatsapp.com/Grk2Q7RlFgR4N4lnSXK5V9?s=cl&p=a&mlu=0
+[08:12:12] [EVENT] [main] 177898216538250 -> Bravoooo
+[08:12:12] [EVENT] KennyBot | PassiveCoins: 177898216538250 +7
+[08:12:33] [EVENT] [main] 177898216538250 -> Audicionen, mucha suerte a quienes audicionen 💚
+[08:16:28] [EVENT] [main] 154838587449491 -> Que mrd?
+[08:16:28] [EVENT] KennyBot | PassiveCoins: 154838587449491 +9
+[08:16:34] [EVENT] [main] 154838587449491 -> Yo aud?
+[08:16:35] [EVENT] [main] 154838587449491 -> Que?
+[08:16:40] [EVENT] [main] 154838587449491 -> El jura
+[08:16:57] [EVENT] [main] 154838587449491 -> Ahorita lo resuelvo
+[08:36:37] [EVENT] [main] 108745082302590 -> ᅟᅟᅟᅟᅟ
+          🤍'  𝖂꯭𝖤𝖫𝖢⵿𝖮𝖬࡙𝖤   𓈓   𝕿𝖮   𓏬✱⵿          
+           𝕾𝖤𝗖𝖱𝖤𝖳    𓐘    𝕯꯭𝖨𝖵𝖨㩍⵿𝖭𝖤
+
+
+> 𝖡𝗂𝖾𝗇𝗏𝖾𝗇𝗂𝖽𝗈𝗌 𝖺 𝖾𝖾𝗌𝗍𝖾́ 𝖻𝖾𝗅𝗅𝗈 𝖼𝖺𝗇𝖺𝗅, 𝗌𝗈𝗒 𝖢𝖾́𝗅𝗂𝗇𝖾 𝖢𝖺𝗌𝗌𝖾𝗅, 𝖼𝗋𝖾𝖺𝖽𝗈𝗋𝖺 𝗈𝗋𝗂𝗀𝗂𝗇𝖺𝗅 𝖽𝖾 𝖾́𝗌𝗍𝖾 𝖼𝖺𝗇𝖺𝗅. 𝖤𝗇 𝖾𝗌𝗍𝖾́ 𝖼𝖺𝗇𝖺𝗅 𝖻𝗎𝗌𝖼𝗈́ 𝖼𝗋𝖾𝖺𝗋 𝗎𝗇𝖺 𝖾𝗌𝗉𝖺𝖼𝗂𝗈 𝗌𝖺𝗇𝖺 𝖾𝗇 𝖿𝖺𝗄𝖾𝗅𝖺𝗇𝖽, 𝗍𝗋𝖺𝖾𝗋 𝗇𝗎𝖾𝗏𝖺𝗌 𝗒 𝖿𝗋𝖾𝗌𝖼𝖺𝗌 𝗂𝖽𝖾𝖺𝗌. 
+
+> 𝖭𝗈 𝖻𝗎𝗌𝖼𝖺𝗆𝗈𝗌 𝗌𝖾𝗋 𝖼𝗈́𝗆𝗈 𝗅𝗈𝗌 𝗍𝗂́𝗉𝗂𝖼𝗈𝗌 𝖼𝖺𝗇𝖺𝗅𝖾𝗌, 𝖻𝗎𝗌𝖼𝖺𝗆𝗈𝗌 𝖼𝗈𝗌𝖺𝗌 𝗇𝗎𝖾𝗏𝖺𝗌, 𝖽𝖺𝗋𝗅𝖾 𝗋𝖾𝖼𝗈𝗇𝗈𝖼𝗂𝗆𝗂𝖾𝗇𝗍𝗈 𝖺 𝗅𝗈𝗌 𝗅𝗂́𝖽𝖾𝗋 𝗊𝗎𝖾 𝗋𝖾𝖺𝗅𝗆𝖾𝗇𝗍𝖾 𝗌𝖾 𝗅𝗈 𝗆𝖾𝗋𝖾𝖼𝖾𝗇, 𝗌𝗂𝗇 𝗃𝗎𝗓𝗀𝖺𝗋 𝗒 𝖽𝖺𝗋 𝖺 𝖼𝗈𝗇𝗈𝖼𝖾𝗋 𝖺 𝗌𝗎 𝗁𝗂𝗌𝗍𝗈𝗋𝗂𝖺. 𝖳𝖺𝗆𝖻𝗂𝖾́𝗇 𝗉𝗈𝖽𝗋𝖺́𝗌 𝖾𝗇𝖼𝗈𝗇𝗍𝗋𝖺𝗋 𝗍𝗎𝗍𝗈𝗋𝗂𝖺𝗅𝖾𝗌 𝗈 𝗋𝖾𝖼𝗎𝗋𝗌𝗈𝗌 𝗉𝖺𝗋𝖺 𝗍𝗎 𝖿𝖺𝗆𝗂𝗅𝗂𝖺.
+
+https://whatsapp.com/channel/0029VbDpRTLDOQIft3I4Li0x/100
+[08:36:37] [EVENT] KennyBot | PassiveCoins: 108745082302590 +10
+[08:41:59] [EVENT] [main] 154838587449491 -> Extraño a Volkod amika @68595375730714
+[08:41:59] [EVENT] KennyBot | PassiveCoins: 154838587449491 +5
+[08:42:11] [EVENT] [main] 90577337082042 -> Oc
+[08:42:11] [EVENT] KennyBot | PassiveCoins: 90577337082042 +8
+[08:42:13] [EVENT] [main] 56968932753518 -> Holaa
+[08:42:13] [EVENT] KennyBot | PassiveCoins: 56968932753518 +6
+[08:42:24] [EVENT] [main] 90577337082042 -> Ay
+[08:42:28] [EVENT] [main] 90577337082042 -> Me equivoqué de sitio
+[08:42:33] [EVENT] [main] 90577337082042 -> Ya
+[08:42:55] [EVENT] [main] 177898216538250 -> Holi
+[08:42:55] [EVENT] KennyBot | PassiveCoins: 177898216538250 +1
+[08:43:20] [EVENT] [main] 56968932753518 -> Holi Zev
+[08:43:20] [EVENT] KennyBot | PassiveCoins: 56968932753518 +3
+[08:43:25] [EVENT] [main] 154838587449491 -> Nini deja el porno
+[08:43:25] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[08:43:33] [EVENT] [main] 154838587449491 -> Digo
+[08:43:35] [EVENT] [main] 154838587449491 -> Brillitos
+[08:43:44] [EVENT] [main] 276085547757696 -> Hola abu
+[08:43:44] [EVENT] KennyBot | PassiveCoins: 276085547757696 +4
+[08:43:55] [EVENT] [main] 177898216538250 -> LSJSKSJDOD
+[08:44:26] [EVENT] [main] 56968932753518 -> Que???
+[08:44:26] [EVENT] KennyBot | PassiveCoins: 56968932753518 +1
+[08:44:30] [EVENT] [main] 56968932753518 -> Hice lo que pude
+[08:44:32] [EVENT] [main] 56968932753518 -> Ajajja
+[08:44:36] [EVENT] [main] 177898216538250 -> Esta lindo
+[08:44:36] [EVENT] KennyBot | PassiveCoins: 177898216538250 +5
+[08:44:53] [EVENT] [main] 56968932753518 -> Bueno, esa mentira si me la creo
+[08:44:54] [EVENT] [main] 56968932753518 -> Jqjajaj
+[08:45:45] [EVENT] [main] 9063253438484 -> Hola buen día
+[08:45:45] [EVENT] KennyBot | PassiveCoins: 9063253438484 +8
+[08:46:43] [EVENT] [main] 45935480590510 -> Yo que
+[08:46:43] [EVENT] KennyBot | PassiveCoins: 45935480590510 +3
+[08:46:51] [EVENT] [main] 154838587449491 -> No nada
+[08:46:51] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[08:46:54] [EVENT] [main] 154838587449491 -> Me equivoque
+[08:51:36] [EVENT] [main] 80453981761577 -> Buenos días familia
+[08:51:36] [EVENT] KennyBot | PassiveCoins: 80453981761577 +8
+[08:54:38] [EVENT] [main] 276085547757696 -> Buenos días tío
+[08:54:38] [EVENT] KennyBot | PassiveCoins: 276085547757696 +4
+[08:54:42] [EVENT] [main] 276085547757696 -> Que tal abu
+[08:55:07] [EVENT] [main] 9063253438484 -> Muy bien, muy feliz y agradecida por un año más de vida
+[08:55:07] [EVENT] KennyBot | PassiveCoins: 9063253438484 +8
+[08:57:22] [EVENT] [main] 45935480590510 -> Okey.
+[08:57:22] [EVENT] KennyBot | PassiveCoins: 45935480590510 +1
+[08:57:38] [EVENT] [main] 147438375555223 -> Que bonito.
+[08:57:38] [EVENT] KennyBot | PassiveCoins: 147438375555223 +3
+[08:57:40] [EVENT] [main] 90577337082042 -> Que
+[08:57:40] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[08:57:51] [EVENT] [main] 125804709150893 -> Hola penes
+[08:57:51] [EVENT] KennyBot | PassiveCoins: 125804709150893 +6
+[08:58:02] [EVENT] [main] 90577337082042 -> Nini ermoso perrdil
+[08:58:02] [EVENT] [main] 9063253438484 -> Shi
+[08:58:03] [EVENT] KennyBot | PassiveCoins: 9063253438484 +7
+[08:58:11] [EVENT] [main] 276085547757696 -> Que bueno abu
+[08:58:11] [EVENT] KennyBot | PassiveCoins: 276085547757696 +5
+[08:58:14] [EVENT] [main] 31646124363853 -> Hello yanka
+[08:58:14] [EVENT] KennyBot | PassiveCoins: 31646124363853 +10
+[08:58:16] [EVENT] [main] 154838587449491 -> Help
+[08:58:16] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[08:58:18] [EVENT] [main] 276085547757696 -> Hola yanka
+[08:58:24] [EVENT] [main] 9063253438484 -> Y como estás
+[08:58:27] [EVENT] [main] 90577337082042 -> JDNFKRFBDNSBRNFNTNF
+[08:58:38] [EVENT] [main] 31646124363853 -> @165253195264101 cómo cambias el fondo del bancheker no puedo yo
+[08:58:41] [EVENT] [main] 90577337082042 -> Perdón nose heskribir
+[08:58:41] [EVENT] KennyBot | PassiveCoins: 90577337082042 +1
+[08:58:45] [EVENT] [main] 9063253438484 -> El que no me felicité lo voy a machetear
+[08:58:52] [EVENT] [main] 276085547757696 -> Pues acá en el hospital porque ando enferma
+[08:58:58] [EVENT] [main] 9063253438484 -> Y eso
+[08:58:58] [EVENT] [main] 276085547757696 -> Noo
+[08:59:11] [EVENT] [main] 31646124363853 -> Feliz cumpleaños abuela justo tu cumpleaños cae en mi aniversario
+[08:59:31] [EVENT] [main] 276085547757696 -> Es que tengo las defensas muy bajas y pues me enfermo rápido
+[08:59:31] [EVENT] KennyBot | PassiveCoins: 276085547757696 +5
+[08:59:41] [EVENT] [main] 9063253438484 -> Ay muchas gracias mi nieto bro, como así, pero hoy es mi día de protagonismo
+[08:59:42] [EVENT] KennyBot | PassiveCoins: 9063253438484 +6
+[08:59:45] [EVENT] [main] 9063253438484 -> No es cierto jajaja
+[09:00:14] [EVENT] [main] 31646124363853 -> Abuela eres el prota jaker
+[09:00:14] [EVENT] KennyBot | PassiveCoins: 31646124363853 +6
+[09:00:18] [EVENT] [main] 31646124363853 -> 😳🗣️
+[09:00:37] [EVENT] [main] 125804709150893 -> Hola kim
+[09:00:37] [EVENT] KennyBot | PassiveCoins: 125804709150893 +10
+[09:00:44] [EVENT] [main] 31646124363853 -> Hello
+[09:01:21] [EVENT] [main] 9063253438484 -> Lo soy
+[09:01:21] [EVENT] KennyBot | PassiveCoins: 9063253438484 +1
+[09:01:21] [EVENT] [main] 125804709150893 -> Hola aurora
+[09:01:42] [EVENT] [main] 276085547757696 -> Que tal
+[09:01:42] [EVENT] KennyBot | PassiveCoins: 276085547757696 +4
+[09:02:23] [EVENT] [main] 125804709150893 -> Feliz cumpleaños cosita, pásala bien alla en tu monte, te deseo que disfrutes como nunca y cuidado no se te pase la mano en las apuestas
+[09:02:23] [EVENT] KennyBot | PassiveCoins: 125804709150893 +1
+[09:02:25] [EVENT] [main] 125804709150893 -> Todo bien
+[09:03:01] [EVENT] [main] 276085547757696 -> Que bueno
+[09:03:01] [EVENT] KennyBot | PassiveCoins: 276085547757696 +1
+[09:03:38] [EVENT] [main] 47296850960487 -> Yo lo hize ayer bisi abue
+[09:03:38] [EVENT] KennyBot | PassiveCoins: 47296850960487 +5
+[09:04:35] [EVENT] [main] 168187463217240 -> HOLAAA
+[09:04:35] [EVENT] KennyBot | PassiveCoins: 168187463217240 +2
+[09:05:36] [EVENT] [main] 143929219514503 -> Si necesitan algo, estoy disponible de momentico.
+[09:05:36] [EVENT] KennyBot | PassiveCoins: 143929219514503 +2
+[09:06:05] [EVENT] [main] 143929219514503 -> Tengo que estudiar para 3 exámenes y aprenderme la pronunciación de una canción.
+[09:07:03] [EVENT] [main] 275187933122782 -> Hola amigos, se les pide de favor que a todos los fundadores de cada familia se unan al grupo oficial de líderes @120363413452808763@g.us
+[09:07:03] [EVENT] KennyBot | PassiveCoins: 275187933122782 +5
+[09:08:19] [EVENT] [main] 154838587449491 -> @all alguien me da un chisme de @160684021137417 Xander
+[09:08:19] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[09:08:56] [EVENT] [main] 90577337082042 -> Chikos
+[09:08:56] [EVENT] KennyBot | PassiveCoins: 90577337082042 +5
+[09:09:00] [EVENT] [main] 90577337082042 -> Hice un amarre
+[09:09:14] [EVENT] [main] 90577337082042 -> En esta bolsita hermosa
+[09:09:20] [EVENT] [main] 90577337082042 -> Ss ve negra
+[09:09:24] [EVENT] [main] 154838587449491 -> No brillitos
+[09:09:24] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[09:09:26] [EVENT] [main] 90577337082042 -> Pero es roja
+[09:09:27] [EVENT] [main] 154838587449491 -> Cierra el papoi
+[09:09:32] [EVENT] [main] 90577337082042 -> Que
+[09:09:34] [EVENT] [main] 154838587449491 -> @all denme esto por fa
+[09:09:43] [EVENT] [main] 90577337082042 -> Necesito el número de dos de mi instituto
+[09:09:44] [EVENT] [main] 154838587449491 -> Me niego
+[09:09:46] [EVENT] [main] 160684021137417 -> ¿Viste? Solamente preguntando sabrás algo, puras migajas te daran
+[09:09:46] [EVENT] KennyBot | PassiveCoins: 160684021137417 +4
+[09:09:51] [EVENT] [main] 90577337082042 -> Ayuda como los consigo
+[09:09:51] [EVENT] [main] 160684021137417 -> PUAJAJAJA
+[09:09:56] [EVENT] [main] 154838587449491 -> ...XANDER NO TE DARÉ NADA
+[09:10:02] [EVENT] [main] 154838587449491 -> Seguile
+[09:10:12] [EVENT] [main] 154838587449491 -> Por eso te dejan
+[09:10:27] [EVENT] [main] 160684021137417 -> ¿Sabes qué?
+[09:10:29] [EVENT] [main] 154838587449491 -> El chisme es que
+[09:10:29] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[09:10:32] [EVENT] [main] 160684021137417 -> Ya me ando hablando con ella nuevamente
+[09:10:33] [EVENT] [main] 154838587449491 -> Te metiste con Nini
+[09:10:36] [EVENT] [main] 160684021137417 -> PUAJAJAJA
+[09:10:41] [EVENT] [main] 154838587449491 -> Ay no chinguen a su ptm
+[09:10:45] [EVENT] [main] 154838587449491 -> No puedo decir nada
+[09:10:56] [EVENT] [main] 154838587449491 -> Porque también me estoy hablando y estoy quedando con mi ex
+[09:10:56] [EVENT] [main] 160684021137417 -> Qué
+[09:10:56] [EVENT] KennyBot | PassiveCoins: 160684021137417 +7
+[09:10:57] [EVENT] [main] 154838587449491 -> Coño
+[09:11:12] [EVENT] [main] 45935480590510 -> Ora
+[09:11:12] [EVENT] KennyBot | PassiveCoins: 45935480590510 +7
+[09:11:13] [EVENT] [main] 160684021137417 -> ¿Viste? Por eso digo que soy tu hermano más leal.
+[09:11:27] [EVENT] [main] 154838587449491 -> Ay ora
+[09:11:29] [EVENT] [main] 154838587449491 -> El jura
+[09:12:41] [EVENT] [main] 125804709150893 -> Que bueno
+[09:12:41] [EVENT] KennyBot | PassiveCoins: 125804709150893 +4
+[09:13:46] [EVENT] [main] 177898216538250 -> Familia yo estaba editando y me agüite, miren
+[09:13:46] [EVENT] KennyBot | PassiveCoins: 177898216538250 +6
+[09:14:14] [EVENT] [main] 5708716204094 -> A ver
+[09:14:14] [EVENT] KennyBot | PassiveCoins: 5708716204094 +8
+[09:14:21] [EVENT] [main] 160684021137417 -> JAJAJA
+[09:14:21] [EVENT] KennyBot | PassiveCoins: 160684021137417 +1
+[09:14:31] [EVENT] [main] 177898216538250 -> Voy a hacer otro, para promocionar mi familia
+[09:17:32] [EVENT] [main] 154838587449491 -> Como que te creías Ceo y te follabas a tús t/n?
+[09:17:32] [EVENT] KennyBot | PassiveCoins: 154838587449491 +5
+[09:17:37] [EVENT] [main] 165253195264101 -> Claro sisi
+[09:17:37] [EVENT] KennyBot | PassiveCoins: 165253195264101 +9
+[09:18:17] [EVENT] [main] 80453981761577 -> Buenos días sobrina
+[09:18:18] [EVENT] KennyBot | PassiveCoins: 80453981761577 +8
+[09:18:18] [EVENT] [main] 90577337082042 -> Adivinen qn volvió 🗣️🔥
+[09:18:18] [EVENT] KennyBot | PassiveCoins: 90577337082042 +5
+[09:18:27] [EVENT] [main] 90577337082042 -> El muerto de hambre arg ese
+[09:18:29] [EVENT] [main] 80453981761577 -> Buen día ma feliz día
+[09:18:37] [EVENT] [main] 90577337082042 -> "contra doxeadorws
+[09:18:59] [EVENT] [main] 90577337082042 -> Que hace ahí yeyo
+[09:19:03] [EVENT] [main] 90577337082042 -> Me acabo de dar cuenta
+[09:19:42] [EVENT] [main] 173637642510481 -> le seguían molestando lpm
+[09:19:42] [EVENT] KennyBot | PassiveCoins: 173637642510481 +6
+[09:19:43] [EVENT] [main] 173637642510481 -> a ver manda xanal
+[09:20:21] [EVENT] [main] 204930824548574 -> Holaa.
+[09:20:21] [EVENT] KennyBot | PassiveCoins: 204930824548574 +7
+[09:20:24] [EVENT] [main] 90577337082042 -> Pal priv
+[09:20:24] [EVENT] KennyBot | PassiveCoins: 90577337082042 +8
+[09:20:28] [EVENT] [main] 90577337082042 -> Que no me deja aquí
+[09:23:40] [EVENT] [main] 90577337082042 -> @154838587449491
+[09:23:40] [EVENT] KennyBot | PassiveCoins: 90577337082042 +7
+[09:23:41] [EVENT] [main] 90577337082042 -> Prib
+[09:23:43] [EVENT] [main] 90577337082042 -> Prib*
+[09:23:46] [EVENT] [main] 90577337082042 -> Priv*
+[09:23:50] [EVENT] [main] 90577337082042 -> Ya
+[09:23:53] [EVENT] Global Role Sync: 28661088542959@lid MEMBER -> ADMIN
+[09:24:19] [EVENT] [main] 177898216538250 -> ESOO
+[09:24:19] [EVENT] KennyBot | PassiveCoins: 177898216538250 +5
+[09:24:25] [EVENT] [main] 6335781425244 -> Hola cielitos, si necesitan algo me pueden escribir estoy disponible ahora
+[09:24:25] [EVENT] KennyBot | PassiveCoins: 6335781425244 +9
+[09:24:29] [EVENT] [main] 6335781425244 -> Y buenos días
+[09:27:19] [EVENT] [main] 76721755832561 -> Amo escuchar a mi marido dormir
+[09:27:19] [EVENT] KennyBot | PassiveCoins: 76721755832561 +2
+[09:30:12] [EVENT] [main] 98093395607805 -> Ayuda qn es ese?
+[09:30:12] [EVENT] KennyBot | PassiveCoins: 98093395607805 +10
+[09:30:38] [EVENT] [main] 16480276058158 -> Tu hermoso ex.
+[09:30:38] [EVENT] KennyBot | PassiveCoins: 16480276058158 +4
+[09:31:35] [EVENT] [main] 98093395607805 -> Ashh, por q ÚLTIMAMENTE TODO ME LLEVA A ÉL.
+[09:31:35] [EVENT] KennyBot | PassiveCoins: 98093395607805 +4
+[09:32:23] [EVENT] [main] 28661088542959 -> Holiiiss, soy Soraya Zianna Kyung Zavrix Körmendy Roosevelt y soy nueva administradora, cualquier cosa estaré disponible para ayudarlos! 🩷
+[09:32:23] [EVENT] KennyBot | PassiveCoins: 28661088542959 +8
+[09:32:28] [EVENT] [main] 16480276058158 -> JAJAJAJA MEMEO
+[09:32:28] [EVENT] KennyBot | PassiveCoins: 16480276058158 +5
+[09:32:49] [EVENT] [main] 98093395607805 -> Sáquenlo, shushu.
+[09:32:49] [EVENT] KennyBot | PassiveCoins: 98093395607805 +2
+[09:32:57] [EVENT] [main] 98093395607805 -> Byee, a mi que😒
+[09:33:02] [EVENT] [main] 98093395607805 -> ES Q SI, DIOS.
+[09:33:05] [EVENT] [main] 6335781425244 -> Bienvenida Zianna!
+[09:33:05] [EVENT] KennyBot | PassiveCoins: 6335781425244 +5
+[09:33:30] [EVENT] [main] 9063253438484 -> Muchísimas gracias lindo por tus buenos deseos sisisi
+[09:33:30] [EVENT] KennyBot | PassiveCoins: 9063253438484 +7
+[09:33:43] [EVENT] [main] 98093395607805 -> Será una señal del universo? 🥺
+[09:33:50] [EVENT] [main] 9063253438484 -> Buen día mi cielo y gracias corazón
+[09:34:03] [EVENT] [main] 125804709150893 -> Pues normal
+[09:34:03] [EVENT] KennyBot | PassiveCoins: 125804709150893 +10
+[09:34:06] [EVENT] [main] 28661088542959 -> Graciaass! Un placer.
+[09:34:06] [EVENT] KennyBot | PassiveCoins: 28661088542959 +10
+[09:34:17] [EVENT] [main] 98093395607805 -> Ey si.
+[09:34:17] [EVENT] KennyBot | PassiveCoins: 98093395607805 +2
+[09:34:20] [EVENT] [main] 98093395607805 -> Quiero ver.
+[09:34:26] [EVENT] [main] 6335781425244 -> Denada cielo, soy xérh el placer es mío
+[09:34:27] [EVENT] KennyBot | PassiveCoins: 6335781425244 +10
+[09:34:45] [EVENT] [main] 16480276058158 -> Señal mis huevas que no tengo
+[09:34:45] [EVENT] KennyBot | PassiveCoins: 16480276058158 +8
+[09:34:58] [EVENT] [main] 16480276058158 -> JAJAJAJA
+[09:35:26] [EVENT] [main] 98093395607805 -> PERO NI SABES Q TIPO DE SEÑAL.
+[09:35:26] [EVENT] KennyBot | PassiveCoins: 98093395607805 +6
+[09:35:35] [EVENT] [main] 98093395607805 -> Capaz es mi señal para funarlo.
+[09:35:37] [EVENT] [main] 98093395607805 -> 💜
+[09:35:46] [EVENT] [main] 90577337082042 -> @173637642510481 te mandé al privado el canal
+[09:35:46] [EVENT] KennyBot | PassiveCoins: 90577337082042 +9
+[09:35:49] [EVENT] [main] 90577337082042 -> No me deja mandarlo aquí
+[09:35:55] [EVENT] [main] 98093395607805 -> por?
+[09:36:15] [EVENT] [main] 16480276058158 -> JAJAJA
+[09:36:15] [EVENT] KennyBot | PassiveCoins: 16480276058158 +3
+[09:36:17] [EVENT] [main] 16480276058158 -> Exacto
+[09:36:17] [EVENT] [main] 98093395607805 -> Me dió hasta miedo cuando ví la imagen.
+[09:36:32] [EVENT] [main] 98093395607805 -> Me hubieran avisado del screamer :((
+[09:36:32] [EVENT] KennyBot | PassiveCoins: 98093395607805 +9
+[09:36:37] [EVENT] [main] 160684021137417 -> Tenés 7 huevos
+[09:36:37] [EVENT] KennyBot | PassiveCoins: 160684021137417 +3
+[09:36:38] [EVENT] [main] 16480276058158 -> JAJAJA MEMEO
+[09:36:39] [EVENT] [main] 90577337082042 -> Me pone enlace invalido
+[09:36:46] [EVENT] [main] 16480276058158 -> Si, el 6 te lo meto a ti
+[09:36:48] [EVENT] [main] 98093395607805 -> AYUDA, JAJAJAJAJA
+[09:36:52] [EVENT] [main] 98093395607805 -> 😧
+[09:36:58] [EVENT] [main] 160684021137417 -> Pero
+[09:36:58] [EVENT] [main] 16480276058158 -> Y tú el 5
+[09:37:03] [EVENT] [main] 28661088542959 -> Mucho gusto, Xérh.
+[09:37:03] [EVENT] KennyBot | PassiveCoins: 28661088542959 +8
+[09:37:04] [EVENT] [main] 98093395607805 -> Ooh, pásalo al prv quiero chisme de mi ex.
+[09:37:05] [EVENT] [main] 160684021137417 -> Yo te lo meto a vos
+[09:37:19] [EVENT] [main] 98093395607805 -> Ninique
+[09:37:35] [EVENT] [main] 90577337082042 -> Solo pone la cap
+[09:37:35] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[09:37:37] [EVENT] [main] 90577337082042 -> JAJDNRBRNRBRB
+[09:37:37] [EVENT] [main] 98093395607805 -> AYDUAHA
+[09:37:37] [EVENT] KennyBot | PassiveCoins: 98093395607805 +1
+[09:37:41] [EVENT] [main] 98093395607805 -> osh
+[09:37:44] [EVENT] [main] 90577337082042 -> @154838587449491 PRIVADO
+[09:37:45] [EVENT] [main] 90577337082042 -> A la de ya
+[09:37:47] [EVENT] [main] 90577337082042 -> DIPS
+[09:37:48] [EVENT] [main] 98093395607805 -> Bueno, q bien, soy feliz.
+[09:37:49] [EVENT] [main] 160684021137417 -> Es joda
+[09:37:49] [EVENT] KennyBot | PassiveCoins: 160684021137417 +6
+[09:37:50] [EVENT] [main] 90577337082042 -> Nunca me haces caso
+[09:38:30] [EVENT] [main] 98093395607805 -> Lo sé.
+[09:39:04] [EVENT] [main] 276085547757696 -> Hola linda
+[09:39:04] [EVENT] KennyBot | PassiveCoins: 276085547757696 +5
+[09:39:09] [EVENT] [main] 276085547757696 -> Eso
+[09:39:41] [EVENT] [main] 147438375555223 -> Adonis.
+[09:39:41] [EVENT] KennyBot | PassiveCoins: 147438375555223 +6
+[09:39:47] [EVENT] [main] 80453981761577 -> Sobrina
+[09:39:47] [EVENT] KennyBot | PassiveCoins: 80453981761577 +9
+[09:40:46] [EVENT] [main] 276085547757696 -> Mande tío
+[09:40:46] [EVENT] KennyBot | PassiveCoins: 276085547757696 +3
+[09:41:27] [EVENT] [main] 80453981761577 -> Pv
+[09:41:27] [EVENT] KennyBot | PassiveCoins: 80453981761577 +3
+[09:41:37] [EVENT] [main] 276085547757696 -> Voy
+[09:41:43] [EVENT] [main] 80453981761577 -> Oki
+[09:44:09] [EVENT] [main] 31646124363853 -> Cómo??
+[09:44:09] [EVENT] KennyBot | PassiveCoins: 31646124363853 +5
+[09:44:28] [EVENT] [main] 165253195264101 -> Ah
+[09:44:28] [EVENT] KennyBot | PassiveCoins: 165253195264101 +1
+[09:44:43] [EVENT] [main] 165253195264101 -> En el de abu ares o en el otro
+[09:44:51] [EVENT] [main] 31646124363853 -> El otro
+[09:45:36] [EVENT] [main] 165253195264101 -> Ah pues te vas al mt manager
+[09:45:36] [EVENT] KennyBot | PassiveCoins: 165253195264101 +1
+[09:45:45] [EVENT] [main] 165253195264101 -> Y haces una búsqueda global
+[09:45:58] [EVENT] Global Role Sync: 208602920910938@lid MEMBER -> ADMIN
+[09:46:00] [EVENT] [main] 165253195264101 -> El archivo del fondo o el jpg siempre va a llevar por defecto el nombre
+[09:46:16] [EVENT] [main] 165253195264101 -> Lesther_background.png o algo así
+[09:46:25] [EVENT] [main] 31646124363853 -> Lesther_fondo.png
+[09:46:25] [EVENT] KennyBot | PassiveCoins: 31646124363853 +9
+[09:46:30] [EVENT] [main] 31646124363853 -> Ese?
+[09:46:35] [EVENT] [main] 165253195264101 -> El fondo que quieres poner debe tener exactamente el mismo nombre
+[09:46:40] [EVENT] [main] 165253195264101 -> Porque sino se te crashea
+[09:46:40] [EVENT] KennyBot | PassiveCoins: 165253195264101 +4
+[09:47:07] [EVENT] [main] 165253195264101 -> Andale
+[09:47:18] [EVENT] [main] 143929219514503 -> La que necesita una marca de agua, al privado.
+[09:47:18] [EVENT] KennyBot | PassiveCoins: 143929219514503 +3
+[09:48:16] [EVENT] [main] 31646124363853 -> Gracias
+[09:48:16] [EVENT] KennyBot | PassiveCoins: 31646124363853 +5
+[09:49:10] [EVENT] [main] 165253195264101 -> Vava
+[09:49:10] [EVENT] KennyBot | PassiveCoins: 165253195264101 +7
+[09:49:43] [EVENT] [main] 177898216538250 -> Yo en capcut por que blurr me estreso
+[09:49:43] [EVENT] KennyBot | PassiveCoins: 177898216538250 +9
+[09:49:45] [EVENT] [main] 270742490992741 -> Hola, verdecitos, si necesitan algo pueden ir a mi privado y con gusto los ayudo.
+[09:49:45] [EVENT] KennyBot | PassiveCoins: 270742490992741 +10
+[09:51:40] [EVENT] [main] 143929219514503 -> QUE AL PRIVADO. 😡
+[09:51:40] [EVENT] KennyBot | PassiveCoins: 143929219514503 +2
+[09:52:20] [EVENT] [main] 108745082302590 -> Sigue el canal de 𝐕Ⲷ𝐑𝐃𝐀𝐃𝐄𝐒 ／ 𝐅𝐀𝐊𝐄𝐋𝐀𝐍𝐃
+ 🇦🇴 en WhatsApp: https://whatsapp.com/channel/0029VbEYQey7T8bPWUbyBD3P
+[09:52:20] [EVENT] KennyBot | PassiveCoins: 108745082302590 +6
+[09:53:27] [EVENT] [main] 90577337082042 -> Extraño a mi ex.
+[09:53:27] [EVENT] KennyBot | PassiveCoins: 90577337082042 +1
+[09:53:32] [EVENT] [main] 90577337082042 -> Yo le amaba.
+[09:53:40] [EVENT] [main] 90577337082042 -> Di todo lo que pude por ella.
+[09:53:57] [EVENT] [main] 90577337082042 -> Conseguí enamorarla, demostrar que la vida no era como ella pensaba.
+[09:54:01] [EVENT] [main] 90577337082042 -> La enseñe a amar.
+[09:54:16] [EVENT] [main] 90577337082042 -> A expresarse,le recordaba que comiera,que bebiera..
+[09:54:23] [EVENT] [main] 90577337082042 -> Que se mantenga saludable
+[09:54:32] [EVENT] [main] 52120082464964 -> Holis Cielo
+[09:54:32] [EVENT] KennyBot | PassiveCoins: 52120082464964 +2
+[09:54:43] [EVENT] [main] 90577337082042 -> Me levanta pronto para poder hablar con ella en el horario de argentina
+[09:54:43] [EVENT] KennyBot | PassiveCoins: 90577337082042 +7
+[09:55:02] [EVENT] [main] 90577337082042 -> La recordaba siempre,en todo lo que veía;lo que hacía..
+[09:55:07] [EVENT] [main] 90577337082042 -> Siempre esperaba su mensaje.
+[09:55:11] [EVENT] [main] 90577337082042 -> Y aún así,me bloqueo
+[09:55:27] [EVENT] [main] 90577337082042 -> Sin decir xq
+[09:55:30] [EVENT] [main] 90577337082042 -> Sin decir adiós
+[09:55:40] [EVENT] [main] 90577337082042 -> Sin decir quién fue qn la enamoró
+[09:55:49] [EVENT] [main] 90577337082042 -> Sin decir nada
+[09:55:49] [EVENT] KennyBot | PassiveCoins: 90577337082042 +7
+[09:55:55] [EVENT] [main] 90577337082042 -> Después de que yo la diera todo.
+[09:56:02] [EVENT] [main] 90577337082042 -> Hiciera lo que estaba en mis manos
+[09:56:07] [EVENT] [main] 90577337082042 -> PERDÓN.
+[09:56:14] [EVENT] [main] 90577337082042 -> Quería desahogarme
+[09:58:07] [EVENT] [main] 90577337082042 -> @154838587449491 PRIVADO
+[09:58:07] [EVENT] KennyBot | PassiveCoins: 90577337082042 +7
+[09:59:50] [EVENT] [main] 143929219514503 -> Holaa.
+[09:59:50] [EVENT] KennyBot | PassiveCoins: 143929219514503 +10
+[10:03:04] [EVENT] [main] 147154857361573 -> rojitos, si no ando jodiendo es porque más tarde les tengo actividad. @all
+[10:03:04] [EVENT] KennyBot | PassiveCoins: 147154857361573 +4
+[10:03:26] [EVENT] [main] 30705442644090 -> Mamiiii
+[10:03:26] [EVENT] KennyBot | PassiveCoins: 30705442644090 +7
+[10:03:30] [EVENT] [main] 30705442644090 -> Me duele la cabeza
+[10:03:33] [EVENT] [main] 30705442644090 -> Editar no es lo mio
+[10:03:48] [EVENT] [main] 154838587449491 -> @68595375730714 tráeme a Vodka
+[10:03:48] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[10:03:50] [EVENT] [main] 154838587449491 -> Ya no puedo
+[10:03:50] [EVENT] [main] 143929219514503 -> Matalme es una opción.
+[10:03:50] [EVENT] KennyBot | PassiveCoins: 143929219514503 +7
+[10:03:54] [EVENT] [main] 154838587449491 -> No soporto estar sin el
+[10:03:59] [EVENT] [main] 204930824548574 -> Que tl
+[10:03:59] [EVENT] KennyBot | PassiveCoins: 204930824548574 +7
+[10:07:13] [EVENT] [main] 30705442644090 -> Esoo
+[10:07:13] [EVENT] KennyBot | PassiveCoins: 30705442644090 +2
+[10:07:16] [EVENT] [main] 30705442644090 -> Hii
+[10:08:03] [EVENT] [main] 204930824548574 -> Que tl
+[10:08:03] [EVENT] KennyBot | PassiveCoins: 204930824548574 +9
+[10:09:42] [EVENT] [main] 5708716204094 -> Buf
+[10:09:43] [EVENT] KennyBot | PassiveCoins: 5708716204094 +7
+[10:09:48] [EVENT] [main] 5708716204094 -> Las familias que necesiten promoción, mándenme el link al privado con su estructura, y si necesitan una estructura, me avisan.
+[10:13:01] [EVENT] [main] 147154857361573 -> editar es totalmente lo tuyo, ke decís.
+[10:13:01] [EVENT] KennyBot | PassiveCoins: 147154857361573 +5
+[10:15:21] [EVENT] [main] 23885068136555 -> Tal vez
+[10:15:21] [EVENT] KennyBot | PassiveCoins: 23885068136555 +8
+[10:15:49] [EVENT] [main] 30705442644090 -> Te voy a creer y lo seguiré haciendo
+[10:15:49] [EVENT] KennyBot | PassiveCoins: 30705442644090 +4
+[10:24:11] [EVENT] [main] 205265211244761 -> Buenos días. @all
+[10:24:11] [EVENT] KennyBot | PassiveCoins: 205265211244761 +4
+[10:24:13] [EVENT] [main] 205265211244761 -> Tardes.
+[10:24:40] [EVENT] [main] 143929219514503 -> Haz las actividades por tu novio.
+[10:24:40] [EVENT] KennyBot | PassiveCoins: 143929219514503 +5
+[10:24:40] [EVENT] [main] 185199677718758 -> Me alegro mucho, yo estoy bien, gracias por preguntar
+[10:24:40] [EVENT] KennyBot | PassiveCoins: 185199677718758 +1
+[10:25:21] [EVENT] [main] 133088906633278 -> Saben.
+[10:25:21] [EVENT] KennyBot | PassiveCoins: 133088906633278 +4
+[10:25:23] [EVENT] [main] 271481342804194 -> Lin, te quiero.
+[10:25:23] [EVENT] KennyBot | PassiveCoins: 271481342804194 +5
+[10:25:30] [EVENT] [main] 271481342804194 -> Aunque tú a mi no.
+[10:25:34] [EVENT] [main] 133088906633278 -> Si esto fuera real.
+[10:25:51] [EVENT] [main] 133088906633278 -> Hubiera matado más de una persona sin querer.
+[10:26:02] [EVENT] [main] 42740008116409 -> Ora, Lin.
+[10:26:02] [EVENT] KennyBot | PassiveCoins: 42740008116409 +6
+[10:26:17] [EVENT] [main] 133088906633278 -> Pwr.
+[10:26:26] [EVENT] [main] 133088906633278 -> Muak, yo a ti!
+[10:26:27] [EVENT] KennyBot | PassiveCoins: 133088906633278 +7
+[10:26:31] [EVENT] [main] 133088906633278 -> La vdd.
+[10:26:50] [EVENT] [main] 133088906633278 -> Prefiero ver esa persona como un fantasma.
+[10:26:51] [EVENT] [main] 42740008116409 -> Te presto mi pistola
+[10:26:57] [EVENT] [main] 133088906633278 -> Y así contarle mis problemas.
+[10:27:22] [EVENT] [main] 133088906633278 -> PUJAJAJAJAJAJA.
+[10:27:32] [EVENT] [main] 133088906633278 -> LEI PSICÓLOGO.
+[10:27:32] [EVENT] KennyBot | PassiveCoins: 133088906633278 +2
+[10:27:36] [EVENT] [main] 271481342804194 -> En la ferretería hay tornillos de sobra, vv. Úsalos
+[10:27:36] [EVENT] KennyBot | PassiveCoins: 271481342804194 +1
+[10:27:50] [EVENT] [main] 42740008116409 -> ………. Esta mujer
+[10:27:50] [EVENT] KennyBot | PassiveCoins: 42740008116409 +7
+[10:28:02] [EVENT] [main] 271481342804194 -> Es lo que necesita ella.
+[10:28:14] [EVENT] [main] 133088906633278 -> No soy un animal.
+[10:28:25] [EVENT] [main] 42740008116409 -> JAJAJAJJA
+[10:28:37] [EVENT] [main] 133088906633278 -> Solo que se auge.
+[10:28:37] [EVENT] KennyBot | PassiveCoins: 133088906633278 +7
+[10:28:43] [EVENT] [main] 271481342804194 -> No dije eso, pero como que te faltan algunos tornillitos…
+[10:28:43] [EVENT] KennyBot | PassiveCoins: 271481342804194 +6
+[10:29:27] [EVENT] [main] 175759457034250 -> Me perdi
+[10:29:27] [EVENT] KennyBot | PassiveCoins: 175759457034250 +10
+[10:29:30] [EVENT] [main] 175759457034250 -> En media funa
+[10:29:33] [EVENT] [main] 175759457034250 -> Otra vez
+[10:29:34] [EVENT] [main] 24018161811481 -> Q vrgg
+[10:29:34] [EVENT] KennyBot | PassiveCoins: 24018161811481 +6
+[10:34:25] [EVENT] [main] 133088906633278 -> Un tentáculo más fino se deslizó entre tus piernas desde atrás. Primero rozó tus huevos, pesados y tensos, y después subió, empujando tu polla hacia arriba contra la pared fría. Se enrolló alrededor de ella una sola vez, apretando justo debajo de la cabeza, y empezó a bombear con movimientos cortos y viscosos. Cada vez que se contraía, salía más de ese líquido negro y caliente que te manchaba el vientre y te bajaba por los muslos.
+Donald Trump se arrodilló detrás de ti.
+No para ser sumiso. Para ver de cerca.
+Te abrió más con las manos y escupió directamente sobre tu agujero. La saliva no era normal: era más espesa, casi pegajosa, y al caer se estiró en hilos plateados y negros. Empujó dos dedos de golpe, sin avisar, hasta el nudillo. Te sintió apretar alrededor de ellos y soltó una risa baja, casi educada.
+—Tan apretado… y tan sucio ya. Me gusta.
+Los dedos se movieron en círculos, abriéndote, y cuando los sacó estaban brillantes. Se los metió a la boca y los chupó con un sonido obsceno, como si estuviera probando un vino caro.
+Después te giró.
+Te empujó de rodillas otra vez. Esta vez de frente a él. Su polla ya estaba fuera: gruesa, venosa, y con una fina capa de esa misma saliva negra que goteaba desde la punta hasta el piso. Un tentáculo más corto se había enrollado en la base, bombeándola despacio, como si la criatura también estuviera impaciente.
+Donald Trump te agarró del pelo con una mano y te acercó la cara.
+—Abre.
+No esperó. Te empujó la boca contra su polla hasta que la cabeza tocó el fondo de tu garganta. Se quedó ahí un segundo, disfrutando de cómo se te llenaban los ojos de lágrimas y de cómo tu saliva (mezclada con la suya) se desbordaba por las comisuras. Después empezó a follarte la boca con movimientos lentos y profundos, usando tu cabeza como si fuera solo un agujero más.
+Mientras tanto, dos tentáculos bajaron por tu espalda, se metieron entre tus nalgas y te abrieron. Uno de ellos, más grueso, empezó a empujar dentro de tu culo sin prisa, estirándote centímetro a centímetro mientras el otro se enrollaba alrededor de tu polla y te masturbaba con esa textura resbaladiza y caliente.
+Donald Trump gemía bajo, casi como si estuviera saboreando una cena perfecta.
+—Mírate… —dijo con la voz un poco rota, entre la elegancia y el gruñido—. Con la boca llena de mi polla, el culo abierto y chorreando esa mierda negra por las piernas. Qué asquerosamente hermoso te ves.
+Te sacó la polla de la boca solo para que pudieras respirar. Un hilo grueso de saliva y pre-semen se estiró desde tus labios hasta la punta. Donald Trump lo rompió con el pulgar y te lo untó por la cara, despacio, como si estuviera pintándote.
+—Traga todo lo que te dé —ordenó—. Y si te atragantas… mejor.
+Te volvió a empujar la cabeza hacia abajo al mismo tiempo que el tentáculo dentro de tu culo empezó a follarte de verdad: profundo, rítmico, con esa sensación de estar siendo llenado por algo que no era humano. Cada embestida te hacía soltar un sonido ahogado alrededor de su polla, y cada sonido hacía que Donald Trump apretara más el agarre en tu pelo.
+El tentáculo que te masturbaba se apretó más fuerte. Empezó a bombear más rápido. El líquido negro se mezclaba con tu propio pre-semen hasta que te chorreaba por los huevos y te manchaba las rodillas.
+Donald Trump se inclinó un poco más, casi hablándote al oído mientras te follaba la garganta:
+—Cuando te corras… quiero que sea así. De rodillas. Con la boca llena. Y quiero que se te escape todo por la comisura para poder lamerlo después.
+Su voz bajó todavía más, casi un susurro íntimo y sucio:
+—Y después… te voy a abrir más. Te voy a llenar hasta que no puedas caminar sin que se te escape por las piernas. Porque eres mío. Y a lo mío… lo marco por dentro.
+[10:34:25] [EVENT] KennyBot | PassiveCoins: 133088906633278 +8
+[10:34:38] [EVENT] [main] 42740008116409 -> ………..
+[10:34:38] [EVENT] KennyBot | PassiveCoins: 42740008116409 +6
+[10:34:40] [EVENT] [main] 133088906633278 -> Trauma.
+[10:34:40] [EVENT] [main] 42740008116409 -> ESO QUE
+[10:34:48] [EVENT] [main] 133088906633278 -> 😂😂
+[10:35:07] [EVENT] [main] 42740008116409 -> Te pasas.
+[10:35:21] [EVENT] [main] 133088906633278 -> Es de un canal de memes.
+[10:37:45] [EVENT] [main] 271481342804194 -> Otra vez le andan tirando a Zaid, como hartan.
+[10:37:46] [EVENT] KennyBot | PassiveCoins: 271481342804194 +10
+[10:37:48] [EVENT] [main] 177898216538250 -> Para familias que necesiten promoción, aca estoy, mi privado esta abierto para cualquier familia que necesite promocion o edición, solo déjenme acabo mi edición 😭💚
+[10:37:48] [EVENT] KennyBot | PassiveCoins: 177898216538250 +3
+[10:38:24] [EVENT] [main] 175759457034250 -> Que leyeron mis ojitos
+[10:38:24] [EVENT] KennyBot | PassiveCoins: 175759457034250 +4
+[10:38:52] [EVENT] [main] 85444817588302 -> Buenos días corazones, soy Zyran Romanov Tsukuyomi. Estaré por acá como administrador apoyando con Nick's, estructuras, reglas y promoción. También estaré realizando dinámicas en mi canal para darle más visibilidad a las familias.
+
+Dicho esto espero que puedan confiar en mi para lo que necesiten. 💚
+[10:38:52] [EVENT] KennyBot | PassiveCoins: 85444817588302 +5
+[10:39:19] [EVENT] [main] 85444817588302 -> Buenas
+[10:40:27] [EVENT] [main] 271481342804194 -> Falsa alarma, me metí a un canal y se me deslizó pa arriba xD
+[10:40:27] [EVENT] KennyBot | PassiveCoins: 271481342804194 +8
+[10:40:29] [EVENT] [main] 42740008116409 -> Pasa.
+[10:40:29] [EVENT] KennyBot | PassiveCoins: 42740008116409 +9
+[10:40:34] [EVENT] [main] 42740008116409 -> …..
+[10:41:36] [EVENT] [main] 24018161811481 -> Qué es esto por Dios
+[10:41:36] [EVENT] KennyBot | PassiveCoins: 24018161811481 +5
+[10:43:13] [EVENT] [main] 143929219514503 -> Te invito cordialmente a mi habitacion para llevar a cabo actos obscenos que atentan contra la moral establecida por una generación conservadora.
+[10:43:14] [EVENT] KennyBot | PassiveCoins: 143929219514503 +5
+[10:46:41] [EVENT] [main] 154838587449491 -> Chikoz vengan @all
+[10:46:41] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[10:46:51] [EVENT] [main] 154838587449491 -> Diosmio
+[10:46:55] [EVENT] [main] 154838587449491 -> Que risa
+[10:46:58] [EVENT] [main] 154838587449491 -> UKAKDKAJAJAJAJA
+[10:46:59] [EVENT] [main] 154838587449491 -> A vel
+[10:52:59] [EVENT] [main] 154838587449491 -> @all Lucas y yo estamos divorciados, nos separamos el domingo. ¿Por que razón? Me aburri.  No dije nada porque no quiero que algunas personas sepan con que persona estoy quedando y avisen o se lleguen a meter o a hablar de mi. Es por eso que no lo he presentado. Nadie sabía que me había separado de @149822065619073 con una semana y 1 día después de mi boda. @76721755832561 Adonis ya sabía todo. 
+
+Dos, estaba entre un limbo de mis sentimientos,  más bien, no podía sentir nada por nadie, hasta que mi amado ex, Volkod, volvió.  Nos estamos conociendo de nuevo y dandonos otra oportunidad.  Aclaro que solo los que sabían que Lucas y yo nos separamos fueron
+
+Mi hermoso precioso bonito mi amado de mi corazón, amor de mi vida, Volkod. 
+Mi mejor amika la Jenn
+@68595375730714 
+Mi mamá Jessie 
+@87282879099074 
+La Adonita
+@76721755832561 
+Y mi padre Dalton
+@245840371302494 
+
+Lucas y yo tenemos caminos separados, Lucas es gay, y yo pues para que nadie me molestara y como me plantaron también.  Pues hice a Lucas como mi esposo. 
+
+Todo fue falso, Lucas y yo nunca nos amamos y todo fue una farsa. También porque quería darle en la madre a Dominik para que vea quien manda y tiene más control. 
+
+@all
+[10:52:59] [EVENT] KennyBot | PassiveCoins: 154838587449491 +4
+[10:55:53] [EVENT] [main] 164132863139957 -> Me da gusto gusto!, yo Nice comiendo tostones con salami!
+[10:55:53] [EVENT] KennyBot | PassiveCoins: 164132863139957 +1
+[10:55:57] [EVENT] [main] 204930824548574 -> ʜᴏʟᴀᴘ
+[10:55:57] [EVENT] KennyBot | PassiveCoins: 204930824548574 +5
+[10:56:21] [EVENT] [main] 164132863139957 -> Es bueno saberlo, hartandome hasta no respirar.
+[10:56:32] [EVENT] [main] 164132863139957 -> A la madre...
+[10:56:48] [EVENT] [main] 69725270835221 -> Esta semana me han traumatizado lo suficiente
+[10:56:48] [EVENT] KennyBot | PassiveCoins: 69725270835221 +8
+[10:59:14] [EVENT] [main] 154838587449491 -> Lucas no me puso el cuerno, y si yo y el terminamos, fue porque quise y porque me aburrió.  Muchos de aquí saben como soy, y más en fingir relaciones para darle en la madre a las personas que me quieren ver mal.
+
+  @all en este momento yo espero que nadie se meta o se interponga entre Volkod y yo. Porque si por algo termine por Lucas, es porque quiero hacer las cosas bien con mi amado Volkod. Y si no dije que ya me había separado de él, fue para que nadie se vaya contra mi amado, aunque ni su número tienen, pero igual. No quiero que nadie se interponga entre nosotros, le haga algún daño a él o x cosa. 
+
+Espero lo entiendan.
+[10:59:14] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[11:00:33] [EVENT] [main] 154838587449491 -> Y agradezco a @90577337082042 y a @173637642510481 si es que me iba a decir, por haberme avisado. La verdad si me dio risa, no se los negare. Pero pues cuernuda no soy, y en teoria el que seria cuernudo sería @149822065619073 porque antes de volver a hablar con el amor de mi life, me andaban coqueteando y me andaba besando a un tal Liam. Bonita tarde a todos. @all
+[11:00:33] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[11:01:07] [EVENT] [main] 275187933122782 -> A los nuevos fundadores, sean bienvenidos y únanse al grupo oficial @120363413452808763@g.us
+[11:01:07] [EVENT] KennyBot | PassiveCoins: 275187933122782 +3
+[11:01:21] [EVENT] [main] 154838587449491 -> Ahora si pueden hablar. @all
+[11:01:44] [EVENT] [main] 245840371302494 -> Todos cornudos hasta que se demuestre lo contrario.
+[11:01:44] [EVENT] KennyBot | PassiveCoins: 245840371302494 +6
+[11:01:53] [EVENT] [main] 154838587449491 -> No apa no, quitate
+[11:01:53] [EVENT] KennyBot | PassiveCoins: 154838587449491 +10
+[11:01:54] [EVENT] [main] 177898216538250 -> Bienvenidos a los nuevos, ojalá les agrade tanto estar aqui, cualquier cosa la administración esta a su total disposición de ayudarlos.
+
+Están abiertos los privados para promoción, edición, cualquier cosa que necesiten.
+[11:01:54] [EVENT] KennyBot | PassiveCoins: 177898216538250 +4
+[11:02:01] [EVENT] [main] 90577337082042 -> No hacía falta ponerme a mí.
+[11:02:01] [EVENT] KennyBot | PassiveCoins: 90577337082042 +2
+[11:02:07] [EVENT] [main] 90577337082042 -> Gracias supongo
+[11:02:10] [EVENT] [main] 245840371302494 -> Hija cornuda, como su papá.
+[11:02:50] [EVENT] [main] 177898216538250 -> Bienvenida familia *vegas*, es un honor tenerlos aquí  💚
+[11:03:08] [EVENT] [main] 173637642510481 -> omaigad se feliz con Voldok sabes tiene nombre de una marca de vino
+[11:03:08] [EVENT] KennyBot | PassiveCoins: 173637642510481 +1
+[11:03:33] [EVENT] [main] 90577337082042 -> La primera vez leí
+[11:03:33] [EVENT] KennyBot | PassiveCoins: 90577337082042 +1
+[11:03:35] [EVENT] [main] 90577337082042 -> Vodka
+[11:03:55] [EVENT] [main] 275187933122782 -> Todos los fundadores que vayan llegando únanse aquí @120363413452808763@g.us solo FUNDADORES.
+[11:03:55] [EVENT] KennyBot | PassiveCoins: 275187933122782 +8
+[11:03:57] [EVENT] [main] 177898216538250 -> Bienvenidos, es un honor tenerlos aqui, cualquier cosa que necesiten la *administración* esta a la disposición de ayudarlos.
+[11:03:57] [EVENT] KennyBot | PassiveCoins: 177898216538250 +10
+[11:04:24] [EVENT] [main] 173637642510481 -> JAJAJAJAJA
+[11:04:24] [EVENT] KennyBot | PassiveCoins: 173637642510481 +10
+[11:04:39] [EVENT] [main] 154838587449491 -> ....
+[11:04:40] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[11:04:43] [EVENT] [main] 154838587449491 -> Volkod
+[11:04:44] [EVENT] [main] 154838587449491 -> Es
+[11:04:45] [EVENT] [main] 154838587449491 -> Diosmio
+[11:04:50] [EVENT] [main] 154838587449491 -> Yo le digo asi
+[11:04:54] [EVENT] [main] 154838587449491 -> Le puse ese apodo
+[11:04:59] [EVENT] [main] 154838587449491 -> Cuando nos conocimos
+[11:05:05] [EVENT] [main] 173637642510481 -> Le queda
+[11:05:51] [EVENT] [main] 90577337082042 -> JAJAJAJAJA
+[11:05:51] [EVENT] KennyBot | PassiveCoins: 90577337082042 +6
+[11:05:55] [EVENT] [main] 154838587449491 -> Pruebas de que termine a Lucas @149822065619073  el domingo @all
+[11:05:55] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[11:06:00] [EVENT] [main] 90577337082042 -> Me hace gracia que jazzie se equivocó aydian
+[11:06:13] [EVENT] [main] 90577337082042 -> Deiam
+[11:07:17] [EVENT] [main] 154838587449491 -> Y pruebas de que me bese a un tal Liam el domingo @all obviamente antes de terminar con @149822065619073 me mame en eso, sorry
+[11:07:17] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[11:07:22] [EVENT] [main] 154838587449491 -> Si
+[11:08:11] [EVENT] [main] 90577337082042 -> Que es lo del primer sticker
+[11:08:11] [EVENT] KennyBot | PassiveCoins: 90577337082042 +9
+[11:08:15] [EVENT] [main] 90577337082042 -> Parece un gato
+[11:08:17] [EVENT] [main] 90577337082042 -> Bye
+[11:08:22] [EVENT] [main] 154838587449491 -> Un beso arriba de la chica
+[11:08:22] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[11:08:33] [EVENT] [main] 90577337082042 -> A vale
+[11:08:35] [EVENT] [main] 90577337082042 -> JAJAJAJJAJAA
+[11:08:38] [EVENT] [main] 154838587449491 -> JKANDKKWD
+[11:08:42] [EVENT] [main] 154838587449491 -> Bueno al menos ya vieron
+[11:08:48] [EVENT] [main] 154838587449491 -> Yo cornuda no soy
+[11:12:21] [EVENT] [main] 245840371302494 -> Si sos
+[11:12:21] [EVENT] KennyBot | PassiveCoins: 245840371302494 +5
+[11:12:53] [EVENT] [main] 154838587449491 -> Que no, cuernudo es @149822065619073
+[11:12:53] [EVENT] KennyBot | PassiveCoins: 154838587449491 +9
+[11:13:29] [EVENT] [main] 167779323887802 -> Oh
+[11:13:29] [EVENT] KennyBot | PassiveCoins: 167779323887802 +7
+[11:15:41] [EVENT] [main] 215762748846123 -> Hola.
+[11:15:41] [EVENT] KennyBot | PassiveCoins: 215762748846123 +1
+[11:16:04] [EVENT] [main] 215762748846123 -> Soy hombre y no, es mi mismo nombre de siempre. No me activo casi porque salgo ignorado.
+[11:17:18] [EVENT] [main] 30705442644090 -> Bien ¿vos?
+[11:17:18] [EVENT] KennyBot | PassiveCoins: 30705442644090 +6
+[11:21:06] [EVENT] [main] 69725270835221 -> Holi, ¿cómo estás??
+[11:21:06] [EVENT] KennyBot | PassiveCoins: 69725270835221 +3
+[11:26:38] [EVENT] [main] 215762748846123 -> Bien. ¿Y tú?
+[11:26:38] [EVENT] KennyBot | PassiveCoins: 215762748846123 +10
+[11:29:02] [EVENT] [main] 24018161811481 -> Vale, gustas agg?
+[11:29:02] [EVENT] KennyBot | PassiveCoins: 24018161811481 +9
+[11:29:10] [EVENT] [main] 215762748846123 -> Claro.
+[11:29:10] [EVENT] KennyBot | PassiveCoins: 215762748846123 +9
+[11:29:15] [EVENT] [main] 24018161811481 -> X2
+[11:29:26] [EVENT] [main] 24018161811481 -> Vale, cuál es tu nombre?
+[11:29:51] [EVENT] [main] 215762748846123 -> Vairen.
+[11:30:07] [EVENT] [main] 149822065619073 -> Tu igual
+[11:30:07] [EVENT] KennyBot | PassiveCoins: 149822065619073 +4
+[11:30:14] [EVENT] [main] 42740008116409 -> Volví
+[11:30:14] [EVENT] KennyBot | PassiveCoins: 42740008116409 +2
+[11:30:17] [EVENT] [main] 24018161811481 -> Vale, yo soy Khrystēn o Màddeliet como gustes
+[11:30:17] [EVENT] KennyBot | PassiveCoins: 24018161811481 +5
+[11:30:39] [EVENT] [main] 24018161811481 -> Holitas
+[11:30:53] [EVENT] [main] 215762748846123 -> Está bien, ya te agg.
+[11:30:53] [EVENT] KennyBot | PassiveCoins: 215762748846123 +8
+[11:31:01] [EVENT] [main] 154838587449491 -> LUCAS
+[11:31:01] [EVENT] KennyBot | PassiveCoins: 154838587449491 +10
+[11:31:05] [EVENT] [main] 154838587449491 -> Hey
+[11:31:10] [EVENT] [main] 154838587449491 -> Solo me han puesto el cuerno
+[11:31:10] [EVENT] [main] 42740008116409 -> Hi
+[11:31:12] [EVENT] [main] 154838587449491 -> Una puta vez
+[11:32:03] [EVENT] [main] 16480276058158 -> Hola kitty.
+[11:32:03] [EVENT] KennyBot | PassiveCoins: 16480276058158 +1
+[11:32:04] [EVENT] [main] 24018161811481 -> Lo mismo corazónn
+[11:32:04] [EVENT] KennyBot | PassiveCoins: 24018161811481 +2
+[11:32:08] [EVENT] [main] 154838587449491 -> Hola hija
+[11:32:08] [EVENT] KennyBot | PassiveCoins: 154838587449491 +5
+[11:32:09] [EVENT] [main] 24018161811481 -> Cómo estáss?
+[11:32:20] [EVENT] [main] 215762748846123 -> Listo.
+[11:32:21] [EVENT] KennyBot | PassiveCoins: 215762748846123 +7
+[11:32:29] [EVENT] [main] 175759457034250 -> Pues gustas agg
+[11:32:29] [EVENT] KennyBot | PassiveCoins: 175759457034250 +3
+[11:32:49] [EVENT] [main] 215762748846123 -> Claro.
+[11:33:02] [EVENT] [main] 154838587449491 -> Jennifer cállate wey @68595375730714
+[11:33:11] [EVENT] [main] 154838587449491 -> Controla a tú esposa oe @79380390908143 @68595375730714
+[11:33:11] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[11:33:19] [EVENT] [main] 68595375730714 -> JAJAJAJAJAJA
+[11:33:19] [EVENT] KennyBot | PassiveCoins: 68595375730714 +2
+[11:33:23] [EVENT] [main] 68595375730714 -> . . .
+[11:33:25] [EVENT] [main] 79380390908143 -> Cual esposa
+[11:33:25] [EVENT] KennyBot | PassiveCoins: 79380390908143 +7
+[11:33:28] [EVENT] [main] 68595375730714 -> Cuál esposa.
+[11:33:30] [EVENT] [main] 68595375730714 -> Duérmete.
+[11:33:32] [EVENT] [main] 79380390908143 -> ??
+[11:33:40] [EVENT] [main] 79380390908143 -> Yo lo dije primero buuuu.
+[11:33:47] [EVENT] [main] 175759457034250 -> Un gusto soy Izan
+[11:33:47] [EVENT] KennyBot | PassiveCoins: 175759457034250 +6
+[11:33:50] [EVENT] [main] 68595375730714 -> Yo.
+[11:34:00] [EVENT] [main] 175759457034250 -> Ya te agg
+[11:34:18] [EVENT] [main] 154838587449491 -> Sapa hpta
+[11:34:18] [EVENT] KennyBot | PassiveCoins: 154838587449491 +4
+[11:34:27] [EVENT] [main] 154838587449491 -> Tú esposa la @68595375730714 Jennifer
+[11:34:34] [EVENT] [main] 154838587449491 -> Ay sii
+[11:34:37] [EVENT] [main] 154838587449491 -> Viva el amor
+[11:34:41] [EVENT] [main] 154838587449491 -> Ya creo en el amor
+[11:34:41] [EVENT] [main] 68595375730714 -> ¿?
+[11:34:41] [EVENT] KennyBot | PassiveCoins: 68595375730714 +5
+[11:34:44] [EVENT] [main] 68595375730714 -> Duérmete.
+[11:34:46] [EVENT] [main] 154838587449491 -> VIVA
+[11:34:54] [EVENT] [main] 79380390908143 -> No kitty..
+[11:34:54] [EVENT] KennyBot | PassiveCoins: 79380390908143 +6
+[11:34:54] [EVENT] [main] 154838587449491 -> Esto se lo tengo que contar a Kang
+[11:34:56] [EVENT] [main] 154838587449491 -> Never
+[11:34:59] [EVENT] [main] 154838587449491 -> Si Klks si
+[11:35:02] [EVENT] [main] 79380390908143 -> Yo todavía no supero a nico
+[11:35:06] [EVENT] [main] 154838587449491 -> ...
+[11:35:11] [EVENT] [main] 154838587449491 -> Quien es Nico?
+[11:35:14] [EVENT] [main] 154838587449491 -> Una persona real?
+[11:35:15] [EVENT] [main] 154838587449491 -> Never
+[11:35:17] [EVENT] [main] 154838587449491 -> 🤮
+[11:35:46] [EVENT] [main] 68595375730714 -> Te voy a subir.
+[11:35:46] [EVENT] KennyBot | PassiveCoins: 68595375730714 +3
+[11:35:48] [EVENT] [main] 154838587449491 -> JKAKDKWKW
+[11:35:49] [EVENT] KennyBot | PassiveCoins: 154838587449491 +3
+[11:35:50] [EVENT] [main] 154838587449491 -> Nooo
+[11:35:52] [EVENT] [main] 154838587449491 -> Estúpida
+[11:35:56] [EVENT] [main] 154838587449491 -> No te pases de riata
+[11:35:57] [EVENT] [main] 16480276058158 -> ¿Cómo esta?
+[11:35:57] [EVENT] KennyBot | PassiveCoins: 16480276058158 +7
+[11:36:03] [EVENT] [main] 154838587449491 -> Bien hije, y vos?
+[11:36:20] [EVENT] [main] 154838587449491 -> Oigan se imaginan que ustedes dos si se enamoren y se casen @79380390908143 @68595375730714
+[11:36:26] [EVENT] [main] 69725270835221 -> Qué bueno, me alegro mucho por ti, biem
+[11:36:26] [EVENT] KennyBot | PassiveCoins: 69725270835221 +9
+[11:36:31] [EVENT] [main] 16480276058158 -> Bien, me alegro por ti.
+[11:36:32] [EVENT] [main] 68595375730714 -> Esos sueños con fiebre.
+[11:36:43] [EVENT] [main] 154838587449491 -> Pero si son iguales
+[11:36:45] [EVENT] [main] 154838587449491 -> Viva el amooor
+[11:36:52] [EVENT] [main] 68595375730714 -> ??
+[11:36:52] [EVENT] KennyBot | PassiveCoins: 68595375730714 +10
+[11:36:56] [EVENT] [main] 154838587449491 -> Igualitos
+[11:36:56] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[11:36:58] [EVENT] [main] 69725270835221 -> Volviste
+[11:37:04] [EVENT] [main] 154838587449491 -> Ahora tengan su luna de miel
+[11:37:05] [EVENT] [main] 69725270835221 -> Qué le bajen
+[11:37:11] [EVENT] [main] 68595375730714 -> Le hablaré a tu flaco.
+[11:37:17] [EVENT] [main] 154838587449491 -> Por favooor
+[11:37:18] [EVENT] [main] 154838587449491 -> Decile
+[11:37:19] [EVENT] [main] 154838587449491 -> Que lo amo
+[11:37:21] [EVENT] [main] 154838587449491 -> Que vuelva
+[11:37:23] [EVENT] [main] 215762748846123 -> Soy Vairen y es mutuo.
+[11:37:23] [EVENT] KennyBot | PassiveCoins: 215762748846123 +10
+[11:37:23] [EVENT] [main] 154838587449491 -> Me porto bien
+[11:37:28] [EVENT] [main] 215762748846123 -> Vale.
+[11:37:34] [EVENT] [main] 154838587449491 -> Y te dejo de molestar
+[11:37:38] [EVENT] [main] 154838587449491 -> VOLKOD MI AMORRR
+[11:37:39] [EVENT] [main] 68595375730714 -> No, le voy a decir que vuelva la otra semana.
+[11:37:42] [EVENT] [main] 154838587449491 -> ...
+[11:37:45] [EVENT] [main] 154838587449491 -> Te caso amika
+[11:37:54] [EVENT] [main] 154838587449491 -> Ola te quieres casar con mi mejor amika?
+[11:37:55] [EVENT] [main] 215762748846123 -> También te agg.
+[11:38:09] [EVENT] [main] 68595375730714 -> Cansona.
+[11:38:09] [EVENT] KennyBot | PassiveCoins: 68595375730714 +6
+[11:38:11] [EVENT] [main] 42740008116409 -> Bien,¿y tu?
+[11:38:12] [EVENT] KennyBot | PassiveCoins: 42740008116409 +6
+[11:38:15] [EVENT] [main] 215762748846123 -> Gracias, también me alegro por ti.
+[11:38:16] [EVENT] [main] 154838587449491 -> DEJAME AMIKA
+[11:38:17] [EVENT] KennyBot | PassiveCoins: 154838587449491 +4
+[11:38:20] [EVENT] [main] 154838587449491 -> TRAEME A MI HOMBRE
+[11:38:22] [EVENT] [main] 42740008116409 -> Y me voy
+[11:38:30] [EVENT] [main] 154838587449491 -> VOS DIJISTE QUE TE CONSIGUIERA NOVIO
+[11:38:31] [EVENT] [main] 154838587449491 -> Amika
+[11:38:34] [EVENT] [main] 24018161811481 -> Muy bienn corazón, me alegro por ti
+[11:38:34] [EVENT] KennyBot | PassiveCoins: 24018161811481 +9
+[11:38:44] [EVENT] [main] 68595375730714 -> No.
+[11:38:47] [EVENT] [main] 68595375730714 -> Tampoco.
+[11:38:53] [EVENT] [main] 154838587449491 -> Amikaaa
+[11:38:54] [EVENT] [main] 24018161811481 -> Xfa
+[11:38:55] [EVENT] [main] 154838587449491 -> No se vale
+[11:38:58] [EVENT] [main] 154838587449491 -> Me voy a perder
+[11:39:01] [EVENT] [main] 154838587449491 -> Eliminaré mis números
+[11:39:03] [EVENT] [main] 154838587449491 -> Chau
+[11:39:05] [EVENT] [main] 154838587449491 -> No me hablen
+[11:39:06] [EVENT] [main] 154838587449491 -> Putos
+[11:39:11] [EVENT] [main] 68595375730714 -> Gracias.
+[11:39:11] [EVENT] KennyBot | PassiveCoins: 68595375730714 +5
+[11:39:13] [EVENT] [main] 227994698313945 -> Hola Reyes.
+[11:39:13] [EVENT] KennyBot | PassiveCoins: 227994698313945 +9
+[11:39:20] [EVENT] [main] 154838587449491 -> Odio a todos hasta que regrese mi amado @all
+[11:39:20] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[11:39:23] [EVENT] [main] 154838587449491 -> No, vete a la mrd.
+[11:39:33] [EVENT] [main] 154838587449491 -> Tan sapa hpta
+[11:39:43] [EVENT] [main] 154838587449491 -> Dame a mi hombre @68595375730714
+[11:39:53] [EVENT] [main] 154838587449491 -> ME PORTO BIEN @68595375730714
+[11:39:59] [EVENT] [main] 154838587449491 -> TE DEJO DE MOLESTAR AMIKA @68595375730714
+[11:40:01] [EVENT] [main] 45935480590510 -> Duérmete.
+[11:40:01] [EVENT] KennyBot | PassiveCoins: 45935480590510 +10
+[11:40:07] [EVENT] [main] 154838587449491 -> ANDALE TRAEME A VOLKOD @68595375730714
+[11:40:09] [EVENT] [main] 154838587449491 -> NINI ESOQUE
+[11:40:09] [EVENT] [main] 45935480590510 -> Duérmete.
+[11:40:23] [EVENT] [main] 154838587449491 -> AMIKA TRAEMELO @68595375730714
+[11:40:23] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[11:40:25] [EVENT] [main] 45935480590510 -> ESE NO ERA EL MENSAJE
+[11:40:41] [EVENT] [main] 154838587449491 -> O los molestare a todos hasta que mi amado vuelva @68595375730714
+[11:40:48] [EVENT] [main] 154838587449491 -> Deja
+[11:41:09] [EVENT] [main] 205265211244761 -> Amor……
+[11:41:09] [EVENT] KennyBot | PassiveCoins: 205265211244761 +1
+[11:41:16] [EVENT] [main] 154838587449491 -> Os odio a todos, no me hablen putos
+[11:42:04] [EVENT] [main] 154838587449491 -> Putos vengan @all
+[11:42:04] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[11:42:12] [EVENT] [main] 154838587449491 -> Idiotas?
+[11:42:17] [EVENT] [main] 154838587449491 -> Inservibles? @all
+[11:42:31] [EVENT] [main] 160684021137417 -> Ah, ella es
+[11:42:31] [EVENT] KennyBot | PassiveCoins: 160684021137417 +9
+[11:42:36] [EVENT] [main] 154838587449491 -> Siii
+[11:42:41] [EVENT] [main] 154838587449491 -> Se su amigo
+[11:42:45] [EVENT] [main] 154838587449491 -> JIAKDKWKSKS
+[11:42:48] [EVENT] [main] 154838587449491 -> Y luego
+[11:42:49] [EVENT] [main] 154838587449491 -> Ligatela
+[11:42:52] [EVENT] [main] 154838587449491 -> Y le haces
+[11:42:54] [EVENT] [main] 154838587449491 -> 572747 hijos
+[11:42:58] [EVENT] [main] 160684021137417 -> No
+[11:43:00] [EVENT] [main] 154838587449491 -> Así
+[11:43:05] [EVENT] [main] 154838587449491 -> XANDERRRR
+[11:43:05] [EVENT] KennyBot | PassiveCoins: 154838587449491 +10
+[11:43:23] [EVENT] [main] 154838587449491 -> Ando regalando a Jenn hasta que me traiga a mi amado.
+[11:43:32] [EVENT] [main] 154838587449491 -> Andale
+[11:44:17] [EVENT] [main] 160684021137417 -> Nomás le brindo mi amistad
+[11:44:17] [EVENT] KennyBot | PassiveCoins: 160684021137417 +7
+[11:44:26] [EVENT] [main] 160684021137417 -> No quiero pareja
+[11:44:29] [EVENT] [main] 154838587449491 -> Pues ya con eso
+[11:44:29] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[11:44:30] [EVENT] [main] 154838587449491 -> Dale
+[11:44:32] [EVENT] [main] 154838587449491 -> Sean amikos
+[11:44:35] [EVENT] [main] 154838587449491 -> Y convencela
+[11:44:37] [EVENT] [main] 154838587449491 -> De que me de
+[11:44:38] [EVENT] [main] 154838587449491 -> A mi
+[11:44:38] [WARN] KennyBot | Spam detectado: 154838587449491
+[11:44:38] [WARN] KennyBot | Spam detectado: 154838587449491
+[11:44:39] [EVENT] [main] 154838587449491 -> Amado
+[11:44:39] [WARN] KennyBot | Spam detectado: 154838587449491
+[11:44:39] [WARN] KennyBot | Spam detectado: 154838587449491
+[11:46:06] [EVENT] [main] 68595375730714 -> . . .
+[11:46:06] [EVENT] KennyBot | PassiveCoins: 68595375730714 +2
+[11:46:51] [EVENT] [main] 45935480590510 -> Opinen
+[11:46:51] [EVENT] KennyBot | PassiveCoins: 45935480590510 +10
+[11:46:52] [EVENT] [main] 45935480590510 -> Amado mío, si el tiempo pretendiera separarnos, le esperaría mil años y otros mil si fueran necesarios, pues ni la eternidad sería suficiente para extinguir lo que por usted siento.
+
+Le entregaría el cielo y la tierra, arrancaría estrellas del firmamento para depositarlas a sus pies y haría de mis brazos su refugio, de mi pecho, su hogar eterno.
+
+¡Oh, si pudiera prestarle mis ojos para que contemplara su propia belleza! Comprendería por qué mi alma le venera y por qué su existencia me parece el milagro más hermoso del universo.
+
+Y si la muerte me concediera otra vida, volvería a buscarle entre millones, aunque usted no recordara mi nombre, aunque tuviera que enamorarle de nuevo.
+
+Porque antes que una eternidad sin usted, elegiría mil años aguardando su regreso; y si el universo entero no bastara para demostrarle la inmensidad de mi amor, le entregaría mi propia existencia, pues mi alma dejó de pertenecerse desde el instante en que comenzó a amarle.
+
+
+        00. ⛃  ──── *𝗖𝗋𝖾𝖺𝖽𝗈𝗋 𝗂𝗌: Vernon*
+[11:47:15] [EVENT] [main] 154838587449491 -> Chinga tú madre
+[11:47:15] [EVENT] KennyBot | PassiveCoins: 154838587449491 +5
+[11:47:20] [EVENT] [main] 154838587449491 -> Eso opino
+[11:47:23] [EVENT] [main] 154838587449491 -> Váyanse a la mrd todos
+[11:47:24] [EVENT] [main] 154838587449491 -> Chau
+[11:47:38] [EVENT] [main] 133088906633278 -> Que.
+[11:47:38] [EVENT] KennyBot | PassiveCoins: 133088906633278 +9
+[11:47:39] [EVENT] [main] 154838587449491 -> Sapa
+[11:47:46] [EVENT] [main] 68595375730714 -> Que bonito expresar.
+[11:47:47] [EVENT] KennyBot | PassiveCoins: 68595375730714 +4
+[11:47:47] [EVENT] [main] 160684021137417 -> Eso sí
+[11:47:47] [EVENT] KennyBot | PassiveCoins: 160684021137417 +3
+[11:47:58] [EVENT] [main] 154838587449491 -> Ctm
+[11:48:01] [EVENT] [main] 160684021137417 -> Eso no
+[11:48:02] [EVENT] [main] 133088906633278 -> Eso es un canal de memes.
+[11:48:03] [EVENT] [main] 154838587449491 -> Pues dale
+[11:48:03] [EVENT] [main] 154838587449491 -> Ve
+[11:48:05] [EVENT] [main] 160684021137417 -> Búscalo tu
+[11:48:06] [EVENT] [main] 133088906633278 -> 😭😭
+[11:48:08] [EVENT] [main] 68595375730714 -> Te voy a bloquear por andar de inepta.
+[11:48:10] [EVENT] [main] 154838587449491 -> XANDER
+[11:48:11] [EVENT] [main] 45935480590510 -> Está malparida.
+[11:48:11] [EVENT] KennyBot | PassiveCoins: 45935480590510 +4
+[11:48:18] [EVENT] [main] 133088906633278 -> 🤣🤣
+[11:48:18] [EVENT] [main] 154838587449491 -> 💜🙄
+[11:48:18] [EVENT] KennyBot | PassiveCoins: 154838587449491 +3
+[11:48:21] [EVENT] [main] 154838587449491 -> Nunca más
+[11:48:22] [EVENT] [main] 154838587449491 -> Me voy
+[11:48:24] [EVENT] [main] 154838587449491 -> No me busquen
+[11:48:27] [EVENT] [main] 154838587449491 -> No me hablen
+[11:48:37] [EVENT] [main] 45935480590510 -> Okey
+[11:48:41] [EVENT] [main] 45935480590510 -> Ojalá te caiga.
+[11:48:48] [EVENT] [main] 133088906633278 -> PUJAJAJAJAJAJA
+[11:48:48] [EVENT] KennyBot | PassiveCoins: 133088906633278 +4
+[11:48:58] [EVENT] [main] 154838587449491 -> Ojala terminen
+[11:49:07] [EVENT] [main] 133088906633278 -> Ni yo se.
+[11:49:26] [EVENT] [main] 133088906633278 -> Pero creo que están hablando de un pulpo?
+[11:49:38] [EVENT] [main] 69725270835221 -> todo mal
+[11:49:38] [EVENT] KennyBot | PassiveCoins: 69725270835221 +8
+[11:49:39] [EVENT] [main] 160684021137417 -> Ya, pero yo tengo la curiosidad
+[11:49:39] [EVENT] KennyBot | PassiveCoins: 160684021137417 +3
+[11:49:44] [EVENT] [main] 160684021137417 -> De porque con ella
+[11:50:02] [EVENT] [main] 133088906633278 -> Wtf.
+[11:50:02] [EVENT] KennyBot | PassiveCoins: 133088906633278 +1
+[11:50:08] [EVENT] [main] 133088906633278 -> Quien te ignora?
+[11:50:09] [EVENT] [main] 45935480590510 -> Quienes? Ni tengo pareja, sonsa.
+[11:50:09] [EVENT] KennyBot | PassiveCoins: 45935480590510 +5
+[11:50:17] [EVENT] [main] 133088906633278 -> Y le pones tu el castigo.
+[11:50:36] [EVENT] [main] 69725270835221 -> Pegales
+[11:50:39] [EVENT] [main] 133088906633278 -> Quien me puede subir calidad al edit?
+[11:50:47] [EVENT] [main] 154838587449491 -> No se no me impolta
+[11:50:47] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[11:50:48] [EVENT] [main] 154838587449491 -> Bye
+[11:50:54] [EVENT] [main] 154838587449491 -> Porquezi
+[11:50:57] [EVENT] [main] 154838587449491 -> Es buena onda
+[11:51:01] [EVENT] [main] 133088906633278 -> Pero quien?
+[11:51:02] [EVENT] [main] 154838587449491 -> Esta bien pendeja cuando se enamora
+[11:51:06] [EVENT] [main] 154838587449491 -> Y es una linda amistad
+[11:51:08] [EVENT] [main] 69725270835221 -> A todos
+[11:51:08] [EVENT] KennyBot | PassiveCoins: 69725270835221 +7
+[11:51:12] [EVENT] [main] 154838587449491 -> Si te sientes mal puedes hablar con ella
+[11:51:14] [EVENT] [main] 154838587449491 -> Es psicologa
+[11:51:18] [EVENT] [main] 154838587449491 -> Le gusta el roblox
+[11:51:23] [EVENT] [main] 154838587449491 -> Juega mucho roblox con ella
+[11:51:24] [EVENT] [main] 154838587449491 -> Byeee
+[11:51:33] [EVENT] [main] 160684021137417 -> Pobre niña
+[11:51:33] [EVENT] KennyBot | PassiveCoins: 160684021137417 +6
+[11:51:35] [EVENT] [main] 160684021137417 -> La usas
+[11:51:51] [EVENT] [main] 154838587449491 -> @76721755832561 Y @149822065619073 se quedan acargo, va a entrar alguien nuevo, denle un trato especial y denle admin
+[11:51:51] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[11:51:54] [EVENT] [main] 215762748846123 -> Todos.
+[11:51:54] [EVENT] KennyBot | PassiveCoins: 215762748846123 +3
+[11:52:01] [EVENT] [main] 154838587449491 -> No sabe lo que hacemos pero igual
+[11:52:02] [EVENT] [main] 215762748846123 -> No entendí.
+[11:52:04] [EVENT] [main] 154838587449491 -> Me cae bien.
+[11:52:04] [EVENT] [main] 160684021137417 -> Oh, yo también quiero
+[11:52:08] [EVENT] [main] 154838587449491 -> No vos no
+[11:52:08] [EVENT] [main] 215762748846123 -> Puedo hacerlo yo.
+[11:52:13] [EVENT] [main] 160684021137417 -> Culera
+[11:52:16] [EVENT] [main] 133088906633278 -> Gente.
+[11:52:16] [EVENT] KennyBot | PassiveCoins: 133088906633278 +8
+[11:52:25] [EVENT] [main] 154838587449491 -> Culero
+[11:52:36] [EVENT] [main] 133088906633278 -> Ya les dije lo de ignorar integrantes.
+[11:52:40] [EVENT] [main] 68595375730714 -> ??
+[11:52:40] [EVENT] KennyBot | PassiveCoins: 68595375730714 +5
+[11:52:45] [EVENT] [main] 154838587449491 -> Nada
+[11:52:48] [EVENT] [main] 133088906633278 -> No me gusta ver ese tipo de comentarios en mi familia.
+[11:52:49] [EVENT] [main] 160684021137417 -> ¿Por qué?
+[11:52:50] [EVENT] KennyBot | PassiveCoins: 160684021137417 +7
+[11:52:56] [EVENT] [main] 133088906633278 -> Todos aquí somos familia.
+[11:53:03] [EVENT] [main] 133088906633278 -> Aunque la persona sea nueva.
+[11:53:04] [EVENT] [main] 154838587449491 -> Porque si
+[11:53:04] [EVENT] KennyBot | PassiveCoins: 154838587449491 +9
+[11:53:11] [EVENT] [main] 133088906633278 -> Okeyyy.
+[11:53:18] [EVENT] [main] 133088906633278 -> Ya te lo mando por priv.
+[11:53:18] [EVENT] KennyBot | PassiveCoins: 133088906633278 +7
+[11:54:26] [EVENT] [main] 76721755832561 -> Quien es
+[11:54:26] [EVENT] KennyBot | PassiveCoins: 76721755832561 +2
+[11:54:33] [EVENT] [main] 154838587449491 -> Ya te lo mande al privado
+[11:54:33] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[11:54:43] [EVENT] [main] 69725270835221 -> Al próximo le das un sape
+[11:54:43] [EVENT] KennyBot | PassiveCoins: 69725270835221 +4
+[11:56:35] [EVENT] [main] 90577337082042 -> Oigan
+[11:56:35] [EVENT] KennyBot | PassiveCoins: 90577337082042 +6
+[11:56:50] [EVENT] [main] 154838587449491 -> Mande
+[11:56:50] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[11:57:07] [EVENT] [main] 90577337082042 -> Creo q
+[11:57:09] [EVENT] [main] 90577337082042 -> Soy
+[11:57:15] [EVENT] [main] 90577337082042 -> Me da pena decirlo
+[11:57:17] [EVENT] [main] 154838587449491 -> Gay?
+[11:57:18] [EVENT] [main] 154838587449491 -> Se nota
+[11:57:20] [EVENT] [main] 90577337082042 -> No
+[11:57:22] [EVENT] [main] 90577337082042 -> Soy mujer
+[11:57:23] [EVENT] [main] 90577337082042 -> O
+[11:57:25] [EVENT] [main] 90577337082042 -> No se
+[11:57:28] [EVENT] [main] 154838587449491 -> Trans
+[11:57:37] [EVENT] [main] 90577337082042 -> Creo que soy genero fluido
+[11:57:37] [EVENT] KennyBot | PassiveCoins: 90577337082042 +8
+[11:57:45] [EVENT] [main] 42740008116409 -> Yo podría pero no me carga el internet de la universidad
+[11:57:45] [EVENT] KennyBot | PassiveCoins: 42740008116409 +2
+[11:57:45] [EVENT] [main] 90577337082042 -> Me da pena decirlo
+[11:57:59] [EVENT] [main] 154838587449491 -> ...
+[11:57:59] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[11:58:04] [EVENT] [main] 154838587449491 -> Eso te da penaM
+[11:58:05] [EVENT] [main] 154838587449491 -> ?*
+[11:58:07] [EVENT] [main] 154838587449491 -> Nmms Bri
+[11:58:10] [EVENT] [main] 90577337082042 -> Si
+[11:58:16] [EVENT] [main] 90577337082042 -> No quiero que me juzguen
+[11:58:21] [EVENT] [main] 154838587449491 -> ...
+[11:58:23] [EVENT] [main] 154838587449491 -> Ya duermete
+[11:58:28] [EVENT] [main] 90577337082042 -> Llevo tiempo pensando que me siento bien con los dos pronombres
+[11:58:30] [EVENT] [main] 154838587449491 -> Ando enojada
+[11:58:37] [EVENT] [main] 28377671016667 -> Holaa
+[11:58:38] [EVENT] KennyBot | PassiveCoins: 28377671016667 +6
+[11:58:56] [EVENT] [main] 90577337082042 -> Pero no quiero ser objetivo de burla por eso por mis supuestos "amigos"
+[11:58:56] [EVENT] KennyBot | PassiveCoins: 90577337082042 +2
+[11:59:11] [EVENT] [main] 90577337082042 -> No qro que me vuelvan a  hacer bullying por eso
+[11:59:32] [EVENT] [main] 154838587449491 -> Pero si ser genero fluido
+[11:59:33] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[11:59:34] [EVENT] [main] 154838587449491 -> Trans
+[11:59:36] [EVENT] [main] 154838587449491 -> Bigenero
+[11:59:38] [EVENT] [main] 154838587449491 -> Es normal
+[11:59:39] [EVENT] [main] 154838587449491 -> Coño
+[11:59:44] [EVENT] [main] 90577337082042 -> Se ve raro
+[11:59:46] [EVENT] [main] 90577337082042 -> Para ellos
+[11:59:47] [EVENT] [main] 154838587449491 -> No te avergüenzes de eso
+[11:59:52] [EVENT] [main] 154838587449491 -> Y que tiene?
+[11:59:55] [EVENT] [main] 154838587449491 -> Ellos son ignorantes
+[12:00:02] [EVENT] [main] 90577337082042 -> Tuve que intentar cambiar mis gustos
+[12:00:02] [EVENT] KennyBot | PassiveCoins: 90577337082042 +8
+[12:00:02] [EVENT] [main] 154838587449491 -> Que cierren la puta boca y dejen de criticar
+[12:00:04] [EVENT] [main] 154838587449491 -> Es tú vida
+[12:00:07] [EVENT] [main] 154838587449491 -> No la de ellos
+[12:00:13] [EVENT] [main] 154838587449491 -> No lo hagas, que quieres ser?
+[12:00:17] [EVENT] [main] 68595375730714 -> Cambia de amigos, no son tus amigos si llegan a hacerte burla por eso.
+[12:00:17] [EVENT] KennyBot | PassiveCoins: 68595375730714 +9
+[12:00:20] [EVENT] [main] 154838587449491 -> Alguien como los demás?
+[12:00:27] [EVENT] [main] 154838587449491 -> Ser normal y corriente
+[12:00:30] [EVENT] [main] 154838587449491 -> Ser de la misma gente
+[12:00:37] [EVENT] [main] 154838587449491 -> O ser diferente a los demás?
+[12:00:37] [EVENT] KennyBot | PassiveCoins: 154838587449491 +10
+[12:00:39] [EVENT] [main] 154838587449491 -> .
+[12:01:02] [EVENT] [main] 90577337082042 -> Entonces me quedaría sin nadie a mí alrededor
+[12:01:04] [EVENT] [main] 154838587449491 -> Piensa Brillitos,  sos inteligente @90577337082042
+[12:01:10] [EVENT] [main] 154838587449491 -> ...
+[12:01:14] [EVENT] [main] 227994698313945 -> No veo la razón, cada quien tiene su propio estilo
+[12:01:14] [EVENT] KennyBot | PassiveCoins: 227994698313945 +10
+[12:01:15] [EVENT] [main] 154838587449491 -> Y lo malo?
+[12:01:24] [EVENT] [main] 154838587449491 -> No hay nada malo en estar sola
+[12:01:33] [EVENT] [main] 154838587449491 -> Es mejor que la gente no te estorbe en tú camino
+[12:01:42] [EVENT] [main] 227994698313945 -> Te falta aprender a apreciar los momentos sola
+[12:01:43] [EVENT] [main] 154838587449491 -> Te estas desarrollando y conociendo Brillitos
+[12:01:43] [EVENT] KennyBot | PassiveCoins: 154838587449491 +5
+[12:01:46] [EVENT] [main] 147154857361573 -> .tagall
+[12:01:46] [EVENT] KennyBot | PassiveCoins: 147154857361573 +4
+[12:01:46] [CMD] KennyBot | tagall → 147154857361573
+[12:01:46] [EVENT] [main] 68595375730714 -> Claro que no, ya llegarán buenas amistades que no te hagan sentir de esa manera.
+[12:01:46] [EVENT] KennyBot | PassiveCoins: 68595375730714 +3
+[12:01:47] [EVENT] Tagall usado en 120363411644056541 por +52 55 6115 5939 | 23 menciones
+[12:01:47] [EVENT] [main] 30705442644090 -> *» Grupo* : 㜣ٰ𓈒ㅤㅤ𐇽🇱🇻ؗℨۣ𝖤𝖵ؗㅤ⎯꯭ ۣ 𐇽𝔇ؗ𝖨𝖮ۜ𝖷ㅤ ㅤֵㅤㅤ𓏚𓏚ㅤㅤؗ𝖫𐇽ۘ𝔈𝖦𝖤𝖭꯭ۜ𝔇꯭𝖠꯭ۣۖ𝖱꯭ۜ𝔜꯭𓈒ㅤㅤ㏇
+*» Miembros* : 23
+
+
+  ➠  @595982743764
+  ➠  @573247789576
+  ➠  @28716621103214
+  ➠  @573203981937
+  ➠  @143929219514503
+  ➠  @205265211244761
+  ➠  @273104739799218
+  ➠  @5492914193736
+  ➠  @5219631441428
+  ➠  @5219519017865
+  ➠  @5218131308881
+  ➠  @5216462395446
+  ➠  @5215661909251
+  ➠  @5215614297419
+  ➠  @5215561155939
+  ➠  @50933490758
+  ➠  @50578709766
+  ➠  @380975947660
+  ➠  @380964902163
+  ➠  @27603014375
+  ➠  @18296683384
+  ➠  @17543268833
+[12:01:48] [EVENT] KennyBot | PassiveCoins: 30705442644090 +7
+[12:01:50] [EVENT] [main] 147154857361573 -> https://vm.tiktok.com/ZN8DRxjds/
+[12:01:52] [EVENT] [main] 154838587449491 -> No debes encajar con los demás
+[12:01:55] [EVENT] [main] 154838587449491 -> Se tú misma
+[12:02:01] [EVENT] [main] 154838587449491 -> No lo que la gente quiere que seas
+[12:02:04] [EVENT] [main] 90577337082042 -> Yo antes intenté ser aceptada por ser lesbiana,siempre era lo mismo,hasta que intenté decir que me gustaban solo los hombres para encajar,xq me daba miedo quedarme sola
+[12:02:04] [EVENT] KennyBot | PassiveCoins: 90577337082042 +3
+[12:02:06] [EVENT] [main] 177898216538250 -> Ya fuiii
+[12:02:06] [EVENT] KennyBot | PassiveCoins: 177898216538250 +9
+[12:02:11] [EVENT] [main] 177898216538250 -> Y FUI EL PRIMER LIKE
+[12:02:18] [EVENT] [main] 177898216538250 -> AMOOORRRR
+[12:02:24] [EVENT] [main] 90577337082042 -> Les amo chikos gracias a  todos
+[12:02:26] [EVENT] [main] 177898216538250 -> ese meme
+[12:02:27] [EVENT] [main] 177898216538250 -> Maldito
+[12:02:29] [EVENT] [main] 177898216538250 -> No me deja
+[12:02:30] [EVENT] [main] 154838587449491 -> Y por que?
+[12:02:34] [EVENT] [main] 154838587449491 -> Si la soledad es linda
+[12:02:39] [EVENT] [main] 90577337082042 -> Xq se veía mal
+[12:02:44] [EVENT] [main] 154838587449491 -> Yo tengo una amiga lesbiana en la escuela
+[12:02:44] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[12:02:44] [EVENT] [main] 42740008116409 -> Hola
+[12:02:44] [EVENT] KennyBot | PassiveCoins: 42740008116409 +4
+[12:02:48] [EVENT] [main] 154838587449491 -> Otra drogadicta
+[12:02:50] [EVENT] [main] 69725270835221 -> Holiii
+[12:02:50] [EVENT] KennyBot | PassiveCoins: 69725270835221 +2
+[12:02:54] [EVENT] [main] 154838587449491 -> Otra clasista
+[12:02:59] [EVENT] [main] 154838587449491 -> Otro pues se cree artista
+[12:03:02] [EVENT] [main] 90577337082042 -> Decían "eww,no te acerques a mí,no quiero que t enamores de mi"
+[12:03:13] [EVENT] [main] 154838587449491 -> Esoque
+[12:03:28] [EVENT] [main] 90577337082042 -> Bye siento tremendo nudo en la garganta
+[12:03:28] [EVENT] KennyBot | PassiveCoins: 90577337082042 +6
+[12:03:33] [EVENT] [main] 154838587449491 -> Es normal que te guste la gente y quieras conocer cosas nuevas
+[12:03:43] [EVENT] [main] 154838587449491 -> No chilles por culpa de esos hpta
+[12:03:50] [EVENT] [main] 154838587449491 -> Ptm Brillitos
+[12:03:50] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[12:03:54] [EVENT] [main] 90577337082042 -> Esk
+[12:03:55] [EVENT] [main] 90577337082042 -> Dah
+[12:03:58] [EVENT] [main] 90577337082042 -> No se que soy
+[12:04:04] [EVENT] [main] 90577337082042 -> Ni xq siento atracción
+[12:04:22] [EVENT] [main] 90577337082042 -> No se que me gusta,que soy,no se qn soy
+[12:04:24] [EVENT] [main] 90577337082042 -> Bri?
+[12:04:26] [EVENT] [main] 90577337082042 -> Lucia?
+[12:04:33] [EVENT] [main] 154838587449491 -> Tú eres más que eso, no necesitas estar rodeada de personas para encajar. Lo peor que te puedes hacer, es ocultar quien eres para encajar con los demás.  Puedes estar rodeada de gente, pero te sentirás sola
+[12:04:55] [EVENT] [main] 154838587449491 -> Y de que sirve que tengas a personas a tú alrededor, si te seguirás sintiendo sola?
+[12:04:55] [EVENT] KennyBot | PassiveCoins: 154838587449491 +3
+[12:04:58] [EVENT] [main] 154838587449491 -> Joder Brillitos
+[12:05:10] [EVENT] [main] 154838587449491 -> PORQUE TE OCULTAS
+[12:05:15] [EVENT] [main] 154838587449491 -> PORQUE NO TE DEJAS CONOCERTE
+[12:05:15] [EVENT] [main] 90577337082042 -> Estoy llorando.
+[12:05:15] [EVENT] KennyBot | PassiveCoins: 90577337082042 +2
+[12:05:17] [EVENT] [main] 90577337082042 -> No se xq
+[12:05:23] [EVENT] [main] 90577337082042 -> Me da miedo
+[12:05:25] [EVENT] [main] 103754162552961 -> Que paso
+[12:05:25] [EVENT] KennyBot | PassiveCoins: 103754162552961 +5
+[12:05:31] [EVENT] [main] 90577337082042 -> No se
+[12:05:32] [EVENT] [main] 154838587449491 -> COMO VAS A SABER QUIEN ERES SI LITERALMENTE NO TE HAS DADO LA OPORTUNIDAD DE CONOCERTE!?
+[12:05:33] [EVENT] [main] 68595375730714 -> No tienes que tratar de encajar con nadie, deberías amarte tal y como eres. Si tú no te amas, ¿cómo quieres que los demás lo hagan? La soledad no es algo malo; lo malo es vivir engañada toda tu vida pensando en lo que dirán los demás solo por sentir de otra forma. Ser lesbiana, gay, hetero, trans, etc., no tiene nada de malo. La comodidad y el hecho de cómo te sientas tú es lo más importante. Si esas personas no te aceptan tal y como eres, aléjate. No finjas ser alguien que no eres por tratar de encajar en una sociedad donde todo está podrido y la mentalidad de las personas cada vez es más nefasta.
+[12:05:33] [EVENT] [main] 90577337082042 -> Ni yo
+[12:05:33] [EVENT] KennyBot | PassiveCoins: 68595375730714 +9
+[12:05:38] [EVENT] [main] 103754162552961 -> Tengo la mitad de mi pantalla negra
+[12:05:49] [EVENT] [main] 103754162552961 -> 😍😍😍
+[12:06:06] [EVENT] [main] 133088906633278 -> 😭😭
+[12:06:06] [EVENT] KennyBot | PassiveCoins: 133088906633278 +5
+[12:06:15] [EVENT] [main] 154838587449491 -> Mira tú hermano es trans y se siente feliz siendo trans
+[12:06:15] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[12:06:23] [EVENT] [main] 90577337082042 -> Esk,me da miedo decirles que me siento como ambos géneros,ya se burlan de mi mucho...
+[12:06:23] [EVENT] KennyBot | PassiveCoins: 90577337082042 +5
+[12:06:34] [EVENT] [main] 90577337082042 -> Ya que me dicen muchas cosas sobre mi aspecto
+[12:06:35] [EVENT] [main] 154838587449491 -> No sería bigenero?
+[12:06:55] [EVENT] [main] 90577337082042 -> Xq me llaman femboi,por el pelo,la voz la ropa...
+[12:07:01] [EVENT] [main] 90577337082042 -> Incluso me pegan por eso
+[12:07:06] [EVENT] [main] 90577337082042 -> Me llaman lucipote
+[12:07:07] [EVENT] [main] 90577337082042 -> Lol
+[12:07:10] [EVENT] [main] 90577337082042 -> Y no es broma
+[12:07:12] [EVENT] [main] 90577337082042 -> Me siento mal
+[12:07:14] [EVENT] [main] 154838587449491 -> ...
+[12:07:15] [EVENT] [main] 103754162552961 -> Entiendo
+[12:07:15] [EVENT] KennyBot | PassiveCoins: 103754162552961 +4
+[12:07:16] [EVENT] [main] 90577337082042 -> Noselavdd
+[12:07:17] [EVENT] [main] 68595375730714 -> Esos no son amigos, espero te des la oportunidad de conocerte a fondo y saber que es lo que realmente quieres. No puedo cambiar tu manera de pensar, pero si en algún momento quieres hablar sobre ello y buscar una buena decisión, estaré aquí para escucharte.
+[12:07:17] [EVENT] KennyBot | PassiveCoins: 68595375730714 +4
+[12:07:17] [EVENT] [main] 42740008116409 -> 😭
+[12:07:17] [EVENT] KennyBot | PassiveCoins: 42740008116409 +7
+[12:07:22] [EVENT] [main] 154838587449491 -> Vos sos el trans
+[12:07:22] [EVENT] KennyBot | PassiveCoins: 154838587449491 +4
+[12:07:31] [EVENT] [main] 103754162552961 -> ☹️☹️☹️
+[12:07:32] [EVENT] [main] 154838587449491 -> Sería bigenero
+[12:07:37] [EVENT] [main] 103754162552961 -> YO?
+[12:07:38] [EVENT] [main] 154838587449491 -> Te sientes de ambos géneros
+[12:07:40] [EVENT] [main] 154838587449491 -> Zi
+[12:07:46] [EVENT] [main] 103754162552961 -> Yo pensé que le decías a bri
+[12:07:48] [EVENT] [main] 154838587449491 -> o eras mujer?
+[12:07:57] [EVENT] [main] 103754162552961 -> Soy hombre
+[12:08:01] [EVENT] [main] 154838587449491 -> Vez
+[12:08:04] [EVENT] [main] 154838587449491 -> Tienes pito
+[12:08:05] [EVENT] [main] 90577337082042 -> Gracias...🤍
+[12:08:06] [EVENT] KennyBot | PassiveCoins: 90577337082042 +8
+[12:08:08] [EVENT] [main] 103754162552961 -> Si
+[12:08:08] [EVENT] [main] 154838587449491 -> Entonces vos no sos el trans..
+[12:08:11] [EVENT] [main] 154838587449491 -> Quien es trans?
+[12:08:18] [EVENT] [main] 103754162552961 -> Si soy ☹️
+[12:08:18] [EVENT] KennyBot | PassiveCoins: 103754162552961 +4
+[12:08:23] [EVENT] [main] 154838587449491 -> @all oigan quien de aca es trans?
+[12:08:23] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[12:08:25] [EVENT] [main] 90577337082042 -> Les amo chikos.
+[12:08:27] [EVENT] [main] 90577337082042 -> Gracias.
+[12:08:38] [EVENT] [main] 103754162552961 -> Pero a qué viene esto?
+[12:08:38] [EVENT] [main] 154838587449491 -> Ay coño Aniel, pues decile a la pinche de tú hermana Brillos que se acepte ala verga
+[12:08:42] [EVENT] [main] 154838587449491 -> ...
+[12:09:00] [EVENT] [main] 68595375730714 -> No tienes que agradecer nada, dulzor.
+[12:09:01] [EVENT] KennyBot | PassiveCoins: 68595375730714 +8
+[12:09:03] [EVENT] [main] 154838587449491 -> Tú hermana no se quiere aceptar y quiere encajar con los demás
+[12:09:07] [EVENT] [main] 103754162552961 -> Ma aún yo no lo acepto y ya quieres que venga a ayudarla
+[12:09:08] [EVENT] [main] 154838587449491 -> Pagame
+[12:09:13] [EVENT] [main] 154838587449491 -> ...
+[12:09:18] [EVENT] [main] 154838587449491 -> Malditos
+[12:09:19] [EVENT] [main] 68595375730714 -> Te voy a partir la cabeza.
+[12:09:19] [EVENT] [main] 103754162552961 -> Es algo que no debería
+[12:09:19] [EVENT] KennyBot | PassiveCoins: 103754162552961 +5
+[12:09:28] [EVENT] [main] 154838587449491 -> Oh
+[12:09:28] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[12:09:29] [EVENT] [main] 154838587449491 -> Mardita
+[12:09:36] [EVENT] [main] 154838587449491 -> Vez
+[12:09:37] [EVENT] [main] 154838587449491 -> Vennn
+[12:09:43] [EVENT] [main] 154838587449491 -> Este tiene cara de gay
+[12:09:48] [EVENT] [main] 103754162552961 -> Literalmente incluso si no te gusta ni lo vas a cambiar pq siendo tu misma es la única forma que vas a aceptar y te sentirás cómoda
+[12:09:51] [EVENT] [main] 154838587449491 -> Y ella es lesbiana @68595375730714
+[12:09:55] [EVENT] [main] 154838587449491 -> El es gay @79380390908143
+[12:10:00] [EVENT] [main] 154838587449491 -> @149822065619073 es gay también
+[12:10:08] [EVENT] [main] 154838587449491 -> @90577337082042 y se sienten feliz de ser homosexuales
+[12:10:17] [EVENT] [main] 68595375730714 -> Tú eres travesti y nadie te dice nada.
+[12:10:17] [EVENT] KennyBot | PassiveCoins: 68595375730714 +2
+[12:10:29] [EVENT] [main] 154838587449491 -> ...yo soy bigenero
+[12:10:29] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[12:10:30] [EVENT] [main] 154838587449491 -> Mira
+[12:10:41] [EVENT] [main] 79380390908143 -> quiero novio
+[12:10:41] [EVENT] KennyBot | PassiveCoins: 79380390908143 +3
+[12:10:42] [EVENT] [main] 154838587449491 -> Te voy a deddear hermosa, abre las piernas
+[12:10:48] [EVENT] [main] 154838587449491 -> JISMFKWKSID
+[12:10:49] [EVENT] [main] 154838587449491 -> Ayyda
+[12:10:50] [EVENT] [main] 79380390908143 -> Que sea fiel
+[12:10:51] [EVENT] [main] 154838587449491 -> JKAMFIWKSKROD
+[12:10:55] [EVENT] [main] 79380390908143 -> Que no me sea infiel
+[12:11:03] [EVENT] [main] 154838587449491 -> Nombre de esos son difíciles
+[12:11:25] [EVENT] [main] 103754162552961 -> Mi primera novia me engaño con su mejor amiga
+[12:11:25] [EVENT] KennyBot | PassiveCoins: 103754162552961 +9
+[12:11:29] [EVENT] [main] 154838587449491 -> Y mi lado vato se llama Ethan y es fuck boy
+[12:11:30] [EVENT] [main] 103754162552961 -> Y me fui con su hermano
+[12:11:34] [EVENT] [main] 90577337082042 -> ..
+[12:11:34] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[12:11:35] [EVENT] [main] 90577337082042 -> Les amo
+[12:11:37] [EVENT] [main] 90577337082042 -> Bye
+[12:11:38] [EVENT] [main] 154838587449491 -> Si fui
+[12:11:38] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[12:11:39] [EVENT] [main] 90577337082042 -> Estoy llorando
+[12:11:41] [EVENT] [main] 90577337082042 -> Mucho
+[12:11:42] [EVENT] [main] 103754162552961 -> Nosotros igual grr
+[12:11:44] [EVENT] [main] 103754162552961 -> JAJAJA
+[12:11:45] [EVENT] [main] 68595375730714 -> . . .
+[12:11:45] [EVENT] KennyBot | PassiveCoins: 68595375730714 +7
+[12:11:48] [EVENT] [main] 154838587449491 -> Muak te amamos
+[12:11:53] [EVENT] [main] 154838587449491 -> JIWNFKQKKWIEF
+[12:12:00] [EVENT] [main] 154838587449491 -> Y era trans
+[12:12:11] [EVENT] [main] 154838587449491 -> Su hermano tenia un pitote
+[12:12:12] [EVENT] [main] 103754162552961 -> AJAJSJD
+[12:12:13] [EVENT] [main] 154838587449491 -> Enorme
+[12:12:15] [EVENT] [main] 103754162552961 -> ??
+[12:12:16] [EVENT] [main] 103754162552961 -> KITTY
+[12:12:17] [EVENT] [main] 103754162552961 -> Hey
+[12:12:19] [EVENT] [main] 154838587449491 -> Yaaa
+[12:12:19] [EVENT] [main] 103754162552961 -> Calmada
+[12:12:19] [EVENT] [main] 154838587449491 -> Broma
+[12:12:24] [EVENT] [main] 154838587449491 -> Nunca le vi el pito..
+[12:12:36] [EVENT] [main] 154838587449491 -> Era broma pal yutu
+[12:12:49] [EVENT] [main] 154838587449491 -> Y esta vio a su hermano en el baño
+[12:12:49] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[12:12:50] [EVENT] [main] 154838587449491 -> JKSNFKWKWO
+[12:12:56] [EVENT] [main] 154838587449491 -> Noo ya
+[12:12:59] [EVENT] [main] 154838587449491 -> No puedo con eso
+[12:13:02] [EVENT] [main] 154838587449491 -> JIAKDKWOW9W9E
+[12:13:03] [EVENT] [main] 68595375730714 -> . . .
+[12:13:03] [EVENT] KennyBot | PassiveCoins: 68595375730714 +9
+[12:13:13] [EVENT] [main] 154838587449491 -> NUANDKWKSKDKW
+[12:13:13] [EVENT] [main] 154838587449491 -> Ya
+[12:13:15] [EVENT] [main] 28377671016667 -> Que tal
+[12:13:16] [EVENT] KennyBot | PassiveCoins: 28377671016667 +9
+[12:13:20] [EVENT] [main] 28377671016667 -> Cómo estás?
+[12:13:30] [EVENT] [main] 154838587449491 -> A @76721755832561 le mandaron pitos negros
+[12:13:39] [EVENT] [main] 68595375730714 -> Ojalá le digan a tu flaco.
+[12:13:48] [EVENT] [main] 154838587449491 -> @68595375730714 y a ella vio varios pitos
+[12:13:53] [EVENT] [main] 154838587449491 -> No ya
+[12:13:53] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[12:13:54] [EVENT] [main] 154838587449491 -> Broma
+[12:13:56] [EVENT] [main] 154838587449491 -> Nooo
+[12:13:58] [EVENT] [main] 154838587449491 -> Ya cállate
+[12:14:01] [EVENT] [main] 68595375730714 -> Ándale.
+[12:14:05] [EVENT] [main] 68595375730714 -> Tuyos o qué?
+[12:14:05] [EVENT] KennyBot | PassiveCoins: 68595375730714 +2
+[12:14:06] [EVENT] [main] 154838587449491 -> Me estoy buelando de vos
+[12:14:08] [EVENT] [main] 154838587449491 -> Si amika
+[12:14:13] [EVENT] [main] 154838587449491 -> Yo tengo 47 pitos
+[12:14:15] [EVENT] [main] 154838587449491 -> De 47 cm
+[12:14:27] [EVENT] [main] 68595375730714 -> De 1cm?
+[12:14:32] [EVENT] [main] 154838587449491 -> Tan hpta
+[12:14:48] [EVENT] [main] 154838587449491 -> Bueno @16480276058158 es lesbiana también
+[12:14:51] [EVENT] [main] 154838587449491 -> Y esta re feliz
+[12:14:52] [EVENT] [main] 154838587449491 -> Oh
+[12:14:53] [EVENT] [main] 154838587449491 -> Se iba
+[12:14:53] [EVENT] KennyBot | PassiveCoins: 154838587449491 +4
+[12:14:58] [EVENT] [main] 154838587449491 -> 😞
+[12:15:01] [EVENT] [main] 154838587449491 -> No soportan
+[12:15:23] [EVENT] [main] 154838587449491 -> Adonita
+[12:15:25] [EVENT] [main] 48409297866963 -> Que taal?
+[12:15:25] [EVENT] KennyBot | PassiveCoins: 48409297866963 +8
+[12:15:25] [EVENT] [main] 92161928392847 -> Holaaaaa
+[12:15:25] [EVENT] KennyBot | PassiveCoins: 92161928392847 +1
+[12:15:27] [EVENT] [main] 48409297866963 -> Holaa
+[12:15:58] [EVENT] [main] 160684021137417 -> Que no soy gay
+[12:15:58] [EVENT] KennyBot | PassiveCoins: 160684021137417 +1
+[12:16:17] [EVENT] [main] 154838587449491 -> Tú hermana Adonita también en su tiempo fue homosexual y se sentía fuck boy tomboy @90577337082042
+[12:16:17] [EVENT] KennyBot | PassiveCoins: 154838587449491 +3
+[12:16:21] [EVENT] [main] 154838587449491 -> ...gay
+[12:16:39] [EVENT] [main] 68595375730714 -> Tú asustas a cualquiera.
+[12:16:39] [EVENT] KennyBot | PassiveCoins: 68595375730714 +9
+[12:16:46] [EVENT] [main] 154838587449491 -> Menos a Volkod
+[12:16:47] [EVENT] [main] 154838587449491 -> El me ama
+[12:16:53] [EVENT] [main] 68595375730714 -> Ese también se va.
+[12:17:03] [EVENT] [main] 154838587449491 -> JENN
+[12:17:18] [EVENT] [main] 160684021137417 -> Que no
+[12:17:18] [EVENT] KennyBot | PassiveCoins: 160684021137417 +10
+[12:17:55] [EVENT] [main] 21514313330714 -> @all arriba arriba
+[12:17:55] [EVENT] KennyBot | PassiveCoins: 21514313330714 +3
+[12:17:56] [EVENT] [main] 154838587449491 -> Zi
+[12:17:56] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[12:18:07] [EVENT] [main] 76721755832561 -> Era guapo
+[12:18:07] [EVENT] KennyBot | PassiveCoins: 76721755832561 +3
+[12:18:11] [EVENT] [main] 154838587449491 -> ...
+[12:18:17] [EVENT] [main] 154838587449491 -> Tú? Si
+[12:18:33] [EVENT] [main] 42740008116409 -> Bien
+[12:18:33] [EVENT] KennyBot | PassiveCoins: 42740008116409 +10
+[12:18:40] [EVENT] [main] 160684021137417 -> Nunca he salido con un hombre, y tampoco lo haría
+[12:18:40] [EVENT] KennyBot | PassiveCoins: 160684021137417 +9
+[12:18:45] [EVENT] [main] 160684021137417 -> Prefiero las mujeres
+[12:18:57] [EVENT] [main] 69725270835221 -> Muy bien, ¿y tú?? ¿qué tal todo?
+[12:18:57] [EVENT] KennyBot | PassiveCoins: 69725270835221 +7
+[12:18:57] [EVENT] [main] 154838587449491 -> Vez @all  hemos sido homosexuales, trans, bigenero, género fluido, pansexual, etc @90577337082042
+[12:18:57] [EVENT] KennyBot | PassiveCoins: 154838587449491 +3
+[12:19:11] [EVENT] [main] 154838587449491 -> Por eso te metiste con mi ex
+[12:19:13] [EVENT] [main] 154838587449491 -> Mardito
+[12:20:22] [EVENT] [main] 154838587449491 -> @68595375730714 sapa
+[12:20:23] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[12:21:16] [EVENT] [main] 160684021137417 -> ¿Con tu ex?
+[12:21:16] [EVENT] KennyBot | PassiveCoins: 160684021137417 +1
+[12:21:39] [EVENT] [main] 154838587449491 -> Danna
+[12:21:39] [EVENT] KennyBot | PassiveCoins: 154838587449491 +3
+[12:21:41] [EVENT] [main] 154838587449491 -> Estupido
+[12:21:45] [EVENT] [main] 154838587449491 -> Ahi le andabas chillando
+[12:21:48] [EVENT] [main] 160684021137417 -> JAJAJA
+[12:21:49] [EVENT] [main] 154838587449491 -> Hasta se llevo a tú hije
+[12:21:55] [EVENT] [main] 160684021137417 -> No
+[12:21:58] [EVENT] [main] 154838587449491 -> Zi
+[12:22:01] [EVENT] [main] 160684021137417 -> Me la dieron
+[12:22:07] [EVENT] [main] 160684021137417 -> Pero hace poquito me hable con ella nuevamente
+[12:22:11] [EVENT] [main] 160684021137417 -> Y le di la niña
+[12:22:16] [EVENT] [main] 154838587449491 -> Ya superala
+[12:22:17] [EVENT] [main] 154838587449491 -> Iralo
+[12:22:22] [EVENT] [main] 160684021137417 -> Hace mucho lo hice
+[12:22:22] [EVENT] KennyBot | PassiveCoins: 160684021137417 +2
+[12:22:33] [EVENT] [main] 160684021137417 -> Ella tiene pareja y creo que está embarazada
+[12:22:41] [EVENT] [main] 160684021137417 -> De hecho, ella es mi sobrina
+[12:23:14] [EVENT] [main] 154838587449491 -> ...
+[12:23:14] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[12:23:20] [EVENT] [main] 154838587449491 -> Norteño
+[12:23:54] [EVENT] [main] 160684021137417 -> Si soy
+[12:23:54] [EVENT] KennyBot | PassiveCoins: 160684021137417 +3
+[12:23:59] [EVENT] [main] 160684021137417 -> Mi ex es mi tía
+[12:24:12] [EVENT] [main] 160684021137417 -> Pero ya se fue del fako
+[12:24:24] [EVENT] [main] 143929219514503 -> HWJWJWWJJWWJWJSJSJWJWJSJAJAJAJAJA.
+[12:24:24] [EVENT] KennyBot | PassiveCoins: 143929219514503 +9
+[12:26:24] [EVENT] [main] 154838587449491 -> ...
+[12:26:24] [EVENT] KennyBot | PassiveCoins: 154838587449491 +6
+[12:26:26] [EVENT] [main] 98093395607805 -> yo
+[12:26:26] [EVENT] KennyBot | PassiveCoins: 98093395607805 +3
+[12:26:44] [EVENT] [main] 154838587449491 -> Vez @90577337082042 hasta Matias era trans
+[12:26:58] [EVENT] [main] 98093395607805 -> Ese q.
+[12:27:26] [EVENT] [main] 90577337082042 -> JWJWJEJEJEJEJENE
+[12:27:26] [EVENT] KennyBot | PassiveCoins: 90577337082042 +3
+[12:27:41] [EVENT] [main] 154838587449491 -> Es que si
+[12:27:41] [EVENT] KennyBot | PassiveCoins: 154838587449491 +7
+[12:27:47] [EVENT] [main] 98093395607805 -> Por q me mencionas a ese :((
+[12:27:47] [EVENT] KennyBot | PassiveCoins: 98093395607805 +5
+[12:27:50] [EVENT] [main] 154838587449491 -> Y eran feliz siendo trans
+[12:27:53] [EVENT] [main] 154838587449491 -> Y frotandose
+[12:27:54] [EVENT] [main] 154838587449491 -> Y asi
+[12:28:02] [EVENT] [main] 98093395607805 -> Q miedo.
+[12:28:04] [EVENT] [main] 154838587449491 -> Jugando a las espaditas
+[12:28:04] [EVENT] [main] 68595375730714 -> . . .
+[12:28:04] [EVENT] KennyBot | PassiveCoins: 68595375730714 +1
+[12:28:07] [EVENT] [main] 68595375730714 -> Qué onda.
+[12:28:16] [EVENT] [main] 154838587449491 -> UKANDLWLDKFKW
+[12:28:23] [EVENT] [main] 98093395607805 -> quiénes? 😧
+[12:28:30] [EVENT] [main] 154838587449491 -> Tú y Matias
+[12:28:34] [EVENT] [main] 154838587449491 -> Hasta te ponían en 4 araña
+[12:28:37] [EVENT] [main] 154838587449491 -> Y te daba
+[12:28:41] [EVENT] [main] 98093395607805 -> AHEM
+[12:28:41] [EVENT] [main] 154838587449491 -> Martillazo en el ano
+[12:28:41] [EVENT] KennyBot | PassiveCoins: 154838587449491 +10
+[12:28:42] [EVENT] [main] 154838587449491 -> Brr
+[12:28:43] [EVENT] [main] 154838587449491 -> Brr
+[12:28:44] [EVENT] [main] 98093395607805 -> Pasado pisado.
+[12:28:49] [EVENT] [main] 98093395607805 -> No recordemos esas cosas.
+[12:28:49] [EVENT] KennyBot | PassiveCoins: 98093395607805 +5
+[12:28:56] [EVENT] [main] 154838587449491 -> Pero es verdad
+[12:29:03] [EVENT] [main] 90577337082042 -> Le dije a mi mejor amiga virtual,a mí cachorrito y mi prima,todos me aceptaron
+[12:29:03] [EVENT] KennyBot | PassiveCoins: 90577337082042 +4
+[12:29:04] [EVENT] [main] 98093395607805 -> No revivamos mi PASADO HUMILDE.
+[12:29:04] [EVENT] [main] 90577337082042 -> Les amo
+[12:29:05] [EVENT] [main] 90577337082042 -> Ayuda
+[12:29:05] [EVENT] [main] 160684021137417 -> Que pedo contigo
+[12:29:06] [EVENT] KennyBot | PassiveCoins: 160684021137417 +5
+[12:29:09] [EVENT] [main] 160684021137417 -> JAJAJA
+[12:29:29] [EVENT] [main] 98093395607805 -> Sii?? Yo no recuerdo sabes? Quién es Matías?? 🤔🤔
+[12:29:30] [EVENT] [main] 154838587449491 -> Pues si wey
+[12:29:36] [EVENT] [main] 154838587449491 -> Vez
+[12:29:45] [EVENT] [main] 154838587449491 -> El que te la metia en el ano
+[12:29:46] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[12:29:46] [EVENT] [main] 154838587449491 -> O sea
+[12:29:48] [EVENT] [main] 154838587449491 -> La verga
+[12:29:52] [EVENT] [main] 154838587449491 -> Te la metia en el ano
+[12:29:54] [EVENT] [main] 154838587449491 -> Y te hacia
+[12:29:55] [EVENT] [main] 154838587449491 -> Brr
+[12:29:55] [WARN] KennyBot | Spam detectado: 154838587449491
+[12:29:55] [WARN] KennyBot | Spam detectado: 154838587449491
+[12:29:56] [EVENT] [main] 154838587449491 -> Brr
+[12:29:59] [EVENT] [main] 154838587449491 -> Martillazo en el ano
+[12:32:21] [EVENT] [main] 98093395607805 -> En fin, no hay nada de malo en ser trans, es normal, nosotros no escogimos nuestro género al nacer y que no nos identifiquemos con él género biológico no nos hace raros ni diferentes, solo somos personas y ya.
+[12:32:21] [EVENT] KennyBot | PassiveCoins: 98093395607805 +6
+[12:32:33] [EVENT] [main] 90577337082042 -> Vean mi amikita me acepto
+[12:32:33] [EVENT] KennyBot | PassiveCoins: 90577337082042 +2
+[12:32:45] [EVENT] [main] 98093395607805 -> Kitty vete, Kitty no me recuerdes eso.
+[12:32:52] [EVENT] [main] 154838587449491 -> @all esto lo fijo
+[12:32:52] [EVENT] KennyBot | PassiveCoins: 154838587449491 +1
+[12:33:01] [EVENT] [main] 56968932753518 -> Holaa
+[12:33:01] [EVENT] KennyBot | PassiveCoins: 56968932753518 +5
+[12:33:06] [EVENT] [main] 154838587449491 -> Vez
+[12:33:14] [EVENT] [main] 154838587449491 -> JKSKFKWKDI
+[12:33:29] [EVENT] [main] 90577337082042 -> Ahora solo me falta mis amigos del instituto
+[12:33:35] [EVENT] [main] 90577337082042 -> Tengo muchísimo miedo
+[12:33:35] [EVENT] KennyBot | PassiveCoins: 90577337082042 +2
+[12:33:37] [EVENT] [main] 90577337082042 -> No quiero
+[12:34:11] [EVENT] [main] 154838587449491 -> No lo hagas y ya
+[12:34:11] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[12:34:16] [EVENT] [main] 154838587449491 -> Hazlo con personas de confianza
+[12:34:36] [EVENT] [main] 154838587449491 -> Aunque cambia tú pronombre
+[12:34:37] [EVENT] [main] 154838587449491 -> Y eso
+[12:34:49] [EVENT] [main] 154838587449491 -> Hola lesbiano @28699541942362
+[12:34:59] [EVENT] [main] 90577337082042 -> A qué cambio si no se que soy
+[12:34:59] [EVENT] KennyBot | PassiveCoins: 90577337082042 +3
+[12:35:18] [EVENT] [main] 154838587449491 -> Puedes decir que pueden usar el pronombre ya sea masculino y femenino
+[12:35:19] [EVENT] KennyBot | PassiveCoins: 154838587449491 +8
+[12:35:25] [EVENT] [main] 154838587449491 -> Te buscaremos un nombre de vato
+[12:35:29] [WARN] KennyBot desconectado: 428
+[12:35:29] [INFO] KennyBot | Reconectando en 5 segundos...
+[12:35:34] [INFO] Socket cerrado | main
+[12:35:34] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[12:35:34] [OK] KennyBot | SocketManager cargado
+[12:35:36] [OK] KennyBot conectado
+[12:35:48] [INFO] Global Role Sync | Grupos: 10 | Miembros: 670 | Cambios: 4 | Errores: 0
+[12:36:07] [EVENT] [main] 90577337082042 -> Oye si
+[12:36:08] [EVENT] KennyBot | PassiveCoins: 90577337082042 +5
+[12:36:17] [EVENT] [main] 90577337082042 -> JWJWJEJEJEJEJENE
+[12:36:19] [EVENT] [main] 90577337082042 -> Gracias
+[12:36:20] [EVENT] [main] 90577337082042 -> Kitty
+[12:36:22] [EVENT] [main] 90577337082042 -> Te amo
+[12:36:29] [EVENT] [main] 90577337082042 -> 😭😭
+[12:36:32] [EVENT] [main] 154838587449491 -> Lucien Veyron
+[12:36:32] [EVENT] KennyBot | PassiveCoins: 154838587449491 +9
+[12:36:32] [EVENT] [main] 90577337082042 -> A todos oc
+[12:36:33] [EVENT] [main] 154838587449491 -> Ese
+[12:36:48] [EVENT] [main] 154838587449491 -> Yo te bautizo como Lucien Veyron
+[12:37:04] [EVENT] [main] 90577337082042 -> Meenkanta
+[12:37:12] [EVENT] [main] 154838587449491 -> Porque tú eres mi nene @68595375730714
+[12:37:32] [EVENT] [main] 90577337082042 -> Me lo voy a poner ahora vuelvo
+[12:37:32] [EVENT] KennyBot | PassiveCoins: 90577337082042 +1
+[12:37:35] [EVENT] [main] 227994698313945 -> Lucien Veyron, soy Elloise un gusto
+[12:37:35] [EVENT] KennyBot | PassiveCoins: 227994698313945 +9
+[12:38:13] [EVENT] [main] 90577337082042 -> Igual
+[12:38:17] [EVENT] [main] 90577337082042 -> Gracias
+[12:38:20] [EVENT] [main] 90577337082042 -> Les amo
+[12:38:24] [EVENT] [main] 90577337082042 -> No me canso de decirlo
+[12:38:31] [EVENT] [main] 6258438500556 -> fola, mí niño.
+[12:38:31] [EVENT] KennyBot | PassiveCoins: 6258438500556 +3
+[12:38:34] [EVENT] [main] 6258438500556 -> fola.
+[12:38:37] [EVENT] [main] 6258438500556 -> hola.
+[12:38:42] [WARN] KennyBot BR desconectado: 428
+[12:38:42] [INFO] KennyBot BR | Reconectando en 5 segundos...
+[12:38:43] [EVENT] [main] 154838587449491 -> Ve
+[12:38:44] [EVENT] KennyBot | PassiveCoins: 154838587449491 +10
+[12:38:47] [INFO] Socket cerrado | brazil
+[12:38:47] [INFO] KennyBot BR | Usando WA v2.3000.1043857760
+[12:38:47] [OK] KennyBot BR | SocketManager cargado
+[12:38:48] [OK] KennyBot BR conectado
+[12:38:50] [EVENT] [main] 154838587449491 -> Muak nosotros a ti
+[12:38:59] [EVENT] [main] 143929219514503 -> Ay, LPTM HWHWHWHWHWAHQKQJSKQJKJA.
+[12:39:00] [EVENT] KennyBot | PassiveCoins: 143929219514503 +5
+[12:39:01] [EVENT] [main] 177898216538250 -> Tepicolacola
+[12:39:01] [EVENT] KennyBot | PassiveCoins: 177898216538250 +2
+[12:39:13] [EVENT] [main] 6258438500556 -> que traen.
+[12:39:14] [EVENT] [main] 143929219514503 -> Me salió un vídeo de Taehyung intentando echarse la bendición.
+[12:39:15] [EVENT] [main] 143929219514503 -> HSJSJSJSJAJSLAKSNSA.
+[12:39:20] [EVENT] [main] 143929219514503 -> Lo hacía al revés.
+[12:39:22] [EVENT] [main] 6258438500556 -> OQIWJDHSISJOAJSW.
+[12:39:28] [EVENT] [main] 143929219514503 -> Primero los lados y luego abajo y arriba.
+[12:39:29] [EVENT] [main] 6258438500556 -> quetepasa
+[12:39:38] [EVENT] [main] 154838587449491 -> Amika nosotras mira @68595375730714
+[12:39:43] [EVENT] [main] 143929219514503 -> ¿Cómo vas?
+[12:40:22] [EVENT] [main] 90577337082042 -> Lifto
+[12:40:22] [EVENT] KennyBot | PassiveCoins: 90577337082042 +9
+[12:40:26] [EVENT] [main] 90577337082042 -> Etiquetenme
+[12:40:29] [EVENT] [main] 90577337082042 -> Quiero ver cómo queda
+[12:40:33] [EVENT] [main] 90577337082042 -> Jejnekrnrnr JEJEBRNRJ
+[12:40:37] [EVENT] [main] 6258438500556 -> Bien.
+[12:40:37] [EVENT] KennyBot | PassiveCoins: 6258438500556 +8
+[12:41:13] [EVENT] [main] 154838587449491 -> ..vou
+[12:41:13] [EVENT] KennyBot | PassiveCoins: 154838587449491 +5
+[12:41:18] [EVENT] [main] 154838587449491 -> @90577337082042
+[12:41:25] [EVENT] [main] 177898216538250 -> Es que
+[12:41:25] [EVENT] KennyBot | PassiveCoins: 177898216538250 +8
+[12:41:35] [EVENT] [main] 177898216538250 -> Asi pide a dios
+[12:41:37] [EVENT] [main] 177898216538250 -> Por eso
+[12:41:37] [EVENT] [main] 143929219514503 -> Que bueno.
+[12:41:37] [EVENT] KennyBot | PassiveCoins: 143929219514503 +3
+[12:41:41] [EVENT] [main] 177898216538250 -> Es millonario
+[12:41:43] [EVENT] [main] 154838587449491 -> Usa todos los apellidos menos los míos
+[12:41:46] [EVENT] [main] 143929219514503 -> Este wey.
+[12:41:52] [EVENT] [main] 143929219514503 -> ¿De qué hablas?
+[12:41:53] [EVENT] [main] 6258438500556 -> sí.
+[12:41:53] [EVENT] KennyBot | PassiveCoins: 6258438500556 +6
+[12:42:11] [EVENT] [main] 177898216538250 -> De mi kdrama
+[12:42:13] [EVENT] [main] 177898216538250 -> We
+[12:42:14] [EVENT] [main] 143929219514503 -> Él todas las noches se pregunta el porque no nació en Latinoamérica.
+[12:42:21] [EVENT] [main] 177898216538250 -> JSJSKSBSKS
+[12:42:22] [EVENT] [main] 143929219514503 -> WHWJWJWJSJSJSJSKSJSLSJALSJJA.
+[12:42:22] [EVENT] [main] 90577337082042 -> Queda hermoso
+[12:42:23] [EVENT] KennyBot | PassiveCoins: 90577337082042 +10
+[12:42:37] [EVENT] [main] 90577337082042 -> Ococo
+[12:42:47] [EVENT] [main] 177898216538250 -> Soy zevkie
+[12:42:47] [EVENT] KennyBot | PassiveCoins: 177898216538250 +2
+[12:42:50] [EVENT] [main] 177898216538250 -> Y
+[12:42:54] [EVENT] [main] 177898216538250 -> A las 6 am
+[12:42:55] [EVENT] [main] 154838587449491 -> Asi son
+[12:42:55] [EVENT] KennyBot | PassiveCoins: 154838587449491 +9
+[12:42:59] [EVENT] [main] 177898216538250 -> Me comí una maruchan con salsa
+[12:43:03] [EVENT] [main] 177898216538250 -> Y cheetos
+[12:43:45] [EVENT] [main] 177898216538250 -> Como todos consiguen novios
+[12:43:52] [EVENT] [main] 177898216538250 -> Yo ando viendo si me consigo capcut pro
+[12:43:53] [EVENT] KennyBot | PassiveCoins: 177898216538250 +3
+[12:43:54] [EVENT] [main] 177898216538250 -> Apk
+[12:44:29] [EVENT] [main] 177898216538250 -> @all ; vengan a dar bienvenida
+[12:44:43] [EVENT] [main] 143929219514503 -> La bien venida.
+[12:44:43] [EVENT] KennyBot | PassiveCoins: 143929219514503 +10
+[12:44:50] [EVENT] [main] 177898216538250 -> Dejame
+[12:44:54] [EVENT] [main] 66615613853850 -> A mi se me olvidó pagar
+[12:44:54] [EVENT] KennyBot | PassiveCoins: 66615613853850 +6
+[12:45:00] [EVENT] [main] 177898216538250 -> AMOR
+[12:45:00] [EVENT] KennyBot | PassiveCoins: 177898216538250 +2
+[12:45:04] [EVENT] [main] 177898216538250 -> VEN A PRIVADO
+[12:45:13] [EVENT] [main] 177898216538250 -> APIDOAPIDO
+[12:45:17] [EVENT] [main] 66615613853850 -> Oki
+[12:45:40] [EVENT] [main] 143929219514503 -> Shoo tengooOoo.
+[12:45:46] [EVENT] [main] 143929219514503 -> Lo descargué asher.
+[12:45:46] [EVENT] KennyBot | PassiveCoins: 143929219514503 +9
+[12:46:07] [EVENT] [main] 177898216538250 -> Melopasasamor?
+[12:46:08] [EVENT] KennyBot | PassiveCoins: 177898216538250 +5
+[12:46:11] [EVENT] [main] 177898216538250 -> Andaleamor
+[12:46:14] [EVENT] [main] 177898216538250 -> Dimequesi
+[12:48:53] [EVENT] [main] 143929219514503 -> https://t.me/capcutmodapp/457
+[12:48:53] [EVENT] KennyBot | PassiveCoins: 143929219514503 +9
+[12:50:42] [EVENT] [main] 154838587449491 -> Hoy se besan todos
+[12:50:42] [EVENT] KennyBot | PassiveCoins: 154838587449491 +5
+[12:50:45] [EVENT] [main] 154838587449491 -> 👩‍❤️‍💋‍👩
+[12:51:12] [EVENT] [main] 185199677718758 -> Buenas tardes hermosa familia
+[12:51:12] [EVENT] KennyBot | PassiveCoins: 185199677718758 +10
+[12:51:16] [EVENT] [main] 185199677718758 -> Que cuentan?
+[12:51:30] [EVENT] [main] 68595375730714 -> Y por siempre seré tu nena. 🫰🏿
+[12:51:30] [EVENT] KennyBot | PassiveCoins: 68595375730714 +10
+[12:52:04] [EVENT] [main] 177898216538250 -> No me deja
+[12:52:04] [EVENT] KennyBot | PassiveCoins: 177898216538250 +2
+[12:52:07] [EVENT] [main] 177898216538250 -> Que hago
+[12:52:24] [EVENT] [main] 154838587449491 -> Con un beso te llevo a las estrellas 💜🥺
+[12:52:24] [EVENT] KennyBot | PassiveCoins: 154838587449491 +2
+[12:53:34] [EVENT] [main] 265321705398411 -> Hihi
+[12:53:34] [EVENT] KennyBot | PassiveCoins: 265321705398411 +8
+[12:54:00] [EVENT] [main] 265321705398411 -> 🤨
+[12:54:07] [EVENT] [main] 265321705398411 -> Que la de que de cuando lo para khe
+[12:56:59] [EVENT] [main] 175759457034250 -> Me perdi
+[12:56:59] [EVENT] KennyBot | PassiveCoins: 175759457034250 +3
+[12:57:01] [EVENT] [main] 175759457034250 -> Otra vez
+[12:57:07] [EVENT] [main] 154838587449491 -> Ola estrella de polno
+[12:57:07] [EVENT] KennyBot | PassiveCoins: 154838587449491 +9
+[12:57:14] [EVENT] [main] 154838587449491 -> Weyes ya
+[12:57:19] [EVENT] [main] 154838587449491 -> Denme a mi hombre
+[12:57:20] [EVENT] [main] 154838587449491 -> Ya me canse
+[12:57:25] [EVENT] [main] 154838587449491 -> Dame a mi hombre @68595375730714
+[12:58:29] [EVENT] [main] 160684021137417 -> ¿No sería al revés...?
+[12:58:29] [EVENT] KennyBot | PassiveCoins: 160684021137417 +5
+[12:58:51] [EVENT] [main] 154838587449491 -> ...
+[12:58:51] [EVENT] KennyBot | PassiveCoins: 154838587449491 +4
+[12:58:54] [EVENT] [main] 154838587449491 -> No
+[12:58:58] [EVENT] [main] 154838587449491 -> Porque yo no follo
+[12:59:27] [EVENT] [main] 154838587449491 -> Yo soy virgen
+[13:00:02] [EVENT] [main] 21514313330714 -> Holiii
+[13:00:03] [EVENT] KennyBot | PassiveCoins: 21514313330714 +9
+[13:01:10] [EVENT] [main] 263814540984483 -> _Holiis corazón jsjs_
+[13:01:10] [EVENT] KennyBot | PassiveCoins: 263814540984483 +8
+[13:01:17] [EVENT] [main] 263814540984483 -> _Como tas?_
+[13:01:29] [EVENT] [main] 160684021137417 -> Virgen con hijos
+[13:01:29] [EVENT] KennyBot | PassiveCoins: 160684021137417 +9
+[13:01:34] [EVENT] [main] 154838587449491 -> Zi
+[13:01:35] [EVENT] KennyBot | PassiveCoins: 154838587449491 +4
+[13:02:01] [EVENT] [main] 21514313330714 -> Bien gracias cielito y usted?
+[13:02:02] [EVENT] KennyBot | PassiveCoins: 21514313330714 +9
+[13:03:00] [EVENT] [main] 263814540984483 -> _Bien bien igual corazón, eso eso que este bien en estos días jsjs._
+[13:03:01] [EVENT] KennyBot | PassiveCoins: 263814540984483 +8
+[13:03:09] [EVENT] [main] 263814540984483 -> _Ahorita dando unas clases_
+[13:04:45] [EVENT] [main] 21514313330714 -> Eso me alegra corazón, gracias
+[13:04:45] [EVENT] KennyBot | PassiveCoins: 21514313330714 +10
+[13:04:56] [EVENT] [main] 21514313330714 -> Ohh comprendo le deseo mucha suerte
+[13:04:58] [EVENT] [main] 21514313330714 -> Awww
+[13:05:59] [INFO] Cerrando KennyBot...
+[13:05:59] [INFO] Deteniendo main...
+[13:06:00] [INFO] Deteniendo brazil...
+[13:06:00] [INFO] Socket cerrado | main
+[13:06:00] [INFO] Socket cerrado | brazil
+[13:06:00] [OK] Todas las sesiones fueron cerradas
+[13:11:36] [OK] UnifiedRateLimiter cargado
+[13:11:37] [OK] Comando cargado: ban
+[13:11:37] [OK] Comando cargado: unban
+[13:11:37] [OK] Comando cargado: antilink
+[13:11:40] [OK] Comando cargado: card
+[13:11:40] [OK] Comando cargado: cardinfo
+[13:11:40] [OK] Comando cargado: claim
+[13:11:40] [OK] Comando cargado: collection
+[13:11:40] [OK] Comando cargado: antibot
+[13:11:40] [OK] Comando cargado: antifake
+[13:11:40] [OK] Comando cargado: autolevelup
+[13:11:40] [OK] Comando cargado: crush
+[13:11:40] [OK] Comando cargado: fusion
+[13:11:45] [OK] Comando cargado: qc
+[13:11:45] [OK] Comando cargado: rate
+[13:11:45] [OK] Comando cargado: ship
+[13:11:45] [OK] Comando cargado: facebook
+[13:11:45] [OK] Comando cargado: instagram
+[13:11:45] [OK] Comando cargado: pinterest
+[13:11:54] [OK] Comando cargado: play
+[13:11:54] [OK] Comando cargado: spotify
+[13:11:54] [OK] Comando cargado: tiktok
+[13:11:54] [OK] Comando cargado: ytmp3
+[13:11:54] [OK] Comando cargado: ytmp4
+[13:11:54] [OK] Comando cargado: balance
+[13:11:54] [OK] Comando cargado: buy
+[13:11:54] [WARN] Comando duplicado ignorado: buy (crime.js)
+[13:11:54] [OK] Comando cargado: daily
+[13:11:54] [OK] Comando cargado: deposit
+[13:11:54] [OK] Comando cargado: gamble
+[13:11:54] [OK] Comando cargado: inventory
+[13:11:54] [OK] Comando cargado: leaderboardmoney
+[13:11:54] [OK] Comando cargado: open
+[13:11:55] [OK] Comando cargado: pay
+[13:11:55] [OK] Comando cargado: rob
+[13:11:55] [OK] Comando cargado: shop
+[13:11:55] [OK] Comando cargado: slots
+[13:11:55] [OK] Comando cargado: withdraw
+[13:11:55] [OK] Comando cargado: work
+[13:11:55] [OK] Comando cargado: equip
+[13:11:55] [OK] Comando cargado: events
+[13:11:55] [OK] Comando cargado: brat
+[13:12:12] [OK] Comando cargado: exportstats
+[13:12:12] [OK] Comando cargado: inactive
+[13:12:12] [OK] Comando cargado: msgstats
+[13:12:12] [OK] Comando cargado: topmessages
+[13:12:12] [OK] Comando cargado: groups
+[13:12:13] [OK] Comando cargado: add
+[13:12:13] [OK] Comando cargado: admins
+[13:12:13] [OK] Comando cargado: demote
+[13:12:13] [OK] Comando cargado: hidetag
+[13:12:13] [OK] Comando cargado: kick
+[13:12:13] [OK] Comando cargado: link
+[13:12:13] [OK] Comando cargado: mute
+[13:12:13] [OK] Comando cargado: promote
+[13:12:13] [OK] Comando cargado: tagall
+[13:12:13] [OK] Comando cargado: unwarn
+[13:12:13] [OK] Comando cargado: warn
+[13:12:13] [OK] Comando cargado: warnings
+[13:12:13] [OK] Comando cargado: welcome
+[13:12:13] [OK] Comando cargado: ia
+[13:12:13] [OK] Comando cargado: join
+[13:12:13] [OK] Comando cargado: leaderboard
+[13:12:13] [OK] Comando cargado: level
+[13:12:13] [WARN] Comando duplicado ignorado: rank (rank.js)
+[13:12:13] [OK] Comando cargado: menu
+[13:12:14] [OK] Comando cargado: myclub
+[13:12:14] [OK] Comando cargado: objectives
+[13:12:14] [OK] Comando cargado: openpack
+[13:12:14] [OK] Comando cargado: packs
+[13:12:14] [OK] Comando cargado: pick
+[13:12:14] [OK] Comando cargado: ping
+[13:12:14] [OK] Comando cargado: addpremium
+[13:12:14] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[13:12:14] [OK] Comando cargado: delpremium
+[13:12:14] [OK] Comando cargado: profile
+[13:12:14] [OK] Comando cargado: sticker
+[13:12:14] [OK] Comando cargado: addjoinmsg
+[13:12:14] [OK] Comando cargado: clearjoinmsg
+[13:12:14] [OK] Comando cargado: deljoinmsg
+[13:12:14] [OK] Comando cargado: listjoinmsg
+[13:12:15] [INFO] Iniciando sistema multi-bot...
+[13:12:15] [INFO] Instancias configuradas: main, brazil
+[13:12:16] [OK] MySQL conectado y tabla lista
+[13:12:16] [OK] Base de datos inicializada
+[13:12:16] [INFO] Iniciando 2 instancia(s): main, brazil
+[13:12:17] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[13:12:17] [OK] KennyBot | SocketManager cargado
+[13:12:17] [INFO] KennyBot BR | Usando WA v2.3000.1043857760
+[13:12:17] [OK] KennyBot BR | SocketManager cargado
+[13:12:18] [OK] KennyBot BR conectado
+[13:12:18] [OK] KennyBot conectado
+[13:17:46] [INFO] Cerrando KennyBot...
+[13:17:46] [INFO] Deteniendo main...
+[13:17:46] [INFO] Deteniendo brazil...
+[13:17:46] [INFO] Socket cerrado | main
+[13:17:46] [INFO] Socket cerrado | brazil
+[13:17:46] [OK] Todas las sesiones fueron cerradas

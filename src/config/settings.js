@@ -78,7 +78,7 @@ const settings = {
                 'default',
 
             menuImage:
-                './assets/bots/main/menu.jpg',
+                './assets/bots/main/menu.jpeg',
 
             globalRoleSync:
                 true
@@ -109,7 +109,7 @@ const settings = {
                 'brazil',
 
             menuImage:
-                './assets/bots/brazil/menu.jpg',
+                './assets/bots/brazil/menu.png',
 
             globalRoleSync:
                 false,
