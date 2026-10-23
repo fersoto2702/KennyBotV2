@@ -343,12 +343,7 @@ module.exports = {
 
     category:
         'ultimate-team',
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
         msg,

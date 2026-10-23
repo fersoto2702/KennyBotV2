@@ -40,12 +40,7 @@ module.exports = {
 
     ownerOnly:
         true,
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
         from

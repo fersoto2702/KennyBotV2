@@ -134,12 +134,7 @@ module.exports = {
 
     category:
         'perfil',
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
         msg,

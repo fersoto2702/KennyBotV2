@@ -1,18 +1,46 @@
 const logger =
     require('../utils/logger')
 
-
-const cache =
-    new Map()
-
+const socketCaches =
+    new WeakMap()
 
 const CACHE_TIME =
     10 * 1000
 
+function getSocketCache(
+    sock
+) {
 
-/* ─────────────────────────────
-   NORMALIZAR JID
-───────────────────────────── */
+    if (
+        !sock ||
+        (
+            typeof sock !== 'object' &&
+            typeof sock !== 'function'
+        )
+    ) {
+
+        return null
+
+    }
+
+    if (
+        !socketCaches.has(
+            sock
+        )
+    ) {
+
+        socketCaches.set(
+            sock,
+            new Map()
+        )
+
+    }
+
+    return socketCaches.get(
+        sock
+    )
+
+}
 
 function normalizeJid(
     jid
@@ -24,8 +52,9 @@ function normalizeJid(
 
     }
 
-
-    return String(jid)
+    return String(
+        jid
+    )
         .trim()
         .replace(
             /:\d+@/,
@@ -34,11 +63,6 @@ function normalizeJid(
 
 }
 
-
-/* ─────────────────────────────
-   ¿ES LID?
-───────────────────────────── */
-
 function isLid(
     jid
 ) {
@@ -46,37 +70,45 @@ function isLid(
     return String(
         jid || ''
     )
+        .trim()
         .endsWith(
             '@lid'
         )
 
 }
 
-
-/* ─────────────────────────────
-   NÚMERO DEL JID
-───────────────────────────── */
-
 function getNumber(
     jid
 ) {
 
-    return String(
-        jid || ''
-    )
-        .split('@')[0]
-        .split(':')[0]
-        .replace(
-            /\D/g,
-            ''
+    const normalized =
+        normalizeJid(
+            jid
         )
 
+    if (
+        !normalized ||
+        isLid(
+            normalized
+        )
+    ) {
+
+        return null
+
+    }
+
+    const number =
+        normalized
+            .split('@')[0]
+            .replace(
+                /\D/g,
+                ''
+            )
+
+    return number ||
+        null
+
 }
-
-
-/* ─────────────────────────────
-   JIDS DEL PARTICIPANTE
-───────────────────────────── */
 
 function getParticipantJids(
     participant
@@ -88,38 +120,37 @@ function getParticipantJids(
 
     }
 
-
     return [
-
         participant.id,
-
         participant.phoneNumber,
-
         participant.lid
-
     ]
-        .filter(Boolean)
         .map(
             normalizeJid
         )
+        .filter(Boolean)
 
 }
-
-
-/* ─────────────────────────────
-   BUSCAR PARTICIPANTE
-───────────────────────────── */
 
 function findParticipant(
     participants,
     jid
 ) {
 
+    if (
+        !Array.isArray(
+            participants
+        )
+    ) {
+
+        return null
+
+    }
+
     const target =
         normalizeJid(
             jid
         )
-
 
     if (!target) {
 
@@ -127,19 +158,8 @@ function findParticipant(
 
     }
 
-
-    /*
-        PRIMER INTENTO:
-        coincidencia exacta entre:
-
-        - id
-        - phoneNumber
-        - lid
-    */
-
     const exact =
         participants.find(
-
             participant => {
 
                 const candidates =
@@ -147,15 +167,12 @@ function findParticipant(
                         participant
                     )
 
-
                 return candidates.includes(
                     target
                 )
 
             }
-
         )
-
 
     if (
         exact
@@ -165,40 +182,31 @@ function findParticipant(
 
     }
 
-
-    /*
-        SEGUNDO INTENTO:
-
-        Comparación por número únicamente
-        cuando target NO sea @lid.
-
-        Un LID no debe tratarse como
-        número telefónico.
-    */
-
     if (
-        !isLid(
+        isLid(
             target
         )
     ) {
 
-        const targetNumber =
-            getNumber(
-                target
-            )
+        return null
 
+    }
 
-        if (
-            !targetNumber
-        ) {
+    const targetNumber =
+        getNumber(
+            target
+        )
 
-            return null
+    if (
+        !targetNumber
+    ) {
 
-        }
+        return null
 
+    }
 
-        return participants.find(
-
+    return (
+        participants.find(
             participant => {
 
                 const candidates =
@@ -206,9 +214,7 @@ function findParticipant(
                         participant
                     )
 
-
                 return candidates.some(
-
                     candidate => {
 
                         if (
@@ -221,56 +227,40 @@ function findParticipant(
 
                         }
 
-
-                        return (
+                        const number =
                             getNumber(
                                 candidate
-                            ) ===
+                            )
+
+                        return (
+                            number &&
+                            number ===
                             targetNumber
                         )
 
                     }
-
                 )
 
             }
-
-        ) || null
-
-    }
-
-
-    return null
+        ) ||
+        null
+    )
 
 }
-
-
-/* ─────────────────────────────
-   VALIDAR ADMIN
-───────────────────────────── */
 
 function participantIsAdmin(
     participant
 ) {
 
     return (
-
         participant?.admin ===
         'admin'
-
         ||
-
         participant?.admin ===
         'superadmin'
-
     )
 
 }
-
-
-/* ─────────────────────────────
-   OBTENER METADATA
-───────────────────────────── */
 
 async function getParticipants(
     sock,
@@ -278,20 +268,39 @@ async function getParticipants(
     forceRefresh = false
 ) {
 
+    if (
+        !sock ||
+        !from
+    ) {
+
+        return {
+            participants:
+                [],
+
+            cached:
+                false
+        }
+
+    }
+
+    const cache =
+        getSocketCache(
+            sock
+        )
+
     const now =
         Date.now()
 
-
     const cached =
-        cache.get(
+        cache?.get(
             from
         )
-
 
     if (
         !forceRefresh &&
         cached &&
-        now < cached.expire
+        now <
+        cached.expire
     ) {
 
         return {
@@ -304,12 +313,10 @@ async function getParticipants(
 
     }
 
-
     const metadata =
         await sock.groupMetadata(
             from
         )
-
 
     const participants =
         Array.isArray(
@@ -318,39 +325,25 @@ async function getParticipants(
             ? metadata.participants
             : []
 
-
-    cache.set(
-
+    cache?.set(
         from,
-
         {
-
             participants,
 
             expire:
                 now +
                 CACHE_TIME
-
         }
-
     )
 
-
     return {
-
         participants,
 
         cached:
             false
-
     }
 
 }
-
-
-/* ─────────────────────────────
-   IS GROUP ADMIN
-───────────────────────────── */
 
 async function isGroupAdmin(
     sock,
@@ -370,33 +363,52 @@ async function isGroupAdmin(
 
         }
 
+        if (
+            typeof from !==
+            'string'
+        ) {
 
-        /* ─────────────────────────────
-           PRIMERA CONSULTA
-        ───────────────────────────── */
+            return false
+
+        }
+
+        if (
+            !from.endsWith(
+                '@g.us'
+            )
+        ) {
+
+            return false
+
+        }
+
+        const normalizedSender =
+            normalizeJid(
+                sender
+            )
+
+        if (
+            !normalizedSender
+        ) {
+
+            return false
+
+        }
 
         let {
             participants,
             cached
         } =
             await getParticipants(
-
                 sock,
-
                 from
-
             )
-
 
         let member =
             findParticipant(
-
                 participants,
-
-                sender
-
+                normalizedSender
             )
-
 
         if (
             participantIsAdmin(
@@ -408,67 +420,37 @@ async function isGroupAdmin(
 
         }
 
-
-        /*
-            IMPORTANTE:
-
-            Si usamos datos cacheados y el usuario
-            aparece como miembro/no encontrado,
-            hacemos UNA consulta fresca.
-
-            Esto evita el problema:
-
-            miembro → promote → /comando
-
-            y que durante varios segundos siga
-            apareciendo como si no fuera admin.
-        */
-
         if (
             cached
         ) {
 
             const fresh =
                 await getParticipants(
-
                     sock,
-
                     from,
-
                     true
-
                 )
-
 
             participants =
                 fresh.participants
 
-
             member =
                 findParticipant(
-
                     participants,
-
-                    sender
-
+                    normalizedSender
                 )
 
         }
-
 
         return participantIsAdmin(
             member
         )
 
-
     } catch (err) {
 
         logger.error(
-
             `Error isAdmin: ${err.stack || err.message}`
-
         )
-
 
         return false
 
@@ -476,40 +458,81 @@ async function isGroupAdmin(
 
 }
 
-
-/* ─────────────────────────────
-   LIMPIAR CACHE DE UN GRUPO
-───────────────────────────── */
-
 isGroupAdmin.clearCache =
     function clearCache(
-        from
+        from,
+        sock = null
     ) {
 
         if (
-            from
+            !from
         ) {
 
-            cache.delete(
+            return false
+
+        }
+
+        if (
+            sock
+        ) {
+
+            const cache =
+                socketCaches.get(
+                    sock
+                )
+
+            if (
+                !cache
+            ) {
+
+                return false
+
+            }
+
+            return cache.delete(
                 from
             )
 
         }
 
+        return false
+
     }
 
+isGroupAdmin.clearSocketCache =
+    function clearSocketCache(
+        sock
+    ) {
 
-/* ─────────────────────────────
-   LIMPIAR TODA LA CACHE
-───────────────────────────── */
+        if (
+            !sock
+        ) {
+
+            return false
+
+        }
+
+        return socketCaches.delete(
+            sock
+        )
+
+    }
 
 isGroupAdmin.clearAllCache =
     function clearAllCache() {
 
-        cache.clear()
+        return false
 
     }
 
+isGroupAdmin.normalizeJid =
+    normalizeJid
+
+isGroupAdmin.findParticipant =
+    findParticipant
+
+isGroupAdmin.participantIsAdmin =
+    participantIsAdmin
 
 module.exports =
     isGroupAdmin

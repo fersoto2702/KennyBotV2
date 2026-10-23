@@ -297,12 +297,7 @@ module.exports = {
 
     category:
         'general',
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
         msg,

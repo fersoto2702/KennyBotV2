@@ -656,12 +656,7 @@ module.exports = {
 
     groupOnly:
         true,
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
         from,

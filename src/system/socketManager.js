@@ -1,206 +1,759 @@
 const logger =
     require('../utils/logger')
 
-const queue = []
-
-let processing =
-    false
+const socketStates =
+    new WeakMap()
 
 const CONFIG = {
-    delay: 100,
-    retries: 3,
-    retryDelay: 2000,
-    burstLimit: 20,
-    burstDelay: 500
+
+    delay:
+        100,
+
+    retries:
+        3,
+
+    retryDelay:
+        2000,
+
+    burstLimit:
+        20,
+
+    burstDelay:
+        500,
+
+    burstWindow:
+        10000
+
 }
 
-let burstCount =
-    0
+const sleep =
+    ms =>
+        new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    ms
+                )
+        )
 
-let lastBurstReset =
-    Date.now()
+function getBotName(
+    sock
+) {
 
-const sleep = ms =>
-    new Promise(
-        resolve =>
-            setTimeout(resolve, ms)
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
+function getState(
+    sock
+) {
+
+    if (
+        !sock ||
+        (
+            typeof sock !==
+            'object' &&
+            typeof sock !==
+            'function'
+        )
+    ) {
+
+        throw new Error(
+            'Socket inválido'
+        )
+
+    }
+
+    if (
+        !socketStates.has(
+            sock
+        )
+    ) {
+
+        socketStates.set(
+            sock,
+            {
+
+                queue:
+                    [],
+
+                processing:
+                    false,
+
+                burstCount:
+                    0,
+
+                lastBurstReset:
+                    Date.now(),
+
+                closed:
+                    false
+
+            }
+        )
+
+    }
+
+    return socketStates.get(
+        sock
     )
 
-async function checkBurst() {
+}
+
+async function checkBurst(
+    sock
+) {
+
+    const state =
+        getState(
+            sock
+        )
 
     const now =
         Date.now()
 
-    if (now - lastBurstReset > 10000) {
-        burstCount = 0
-        lastBurstReset = now
+    if (
+        now -
+        state.lastBurstReset >
+        CONFIG.burstWindow
+    ) {
+
+        state.burstCount =
+            0
+
+        state.lastBurstReset =
+            now
+
     }
 
-    burstCount++
+    state.burstCount++
 
-    if (burstCount >= CONFIG.burstLimit) {
+    if (
+        state.burstCount >=
+        CONFIG.burstLimit
+    ) {
 
-        logger.warn('Burst protection activado')
+        logger.warn(
+            `${getBotName(sock)} | Burst protection activado`
+        )
 
-        await sleep(CONFIG.burstDelay)
+        await sleep(
+            CONFIG.burstDelay
+        )
 
-        burstCount = 0
+        state.burstCount =
+            0
+
+        state.lastBurstReset =
+            Date.now()
 
     }
 
 }
 
-async function processQueue() {
+async function processQueue(
+    sock
+) {
 
-    if (processing) return
-    if (queue.length === 0) return
+    const state =
+        getState(
+            sock
+        )
 
-    processing = true
+    if (
+        state.processing
+    ) {
 
-    const item =
-        queue.shift()
+        return
+
+    }
+
+    if (
+        state.closed
+    ) {
+
+        return
+
+    }
+
+    if (
+        state.queue.length ===
+        0
+    ) {
+
+        return
+
+    }
+
+    state.processing =
+        true
 
     try {
 
-        await checkBurst()
+        while (
+            state.queue.length >
+            0 &&
+            !state.closed
+        ) {
 
-        let lastError =
-            null
+            const item =
+                state.queue.shift()
 
-        for (let i = 0; i < CONFIG.retries; i++) {
+            if (
+                !item
+            ) {
+
+                continue
+
+            }
 
             try {
 
-                const result =
-                    await item.task()
+                await checkBurst(
+                    sock
+                )
 
-                item.resolve(result)
+                let result =
+                    null
 
-                lastError = null
+                let lastError =
+                    null
 
-                break
+                for (
+                    let attempt = 1;
+                    attempt <= CONFIG.retries;
+                    attempt++
+                ) {
+
+                    try {
+
+                        result =
+                            await item.task()
+
+                        lastError =
+                            null
+
+                        break
+
+                    } catch (err) {
+
+                        lastError =
+                            err
+
+                        logger.warn(
+                            `${getBotName(sock)} | Retry ${attempt}/${CONFIG.retries}: ${err.stack || err.message}`
+                        )
+
+                        if (
+                            attempt <
+                            CONFIG.retries
+                        ) {
+
+                            await sleep(
+                                CONFIG.retryDelay
+                            )
+
+                        }
+
+                    }
+
+                }
+
+                if (
+                    lastError
+                ) {
+
+                    item.reject(
+                        lastError
+                    )
+
+                } else {
+
+                    item.resolve(
+                        result
+                    )
+
+                }
 
             } catch (err) {
 
-                lastError = err
-
-                logger.warn(
-                    `Retry ${i + 1}/${CONFIG.retries}: ${err.message}`
+                item.reject(
+                    err
                 )
 
-                await sleep(CONFIG.retryDelay)
+                logger.error(
+                    `${getBotName(sock)} | Queue Error: ${err.stack || err.message}`
+                )
+
+            }
+
+            if (
+                state.queue.length >
+                0 &&
+                !state.closed
+            ) {
+
+                await sleep(
+                    CONFIG.delay
+                )
 
             }
 
         }
 
-        if (lastError) {
-            item.reject(lastError)
-        }
+    } finally {
 
-    } catch (err) {
-
-        item.reject(err)
-
-        logger.error(
-            `Queue Error: ${err.message}`
-        )
+        state.processing =
+            false
 
     }
 
-    await sleep(CONFIG.delay)
-
-    processing = false
-
-    processQueue()
-
 }
 
-function enqueue(task) {
+function enqueue(
+    sock,
+    task
+) {
 
     return new Promise(
-        (resolve, reject) => {
+        (
+            resolve,
+            reject
+        ) => {
 
-            queue.push({
-                task,
-                resolve,
-                reject
-            })
+            let state
 
-            processQueue()
+            try {
+
+                state =
+                    getState(
+                        sock
+                    )
+
+            } catch (err) {
+
+                reject(
+                    err
+                )
+
+                return
+
+            }
+
+            if (
+                state.closed
+            ) {
+
+                reject(
+                    new Error(
+                        'SocketManager cerrado'
+                    )
+                )
+
+                return
+
+            }
+
+            if (
+                typeof task !==
+                'function'
+            ) {
+
+                reject(
+                    new TypeError(
+                        'Queue task debe ser una función'
+                    )
+                )
+
+                return
+
+            }
+
+            state.queue.push(
+                {
+                    task,
+                    resolve,
+                    reject
+                }
+            )
+
+            processQueue(
+                sock
+            )
+                .catch(
+                    err => {
+
+                        logger.error(
+                            `${getBotName(sock)} | Process Queue Error: ${err.stack || err.message}`
+                        )
+
+                    }
+                )
 
         }
     )
 
 }
 
-function patchSocket(sock) {
+function clearQueue(
+    sock
+) {
 
-    sock.safeSendMessage = async (jid, content, options = {}) => {
+    const state =
+        socketStates.get(
+            sock
+        )
 
     if (
-        content &&
-        content.image &&
-        content.caption
+        !state
     ) {
 
-        content = {
-            text: content.caption
-        }
+        return 0
 
     }
 
-    return enqueue(
-        async () =>
-            sock.sendMessage(jid, content, options)
-    )
+    const removed =
+        state.queue.length
 
-}
+    while (
+        state.queue.length >
+        0
+    ) {
 
-    sock.safeDeleteMessage = async (jid, key) => {
-
-        return enqueue(
-            async () =>
-                sock.sendMessage(jid, { delete: key })
-        )
-
-    }
-
-    sock.safeGroupUpdate = async (jid, users, action) => {
-
-        return enqueue(
-            async () =>
-                sock.groupParticipantsUpdate(jid, users, action)
-        )
-
-    }
-
-    sock.safeTyping = async jid => {
+        const item =
+            state.queue.shift()
 
         try {
 
-            return enqueue(
-                async () =>
-                    sock.sendPresenceUpdate('composing', jid)
+            item?.reject(
+                new Error(
+                    'Cola cancelada'
+                )
             )
 
         } catch {}
 
     }
 
-    sock.queueStats = () => ({
-        queue: queue.length,
-        processing,
-        burstCount
-    })
+    return removed
 
-    logger.success('SocketManager cargado')
+}
+
+function closeQueue(
+    sock
+) {
+
+    const state =
+        socketStates.get(
+            sock
+        )
+
+    if (
+        !state
+    ) {
+
+        return false
+
+    }
+
+    state.closed =
+        true
+
+    clearQueue(
+        sock
+    )
+
+    return true
+
+}
+
+function patchSocket(
+    sock
+) {
+
+    if (
+        !sock
+    ) {
+
+        throw new Error(
+            'patchSocket requiere un socket'
+        )
+
+    }
+
+    if (
+        sock.__kennySocketPatched
+    ) {
+
+        return sock
+
+    }
+
+    Object.defineProperty(
+        sock,
+        '__kennySocketPatched',
+        {
+
+            value:
+                true,
+
+            configurable:
+                false,
+
+            enumerable:
+                false,
+
+            writable:
+                false
+
+        }
+    )
+
+    getState(
+        sock
+    )
+
+    sock.safeSendMessage =
+        async (
+            jid,
+            content,
+            options = {}
+        ) => {
+
+            if (
+                !jid
+            ) {
+
+                throw new Error(
+                    'safeSendMessage requiere jid'
+                )
+
+            }
+
+            if (
+                !content ||
+                typeof content !==
+                'object'
+            ) {
+
+                throw new Error(
+                    'safeSendMessage requiere content'
+                )
+
+            }
+
+            return enqueue(
+                sock,
+                async () =>
+                    sock.sendMessage(
+                        jid,
+                        content,
+                        options
+                    )
+            )
+
+        }
+
+    sock.safeDeleteMessage =
+        async (
+            jid,
+            key
+        ) => {
+
+            if (
+                !jid ||
+                !key
+            ) {
+
+                return null
+
+            }
+
+            return enqueue(
+                sock,
+                async () =>
+                    sock.sendMessage(
+                        jid,
+                        {
+                            delete:
+                                key
+                        }
+                    )
+            )
+
+        }
+
+    sock.safeGroupUpdate =
+        async (
+            jid,
+            users,
+            action
+        ) => {
+
+            if (
+                !jid
+            ) {
+
+                throw new Error(
+                    'safeGroupUpdate requiere jid'
+                )
+
+            }
+
+            if (
+                !Array.isArray(
+                    users
+                ) ||
+                users.length ===
+                0
+            ) {
+
+                throw new Error(
+                    'safeGroupUpdate requiere usuarios'
+                )
+
+            }
+
+            if (
+                !action
+            ) {
+
+                throw new Error(
+                    'safeGroupUpdate requiere action'
+                )
+
+            }
+
+            return enqueue(
+                sock,
+                async () =>
+                    sock.groupParticipantsUpdate(
+                        jid,
+                        users,
+                        action
+                    )
+            )
+
+        }
+
+    sock.safeTyping =
+        async jid => {
+
+            if (
+                !jid
+            ) {
+
+                return null
+
+            }
+
+            try {
+
+                return await enqueue(
+                    sock,
+                    async () =>
+                        sock.sendPresenceUpdate(
+                            'composing',
+                            jid
+                        )
+                )
+
+            } catch {
+
+                return null
+
+            }
+
+        }
+
+    sock.safePaused =
+        async jid => {
+
+            if (
+                !jid
+            ) {
+
+                return null
+
+            }
+
+            try {
+
+                return await enqueue(
+                    sock,
+                    async () =>
+                        sock.sendPresenceUpdate(
+                            'paused',
+                            jid
+                        )
+                )
+
+            } catch {
+
+                return null
+
+            }
+
+        }
+
+    sock.queueStats =
+        () => {
+
+            const state =
+                getState(
+                    sock
+                )
+
+            return {
+
+                queue:
+                    state.queue.length,
+
+                processing:
+                    state.processing,
+
+                burstCount:
+                    state.burstCount,
+
+                closed:
+                    state.closed
+
+            }
+
+        }
+
+    sock.clearQueue =
+        () =>
+            clearQueue(
+                sock
+            )
+
+    sock.closeQueue =
+        () =>
+            closeQueue(
+                sock
+            )
+
+    logger.success(
+        `${getBotName(sock)} | SocketManager cargado`
+    )
 
     return sock
 
 }
 
 module.exports = {
+
     patchSocket,
-    enqueue
+
+    enqueue,
+
+    clearQueue,
+
+    closeQueue
+
 }

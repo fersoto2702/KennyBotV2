@@ -157,12 +157,7 @@ module.exports = {
 
     adminOnly:
         true,
-
-    cooldown:
-        30,
-
-
-    async execute({
+async execute({
 
         sock,
         from,

@@ -1,84 +1,234 @@
+const fs =
+    require('fs')
+
+const path =
+    require('path')
+
 const comandos =
     require('../src/utils/commandRegistry')
 
 const logger =
     require('../src/utils/logger')
 
-
-const categoryConfig = {
+const categoryConfigDefault = {
 
     general: {
-        emoji: '🤖',
-        label: '𝐆𝐄𝐍𝐄𝐑𝐀𝐋'
+        emoji:
+            '🤖',
+        label:
+            '𝐆𝐄𝐍𝐄𝐑𝐀𝐋'
     },
 
     descargas: {
-        emoji: '⬇️',
-        label: '𝐃𝐄𝐒𝐂𝐀𝐑𝐆𝐀𝐒'
+        emoji:
+            '⬇️',
+        label:
+            '𝐃𝐄𝐒𝐂𝐀𝐑𝐆𝐀𝐒'
     },
 
     diversión: {
-        emoji: '🎭',
-        label: '𝐃𝐈𝐕𝐄𝐑𝐒𝐈𝐎𝐍'
+        emoji:
+            '🎭',
+        label:
+            '𝐃𝐈𝐕𝐄𝐑𝐒𝐈𝐎𝐍'
+    },
+
+    economia: {
+        emoji:
+            '🪙',
+        label:
+            '𝐄𝐂𝐎𝐍𝐎𝐌𝐈𝐀'
     },
 
     economía: {
-        emoji: '🪙',
-        label: '𝐄𝐂𝐎𝐍𝐎𝐌𝐈𝐀'
+        emoji:
+            '🪙',
+        label:
+            '𝐄𝐂𝐎𝐍𝐎𝐌𝐈𝐀'
     },
 
     niveles: {
-        emoji: '⭐',
-        label: '𝐍𝐈𝐕𝐄𝐋𝐄𝐒'
+        emoji:
+            '⭐',
+        label:
+            '𝐍𝐈𝐕𝐄𝐋𝐄𝐒'
     },
 
     perfil: {
-        emoji: '👤',
-        label: '𝐏𝐄𝐑𝐅𝐈𝐋'
+        emoji:
+            '👤',
+        label:
+            '𝐏𝐄𝐑𝐅𝐈𝐋'
     },
 
     grupos: {
-        emoji: '👥',
-        label: '𝐆𝐑𝐔𝐏𝐎𝐒'
+        emoji:
+            '👥',
+        label:
+            '𝐆𝐑𝐔𝐏𝐎𝐒'
     },
 
     bienvenida: {
-        emoji: '👋',
-        label: '𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐀'
+        emoji:
+            '👋',
+        label:
+            '𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐀'
+    },
+
+    configuracion: {
+        emoji:
+            '⚙️',
+        label:
+            '𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐈𝐎𝐍'
     },
 
     configuración: {
-        emoji: '⚙️',
-        label: '𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐈𝐎𝐍'
+        emoji:
+            '⚙️',
+        label:
+            '𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐈𝐎𝐍'
     },
 
     admin: {
-        emoji: '🛡️',
-        label: '𝐀𝐃𝐌𝐈𝐍'
+        emoji:
+            '🛡️',
+        label:
+            '𝐀𝐃𝐌𝐈𝐍'
     },
 
     owner: {
-        emoji: '👑',
-        label: '𝐎𝐖𝐍𝐄𝐑'
+        emoji:
+            '👑',
+        label:
+            '𝐎𝐖𝐍𝐄𝐑'
     }
 
 }
 
+const categoryConfigBrazil = {
+
+    general: {
+        emoji:
+            '🤖',
+        label:
+            '𝐆𝐄𝐑𝐀𝐋'
+    },
+
+    descargas: {
+        emoji:
+            '⬇️',
+        label:
+            '𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐒'
+    },
+
+    diversión: {
+        emoji:
+            '🎭',
+        label:
+            '𝐃𝐈𝐕𝐄𝐑𝐒𝐀𝐎'
+    },
+
+    economia: {
+        emoji:
+            '🪙',
+        label:
+            '𝐄𝐂𝐎𝐍𝐎𝐌𝐈𝐀'
+    },
+
+    economía: {
+        emoji:
+            '🪙',
+        label:
+            '𝐄𝐂𝐎𝐍𝐎𝐌𝐈𝐀'
+    },
+
+    niveles: {
+        emoji:
+            '⭐',
+        label:
+            '𝐍𝐈𝐕𝐄𝐈𝐒'
+    },
+
+    perfil: {
+        emoji:
+            '👤',
+        label:
+            '𝐏𝐄𝐑𝐅𝐈𝐋'
+    },
+
+    grupos: {
+        emoji:
+            '👥',
+        label:
+            '𝐆𝐑𝐔𝐏𝐎𝐒'
+    },
+
+    bienvenida: {
+        emoji:
+            '👋',
+        label:
+            '𝐁𝐎𝐀𝐒-𝐕𝐈𝐍𝐃𝐀𝐒'
+    },
+
+    configuracion: {
+        emoji:
+            '⚙️',
+        label:
+            '𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐀𝐎'
+    },
+
+    configuración: {
+        emoji:
+            '⚙️',
+        label:
+            '𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐀𝐎'
+    },
+
+    admin: {
+        emoji:
+            '🛡️',
+        label:
+            '𝐀𝐃𝐌𝐈𝐍'
+    },
+
+    owner: {
+        emoji:
+            '👑',
+        label:
+            '𝐎𝐖𝐍𝐄𝐑'
+    }
+
+}
 
 const categoryOrder = [
-    'general',
-    'descargas',
-    'diversión',
-    'economía',
-    'niveles',
-    'perfil',
-    'grupos',
-    'bienvenida',
-    'configuración',
-    'admin',
-    'owner'
-]
 
+    'general',
+
+    'descargas',
+
+    'diversión',
+
+    'economia',
+
+    'economía',
+
+    'niveles',
+
+    'perfil',
+
+    'grupos',
+
+    'bienvenida',
+
+    'configuracion',
+
+    'configuración',
+
+    'admin',
+
+    'owner'
+
+]
 
 function formatUptime(
     seconds
@@ -86,47 +236,50 @@ function formatUptime(
 
     const d =
         Math.floor(
-            seconds / 86400
+            seconds /
+            86400
         )
 
     const h =
         Math.floor(
-            seconds % 86400 / 3600
+            (
+                seconds %
+                86400
+            ) /
+            3600
         )
 
     const m =
         Math.floor(
-            seconds % 3600 / 60
+            (
+                seconds %
+                3600
+            ) /
+            60
         )
 
     const s =
         Math.floor(
-            seconds % 60
+            seconds %
+            60
         )
 
-
     return [
-
         d
             ? `${d}d`
             : '',
-
         h
             ? `${h}h`
             : '',
-
         m
             ? `${m}m`
             : '',
-
         `${s}s`
-
     ]
         .filter(Boolean)
         .join(' ')
 
 }
-
 
 function safeText(
     value,
@@ -135,46 +288,230 @@ function safeText(
 
     const text =
         String(
-            value ?? ''
+            value ??
+            ''
         )
             .trim()
-
 
     return text ||
         fallback
 
 }
 
+function getProfile(
+    sock,
+    settings
+) {
 
-function getGreeting() {
+    return (
+        sock?.botProfile ||
+        settings?.bots?.main ||
+        {
+            id:
+                'main',
+
+            name:
+                settings?.botName ||
+                'KennyBot',
+
+            flag:
+                '🇲🇽',
+
+            slogan:
+                'Tu asistente para WhatsApp.',
+
+            menuStyle:
+                'default',
+
+            menuImage:
+                null
+        }
+    )
+
+}
+
+function isBrazilProfile(
+    profile
+) {
+
+    return (
+        String(
+            profile?.id ||
+            ''
+        )
+            .trim()
+            .toLowerCase() ===
+        'brazil'
+    )
+
+}
+
+function getGreeting(
+    brazil
+) {
 
     const hour =
         new Date()
             .getHours()
 
-
     if (
-        hour < 12
+        brazil
     ) {
 
-        return '🌅 Buenos días'
+        if (
+            hour <
+            12
+        ) {
+
+            return 'Bom dia'
+
+        }
+
+        if (
+            hour <
+            18
+        ) {
+
+            return 'Boa tarde'
+
+        }
+
+        return 'Boa noite'
 
     }
 
-
     if (
-        hour < 18
+        hour <
+        12
     ) {
 
-        return '☀️ Buenas tardes'
+        return 'Buenos días'
 
     }
 
+    if (
+        hour <
+        18
+    ) {
 
-    return '🌙 Buenas noches'
+        return 'Buenas tardes'
+
+    }
+
+    return 'Buenas noches'
 
 }
 
+function getMaintenanceSet(
+    settings
+) {
+
+    return new Set(
+        (
+            Array.isArray(
+                settings?.maintenanceCommands
+            )
+                ? settings.maintenanceCommands
+                : []
+        )
+            .map(
+                command =>
+                    String(
+                        command ||
+                        ''
+                    )
+                        .trim()
+                        .toLowerCase()
+            )
+            .filter(Boolean)
+    )
+
+}
+
+function getPrefixes(
+    settings
+) {
+
+    const prefixes =
+        Array.isArray(
+            settings?.prefixes
+        )
+            ? settings.prefixes
+            : []
+
+    if (
+        prefixes.length ===
+        0
+    ) {
+
+        return '/'
+
+    }
+
+    return prefixes.join(
+        ' '
+    )
+
+}
+
+function getPrimaryPrefix(
+    settings
+) {
+
+    const prefixes =
+        Array.isArray(
+            settings?.prefixes
+        )
+            ? settings.prefixes
+            : []
+
+    return (
+        prefixes[0] ||
+        '.'
+    )
+
+}
+
+function getMenuImagePath(
+    profile
+) {
+
+    const raw =
+        String(
+            profile?.menuImage ||
+            ''
+        )
+            .trim()
+
+    if (!raw) {
+
+        return null
+
+    }
+
+    const resolved =
+        path.isAbsolute(
+            raw
+        )
+            ? raw
+            : path.resolve(
+                process.cwd(),
+                raw
+            )
+
+    if (
+        !fs.existsSync(
+            resolved
+        )
+    ) {
+
+        return null
+
+    }
+
+    return resolved
+
+}
 
 module.exports = {
 
@@ -193,60 +530,66 @@ module.exports = {
 
     category:
         'general',
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
+
         from,
-        settings = {}
+
+        settings = {},
+
+        botProfile = null
 
     }) {
 
         try {
 
-            /* ─────────────────────────────
-               CATEGORÍAS
-            ───────────────────────────── */
+            const profile =
+                botProfile ||
+                getProfile(
+                    sock,
+                    settings
+                )
+
+            const brazil =
+                isBrazilProfile(
+                    profile
+                )
+
+            const categoryConfig =
+                brazil
+                    ? categoryConfigBrazil
+                    : categoryConfigDefault
 
             const categories =
                 {}
 
-
             for (
-                const [key, command]
+                const [
+                    key,
+                    command
+                ]
                 of comandos
             ) {
 
                 if (
                     !command ||
-                    typeof command !== 'object'
+                    typeof command !==
+                    'object'
                 ) {
 
                     continue
 
                 }
-
-
-                /*
-                    Evitar aliases duplicados.
-                */
 
                 if (
-                    key !== command.name
+                    key !==
+                    command.name
                 ) {
 
                     continue
 
                 }
-
-
-                /*
-                    Comandos ocultos no aparecen.
-                */
 
                 if (
                     command.hidden
@@ -256,7 +599,6 @@ module.exports = {
 
                 }
 
-
                 const category =
                     String(
                         command.category ||
@@ -264,7 +606,6 @@ module.exports = {
                     )
                         .toLowerCase()
                         .trim()
-
 
                 if (
                     !categories[
@@ -274,10 +615,10 @@ module.exports = {
 
                     categories[
                         category
-                    ] = []
+                    ] =
+                        []
 
                 }
-
 
                 categories[
                     category
@@ -288,11 +629,6 @@ module.exports = {
 
             }
 
-
-            /* ─────────────────────────────
-               ORDENAR COMANDOS
-            ───────────────────────────── */
-
             for (
                 const category
                 in categories
@@ -302,9 +638,10 @@ module.exports = {
                     category
                 ]
                     .sort(
-
-                        (a, b) =>
-
+                        (
+                            a,
+                            b
+                        ) =>
                             String(
                                 a.name
                             )
@@ -312,52 +649,63 @@ module.exports = {
                                     String(
                                         b.name
                                     ),
-                                    'es',
+                                    brazil
+                                        ? 'pt-BR'
+                                        : 'es',
                                     {
                                         sensitivity:
                                             'base'
                                     }
                                 )
-
                     )
 
             }
-
-
-            /* ─────────────────────────────
-               TOTAL
-            ───────────────────────────── */
 
             const total =
                 Object.values(
                     categories
                 )
                     .reduce(
-
                         (
                             accumulator,
                             commands
                         ) =>
-
                             accumulator +
                             commands.length,
-
                         0
-
                     )
 
+            const maintenance =
+                getMaintenanceSet(
+                    settings
+                )
 
-            /* ─────────────────────────────
-               DATOS DEL BOT
-            ───────────────────────────── */
+            const maintenanceCount =
+                [
+                    ...comandos.values()
+                ]
+                    .filter(
+                        command =>
+                            command &&
+                            typeof command ===
+                            'object' &&
+                            command.name &&
+                            maintenance.has(
+                                String(
+                                    command.name
+                                )
+                                    .toLowerCase()
+                            )
+                    )
+                    .length
 
             const greeting =
-                getGreeting()
-
+                getGreeting(
+                    brazil
+                )
 
             const memory =
                 process.memoryUsage()
-
 
             const ramUsed =
                 (
@@ -365,8 +713,9 @@ module.exports = {
                     1024 /
                     1024
                 )
-                    .toFixed(2)
-
+                    .toFixed(
+                        2
+                    )
 
             const ramTotal =
                 (
@@ -374,99 +723,115 @@ module.exports = {
                     1024 /
                     1024
                 )
-                    .toFixed(2)
-
+                    .toFixed(
+                        2
+                    )
 
             const uptime =
                 formatUptime(
                     process.uptime()
                 )
 
-
             const botName =
                 safeText(
-
-                    settings.botName,
-
-                    'KennyBot V2'
-
+                    profile?.name,
+                    settings?.botName ||
+                    'KennyBot'
                 )
 
+            const flag =
+                safeText(
+                    profile?.flag,
+                    brazil
+                        ? '🇧🇷'
+                        : '🇲🇽'
+                )
 
-            /* ─────────────────────────────
-               CABECERA
-            ───────────────────────────── */
+            const slogan =
+                safeText(
+                    profile?.slogan,
+                    brazil
+                        ? 'Bot oficial da sociedade Golden Empire.'
+                        : 'Tu asistente para WhatsApp.'
+                )
 
-            let text = [
+            const prefixes =
+                getPrefixes(
+                    settings
+                )
 
-                'ㅤ۟∩　ׅ　🤖　ׅ　*KENNYBOT V2*　ׄᰙ',
+            const primaryPrefix =
+                getPrimaryPrefix(
+                    settings
+                )
 
-                '',
-
-                `𖣣ֶㅤ֯⌗ 🌅  ׄ ⬭ *Saludo:* ${greeting.replace(/^[^\s]+\s*/, '')}`,
-
-                `𖣣ֶㅤ֯⌗ ⌨️  ׄ ⬭ *Prefijos:* / . #`,
-
-                `𖣣ֶㅤ֯⌗ 📚  ׄ ⬭ *Comandos:* ${total}`,
-
-                `𖣣ֶㅤ֯⌗ ⏱️  ׄ ⬭ *Uptime:* ${uptime}`,
-
-                `𖣣ֶㅤ֯⌗ 🧠  ׄ ⬭ *RAM:* ${ramUsed} / ${ramTotal} MB`,
-
-                `𖣣ֶㅤ֯⌗ 🟢  ׄ ⬭ *Node:* ${process.version}`,
-
-                '',
-
-                '━━━━━━━━━━━━━━━━━━━━━━━━━━'
-
-            ]
-                .join('\n')
-
-
-            /* ─────────────────────────────
-               ORDEN DE CATEGORÍAS
-            ───────────────────────────── */
+            let text =
+                [
+                    `ㅤ۟∩　ׅ　🤖　ׅ　*${botName.toUpperCase()}*　ׄᰙ`,
+                    '',
+                    `𖣣ֶㅤ֯⌗ ${flag}  ׄ ⬭ *${brazil ? 'Região' : 'Región'}:* ${brazil ? 'Brasil' : 'México'}`,
+                    `𖣣ֶㅤ֯⌗ 👑  ׄ ⬭ *${brazil ? 'Identidade' : 'Identidad'}:* ${slogan}`,
+                    `𖣣ֶㅤ֯⌗ 🌅  ׄ ⬭ *${brazil ? 'Saudação' : 'Saludo'}:* ${greeting}`,
+                    `𖣣ֶㅤ֯⌗ ⌨️  ׄ ⬭ *${brazil ? 'Prefixos' : 'Prefijos'}:* ${prefixes}`,
+                    `𖣣ֶㅤ֯⌗ 📚  ׄ ⬭ *${brazil ? 'Comandos' : 'Comandos'}:* ${total}`,
+                    `𖣣ֶㅤ֯⌗ 🛠️  ׄ ⬭ *${brazil ? 'Em manutenção' : 'En mantenimiento'}:* ${maintenanceCount}`,
+                    `𖣣ֶㅤ֯⌗ ⏱️  ׄ ⬭ *Uptime:* ${uptime}`,
+                    `𖣣ֶㅤ֯⌗ 🧠  ׄ ⬭ *RAM:* ${ramUsed} / ${ramTotal} MB`,
+                    `𖣣ֶㅤ֯⌗ 🟢  ׄ ⬭ *Node:* ${process.version}`,
+                    '',
+                    '━━━━━━━━━━━━━━━━━━━━━━━━━━'
+                ]
+                    .join(
+                        '\n'
+                    )
 
             const orderedCategories = [
 
                 ...categoryOrder.filter(
-
                     category =>
                         categories[
                             category
                         ]?.length
-
                 ),
 
                 ...Object.keys(
                     categories
                 )
                     .filter(
-
                         category =>
                             !categoryOrder.includes(
                                 category
                             )
-
                     )
 
             ]
 
-
-            /* ─────────────────────────────
-               SECCIONES
-            ───────────────────────────── */
+            const seenCategories =
+                new Set()
 
             for (
                 const category
                 of orderedCategories
             ) {
 
+                if (
+                    seenCategories.has(
+                        category
+                    )
+                ) {
+
+                    continue
+
+                }
+
+                seenCategories.add(
+                    category
+                )
+
                 const cmds =
                     categories[
                         category
                     ]
-
 
                 if (
                     !cmds?.length
@@ -476,124 +841,148 @@ module.exports = {
 
                 }
 
-
                 const config =
                     categoryConfig[
                         category
                     ]
-
                     ||
-
                     {
-
                         emoji:
                             '📁',
 
                         label:
                             category
-                                .charAt(0)
+                                .charAt(
+                                    0
+                                )
                                 .toUpperCase()
-
                             +
-
                             category
-                                .slice(1)
-
+                                .slice(
+                                    1
+                                )
                     }
 
+                const commandLines =
+                    cmds.map(
+                        command => {
+
+                            const commandName =
+                                String(
+                                    command.name ||
+                                    ''
+                                )
+                                    .trim()
+
+                            const maintenanceMode =
+                                maintenance.has(
+                                    commandName.toLowerCase()
+                                )
+
+                            if (
+                                maintenanceMode
+                            ) {
+
+                                return (
+                                    `𖣣ֶㅤ֯⌗ 🛠️  ׄ ⬭ ${primaryPrefix}${commandName} — ` +
+                                    (
+                                        brazil
+                                            ? 'manutenção'
+                                            : 'mantenimiento'
+                                    )
+                                )
+
+                            }
+
+                            return `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ ${primaryPrefix}${commandName}`
+
+                        }
+                    )
 
                 text += [
-
                     '',
-
                     `ㅤ۟∩　ׅ　${config.emoji}　ׅ　*${config.label}*　ׄᰙ`,
-
                     '',
-
-                    ...cmds.map(
-
-                        command =>
-                            `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ .${command.name}`
-
-                    ),
-
+                    ...commandLines,
                     '',
-
                     '━━━━━━━━━━━━━━━━━━━━━━━━━━'
-
                 ]
-                    .join('\n')
+                    .join(
+                        '\n'
+                    )
 
             }
 
-
-            /* ─────────────────────────────
-               FOOTER
-            ───────────────────────────── */
-
             text += [
-
                 '',
-
-                '╰─ 𓂃 Powered by Kenny',
-
-                `╰─ 𓂃 ${botName}`
-
+                brazil
+                    ? '╰─ 𓂃 Sociedade Golden Empire'
+                    : '╰─ 𓂃 Powered by Kenny',
+                `╰─ 𓂃 ${flag} ${botName}`
             ]
-                .join('\n')
+                .join(
+                    '\n'
+                )
 
+            const menuImage =
+                getMenuImagePath(
+                    profile
+                )
 
-            /* ─────────────────────────────
-               ENVIAR
-            ───────────────────────────── */
+            if (
+                menuImage
+            ) {
 
-            await sock.safeSendMessage(
+                await sock.safeSendMessage(
+                    from,
+                    {
+                        image:
+                            {
+                                url:
+                                    menuImage
+                            },
 
-                from,
+                        caption:
+                            text
+                    }
+                )
 
-                {
-                    text
-                }
+            } else {
 
-            )
+                await sock.safeSendMessage(
+                    from,
+                    {
+                        text
+                    }
+                )
 
-
-            /* ─────────────────────────────
-               LOG
-            ───────────────────────────── */
+            }
 
             logger.event(
-
-                `Menu consultado | comandos=${total} | categorias=${orderedCategories.length}`
-
+                `${botName} | Menu consultado | comandos=${total} | mantenimiento=${maintenanceCount} | categorias=${orderedCategories.length}`
             )
 
+            return true
 
         } catch (err) {
 
             logger.error(
-
                 `Error menu: ${err.stack || err.message}`
-
             )
-
 
             try {
 
                 await sock.safeSendMessage(
-
                     from,
-
                     {
-
                         text:
                             '❌ No se pudo cargar el menú.'
-
                     }
-
                 )
 
             } catch {}
+
+            return false
 
         }
 

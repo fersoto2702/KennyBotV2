@@ -41,54 +41,173 @@ const CONFIG = {
 
 }
 
-function clean(timestamps, interval) {
+function normalizeKey(
+    value
+) {
+
+    return String(
+        value || ''
+    )
+        .trim()
+
+}
+
+function normalizeScope(
+    scope
+) {
+
+    const value =
+        String(
+            scope || 'main'
+        )
+            .trim()
+            .toLowerCase()
+
+    return value ||
+        'main'
+
+}
+
+function buildKey(
+    value,
+    scope
+) {
+
+    return [
+        normalizeScope(
+            scope
+        ),
+        normalizeKey(
+            value
+        )
+    ]
+        .join(':')
+
+}
+
+function clean(
+    timestamps,
+    interval
+) {
+
+    if (
+        !Array.isArray(
+            timestamps
+        )
+    ) {
+
+        return []
+
+    }
 
     const now =
         Date.now()
 
     return timestamps.filter(
-        t => now - t < interval
+        timestamp =>
+            now -
+            timestamp <
+            interval
     )
 
 }
 
-function getUserBucket(user) {
+function getUserBucket(
+    user,
+    scope = 'main'
+) {
 
-    if (!users.has(user)) {
-        users.set(user, {})
+    const key =
+        buildKey(
+            user,
+            scope
+        )
+
+    if (
+        !users.has(
+            key
+        )
+    ) {
+
+        users.set(
+            key,
+            {}
+        )
+
     }
 
-    return users.get(user)
+    return users.get(
+        key
+    )
 
 }
 
-function getGroupBucket(group) {
+function getGroupBucket(
+    group,
+    scope = 'main'
+) {
 
-    if (!groups.has(group)) {
-        groups.set(group, {})
+    const key =
+        buildKey(
+            group,
+            scope
+        )
+
+    if (
+        !groups.has(
+            key
+        )
+    ) {
+
+        groups.set(
+            key,
+            {}
+        )
+
     }
 
-    return groups.get(group)
+    return groups.get(
+        key
+    )
 
 }
 
-function hit(bucket, type) {
+function registerHit(
+    bucket,
+    type
+) {
 
     const config =
         CONFIG[type]
 
-    if (!config) return false
+    if (
+        !config
+    ) {
 
-    if (!bucket[type]) {
-        bucket[type] = []
+        return false
+
     }
 
-    bucket[type] = clean(
-        bucket[type],
-        config.interval
-    )
+    if (
+        !Array.isArray(
+            bucket[type]
+        )
+    ) {
 
-    bucket[type].push(Date.now())
+        bucket[type] =
+            []
+
+    }
+
+    bucket[type] =
+        clean(
+            bucket[type],
+            config.interval
+        )
+
+    bucket[type].push(
+        Date.now()
+    )
 
     return (
         bucket[type].length >
@@ -97,47 +216,244 @@ function hit(bucket, type) {
 
 }
 
-function isLimited(user, type) {
-
-    const bucket =
-        getUserBucket(user)
-
-    return hit(bucket, type)
-
-}
-
-function isGroupLimited(group, type) {
-
-    const bucket =
-        getGroupBucket(group)
-
-    return hit(bucket, type)
-
-}
-
-function resetUser(user) {
-    users.delete(user)
-}
-
-function resetGroup(group) {
-    groups.delete(group)
-}
-
-function getRemainingTime(user, type) {
+function checkBucket(
+    bucket,
+    type
+) {
 
     const config =
         CONFIG[type]
 
-    if (!config) return 0
+    if (
+        !config
+    ) {
 
-    const bucket =
-        getUserBucket(user)
+        return false
+
+    }
 
     if (
-        !bucket[type] ||
-        bucket[type].length === 0
+        !Array.isArray(
+            bucket[type]
+        )
     ) {
+
+        return false
+
+    }
+
+    bucket[type] =
+        clean(
+            bucket[type],
+            config.interval
+        )
+
+    return (
+        bucket[type].length >
+        config.limit
+    )
+
+}
+
+function isLimited(
+    user,
+    type,
+    scope = 'main'
+) {
+
+    if (
+        !user
+    ) {
+
+        return false
+
+    }
+
+    const bucket =
+        getUserBucket(
+            user,
+            scope
+        )
+
+    return registerHit(
+        bucket,
+        type
+    )
+
+}
+
+function checkLimited(
+    user,
+    type,
+    scope = 'main'
+) {
+
+    if (
+        !user
+    ) {
+
+        return false
+
+    }
+
+    const bucket =
+        getUserBucket(
+            user,
+            scope
+        )
+
+    return checkBucket(
+        bucket,
+        type
+    )
+
+}
+
+function isGroupLimited(
+    group,
+    type,
+    scope = 'main'
+) {
+
+    if (
+        !group
+    ) {
+
+        return false
+
+    }
+
+    const bucket =
+        getGroupBucket(
+            group,
+            scope
+        )
+
+    return registerHit(
+        bucket,
+        type
+    )
+
+}
+
+function checkGroupLimited(
+    group,
+    type,
+    scope = 'main'
+) {
+
+    if (
+        !group
+    ) {
+
+        return false
+
+    }
+
+    const bucket =
+        getGroupBucket(
+            group,
+            scope
+        )
+
+    return checkBucket(
+        bucket,
+        type
+    )
+
+}
+
+function resetUser(
+    user,
+    scope = 'main'
+) {
+
+    if (
+        !user
+    ) {
+
+        return false
+
+    }
+
+    return users.delete(
+        buildKey(
+            user,
+            scope
+        )
+    )
+
+}
+
+function resetGroup(
+    group,
+    scope = 'main'
+) {
+
+    if (
+        !group
+    ) {
+
+        return false
+
+    }
+
+    return groups.delete(
+        buildKey(
+            group,
+            scope
+        )
+    )
+
+}
+
+function getRemainingTime(
+    user,
+    type,
+    scope = 'main'
+) {
+
+    const config =
+        CONFIG[type]
+
+    if (
+        !config ||
+        !user
+    ) {
+
         return 0
+
+    }
+
+    const bucket =
+        getUserBucket(
+            user,
+            scope
+        )
+
+    if (
+        !Array.isArray(
+            bucket[type]
+        )
+    ) {
+
+        return 0
+
+    }
+
+    bucket[type] =
+        clean(
+            bucket[type],
+            config.interval
+        )
+
+    if (
+        bucket[type].length ===
+        0
+    ) {
+
+        return 0
+
     }
 
     const oldest =
@@ -147,85 +463,174 @@ function getRemainingTime(user, type) {
         Math.ceil(
             (
                 config.interval -
-                (Date.now() - oldest)
-            ) / 1000
+                (
+                    Date.now() -
+                    oldest
+                )
+            ) /
+            1000
         )
 
-    return Math.max(remaining, 0)
+    return Math.max(
+        remaining,
+        0
+    )
 
 }
 
-setInterval(() => {
+setInterval(
+    () => {
 
-    try {
+        try {
 
-        const now =
-            Date.now()
+            for (
+                const [
+                    user,
+                    data
+                ]
+                of users
+            ) {
 
-        for (const [user, data] of users) {
+                let empty =
+                    true
 
-            let empty = true
+                for (
+                    const type
+                    in data
+                ) {
 
-            for (const type in data) {
+                    const config =
+                        CONFIG[type]
 
-                data[type] = clean(
-                    data[type],
-                    CONFIG[type]?.interval || 0
-                )
+                    if (
+                        !config
+                    ) {
 
-                if (data[type].length > 0) {
-                    empty = false
+                        delete data[type]
+
+                        continue
+
+                    }
+
+                    data[type] =
+                        clean(
+                            data[type],
+                            config.interval
+                        )
+
+                    if (
+                        data[type].length >
+                        0
+                    ) {
+
+                        empty =
+                            false
+
+                    }
+
+                }
+
+                if (
+                    empty
+                ) {
+
+                    users.delete(
+                        user
+                    )
+
                 }
 
             }
 
-            if (empty) {
-                users.delete(user)
-            }
+            for (
+                const [
+                    group,
+                    data
+                ]
+                of groups
+            ) {
 
-        }
+                let empty =
+                    true
 
-        for (const [group, data] of groups) {
+                for (
+                    const type
+                    in data
+                ) {
 
-            let empty = true
+                    const config =
+                        CONFIG[type]
 
-            for (const type in data) {
+                    if (
+                        !config
+                    ) {
 
-                data[type] = clean(
-                    data[type],
-                    CONFIG[type]?.interval || 0
-                )
+                        delete data[type]
 
-                if (data[type].length > 0) {
-                    empty = false
+                        continue
+
+                    }
+
+                    data[type] =
+                        clean(
+                            data[type],
+                            config.interval
+                        )
+
+                    if (
+                        data[type].length >
+                        0
+                    ) {
+
+                        empty =
+                            false
+
+                    }
+
+                }
+
+                if (
+                    empty
+                ) {
+
+                    groups.delete(
+                        group
+                    )
+
                 }
 
             }
 
-            if (empty) {
-                groups.delete(group)
-            }
+        } catch (err) {
+
+            logger.error(
+                `RateLimiter Cleanup: ${err.stack || err.message}`
+            )
 
         }
 
-    } catch (err) {
-
-        logger.error(
-            `RateLimiter Cleanup: ${err.message}`
-        )
-
-    }
-
-}, 60000)
+    },
+    60000
+)
 
 logger.success(
     'UnifiedRateLimiter cargado'
 )
 
 module.exports = {
+
     isLimited,
+
+    checkLimited,
+
     isGroupLimited,
+
+    checkGroupLimited,
+
     resetUser,
+
     resetGroup,
+
     getRemainingTime
+
 }

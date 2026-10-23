@@ -72,31 +72,27 @@ const getText =
 const logger =
     require('../src/utils/logger')
 
-const ui =
-    require('../src/utils/ui')
-
-
 const processedMessages =
     new Set()
 
+setInterval(
+    () => {
 
-setInterval(() => {
+        try {
 
-    try {
+            processedMessages.clear()
 
-        processedMessages.clear()
+        } catch {}
 
-    } catch {}
-
-}, 1000 * 60 * 5)
-
+    },
+    1000 * 60 * 5
+)
 
 const mutePath =
     path.join(
         __dirname,
         '../database/mute.json'
     )
-
 
 function normalizeJid(
     jid
@@ -108,7 +104,6 @@ function normalizeJid(
 
     }
 
-
     return String(jid)
         .trim()
         .replace(
@@ -117,7 +112,6 @@ function normalizeJid(
         )
 
 }
-
 
 function isGroup(
     jid
@@ -130,6 +124,120 @@ function isGroup(
 
 }
 
+function getBotProfile(
+    sock
+) {
+
+    return (
+        sock?.botProfile ||
+        settings?.bots?.main ||
+        {
+            id:
+                'main',
+
+            name:
+                settings?.botName ||
+                'KennyBot'
+        }
+    )
+
+}
+
+function getBotProfileId(
+    sock
+) {
+
+    const profile =
+        getBotProfile(
+            sock
+        )
+
+    return String(
+        profile?.id ||
+        sock?.botProfileId ||
+        'main'
+    )
+        .trim()
+        .toLowerCase()
+
+}
+
+function getBotName(
+    sock
+) {
+
+    const profile =
+        getBotProfile(
+            sock
+        )
+
+    return String(
+        profile?.name ||
+        settings?.botName ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
+function getMaintenanceCommands() {
+
+    return new Set(
+
+        (
+            Array.isArray(
+                settings?.maintenanceCommands
+            )
+                ? settings.maintenanceCommands
+                : []
+        )
+            .map(
+                value =>
+                    String(
+                        value || ''
+                    )
+                        .trim()
+                        .toLowerCase()
+            )
+            .filter(Boolean)
+
+    )
+
+}
+
+function isCardSystemMaintenance() {
+
+    const maintenance =
+        getMaintenanceCommands()
+
+    return (
+        maintenance.has(
+            'card'
+        ) ||
+        maintenance.has(
+            'cardinfo'
+        ) ||
+        maintenance.has(
+            'collection'
+        ) ||
+        maintenance.has(
+            'equip'
+        ) ||
+        maintenance.has(
+            'packs'
+        ) ||
+        maintenance.has(
+            'openpack'
+        ) ||
+        maintenance.has(
+            'pick'
+        ) ||
+        maintenance.has(
+            'myclub'
+        )
+    )
+
+}
 
 function ensureMuteDb() {
 
@@ -140,7 +248,6 @@ function ensureMuteDb() {
                 mutePath
             )
 
-
         if (
             !fs.existsSync(
                 directory
@@ -150,12 +257,12 @@ function ensureMuteDb() {
             fs.mkdirSync(
                 directory,
                 {
-                    recursive: true
+                    recursive:
+                        true
                 }
             )
 
         }
-
 
         if (
             !fs.existsSync(
@@ -175,7 +282,6 @@ function ensureMuteDb() {
 
         }
 
-
     } catch (err) {
 
         logger.error(
@@ -186,11 +292,9 @@ function ensureMuteDb() {
 
 }
 
-
 function readMuteDb() {
 
     ensureMuteDb()
-
 
     try {
 
@@ -202,20 +306,19 @@ function readMuteDb() {
                 )
             )
 
-
         if (
             !data ||
             typeof data !== 'object' ||
-            Array.isArray(data)
+            Array.isArray(
+                data
+            )
         ) {
 
             return {}
 
         }
 
-
         return data
-
 
     } catch (err) {
 
@@ -229,7 +332,6 @@ function readMuteDb() {
 
 }
 
-
 function isUserMuted(
     from,
     sender,
@@ -239,14 +341,12 @@ function isUserMuted(
     const data =
         readMuteDb()
 
-
     const list =
         Array.isArray(
             data[from]
         )
             ? data[from]
             : []
-
 
     const normalizedList =
         list
@@ -255,75 +355,57 @@ function isUserMuted(
             )
             .filter(Boolean)
 
-
     const normalizedSender =
         normalizeJid(
             sender
         )
-
 
     const normalizedAlt =
         normalizeJid(
             senderAlt
         )
 
-
     return (
-
         normalizedList.includes(
             normalizedSender
         )
-
         ||
-
         (
             normalizedAlt &&
-
             normalizedList.includes(
                 normalizedAlt
             )
         )
-
     )
 
 }
-
 
 async function syncMessageObjectives(
     memberId
 ) {
 
     const types = [
-
         'MESSAGES',
-
         'ACTIVE_DAYS',
-
         'STREAK'
-
     ]
 
-
     for (
-        const type of types
+        const type
+        of types
     ) {
 
         try {
 
             await syncMemberObjectivesByType(
-
                 memberId,
-
                 type
-
             )
 
         } catch (err) {
 
             logger.error(
-
                 `Objective ${type} Sync Error: ${err.stack || err.message}`
-
             )
 
         }
@@ -331,7 +413,6 @@ async function syncMessageObjectives(
     }
 
 }
-
 
 async function syncCommandObjectives(
     memberId
@@ -340,349 +421,330 @@ async function syncCommandObjectives(
     try {
 
         await syncMemberObjectivesByType(
-
             memberId,
-
             'COMMANDS'
-
         )
-
 
     } catch (err) {
 
         logger.error(
-
             `Objective COMMANDS Sync Error: ${err.stack || err.message}`
-
         )
 
     }
 
 }
 
+module.exports =
+    async (
+        sock,
+        messages
+    ) => {
 
-module.exports = async (
-    sock,
-    messages
-) => {
+        try {
 
-    try {
+            const msg =
+                messages?.[0]
 
-        /* ─────────────────────────────
-           MENSAJE
-        ───────────────────────────── */
+            if (!msg) {
 
-        const msg =
-            messages?.[0]
+                return
 
+            }
 
-        if (!msg) return
+            if (!msg.message) {
 
-        if (!msg.message) return
+                return
 
-        if (
-            msg.key?.fromMe
-        ) return
+            }
 
+            if (
+                msg.key?.fromMe
+            ) {
 
-        if (
-            msg.key?.remoteJid ===
-            'status@broadcast'
-        ) {
+                return
 
-            return
+            }
 
-        }
+            if (
+                msg.key?.remoteJid ===
+                'status@broadcast'
+            ) {
 
+                return
 
-        const from =
-            msg.key?.remoteJid
+            }
 
-
-        if (!from) {
-
-            return
-
-        }
-
-
-        /* ─────────────────────────────
-           IDENTIDAD
-        ───────────────────────────── */
-
-        const sender =
-            normalizeJid(
-
-                msg.key?.participant ||
-
-                msg.participant ||
-
+            const from =
                 msg.key?.remoteJid
 
-            )
+            if (!from) {
 
+                return
 
-        const senderAlt =
-            normalizeJid(
+            }
 
-                msg.key?.participantAlt ||
+            const botProfileId =
+                getBotProfileId(
+                    sock
+                )
 
-                msg.participantAlt ||
+            const botName =
+                getBotName(
+                    sock
+                )
 
-                null
+            const sender =
+                normalizeJid(
+                    msg.key?.participant ||
+                    msg.participant ||
+                    msg.key?.remoteJid
+                )
 
-            )
+            const senderAlt =
+                normalizeJid(
+                    msg.key?.participantAlt ||
+                    msg.participantAlt ||
+                    null
+                )
 
+            if (!sender) {
 
-        if (!sender) {
+                return
 
-            return
+            }
 
-        }
-
-
-        /* ─────────────────────────────
-           MUTE
-        ───────────────────────────── */
-
-        if (
-            isGroup(from) &&
-            isUserMuted(
-
-                from,
-
-                sender,
-
-                senderAlt
-
-            )
-        ) {
-
-            try {
-
-                await sock.sendMessage(
-
+            if (
+                isGroup(from) &&
+                isUserMuted(
                     from,
+                    sender,
+                    senderAlt
+                )
+            ) {
 
-                    {
+                try {
 
-                        delete:
+                    if (
+                        typeof sock.safeDeleteMessage ===
+                        'function'
+                    ) {
+
+                        await sock.safeDeleteMessage(
+                            from,
                             msg.key
+                        )
+
+                    } else {
+
+                        await sock.sendMessage(
+                            from,
+                            {
+                                delete:
+                                    msg.key
+                            }
+                        )
 
                     }
 
+                } catch (err) {
+
+                    logger.error(
+                        `${botName} | Delete muted msg: ${err.stack || err.message}`
+                    )
+
+                }
+
+                return
+
+            }
+
+            const timestamp =
+                Number(
+                    msg.messageTimestamp ||
+                    0
                 )
+
+            const now =
+                Math.floor(
+                    Date.now() /
+                    1000
+                )
+
+            if (
+                timestamp &&
+                now - timestamp >
+                15
+            ) {
+
+                return
+
+            }
+
+            const messageId =
+                msg.key?.id
+
+            if (!messageId) {
+
+                return
+
+            }
+
+            const processedKey =
+                [
+                    botProfileId,
+                    from,
+                    messageId
+                ]
+                    .join(':')
+
+            if (
+                processedMessages.has(
+                    processedKey
+                )
+            ) {
+
+                return
+
+            }
+
+            processedMessages.add(
+                processedKey
+            )
+
+            setTimeout(
+                () => {
+
+                    processedMessages.delete(
+                        processedKey
+                    )
+
+                },
+                30000
+            )
+
+            const text =
+                getText(
+                    msg
+                )
+                    ?.trim()
+
+            if (!text) {
+
+                return
+
+            }
+
+            logger.event(
+                `[${botProfileId}] ${sender.split('@')[0]} -> ${text}`
+            )
+
+            let isSpam =
+                false
+
+            try {
+
+                isSpam =
+                    Boolean(
+                        await spamHandler(
+                            sock,
+                            msg,
+                            from
+                        )
+                    )
 
             } catch (err) {
 
                 logger.error(
-
-                    `Delete muted msg: ${err.stack || err.message}`
-
+                    `${botName} | Spam Handler Error: ${err.stack || err.message}`
                 )
 
             }
 
-
-            return
-
-        }
-
-
-        /* ─────────────────────────────
-           MENSAJES ANTIGUOS
-        ───────────────────────────── */
-
-        const timestamp =
-            Number(
-                msg.messageTimestamp ||
-                0
-            )
-
-
-        const now =
-            Math.floor(
-                Date.now() / 1000
-            )
-
-
-        if (
-            timestamp &&
-            now - timestamp > 15
-        ) {
-
-            return
-
-        }
-
-
-        /* ─────────────────────────────
-           ANTI DUPLICADOS
-        ───────────────────────────── */
-
-        const messageId =
-            msg.key?.id
-
-
-        if (!messageId) {
-
-            return
-
-        }
-
-
-        if (
-            processedMessages.has(
-                messageId
-            )
-        ) {
-
-            return
-
-        }
-
-
-        processedMessages.add(
-            messageId
-        )
-
-
-        setTimeout(() => {
-
-            processedMessages.delete(
-                messageId
-            )
-
-        }, 30000)
-
-
-        /* ─────────────────────────────
-           TEXTO
-        ───────────────────────────── */
-
-        const text =
-            getText(
-                msg
-            )
-                ?.trim()
-
-
-        if (!text) {
-
-            return
-
-        }
-
-
-        logger.event(
-
-            `${sender.split('@')[0]} -> ${text}`
-
-        )
-
-
-        /* ─────────────────────────────
-           SPAM
-        ───────────────────────────── */
-
-        const isSpam =
-            await spamHandler(
-
-                sock,
-
-                msg,
-
-                from
-
-            )
-
-
-        if (
-            isSpam
-        ) {
-
-            logger.warn(
-
-                `Spam detectado: ${sender.split('@')[0]}`
-
-            )
-
-
-            return
-
-        }
-
-
-        /* ─────────────────────────────
-           ANTILINK
-        ───────────────────────────── */
-
-        let antiLinkBlocked =
-            false
-
-
-        try {
-
-            antiLinkBlocked =
-                Boolean(
-
-                    await antiLinkHandler(
-
-                        sock,
-
-                        msg,
-
-                        from,
-
-                        text
-
+            if (
+                isSpam
+            ) {
+
+                logger.warn(
+                    `${botName} | Spam detectado: ${sender.split('@')[0]}`
+                )
+
+                return
+
+            }
+
+            let antiLinkBlocked =
+                false
+
+            try {
+
+                antiLinkBlocked =
+                    Boolean(
+                        await antiLinkHandler(
+                            sock,
+                            msg,
+                            from,
+                            text
+                        )
                     )
 
+            } catch (err) {
+
+                logger.error(
+                    `${botName} | AntiLink Handler Error: ${err.stack || err.message}`
                 )
 
+            }
 
-        } catch (err) {
+            if (
+                antiLinkBlocked
+            ) {
 
-            logger.error(
+                return
 
-                `AntiLink Handler Error: ${err.stack || err.message}`
+            }
 
-            )
+            let member =
+                null
 
-        }
+            try {
 
+                member =
+                    await ensureMember(
+                        sender,
+                        senderAlt,
+                        msg.pushName ||
+                        null
+                    )
 
-        if (
-            antiLinkBlocked
-        ) {
+                if (
+                    member &&
+                    !isCardSystemMaintenance()
+                ) {
 
-            return
+                    try {
 
-        }
+                        await ensureInitialGoldCard(
+                            member.id
+                        )
 
+                    } catch (err) {
 
-        /* ─────────────────────────────
-           MIEMBRO
-        ───────────────────────────── */
+                        logger.error(
+                            `${botName} | Member Card DB Error: ${err.stack || err.message}`
+                        )
 
-        let member =
-            null
+                    }
 
+                }
 
-        try {
+            } catch (err) {
 
-            member =
-                await ensureMember(
-
-                    sender,
-
-                    senderAlt,
-
-                    msg.pushName ||
-                    null
-
+                logger.error(
+                    `${botName} | Member DB Error: ${err.stack || err.message}`
                 )
 
+            }
 
             if (
                 member
@@ -690,379 +752,235 @@ module.exports = async (
 
                 try {
 
-                    await ensureInitialGoldCard(
+                    await registerValidMessage(
                         member.id
                     )
 
+                    await registerSeasonMessage(
+                        member.id
+                    )
+
+                    await syncMessageObjectives(
+                        member.id
+                    )
+
+                    if (
+                        !isCardSystemMaintenance()
+                    ) {
+
+                        const unlock =
+                            await checkCardUnlock(
+                                member.id
+                            )
+
+                        if (
+                            unlock?.unlocked &&
+                            unlock?.card
+                        ) {
+
+                            const memberName =
+                                member.display_name ||
+                                msg.pushName ||
+                                'Miembro'
+
+                            logger.info(
+                                `${botName} | Nueva carta desbloqueada: ${memberName} | ${unlock.card.card_name} | OVR ${unlock.card.rating}`
+                            )
+
+                            await sock.safeSendMessage(
+                                from,
+                                {
+                                    text: [
+                                        'ㅤ۟∩　ׅ　🎉　ׅ　*NUEVA CARTA*　ׄᰙ',
+                                        '',
+                                        `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Jugador:* ${memberName}`,
+                                        `𖣣ֶㅤ֯⌗ 🃏  ׄ ⬭ *Carta:* ${unlock.card.card_name}`,
+                                        `𖣣ֶㅤ֯⌗ ⭐  ׄ ⬭ *OVR:* ${unlock.card.rating}`,
+                                        '',
+                                        '╰─ 𓂃 Usa .card para ver tu nueva carta'
+                                    ]
+                                        .filter(Boolean)
+                                        .join('\n')
+                                }
+                            )
+
+                        }
+
+                    }
 
                 } catch (err) {
 
                     logger.error(
-
-                        `Member Card DB Error: ${err.stack || err.message}`
-
+                        `${botName} | Activity/Card DB Error: ${err.stack || err.message}`
                     )
 
                 }
 
             }
 
+            try {
 
-        } catch (err) {
+                await messageStatsHandler(
+                    msg,
+                    from
+                )
 
-            logger.error(
+            } catch (err) {
 
-                `Member DB Error: ${err.stack || err.message}`
+                logger.error(
+                    `${botName} | Message Stats Handler Error: ${err.stack || err.message}`
+                )
 
-            )
-
-        }
-
-
-        /* ─────────────────────────────
-           ACTIVIDAD DE MENSAJES
-        ───────────────────────────── */
-
-        if (
-            member
-        ) {
+            }
 
             try {
 
-                await registerValidMessage(
-                    member.id
+                await levelHandler(
+                    sock,
+                    msg,
+                    from
                 )
 
+            } catch (err) {
 
-                await registerSeasonMessage(
-                    member.id
+                logger.error(
+                    `${botName} | Level Handler Error: ${err.stack || err.message}`
                 )
 
+            }
 
-                await syncMessageObjectives(
-                    member.id
+            try {
+
+                await economyHandler(
+                    sock,
+                    msg,
+                    from
                 )
 
+            } catch (err) {
 
-                const unlock =
-                    await checkCardUnlock(
+                logger.error(
+                    `${botName} | Economy Handler Error: ${err.stack || err.message}`
+                )
+
+            }
+
+            try {
+
+                await badgeHandler(
+                    sock,
+                    msg,
+                    from
+                )
+
+            } catch (err) {
+
+                logger.error(
+                    `${botName} | Badge Handler Error: ${err.stack || err.message}`
+                )
+
+            }
+
+            const prefixes =
+                Array.isArray(
+                    settings.prefixes
+                )
+                    ? settings.prefixes
+                    : [
+                        settings.prefix ||
+                        '/'
+                    ]
+
+            const matchedPrefix =
+                prefixes.find(
+                    prefix =>
+                        typeof prefix ===
+                        'string' &&
+                        prefix &&
+                        text.startsWith(
+                            prefix
+                        )
+                )
+
+            if (
+                !matchedPrefix
+            ) {
+
+                return
+
+            }
+
+            let commandProcessed =
+                false
+
+            try {
+
+                commandProcessed =
+                    Boolean(
+                        await commandHandler({
+
+                            sock,
+
+                            msg,
+
+                            from,
+
+                            text,
+
+                            settings,
+
+                            botProfile:
+                                sock.botProfile ||
+                                null
+
+                        })
+                    )
+
+            } catch (err) {
+
+                logger.error(
+                    `${botName} | Command Handler Error: ${err.stack || err.message}`
+                )
+
+                return
+
+            }
+
+            if (
+                commandProcessed &&
+                member
+            ) {
+
+                try {
+
+                    await registerCommand(
                         member.id
                     )
 
-
-                if (
-                    unlock?.unlocked &&
-                    unlock?.card
-                ) {
-
-                    const memberName =
-
-                        member.display_name ||
-
-                        msg.pushName ||
-
-                        'Miembro'
-
-
-                    logger.info(
-
-                        `Nueva carta desbloqueada: ${memberName} | ${unlock.card.card_name} | OVR ${unlock.card.rating}`
-
+                    await registerSeasonCommand(
+                        member.id
                     )
 
+                    await syncCommandObjectives(
+                        member.id
+                    )
 
-                    await sock.safeSendMessage(
+                } catch (err) {
 
-                        from,
-
-                        {
-
-                            text: [
-
-                                'ㅤ۟∩　ׅ　🎉　ׅ　*NUEVA CARTA*　ׄᰙ',
-
-                                '',
-
-                                `𖣣ֶㅤ֯⌗ 👤  ׄ ⬭ *Jugador:* ${memberName}`,
-
-                                `𖣣ֶㅤ֯⌗ 🃏  ׄ ⬭ *Carta:* ${unlock.card.card_name}`,
-
-                                `𖣣ֶㅤ֯⌗ ⭐  ׄ ⬭ *OVR:* ${unlock.card.rating}`,
-
-                                '',
-
-                                '╰─ 𓂃 Usa .card para ver tu nueva carta'
-
-                            ]
-                                .filter(Boolean)
-                                .join('\n')
-
-                        }
-
+                    logger.error(
+                        `${botName} | Command Activity DB Error: ${err.stack || err.message}`
                     )
 
                 }
 
-
-            } catch (err) {
-
-                logger.error(
-
-                    `Activity/Card DB Error: ${err.stack || err.message}`
-
-                )
-
             }
 
-        }
-
-
-        /* ─────────────────────────────
-           ESTADÍSTICAS
-        ───────────────────────────── */
-
-        try {
-
-            await messageStatsHandler(
-
-                msg,
-
-                from
-
-            )
-
-
         } catch (err) {
 
             logger.error(
-
-                `Message Stats Handler Error: ${err.stack || err.message}`
-
+                `Messages Event Error: ${err.stack || err.message}`
             )
 
         }
-
-
-        /* ─────────────────────────────
-           NIVELES
-        ───────────────────────────── */
-
-        try {
-
-            await levelHandler(
-
-                sock,
-
-                msg,
-
-                from
-
-            )
-
-
-        } catch (err) {
-
-            logger.error(
-
-                `Level Handler Error: ${err.stack || err.message}`
-
-            )
-
-        }
-
-
-        /* ─────────────────────────────
-           ECONOMÍA
-        ───────────────────────────── */
-
-        try {
-
-            await economyHandler(
-
-                sock,
-
-                msg,
-
-                from
-
-            )
-
-
-        } catch (err) {
-
-            logger.error(
-
-                `Economy Handler Error: ${err.stack || err.message}`
-
-            )
-
-        }
-
-
-        /* ─────────────────────────────
-           BADGES
-        ───────────────────────────── */
-
-        try {
-
-            await badgeHandler(
-
-                sock,
-
-                msg,
-
-                from
-
-            )
-
-
-        } catch (err) {
-
-            logger.error(
-
-                `Badge Handler Error: ${err.stack || err.message}`
-
-            )
-
-        }
-
-
-        /* ─────────────────────────────
-           COMANDOS
-        ───────────────────────────── */
-
-        const prefixes =
-            Array.isArray(
-                settings.prefixes
-            )
-                ? settings.prefixes
-
-                : [
-
-                    settings.prefix ||
-                    '/'
-
-                ]
-
-
-        const matchedPrefix =
-            prefixes.find(
-
-                prefix =>
-                    typeof prefix === 'string' &&
-                    prefix &&
-                    text.startsWith(
-                        prefix
-                    )
-
-            )
-
-
-        if (
-            !matchedPrefix
-        ) {
-
-            return
-
-        }
-
-
-        /*
-            IMPORTANTE:
-
-            Si commandHandler devuelve true
-            solamente cuando encontró/ejecutó
-            un comando válido, podemos registrar
-            COMMANDS después.
-
-            Si actualmente no devuelve nada,
-            habría que modificar commandHandler
-            para que devuelva true/false.
-        */
-
-        let commandProcessed =
-            false
-
-
-        try {
-
-            commandProcessed =
-                Boolean(
-
-                    await commandHandler({
-
-                        sock,
-
-                        msg,
-
-                        from,
-
-                        text,
-
-                        settings
-
-                    })
-
-                )
-
-
-        } catch (err) {
-
-            logger.error(
-
-                `Command Handler Error: ${err.stack || err.message}`
-
-            )
-
-
-            return
-
-        }
-
-
-        if (
-            commandProcessed &&
-            member
-        ) {
-
-            try {
-
-                await registerCommand(
-                    member.id
-                )
-
-
-                await registerSeasonCommand(
-                    member.id
-                )
-
-
-                await syncCommandObjectives(
-                    member.id
-                )
-
-
-            } catch (err) {
-
-                logger.error(
-
-                    `Command Activity DB Error: ${err.stack || err.message}`
-
-                )
-
-            }
-
-        }
-
-
-    } catch (err) {
-
-        logger.error(
-
-            `Messages Event Error: ${err.stack || err.message}`
-
-        )
 
     }
-
-}

@@ -5,13 +5,13 @@ const path =
     require('path')
 
 const isGroupAdmin =
-    require('../../src/utils/isAdmin')
+    require('../src/utils/isAdmin')
 
 const logger =
-    require('../../src/utils/logger')
+    require('../src/utils/logger')
 
 const ui =
-    require('../../src/utils/ui')
+    require('../src/utils/ui')
 
 
 const dbPath =

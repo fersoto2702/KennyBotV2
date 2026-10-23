@@ -10,10 +10,6 @@ const logger =
 const ui =
     require('../utils/ui')
 
-const {
-    isLimited
-} = require('../system/rateLimiter')
-
 const badgesPath =
     path.join(
         __dirname,
@@ -32,161 +28,501 @@ const economyPath =
         '../../database/economy.json'
     )
 
-const MAX_BADGES_PER_MESSAGE = 3
+const MAX_BADGES_PER_MESSAGE =
+    3
 
 const BADGE_RULES = [
 
     {
-        id: '🥉 Nivel 10',
-        check: (lvl, money) => lvl >= 10
+        id:
+            '🥉 Nivel 10',
+
+        check:
+            (lvl, money) =>
+                lvl >= 10
     },
 
     {
-        id: '🥈 Nivel 25',
-        check: (lvl, money) => lvl >= 25
+        id:
+            '🥈 Nivel 25',
+
+        check:
+            (lvl, money) =>
+                lvl >= 25
     },
 
     {
-        id: '🥇 Nivel 50',
-        check: (lvl, money) => lvl >= 50
+        id:
+            '🥇 Nivel 50',
+
+        check:
+            (lvl, money) =>
+                lvl >= 50
     },
 
     {
-        id: '💰 Millonario',
-        check: (lvl, money) => money >= 50000
+        id:
+            '💰 Millonario',
+
+        check:
+            (lvl, money) =>
+                money >= 50000
     },
 
     {
-        id: '💎 Multimillonario',
-        check: (lvl, money) => money >= 200000
+        id:
+            '💎 Multimillonario',
+
+        check:
+            (lvl, money) =>
+                money >= 200000
     }
 
 ]
 
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+    return String(
+        jid
+    )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+function getBotName(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
+function ensureDirectory(
+    file
+) {
+
+    const directory =
+        path.dirname(
+            file
+        )
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive:
+                    true
+            }
+        )
+
+    }
+
+}
+
 function ensureDatabases() {
 
     const databases = [
+
         badgesPath,
+
         levelsPath,
+
         economyPath
+
     ]
 
-    for (const file of databases) {
+    for (
+        const file
+        of databases
+    ) {
 
-        if (!fs.existsSync(file)) {
-            fs.writeFileSync(
-                file,
-                JSON.stringify({}, null, 2)
+        try {
+
+            ensureDirectory(
+                file
             )
+
+            if (
+                !fs.existsSync(
+                    file
+                )
+            ) {
+
+                fs.writeFileSync(
+                    file,
+                    JSON.stringify(
+                        {},
+                        null,
+                        2
+                    ),
+                    'utf8'
+                )
+
+            }
+
+        } catch (err) {
+
+            logger.error(
+                `Badge DB Init Error (${path.basename(file)}): ${err.stack || err.message}`
+            )
+
         }
 
     }
 
 }
 
-module.exports = async (sock, msg, from) => {
+function readJson(
+    file
+) {
 
     try {
 
-        const sender =
-            msg.key.participant ||
-            msg.key.remoteJid
-
-        if (!sender) return
-
-        if (isLimited(sender, 'flood')) return
-
-        ensureDatabases()
-
-        const badges =
-            JSON.parse(
-                fs.readFileSync(badgesPath)
+        const raw =
+            fs.readFileSync(
+                file,
+                'utf8'
             )
 
-        const levels =
+        const data =
             JSON.parse(
-                fs.readFileSync(levelsPath)
+                raw
             )
 
-        const economy =
-            JSON.parse(
-                fs.readFileSync(economyPath)
+        if (
+            !data ||
+            typeof data !==
+            'object' ||
+            Array.isArray(
+                data
             )
+        ) {
 
-        if (!badges[sender]) {
-            badges[sender] = []
-        }
-
-        const level =
-            levels[sender]?.level || 1
-
-        const money =
-            (economy[sender]?.coins || 0) +
-            (economy[sender]?.bank || 0)
-
-        const newBadges = []
-
-        for (const rule of BADGE_RULES) {
-
-            if (newBadges.length >= MAX_BADGES_PER_MESSAGE) {
-                break
-            }
-
-            const unlocked =
-                rule.check(level, money)
-
-            const alreadyHas =
-                badges[sender].includes(rule.id)
-
-            if (unlocked && !alreadyHas) {
-
-                badges[sender].push(rule.id)
-                newBadges.push(rule.id)
-
-            }
+            return {}
 
         }
 
-        if (newBadges.length === 0) return
-
-        fs.writeFileSync(
-            badgesPath,
-            JSON.stringify(badges, null, 2)
-        )
-
-        logger.event(
-            `Badges: ${sender.split('@')[0]} → ${newBadges.join(', ')}`
-        )
-
-        if (isLimited(sender, 'commands')) return
-
-        const badgeText =
-            newBadges
-                .map(b => `• ${b}`)
-                .join('\n')
-
-        await sock.safeSendMessage(
-            from,
-            {
-                text:
-                    ui.success(
-                        'NUEVOS LOGROS DESBLOQUEADOS',
-                        [
-                            ['Usuario', `@${sender.split('@')[0]}`],
-                            ['Logros', `${newBadges.length}`],
-                            ['Badges', `\n${badgeText}`]
-                        ]
-                    ),
-                mentions: [sender]
-            }
-        )
+        return data
 
     } catch (err) {
 
         logger.error(
-            `BadgeHandler Error: ${err.message}`
+            `Badge DB Read Error (${path.basename(file)}): ${err.stack || err.message}`
         )
+
+        return {}
 
     }
 
 }
+
+function writeJson(
+    file,
+    data
+) {
+
+    try {
+
+        fs.writeFileSync(
+            file,
+            JSON.stringify(
+                data,
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+        return true
+
+    } catch (err) {
+
+        logger.error(
+            `Badge DB Write Error (${path.basename(file)}): ${err.stack || err.message}`
+        )
+
+        return false
+
+    }
+
+}
+
+module.exports =
+    async (
+        sock,
+        msg,
+        from
+    ) => {
+
+        try {
+
+            if (
+                !msg?.message
+            ) {
+
+                return false
+
+            }
+
+            if (
+                msg.key?.fromMe
+            ) {
+
+                return false
+
+            }
+
+            if (
+                !from ||
+                typeof from !==
+                'string'
+            ) {
+
+                return false
+
+            }
+
+            const sender =
+                normalizeJid(
+
+                    msg.key?.participant ||
+
+                    msg.participant ||
+
+                    msg.key?.remoteJid
+
+                )
+
+            if (
+                !sender
+            ) {
+
+                return false
+
+            }
+
+            const botName =
+                getBotName(
+                    sock
+                )
+
+            ensureDatabases()
+
+            const badges =
+                readJson(
+                    badgesPath
+                )
+
+            const levels =
+                readJson(
+                    levelsPath
+                )
+
+            const economy =
+                readJson(
+                    economyPath
+                )
+
+            if (
+                !Array.isArray(
+                    badges[sender]
+                )
+            ) {
+
+                badges[sender] =
+                    []
+
+            }
+
+            const level =
+                Math.max(
+                    1,
+                    Number(
+                        levels[sender]?.level ||
+                        1
+                    )
+                )
+
+            const coins =
+                Number(
+                    economy[sender]?.coins ||
+                    0
+                )
+
+            const bank =
+                Number(
+                    economy[sender]?.bank ||
+                    0
+                )
+
+            const money =
+                (
+                    Number.isFinite(
+                        coins
+                    )
+                        ? coins
+                        : 0
+                )
+                +
+                (
+                    Number.isFinite(
+                        bank
+                    )
+                        ? bank
+                        : 0
+                )
+
+            const newBadges =
+                []
+
+            for (
+                const rule
+                of BADGE_RULES
+            ) {
+
+                if (
+                    newBadges.length >=
+                    MAX_BADGES_PER_MESSAGE
+                ) {
+
+                    break
+
+                }
+
+                let unlocked =
+                    false
+
+                try {
+
+                    unlocked =
+                        Boolean(
+                            rule.check(
+                                level,
+                                money
+                            )
+                        )
+
+                } catch {
+
+                    unlocked =
+                        false
+
+                }
+
+                const alreadyHas =
+                    badges[sender].includes(
+                        rule.id
+                    )
+
+                if (
+                    unlocked &&
+                    !alreadyHas
+                ) {
+
+                    badges[sender].push(
+                        rule.id
+                    )
+
+                    newBadges.push(
+                        rule.id
+                    )
+
+                }
+
+            }
+
+            if (
+                newBadges.length ===
+                0
+            ) {
+
+                return false
+
+            }
+
+            if (
+                !writeJson(
+                    badgesPath,
+                    badges
+                )
+            ) {
+
+                return false
+
+            }
+
+            logger.event(
+                `${botName} | Badges: ${sender.split('@')[0]} → ${newBadges.join(', ')}`
+            )
+
+            const badgeText =
+                newBadges
+                    .map(
+                        badge =>
+                            `• ${badge}`
+                    )
+                    .join('\n')
+
+            await sock.safeSendMessage(
+                from,
+                {
+                    text:
+                        ui.success(
+                            'NUEVOS LOGROS DESBLOQUEADOS',
+                            [
+                                [
+                                    'Usuario',
+                                    `@${sender.split('@')[0]}`
+                                ],
+                                [
+                                    'Logros',
+                                    `${newBadges.length}`
+                                ],
+                                [
+                                    'Badges',
+                                    `\n${badgeText}`
+                                ]
+                            ]
+                        ),
+
+                    mentions:
+                        [
+                            sender
+                        ]
+                }
+            )
+
+            return true
+
+        } catch (err) {
+
+            logger.error(
+                `BadgeHandler Error: ${err.stack || err.message}`
+            )
+
+            return false
+
+        }
+
+    }

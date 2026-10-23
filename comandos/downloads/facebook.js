@@ -1,60 +1,38 @@
 const axios =
     require('axios')
 
-const {
-    checkCooldown
-} = require('../../src/utils/cooldowns')
-
 const logger =
     require('../../src/utils/logger')
 
 const ui =
     require('../../src/utils/ui')
 
-
-/* ─────────────────────────────
-   CONFIGURACIÓN
-───────────────────────────── */
-
-/*
-    API primaria.
-
-    Se mantiene Vreden porque ya la
-    estabas usando, pero ahora está
-    encapsulada y si falla no tumba
-    todo el comando.
-*/
-
 const VREDEN_API =
     'https://api.vreden.my.id/api/fbdl'
-
-
-/*
-    API alternativa opcional.
-
-    Puedes montar una API propia de
-    Facebook Downloader y colocar aquí:
-
-    http://TU_SERVIDOR:8000/download
-
-    Si la dejas vacía, simplemente
-    se omite.
-*/
 
 const FALLBACK_API =
     process.env.FACEBOOK_DOWNLOADER_API ||
     ''
-
-
-/* ─────────────────────────────
-   MENSAJE SIMPLE
-───────────────────────────── */
 
 async function sendFacebookMessage(
     sock,
     from,
     text
 ) {
+
+    if (
+        typeof sock.safeSendMessage ===
+        'function'
+    ) {
+
+        return await sock.safeSendMessage(
+            from,
+            {
+                text
+            }
+        )
+
+    }
 
     return await sock.sendMessage(
         from,
@@ -65,28 +43,72 @@ async function sendFacebookMessage(
 
 }
 
+function normalizeJid(
+    jid
+) {
 
-/* ─────────────────────────────
-   VALIDAR URL
-───────────────────────────── */
+    if (!jid) {
 
-function isFacebookUrl(value = '') {
+        return null
+
+    }
+
+    return String(
+        jid
+    )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+function getBotName(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
+function isFacebookUrl(
+    value = ''
+) {
 
     try {
 
         const url =
-            new URL(value)
+            new URL(
+                value
+            )
 
         const host =
             url.hostname
                 .toLowerCase()
-                .replace(/^www\./, '')
+                .replace(
+                    /^www\./,
+                    ''
+                )
 
         return (
-            host === 'facebook.com' ||
-            host.endsWith('.facebook.com') ||
-            host === 'fb.watch' ||
-            host.endsWith('.fb.watch')
+            host ===
+                'facebook.com'
+            ||
+            host.endsWith(
+                '.facebook.com'
+            )
+            ||
+            host ===
+                'fb.watch'
+            ||
+            host.endsWith(
+                '.fb.watch'
+            )
         )
 
     } catch {
@@ -97,22 +119,16 @@ function isFacebookUrl(value = '') {
 
 }
 
-
-/* ─────────────────────────────
-   VREDEN
-───────────────────────────── */
-
-async function downloadWithVreden(url) {
+async function downloadWithVreden(
+    url
+) {
 
     try {
 
         const response =
             await axios.get(
-
                 VREDEN_API,
-
                 {
-
                     params: {
                         url
                     },
@@ -121,40 +137,31 @@ async function downloadWithVreden(url) {
                         30000,
 
                     headers: {
-
                         'User-Agent':
                             'Mozilla/5.0'
-
                     }
-
                 }
-
             )
-
 
         const data =
             response.data
 
+        if (!data) {
 
-        if (!data)
             return null
 
-
-        /*
-            Algunos servicios cambian
-            ligeramente la estructura,
-            así que contemplamos varias.
-        */
+        }
 
         const result =
             data.result ||
             data.data ||
             data
 
+        if (!result) {
 
-        if (!result)
             return null
 
+        }
 
         const videoUrl =
 
@@ -174,13 +181,15 @@ async function downloadWithVreden(url) {
 
             result.video
 
+        if (
+            !videoUrl
+        ) {
 
-        if (!videoUrl)
             return null
 
+        }
 
         return {
-
             provider:
                 'Vreden',
 
@@ -188,7 +197,8 @@ async function downloadWithVreden(url) {
                 videoUrl,
 
             quality:
-                result.hd || result.HD
+                result.hd ||
+                result.HD
                     ? 'HD'
                     : 'SD',
 
@@ -196,14 +206,12 @@ async function downloadWithVreden(url) {
                 result.title ||
                 data.title ||
                 null
-
         }
-
 
     } catch (err) {
 
         logger.warn(
-            `Facebook Vreden falló: ${err.message}`
+            `Facebook Vreden falló: ${err.stack || err.message}`
         )
 
         return null
@@ -212,60 +220,51 @@ async function downloadWithVreden(url) {
 
 }
 
+async function downloadWithFallback(
+    url
+) {
 
-/* ─────────────────────────────
-   API FALLBACK
-───────────────────────────── */
+    if (
+        !FALLBACK_API
+    ) {
 
-async function downloadWithFallback(url) {
-
-    if (!FALLBACK_API)
         return null
 
+    }
 
     try {
 
         const response =
             await axios.post(
-
                 FALLBACK_API,
-
                 {
-
                     url,
 
                     quality:
                         'best'
-
                 },
-
                 {
-
                     timeout:
                         45000,
 
                     headers: {
-
                         'Content-Type':
                             'application/json',
 
                         'User-Agent':
                             'Mozilla/5.0'
-
                     }
-
                 }
-
             )
-
 
         const data =
             response.data
 
+        if (!data) {
 
-        if (!data)
             return null
 
+        }
 
         const videoUrl =
 
@@ -277,13 +276,15 @@ async function downloadWithFallback(url) {
 
             data.url
 
+        if (
+            !videoUrl
+        ) {
 
-        if (!videoUrl)
             return null
 
+        }
 
         return {
-
             provider:
                 'Fallback',
 
@@ -298,14 +299,12 @@ async function downloadWithFallback(url) {
                 data.video_info?.title ||
                 data.title ||
                 null
-
         }
-
 
     } catch (err) {
 
         logger.warn(
-            `Facebook fallback falló: ${err.message}`
+            `Facebook fallback falló: ${err.stack || err.message}`
         )
 
         return null
@@ -314,49 +313,39 @@ async function downloadWithFallback(url) {
 
 }
 
-
-/* ─────────────────────────────
-   DESCARGADOR GENERAL
-───────────────────────────── */
-
-async function getFacebookVideo(url) {
-
-    /*
-        1. Intentamos Vreden
-    */
+async function getFacebookVideo(
+    url
+) {
 
     let result =
         await downloadWithVreden(
             url
         )
 
+    if (
+        result
+    ) {
 
-    if (result)
         return result
 
-
-    /*
-        2. Intentamos servidor alternativo
-    */
+    }
 
     result =
         await downloadWithFallback(
             url
         )
 
+    if (
+        result
+    ) {
 
-    if (result)
         return result
 
+    }
 
     return null
 
 }
-
-
-/* ─────────────────────────────
-   COMANDO
-───────────────────────────── */
 
 module.exports = {
 
@@ -373,234 +362,193 @@ module.exports = {
     category:
         'descargas',
 
-
     async execute({
 
         sock,
+
         from,
-        args,
-        msg
+
+        args = [],
+
+        msg,
+
+        prefix = '/'
 
     }) {
 
         try {
 
-            /* ─────────────────────────────
-               USUARIO
-            ───────────────────────────── */
-
             const sender =
+                normalizeJid(
 
-                msg.key.participant ||
+                    msg.key?.participant ||
 
-                msg.key.remoteJid
+                    msg.participant ||
 
-
-            /* ─────────────────────────────
-               COOLDOWN
-            ───────────────────────────── */
-
-            const cooldown =
-                checkCooldown(
-
-                    sender,
-
-                    'facebook',
-
-                    10
+                    msg.key?.remoteJid
 
                 )
 
-
             if (
-                cooldown.active
+                !sender
             ) {
 
                 return await sendFacebookMessage(
-
                     sock,
-
                     from,
-
-                    ui.warn(
-
-                        'COOLDOWN ACTIVO',
-
-                        `Espera ${cooldown.left}s antes de usar este comando.`
-
+                    ui.error(
+                        'ERROR DE USUARIO',
+                        'No se pudo identificar al usuario.'
                     )
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               URL
-            ───────────────────────────── */
+            const botName =
+                getBotName(
+                    sock
+                )
 
             const url =
                 String(
-                    args?.[0] || ''
+                    args?.[0] ||
+                    ''
                 )
                     .trim()
 
-
             if (
                 !url ||
-                !isFacebookUrl(url)
+                !isFacebookUrl(
+                    url
+                )
             ) {
 
                 return await sendFacebookMessage(
-
                     sock,
-
                     from,
-
                     ui.warn(
-
                         'URL INVÁLIDA',
-
-                        'Envía un enlace válido de Facebook.\n\nUso: /facebook link'
-
+                        `Envía un enlace válido de Facebook.\n\nUso: ${prefix}facebook link`
                     )
-
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               OBTENER VIDEO
-            ───────────────────────────── */
 
             const result =
                 await getFacebookVideo(
                     url
                 )
 
-
-            if (!result) {
+            if (
+                !result
+            ) {
 
                 return await sendFacebookMessage(
-
                     sock,
-
                     from,
-
                     ui.error(
-
                         'DESCARGA FALLIDA',
-
                         'No se pudo obtener el video. La API puede estar temporalmente fuera de servicio o el contenido puede ser privado.'
-
                     )
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               RESPUESTA
-            ───────────────────────────── */
-
             const fields = [
-
                 [
                     'Estado',
                     'DESCARGADO'
                 ],
-
                 [
                     'Calidad',
                     result.quality
                 ]
-
             ]
 
-
-            if (result.title) {
+            if (
+                result.title
+            ) {
 
                 fields.push(
-
                     [
                         'Título',
                         result.title
                     ]
-
                 )
 
             }
 
+            const content = {
+                video: {
+                    url:
+                        result.url
+                },
 
-            await sock.sendMessage(
+                mimetype:
+                    'video/mp4',
 
-                from,
+                caption:
+                    ui.success(
+                        '📘 FACEBOOK',
+                        fields,
+                        'Video descargado correctamente.'
+                    )
+            }
 
-                {
+            if (
+                typeof sock.safeSendMessage ===
+                'function'
+            ) {
 
-                    video: {
+                await sock.safeSendMessage(
+                    from,
+                    content
+                )
 
-                        url:
-                            result.url
+            } else {
 
-                    },
+                await sock.sendMessage(
+                    from,
+                    content
+                )
 
-                    mimetype:
-                        'video/mp4',
-
-                    caption:
-                        ui.success(
-
-                            '📘 FACEBOOK',
-
-                            fields,
-
-                            'Video descargado correctamente.'
-
-                        )
-
-                }
-
-            )
-
+            }
 
             logger.event(
-
-                `Facebook descargado por ${sender?.split('@')[0] || 'desconocido'} | ${result.provider}`
-
+                `${botName} | Facebook descargado por ${sender.split('@')[0]} | ${result.provider}`
             )
 
+            return {
+                success:
+                    true,
+
+                provider:
+                    result.provider
+            }
 
         } catch (err) {
 
             logger.error(
-
                 `Error facebook: ${err.stack || err.message}`
-
             )
-
 
             try {
 
                 await sendFacebookMessage(
-
                     sock,
-
                     from,
-
                     ui.error(
-
                         'ERROR INTERNO',
-
                         'No se pudo descargar el video de Facebook.'
-
                     )
-
                 )
 
             } catch {}
+
+            return {
+                success:
+                    false
+            }
 
         }
 

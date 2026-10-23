@@ -230,12 +230,7 @@ module.exports = {
 
     category:
         'economia',
-
-    cooldown:
-        10,
-
-
-    async execute({
+async execute({
 
         sock,
         from,

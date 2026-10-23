@@ -151,30 +151,161 @@ function ensureTempDirectory(
 }
 
 
-function getQuotedMessage(
+/* ─────────────────────────────
+   DESENVOLVER MENSAJES
+───────────────────────────── */
+
+function unwrapMessageContent(
+    message
+) {
+
+    let current =
+        message
+
+
+    for (
+        let i = 0;
+        i < 10;
+        i++
+    ) {
+
+        if (!current) {
+
+            return null
+
+        }
+
+
+        if (
+            current.ephemeralMessage
+                ?.message
+        ) {
+
+            current =
+                current.ephemeralMessage
+                    .message
+
+            continue
+
+        }
+
+
+        if (
+            current.viewOnceMessage
+                ?.message
+        ) {
+
+            current =
+                current.viewOnceMessage
+                    .message
+
+            continue
+
+        }
+
+
+        if (
+            current.viewOnceMessageV2
+                ?.message
+        ) {
+
+            current =
+                current.viewOnceMessageV2
+                    .message
+
+            continue
+
+        }
+
+
+        if (
+            current.viewOnceMessageV2Extension
+                ?.message
+        ) {
+
+            current =
+                current.viewOnceMessageV2Extension
+                    .message
+
+            continue
+
+        }
+
+
+        if (
+            current.documentWithCaptionMessage
+                ?.message
+        ) {
+
+            current =
+                current.documentWithCaptionMessage
+                    .message
+
+            continue
+
+        }
+
+
+        break
+
+    }
+
+
+    return current
+
+}
+
+
+/* ─────────────────────────────
+   CONTEXT INFO
+───────────────────────────── */
+
+function getContextInfo(
     msg
 ) {
 
+    const message =
+        unwrapMessageContent(
+            msg?.message
+        )
+
+
+    if (!message) {
+
+        return null
+
+    }
+
+
     return (
 
-        msg.message
-            ?.extendedTextMessage
+        message.extendedTextMessage
             ?.contextInfo
-            ?.quotedMessage
 
         ||
 
-        msg.message
-            ?.imageMessage
+        message.imageMessage
             ?.contextInfo
-            ?.quotedMessage
 
         ||
 
-        msg.message
-            ?.videoMessage
+        message.videoMessage
             ?.contextInfo
-            ?.quotedMessage
+
+        ||
+
+        message.documentMessage
+            ?.contextInfo
+
+        ||
+
+        message.audioMessage
+            ?.contextInfo
+
+        ||
+
+        message.stickerMessage
+            ?.contextInfo
 
         ||
 
@@ -185,36 +316,67 @@ function getQuotedMessage(
 }
 
 
+/* ─────────────────────────────
+   MENSAJE RESPONDIDO
+───────────────────────────── */
+
+function getQuotedMessage(
+    msg
+) {
+
+    const contextInfo =
+        getContextInfo(
+            msg
+        )
+
+
+    if (
+        !contextInfo?.quotedMessage
+    ) {
+
+        return null
+
+    }
+
+
+    return unwrapMessageContent(
+        contextInfo.quotedMessage
+    )
+
+}
+
+
+/* ─────────────────────────────
+   DETECTAR MEDIA
+───────────────────────────── */
+
 function getMediaMessage(
     msg
 ) {
 
-    const quoted =
+    const directMessage =
+        unwrapMessageContent(
+            msg?.message
+        )
+
+
+    const quotedMessage =
         getQuotedMessage(
             msg
         )
 
 
-    const imageMessage =
+    /*
+        Primero damos prioridad al mensaje
+        citado porque normalmente el usuario:
 
-        quoted?.imageMessage ||
-
-        msg.message?.imageMessage ||
-
-        null
-
-
-    const videoMessage =
-
-        quoted?.videoMessage ||
-
-        msg.message?.videoMessage ||
-
-        null
-
+        responde imagen/video
+        ↓
+        escribe .sticker
+    */
 
     if (
-        imageMessage
+        quotedMessage?.imageMessage
     ) {
 
         return {
@@ -223,11 +385,15 @@ function getMediaMessage(
                 'image',
 
             content:
-                imageMessage,
+                quotedMessage.imageMessage,
 
             message: {
-                imageMessage
-            }
+                imageMessage:
+                    quotedMessage.imageMessage
+            },
+
+            quoted:
+                true
 
         }
 
@@ -235,7 +401,7 @@ function getMediaMessage(
 
 
     if (
-        videoMessage
+        quotedMessage?.videoMessage
     ) {
 
         return {
@@ -244,11 +410,70 @@ function getMediaMessage(
                 'video',
 
             content:
-                videoMessage,
+                quotedMessage.videoMessage,
 
             message: {
-                videoMessage
-            }
+                videoMessage:
+                    quotedMessage.videoMessage
+            },
+
+            quoted:
+                true
+
+        }
+
+    }
+
+
+    /*
+        También puede enviarse una imagen/video
+        directamente con .sticker en el caption.
+    */
+
+    if (
+        directMessage?.imageMessage
+    ) {
+
+        return {
+
+            type:
+                'image',
+
+            content:
+                directMessage.imageMessage,
+
+            message: {
+                imageMessage:
+                    directMessage.imageMessage
+            },
+
+            quoted:
+                false
+
+        }
+
+    }
+
+
+    if (
+        directMessage?.videoMessage
+    ) {
+
+        return {
+
+            type:
+                'video',
+
+            content:
+                directMessage.videoMessage,
+
+            message: {
+                videoMessage:
+                    directMessage.videoMessage
+            },
+
+            quoted:
+                false
 
         }
 
@@ -259,6 +484,10 @@ function getMediaMessage(
 
 }
 
+
+/* ─────────────────────────────
+   IMAGEN → WEBP
+───────────────────────────── */
 
 async function convertImageToSticker(
     buffer,
@@ -306,6 +535,10 @@ async function convertImageToSticker(
 }
 
 
+/* ─────────────────────────────
+   VIDEO → WEBP
+───────────────────────────── */
+
 async function convertVideoToSticker(
     inputPath,
     outputPath
@@ -328,7 +561,6 @@ async function convertVideoToSticker(
         FFMPEG_PATH,
 
         [
-
             '-y',
 
             '-i',
@@ -363,7 +595,6 @@ async function convertVideoToSticker(
             '0',
 
             outputPath
-
         ],
 
         {
@@ -395,12 +626,7 @@ module.exports = {
 
     category:
         'general',
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
         msg,
@@ -518,7 +744,7 @@ module.exports = {
 
 
             /* ─────────────────────────────
-               MEDIA
+               DETECTAR MEDIA
             ───────────────────────────── */
 
             const media =
@@ -541,10 +767,9 @@ module.exports = {
                                 'MEDIA REQUERIDA',
 
                                 [
-                                    'Envía o responde a una imagen o video.',
+                                    'Responde a una imagen o video con .sticker.',
                                     '',
-                                    'Uso:',
-                                    '/sticker',
+                                    'También puedes enviar una imagen o video con .sticker en el texto/caption.',
                                     '',
                                     `Videos: máximo ${MAX_VIDEO_SECONDS} segundos.`
                                 ].join('\n')
@@ -558,12 +783,20 @@ module.exports = {
             }
 
 
+            logger.info(
+
+                `Sticker media detectada: tipo=${media.type} | quoted=${media.quoted}`
+
+            )
+
+
             /* ─────────────────────────────
                DURACIÓN DEL VIDEO
             ───────────────────────────── */
 
             if (
-                media.type === 'video'
+                media.type ===
+                'video'
             ) {
 
                 const seconds =
@@ -602,13 +835,16 @@ module.exports = {
 
 
             /* ─────────────────────────────
-               DESCARGAR
+               DESCARGAR MEDIA
             ───────────────────────────── */
 
             const buffer =
                 await downloadMediaMessage(
 
                     {
+                        key:
+                            msg.key,
+
                         message:
                             media.message
                     },
@@ -618,9 +854,7 @@ module.exports = {
                     {},
 
                     {
-
                         logger: {
-
                             info:
                                 () => {},
 
@@ -629,12 +863,10 @@ module.exports = {
 
                             error:
                                 () => {}
-
                         },
 
                         reuploadRequest:
                             sock.updateMediaMessage
-
                     }
 
                 )
@@ -658,7 +890,7 @@ module.exports = {
 
                                 'ERROR DE DESCARGA',
 
-                                'No se pudo descargar el archivo.'
+                                'No se pudo descargar la imagen o video.'
 
                             )
 
@@ -670,13 +902,16 @@ module.exports = {
 
 
             /* ─────────────────────────────
-               PESO
+               TAMAÑO
             ───────────────────────────── */
 
             if (
                 isMediaTooLarge(
+
                     buffer.length,
+
                     MAX_MEDIA_MB
+
                 )
             ) {
 
@@ -726,7 +961,8 @@ module.exports = {
             ───────────────────────────── */
 
             if (
-                media.type === 'image'
+                media.type ===
+                'image'
             ) {
 
                 await convertImageToSticker(
@@ -816,7 +1052,7 @@ module.exports = {
 
 
             /* ─────────────────────────────
-               ENVIAR
+               ENVIAR STICKER
             ───────────────────────────── */
 
             await sock.safeSendMessage(
@@ -841,9 +1077,27 @@ module.exports = {
 
             logger.event(
 
-                `Sticker enviado: ${getNumber(sender)} | tipo=${media.type} | entrada=${(buffer.length / 1024 / 1024).toFixed(2)}MB | salida=${(stats.size / 1024).toFixed(2)}KB`
+                `Sticker enviado: ${getNumber(sender)} | ` +
+
+                `tipo=${media.type} | ` +
+
+                `quoted=${media.quoted} | ` +
+
+                `entrada=${(
+                    buffer.length /
+                    1024 /
+                    1024
+                ).toFixed(2)}MB | ` +
+
+                `salida=${(
+                    stats.size /
+                    1024
+                ).toFixed(2)}KB`
 
             )
+
+
+            return true
 
 
         } catch (err) {
@@ -862,6 +1116,7 @@ module.exports = {
             if (
                 err.code ===
                 'ENOENT' &&
+
                 String(
                     err.message || ''
                 )
@@ -899,6 +1154,9 @@ module.exports = {
                 )
 
             } catch {}
+
+
+            return false
 
 
         } finally {

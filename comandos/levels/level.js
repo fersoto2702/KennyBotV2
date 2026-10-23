@@ -207,12 +207,7 @@ module.exports = {
 
     category:
         'niveles',
-
-    cooldown:
-        5,
-
-
-    async execute({
+async execute({
 
         sock,
         from,

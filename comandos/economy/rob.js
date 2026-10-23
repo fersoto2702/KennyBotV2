@@ -10,7 +10,6 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
-
 const economyPath =
     path.join(
         __dirname,
@@ -23,22 +22,35 @@ const inventoryPath =
         '../../database/inventory.json'
     )
 
+function normalizeJid(
+    jid
+) {
 
-const cooldowns =
-    new Map()
+    if (!jid) {
 
+        return null
 
-const COOLDOWN_TIME =
-    30 * 60 * 1000
+    }
 
+    return String(
+        jid
+    )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
 
-function ensureJsonFile(filePath) {
+}
+
+function ensureJsonFile(
+    filePath
+) {
 
     const directory =
         path.dirname(
             filePath
         )
-
 
     if (
         !fs.existsSync(
@@ -49,12 +61,12 @@ function ensureJsonFile(filePath) {
         fs.mkdirSync(
             directory,
             {
-                recursive: true
+                recursive:
+                    true
             }
         )
 
     }
-
 
     if (
         !fs.existsSync(
@@ -76,13 +88,13 @@ function ensureJsonFile(filePath) {
 
 }
 
-
-function readJson(filePath) {
+function readJson(
+    filePath
+) {
 
     ensureJsonFile(
         filePath
     )
-
 
     try {
 
@@ -94,11 +106,13 @@ function readJson(filePath) {
                 )
             )
 
-
         return (
             data &&
-            typeof data === 'object' &&
-            !Array.isArray(data)
+            typeof data ===
+                'object' &&
+            !Array.isArray(
+                data
+            )
         )
             ? data
             : {}
@@ -115,11 +129,14 @@ function readJson(filePath) {
 
 }
 
-
 function saveJson(
     filePath,
     data
 ) {
+
+    ensureJsonFile(
+        filePath
+    )
 
     fs.writeFileSync(
         filePath,
@@ -133,7 +150,6 @@ function saveJson(
 
 }
 
-
 function normalizeEconomyUser(
     economy,
     jid
@@ -141,16 +157,18 @@ function normalizeEconomyUser(
 
     if (
         !economy[jid] ||
-        typeof economy[jid] !== 'object'
+        typeof economy[jid] !==
+            'object'
     ) {
 
         economy[jid] = {
-            coins: 0,
-            bank: 0
+            coins:
+                0,
+            bank:
+                0
         }
 
     }
-
 
     if (
         !Number.isFinite(
@@ -165,7 +183,6 @@ function normalizeEconomyUser(
 
     }
 
-
     if (
         !Number.isFinite(
             Number(
@@ -179,7 +196,6 @@ function normalizeEconomyUser(
 
     }
 
-
     economy[jid].coins =
         Math.max(
             0,
@@ -187,7 +203,6 @@ function normalizeEconomyUser(
                 economy[jid].coins
             )
         )
-
 
     economy[jid].bank =
         Math.max(
@@ -198,7 +213,6 @@ function normalizeEconomyUser(
         )
 
 }
-
 
 function normalizeInventoryUser(
     inventory,
@@ -218,11 +232,11 @@ function normalizeInventoryUser(
 
 }
 
+function getMentionedJids(
+    msg
+) {
 
-function getMentionedJids(msg) {
-
-    return (
-
+    const mentioned =
         msg.message
             ?.extendedTextMessage
             ?.contextInfo
@@ -246,39 +260,40 @@ function getMentionedJids(msg) {
 
         []
 
-    )
+    return mentioned
+        .map(
+            normalizeJid
+        )
+        .filter(
+            Boolean
+        )
 
 }
 
+function getBotJids(
+    sock
+) {
 
-function getBotJid(sock) {
-
-    const id =
-        sock.user?.id
-
-
-    if (!id) {
-
-        return null
-
-    }
-
-
-    return (
-        id
-            .split(':')[0]
-            .split('@')[0]
-        +
-        '@s.whatsapp.net'
-    )
+    return [
+        sock?.user?.id,
+        sock?.user?.lid
+    ]
+        .map(
+            normalizeJid
+        )
+        .filter(
+            Boolean
+        )
 
 }
 
-
-function formatMoney(value) {
+function formatMoney(
+    value
+) {
 
     return Number(
-        value || 0
+        value ||
+        0
     )
         .toLocaleString(
             'es-MX'
@@ -286,23 +301,30 @@ function formatMoney(value) {
 
 }
 
+async function sendRobMessage(
+    sock,
+    from,
+    content
+) {
 
-function formatRemaining(ms) {
+    if (
+        typeof sock.safeSendMessage ===
+        'function'
+    ) {
 
-    const minutes =
-        Math.ceil(
-            ms / 60000
+        return await sock.safeSendMessage(
+            from,
+            content
         )
 
+    }
 
-    return (
-        minutes === 1
-            ? '1 minuto'
-            : `${minutes} minutos`
+    return await sock.sendMessage(
+        from,
+        content
     )
 
 }
-
 
 module.exports = {
 
@@ -320,300 +342,172 @@ module.exports = {
     category:
         'economia',
 
-
     async execute({
 
         sock,
+
         from,
-        msg
+
+        msg,
+
+        prefix = '/'
 
     }) {
 
         try {
 
-            /* ─────────────────────────────
-               USUARIO
-            ───────────────────────────── */
-
             const sender =
+                normalizeJid(
 
-                msg.key.participant ||
+                    msg.key?.participant ||
 
-                msg.participant ||
+                    msg.participant ||
 
-                msg.key.remoteJid
-
-
-            if (!sender) {
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-
-                                'ERROR DE USUARIO',
-
-                                'No se pudo identificar tu cuenta.'
-
-                            )
-
-                    }
+                    msg.key?.remoteJid
 
                 )
 
+            if (
+                !sender
+            ) {
+
+                return await sendRobMessage(
+                    sock,
+                    from,
+                    {
+                        text:
+                            ui.error(
+                                'ERROR DE USUARIO',
+                                'No se pudo identificar tu cuenta.'
+                            )
+                    }
+                )
+
             }
-
-
-            /* ─────────────────────────────
-               OBJETIVO
-            ───────────────────────────── */
 
             const mentions =
                 getMentionedJids(
                     msg
                 )
 
-
             const target =
                 mentions[0]
 
-
-            if (!target) {
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-
-                                'USO INCORRECTO',
-
-                                'Menciona al usuario que quieres robar.\n\nUso: /rob @usuario'
-
-                            )
-
-                    }
-
-                )
-
-            }
-
-
-            /* ─────────────────────────────
-               VALIDACIONES
-            ───────────────────────────── */
-
             if (
-                sender === target
+                !target
             ) {
 
-                return await sock.sendMessage(
-
+                return await sendRobMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
-                            ui.error(
-
-                                'ACCIÓN INVÁLIDA',
-
-                                'No puedes robarte a ti mismo.'
-
+                            ui.warn(
+                                'USO INCORRECTO',
+                                `Menciona al usuario que quieres robar.\n\nUso: ${prefix}rob @usuario`
                             )
-
                     }
-
                 )
 
             }
 
+            if (
+                sender ===
+                target
+            ) {
 
-            const botJid =
-                getBotJid(
+                return await sendRobMessage(
+                    sock,
+                    from,
+                    {
+                        text:
+                            ui.error(
+                                'ACCIÓN INVÁLIDA',
+                                'No puedes robarte a ti mismo.'
+                            )
+                    }
+                )
+
+            }
+
+            const botJids =
+                getBotJids(
                     sock
                 )
 
-
             if (
-                botJid &&
-                target === botJid
+                botJids.includes(
+                    target
+                )
             ) {
 
-                return await sock.sendMessage(
-
+                return await sendRobMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'ACCIÓN INVÁLIDA',
-
                                 'No puedes robarle monedas al bot.'
-
                             )
-
                     }
-
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               COOLDOWN
-            ───────────────────────────── */
-
-            const now =
-                Date.now()
-
-
-            const expires =
-                cooldowns.get(
-                    sender
-                )
-
-
-            if (
-                expires &&
-                now < expires
-            ) {
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.warn(
-
-                                'COOLDOWN ACTIVO',
-
-                                `Espera ${formatRemaining(expires - now)} para volver a robar.`
-
-                            )
-
-                    }
-
-                )
-
-            }
-
-
-            /*
-                El cooldown empieza cuando
-                realmente intenta el robo.
-            */
-
-            cooldowns.set(
-
-                sender,
-
-                now +
-                COOLDOWN_TIME
-
-            )
-
-
-            /* ─────────────────────────────
-               DATOS
-            ───────────────────────────── */
 
             const economy =
                 readJson(
                     economyPath
                 )
 
-
             const inventory =
                 readJson(
                     inventoryPath
                 )
 
-
             normalizeEconomyUser(
                 economy,
                 sender
             )
-
 
             normalizeEconomyUser(
                 economy,
                 target
             )
 
-
             normalizeInventoryUser(
                 inventory,
                 sender
             )
 
-
             normalizeInventoryUser(
                 inventory,
                 target
             )
-
-
-            /* ─────────────────────────────
-               OBJETIVO SIN DINERO
-            ───────────────────────────── */
 
             if (
                 economy[target].coins <
                 100
             ) {
 
-                /*
-                    No tiene sentido gastar
-                    cooldown si el usuario era
-                    demasiado pobre.
-                */
-
-                cooldowns.delete(
-                    sender
-                )
-
-
-                return await sock.sendMessage(
-
+                return await sendRobMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'OBJETIVO POBRE',
-
                                 `@${target.split('@')[0]} tiene muy pocas monedas en su wallet.`
-
                             ),
 
-                        mentions: [
-                            target
-                        ]
-
+                        mentions:
+                            [
+                                target
+                            ]
                     }
-
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               ITEMS
-            ───────────────────────────── */
 
             const hasVest =
                 inventory[target]
@@ -621,29 +515,16 @@ module.exports = {
                         '🛡️ Chaleco'
                     )
 
-
             const hasSword =
                 inventory[sender]
                     .includes(
                         '⚔️ Espada'
                     )
 
-
-            /*
-                Probabilidad base: 50%
-
-                Chaleco víctima:
-                25%
-
-                Espada ladrón:
-                +25%
-            */
-
             let chance =
                 hasVest
                     ? 0.25
                     : 0.5
-
 
             if (
                 hasSword
@@ -654,12 +535,6 @@ module.exports = {
 
             }
 
-
-            /*
-                Evitamos cualquier valor
-                accidental superior a 100%.
-            */
-
             chance =
                 Math.min(
                     1,
@@ -669,37 +544,29 @@ module.exports = {
                     )
                 )
 
-
             const success =
                 Math.random() <
                 chance
 
-
-            /* ─────────────────────────────
-               ROBO FALLIDO
-            ───────────────────────────── */
-
-            if (!success) {
+            if (
+                !success
+            ) {
 
                 const fine =
-
                     Math.floor(
                         Math.random() *
                         200
                     ) +
                     50
 
-
                 const previousWallet =
                     economy[sender].coins
-
 
                 const realFine =
                     Math.min(
                         fine,
                         previousWallet
                     )
-
 
                 economy[sender].coins =
                     Math.max(
@@ -708,31 +575,22 @@ module.exports = {
                         fine
                     )
 
-
                 saveJson(
                     economyPath,
                     economy
                 )
 
-
                 logger.event(
-
                     `Rob fallido: ${sender.split('@')[0]} -${realFine}`
-
                 )
 
-
-                return await sock.sendMessage(
-
+                return await sendRobMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ROBO FALLIDO',
-
                                 [
                                     `Te atraparon intentando robar a @${target.split('@')[0]}.`,
                                     '',
@@ -740,38 +598,27 @@ module.exports = {
                                     `𖣣ֶㅤ֯⌗ 🪙  ׄ ⬭ *Wallet:* ${formatMoney(economy[sender].coins)}`,
                                     '',
                                     '╰─ 𓂃 Esta vez el robo salió mal.'
-                                ].join('\n')
-
+                                ]
+                                    .join(
+                                        '\n'
+                                    )
                             ),
 
-                        mentions: [
-                            target
-                        ]
-
+                        mentions:
+                            [
+                                target
+                            ]
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               CALCULAR BOTÍN
-            ───────────────────────────── */
-
             let amount =
-
                 Math.floor(
                     Math.random() *
                     500
                 ) +
                 100
-
-
-            /*
-                Chaleco:
-                reduce el botín a la mitad.
-            */
 
             if (
                 hasVest
@@ -779,16 +626,11 @@ module.exports = {
 
                 amount =
                     Math.floor(
-                        amount / 2
+                        amount /
+                        2
                     )
 
             }
-
-
-            /*
-                Espada:
-                duplica el botín.
-            */
 
             if (
                 hasSword
@@ -799,178 +641,117 @@ module.exports = {
 
             }
 
-
-            /*
-                MUY IMPORTANTE:
-
-                Nunca podemos robar más monedas
-                de las que realmente tiene
-                la víctima.
-            */
-
             const realAmount =
                 Math.min(
-
                     amount,
-
                     economy[target].coins
-
                 )
-
-
-            /* ─────────────────────────────
-               TRANSFERENCIA
-            ───────────────────────────── */
 
             economy[target].coins -=
                 realAmount
 
-
             economy[sender].coins +=
                 realAmount
-
 
             saveJson(
                 economyPath,
                 economy
             )
 
-
-            /* ─────────────────────────────
-               LOG
-            ───────────────────────────── */
-
             logger.event(
-
                 `Rob exitoso: ${sender.split('@')[0]} → ${target.split('@')[0]} | ${realAmount}`
-
             )
 
-
-            /* ─────────────────────────────
-               RESPUESTA
-            ───────────────────────────── */
-
             const fields = [
-
                 [
                     'Ladrón',
                     `@${sender.split('@')[0]}`
                 ],
-
                 [
                     'Víctima',
                     `@${target.split('@')[0]}`
                 ],
-
                 [
                     'Robado',
                     `🪙 ${formatMoney(realAmount)}`
                 ],
-
                 [
                     'Tu wallet',
                     `🪙 ${formatMoney(economy[sender].coins)}`
                 ],
-
                 [
                     'Wallet víctima',
                     `🪙 ${formatMoney(economy[target].coins)}`
                 ]
-
             ]
-
 
             if (
                 hasVest
             ) {
 
                 fields.push(
-
                     [
                         'Defensa',
                         '🛡️ Chaleco redujo el botín'
                     ]
-
                 )
 
             }
-
 
             if (
                 hasSword
             ) {
 
                 fields.push(
-
                     [
                         'Bonus',
                         '⚔️ Espada aumentó el botín'
                     ]
-
                 )
 
             }
 
-
-            return await sock.sendMessage(
-
+            return await sendRobMessage(
+                sock,
                 from,
-
                 {
-
                     text:
                         ui.success(
-
                             '🥷 ROBO EXITOSO',
-
                             fields,
-
                             'Lograste escapar con el botín.'
-
                         ),
 
                     mentions: [
                         sender,
                         target
                     ]
-
                 }
-
             )
-
 
         } catch (err) {
 
             logger.error(
-
                 `Error rob: ${err.stack || err.message}`
-
             )
-
 
             try {
 
-                await sock.sendMessage(
-
+                await sendRobMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR DE ROBO',
-
                                 'No se pudo ejecutar el robo.'
-
                             )
-
                     }
-
                 )
 
             } catch {}
+
+            return false
 
         }
 

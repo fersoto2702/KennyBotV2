@@ -1,31 +1,109 @@
-const { registerMessage } = require('../database/mysql')
-const logger = require('../utils/logger')
+const {
+    registerMessage
+} = require('../database/mysql')
 
-module.exports = async ({ msg, from }) => {
+const logger =
+    require('../utils/logger')
 
-    try {
+function normalizeJid(
+    jid
+) {
 
-        if (!from) return
+    if (!jid) {
 
-        if (typeof from !== 'string') return
+        return null
 
-        if (!from.endsWith('@g.us')) return
-
-        if (!msg?.message) return
-
-        if (msg.key.fromMe) return
-
-        const sender =
-            msg.key.participant ||
-            msg.participant ||
-            msg.key.remoteJid
-
-        if (!sender) return
-
-        await registerMessage(from, sender)
-
-    } catch (err) {
-        logger.error(`MessageStatsHandler: ${err.message}`)
     }
 
+    return String(
+        jid
+    )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
 }
+
+module.exports =
+    async (
+        msg,
+        from
+    ) => {
+
+        try {
+
+            if (
+                !from ||
+                typeof from !==
+                'string'
+            ) {
+
+                return false
+
+            }
+
+            if (
+                !from.endsWith(
+                    '@g.us'
+                )
+            ) {
+
+                return false
+
+            }
+
+            if (
+                !msg?.message
+            ) {
+
+                return false
+
+            }
+
+            if (
+                msg.key?.fromMe
+            ) {
+
+                return false
+
+            }
+
+            const sender =
+                normalizeJid(
+
+                    msg.key?.participant ||
+
+                    msg.participant ||
+
+                    msg.key?.remoteJid
+
+                )
+
+            if (
+                !sender
+            ) {
+
+                return false
+
+            }
+
+            await registerMessage(
+                from,
+                sender
+            )
+
+            return true
+
+        } catch (err) {
+
+            logger.error(
+                `MessageStatsHandler: ${err.stack || err.message}`
+            )
+
+            return false
+
+        }
+
+    }

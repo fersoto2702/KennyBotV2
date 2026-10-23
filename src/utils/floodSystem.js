@@ -4,115 +4,347 @@ const floodMap =
 const CLEANUP_TIME =
     60 * 1000
 
-const normalize = user =>
+const normalizeUser =
+    user => {
 
-    user
-        ?.split(':')[0]
-        ?.trim()
+        if (!user) {
 
-setInterval(() => {
-
-    const now =
-        Date.now()
-
-    for (const [user, timestamps] of floodMap) {
-
-        const valid =
-            timestamps.filter(
-                t => now - t < CLEANUP_TIME
-            )
-
-        if (valid.length === 0) {
-
-            floodMap.delete(user)
-
-            continue
+            return null
 
         }
 
-        floodMap.set(user, valid)
+        return String(
+            user
+        )
+            .trim()
+            .replace(
+                /:\d+@/,
+                '@'
+            )
 
     }
 
-}, CLEANUP_TIME)
+const normalizeScope =
+    scope => {
 
-const isFlooding = (
+        const value =
+            String(
+                scope ||
+                'main'
+            )
+                .trim()
+                .toLowerCase()
 
-    user,
-    limit = 5,
-    interval = 7000
+        return value ||
+            'main'
 
-) => {
+    }
 
-    try {
+const buildKey =
+    (
+        user,
+        scope
+    ) => {
 
-        const id =
-            normalize(user)
+        const normalizedUser =
+            normalizeUser(
+                user
+            )
 
-        if (!id)
+        if (
+            !normalizedUser
+        ) {
+
+            return null
+
+        }
+
+        return [
+            normalizeScope(
+                scope
+            ),
+            normalizedUser
+        ]
+            .join(':')
+
+    }
+
+setInterval(
+    () => {
+
+        const now =
+            Date.now()
+
+        for (
+            const [
+                key,
+                timestamps
+            ]
+            of floodMap
+        ) {
+
+            const valid =
+                (
+                    Array.isArray(
+                        timestamps
+                    )
+                        ? timestamps
+                        : []
+                )
+                    .filter(
+                        timestamp =>
+                            now -
+                            timestamp <
+                            CLEANUP_TIME
+                    )
+
+            if (
+                valid.length ===
+                0
+            ) {
+
+                floodMap.delete(
+                    key
+                )
+
+                continue
+
+            }
+
+            floodMap.set(
+                key,
+                valid
+            )
+
+        }
+
+    },
+    CLEANUP_TIME
+)
+
+const isFlooding =
+    (
+
+        user,
+
+        limit = 5,
+
+        interval = 7000,
+
+        scope = 'main'
+
+    ) => {
+
+        try {
+
+            const key =
+                buildKey(
+                    user,
+                    scope
+                )
+
+            if (
+                !key
+            ) {
+
+                return false
+
+            }
+
+            const now =
+                Date.now()
+
+            const timestamps =
+                floodMap.get(
+                    key
+                ) ||
+                []
+
+            const filtered =
+                timestamps.filter(
+                    timestamp =>
+                        now -
+                        timestamp <
+                        interval
+                )
+
+            filtered.push(
+                now
+            )
+
+            floodMap.set(
+                key,
+                filtered
+            )
+
+            return (
+                filtered.length >
+                limit
+            )
+
+        } catch {
+
             return false
+
+        }
+
+    }
+
+const resetFlood =
+    (
+
+        user,
+
+        scope = 'main'
+
+    ) => {
+
+        const key =
+            buildKey(
+                user,
+                scope
+            )
+
+        if (
+            !key
+        ) {
+
+            return false
+
+        }
+
+        return floodMap.delete(
+            key
+        )
+
+    }
+
+const resetFloodAllScopes =
+    user => {
+
+        const normalizedUser =
+            normalizeUser(
+                user
+            )
+
+        if (
+            !normalizedUser
+        ) {
+
+            return 0
+
+        }
+
+        let removed =
+            0
+
+        for (
+            const key
+            of floodMap.keys()
+        ) {
+
+            if (
+                key.endsWith(
+                    `:${normalizedUser}`
+                )
+            ) {
+
+                floodMap.delete(
+                    key
+                )
+
+                removed++
+
+            }
+
+        }
+
+        return removed
+
+    }
+
+const getFloodCount =
+    (
+
+        user,
+
+        interval = 7000,
+
+        scope = 'main'
+
+    ) => {
+
+        const key =
+            buildKey(
+                user,
+                scope
+            )
+
+        if (
+            !key
+        ) {
+
+            return 0
+
+        }
 
         const now =
             Date.now()
 
         const timestamps =
-            floodMap.get(id) || []
+            floodMap.get(
+                key
+            ) ||
+            []
 
         const filtered =
             timestamps.filter(
-                t => now - t < interval
+                timestamp =>
+                    now -
+                    timestamp <
+                    interval
             )
 
-        filtered.push(now)
+        if (
+            filtered.length !==
+            timestamps.length
+        ) {
 
-        floodMap.set(id, filtered)
+            if (
+                filtered.length >
+                0
+            ) {
 
-        return filtered.length > limit
+                floodMap.set(
+                    key,
+                    filtered
+                )
 
-    } catch {
+            } else {
 
-        return false
+                floodMap.delete(
+                    key
+                )
+
+            }
+
+        }
+
+        return filtered.length
 
     }
 
-}
+const getFloodStats =
+    () => {
 
-const resetFlood = user => {
+        return {
 
-    const id =
-        normalize(user)
+            entries:
+                floodMap.size
 
-    if (!id)
-        return
+        }
 
-    floodMap.delete(id)
-
-}
-
-const getFloodCount = (
-
-    user,
-    interval = 7000
-
-) => {
-
-    const id =
-        normalize(user)
-
-    if (!id)
-        return 0
-
-    const now =
-        Date.now()
-
-    const timestamps =
-        floodMap.get(id) || []
-
-    return timestamps.filter(
-        t => now - t < interval
-    ).length
-
-}
+    }
 
 module.exports = {
 
@@ -120,6 +352,10 @@ module.exports = {
 
     resetFlood,
 
-    getFloodCount
+    resetFloodAllScopes,
+
+    getFloodCount,
+
+    getFloodStats
 
 }

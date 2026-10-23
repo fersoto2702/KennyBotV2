@@ -26,11 +26,30 @@ function normalizeJid(
             jid
         )
 
+
     } catch {
 
-        return jid
+        return String(jid)
+            .trim()
+            .replace(
+                /:\d+@/,
+                '@'
+            )
 
     }
+
+}
+
+
+function getNumber(
+    jid
+) {
+
+    return String(
+        jid || ''
+    )
+        .split('@')[0]
+        .split(':')[0]
 
 }
 
@@ -50,14 +69,48 @@ function isAdministrator(
 }
 
 
+function getParticipantJids(
+    participant
+) {
+
+    return [
+
+        participant?.id,
+
+        participant?.phoneNumber,
+
+        participant?.lid
+
+    ]
+        .filter(Boolean)
+        .map(
+            normalizeJid
+        )
+
+}
+
+
 function findParticipant(
     participants,
     jid
 ) {
 
-    const normalized =
+    const target =
         normalizeJid(
             jid
+        )
+
+
+    if (!target) {
+
+        return null
+
+    }
+
+
+    const targetNumber =
+        getNumber(
+            target
         )
 
 
@@ -65,19 +118,89 @@ function findParticipant(
 
         participant => {
 
-            const participantJid =
-                normalizeJid(
-                    participant?.phoneNumber ||
-                    participant?.id
+            const jids =
+                getParticipantJids(
+                    participant
                 )
 
 
-            return (
-                participantJid &&
-                participantJid === normalized
+            return jids.some(
+
+                participantJid => {
+
+                    if (
+                        participantJid ===
+                        target
+                    ) {
+
+                        return true
+
+                    }
+
+
+                    return (
+
+                        getNumber(
+                            participantJid
+                        ) ===
+                        targetNumber
+
+                    )
+
+                }
+
             )
 
         }
+
+    ) || null
+
+}
+
+
+function getContextInfo(
+    msg
+) {
+
+    return (
+
+        msg.message
+            ?.extendedTextMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.imageMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.videoMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.documentMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.audioMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.stickerMessage
+            ?.contextInfo
+
+        ||
+
+        null
 
     )
 
@@ -88,30 +211,116 @@ function getMentionedJids(
     msg
 ) {
 
-    return (
+    const contextInfo =
+        getContextInfo(
+            msg
+        )
 
-        msg.message
-            ?.extendedTextMessage
-            ?.contextInfo
-            ?.mentionedJid
 
-        ||
+    return Array.isArray(
+        contextInfo?.mentionedJid
+    )
+        ? contextInfo.mentionedJid
+        : []
 
-        msg.message
-            ?.imageMessage
-            ?.contextInfo
-            ?.mentionedJid
+}
 
-        ||
 
-        msg.message
-            ?.videoMessage
-            ?.contextInfo
-            ?.mentionedJid
+function getQuotedParticipant(
+    msg
+) {
 
-        ||
+    const contextInfo =
+        getContextInfo(
+            msg
+        )
 
-        []
+
+    return normalizeJid(
+
+        contextInfo?.participant ||
+
+        contextInfo?.remoteJid ||
+
+        null
+
+    )
+
+}
+
+
+function findBotParticipant(
+    participants,
+    sock
+) {
+
+    const candidates = [
+
+        sock.user?.id,
+
+        sock.user?.lid
+
+    ]
+        .filter(Boolean)
+        .map(
+            normalizeJid
+        )
+
+
+    for (
+        const candidate
+        of candidates
+    ) {
+
+        const participant =
+            findParticipant(
+
+                participants,
+
+                candidate
+
+            )
+
+
+        if (
+            participant
+        ) {
+
+            return participant
+
+        }
+
+    }
+
+
+    return null
+
+}
+
+
+function getBestParticipantJid(
+    participant,
+    fallback = null
+) {
+
+    if (!participant) {
+
+        return normalizeJid(
+            fallback
+        )
+
+    }
+
+
+    return normalizeJid(
+
+        participant.id ||
+
+        participant.phoneNumber ||
+
+        participant.lid ||
+
+        fallback
 
     )
 
@@ -144,7 +353,9 @@ module.exports = {
     async execute({
 
         sock,
+
         from,
+
         msg
 
     }) {
@@ -161,7 +372,7 @@ module.exports = {
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -205,7 +416,7 @@ module.exports = {
                 participants.length === 0
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -232,17 +443,32 @@ module.exports = {
             ───────────────────────────── */
 
             const sender =
+                normalizeJid(
 
-                msg.key.participant ||
+                    msg.key?.participant ||
 
-                msg.participant ||
+                    msg.participant ||
 
-                msg.key.remoteJid
+                    msg.key?.remoteJid
+
+                )
+
+
+            const senderAlt =
+                normalizeJid(
+
+                    msg.key?.participantAlt ||
+
+                    msg.participantAlt ||
+
+                    null
+
+                )
 
 
             if (!sender) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -264,24 +490,31 @@ module.exports = {
             }
 
 
-            const normalizedSender =
-                normalizeJid(
-                    sender
-                )
-
-
-            /* ─────────────────────────────
-               VALIDAR ADMIN DEL USUARIO
-            ───────────────────────────── */
-
-            const senderData =
+            let senderData =
                 findParticipant(
 
                     participants,
 
-                    normalizedSender
+                    sender
 
                 )
+
+
+            if (
+                !senderData &&
+                senderAlt
+            ) {
+
+                senderData =
+                    findParticipant(
+
+                        participants,
+
+                        senderAlt
+
+                    )
+
+            }
 
 
             if (
@@ -290,7 +523,7 @@ module.exports = {
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -313,18 +546,24 @@ module.exports = {
 
 
             /* ─────────────────────────────
-               VALIDAR ADMIN DEL BOT
+               VALIDAR BOT ADMIN
             ───────────────────────────── */
 
-            const botJid =
-                normalizeJid(
-                    sock.user?.id
+            const botData =
+                findBotParticipant(
+
+                    participants,
+
+                    sock
+
                 )
 
 
-            if (!botJid) {
+            if (
+                !botData
+            ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -333,9 +572,9 @@ module.exports = {
                         text:
                             ui.error(
 
-                                'ERROR DEL BOT',
+                                'BOT NO IDENTIFICADO',
 
-                                'No se pudo identificar la cuenta del bot.'
+                                'No se pudo localizar a KennyBot dentro de los participantes del grupo.'
 
                             )
 
@@ -346,23 +585,13 @@ module.exports = {
             }
 
 
-            const botData =
-                findParticipant(
-
-                    participants,
-
-                    botJid
-
-                )
-
-
             if (
                 !isAdministrator(
                     botData
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -394,13 +623,34 @@ module.exports = {
                 )
 
 
+            const quotedParticipant =
+                getQuotedParticipant(
+                    msg
+                )
+
+
+            /*
+                Prioridad:
+
+                1. Usuario mencionado
+                2. Usuario del mensaje respondido
+            */
+
             const target =
-                mentions[0]
+                normalizeJid(
+
+                    mentions[0] ||
+
+                    quotedParticipant ||
+
+                    null
+
+                )
 
 
             if (!target) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -411,7 +661,13 @@ module.exports = {
 
                                 'USUARIO REQUERIDO',
 
-                                'Menciona al administrador que quieres degradar.\n\nUso: /demote @usuario'
+                                [
+                                    'Menciona al administrador que quieres degradar o responde uno de sus mensajes.',
+                                    '',
+                                    'Ejemplos:',
+                                    '• .demote @usuario',
+                                    '• Responde un mensaje y escribe .demote'
+                                ].join('\n')
 
                             )
 
@@ -422,10 +678,74 @@ module.exports = {
             }
 
 
-            const normalizedTarget =
-                normalizeJid(
+            const targetData =
+                findParticipant(
+
+                    participants,
+
                     target
+
                 )
+
+
+            if (
+                !targetData
+            ) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'USUARIO NO ENCONTRADO',
+
+                                'Ese usuario no forma parte del grupo.'
+
+                            )
+
+                    }
+
+                )
+
+            }
+
+
+            const targetJid =
+                getBestParticipantJid(
+
+                    targetData,
+
+                    target
+
+                )
+
+
+            if (!targetJid) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'USUARIO NO IDENTIFICADO',
+
+                                'No se pudo obtener el identificador del usuario.'
+
+                            )
+
+                    }
+
+                )
+
+            }
 
 
             /* ─────────────────────────────
@@ -433,11 +753,11 @@ module.exports = {
             ───────────────────────────── */
 
             if (
-                normalizedTarget ===
-                normalizedSender
+                senderData ===
+                targetData
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -460,11 +780,11 @@ module.exports = {
 
 
             if (
-                normalizedTarget ===
-                botJid
+                targetData ===
+                botData
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -475,41 +795,7 @@ module.exports = {
 
                                 'ACCIÓN INVÁLIDA',
 
-                                'No puedes quitarle el rango de administrador al bot usando este comando.'
-
-                            )
-
-                    }
-
-                )
-
-            }
-
-
-            const targetData =
-                findParticipant(
-
-                    participants,
-
-                    normalizedTarget
-
-                )
-
-
-            if (!targetData) {
-
-                return await sock.sendMessage(
-
-                    from,
-
-                    {
-
-                        text:
-                            ui.error(
-
-                                'USUARIO NO ENCONTRADO',
-
-                                'Ese usuario no forma parte del grupo.'
+                                'No puedes quitarle el rango de administrador a KennyBot usando este comando.'
 
                             )
 
@@ -526,7 +812,7 @@ module.exports = {
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -537,12 +823,12 @@ module.exports = {
 
                                 'SIN RANGO',
 
-                                `@${normalizedTarget.split('@')[0]} no es administrador.`
+                                `@${getNumber(targetJid)} no es administrador.`
 
                             ),
 
                         mentions: [
-                            normalizedTarget
+                            targetJid
                         ]
 
                     }
@@ -553,10 +839,11 @@ module.exports = {
 
 
             if (
-                targetData.admin === 'superadmin'
+                targetData.admin ===
+                'superadmin'
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -588,7 +875,7 @@ module.exports = {
                     from,
 
                     [
-                        normalizedTarget
+                        targetJid
                     ],
 
                     'demote'
@@ -597,7 +884,9 @@ module.exports = {
 
 
             const result =
-                Array.isArray(response)
+                Array.isArray(
+                    response
+                )
                     ? response[0]
                     : null
 
@@ -613,7 +902,41 @@ module.exports = {
                 status !== '200'
             ) {
 
-                return await sock.sendMessage(
+                let reason =
+                    `WhatsApp respondió con el código ${status}.`
+
+
+                if (
+                    status === '403'
+                ) {
+
+                    reason =
+                        'WhatsApp rechazó la degradación. Verifica que KennyBot siga siendo administrador.'
+
+                }
+
+
+                else if (
+                    status === '404'
+                ) {
+
+                    reason =
+                        'El usuario ya no parece formar parte del grupo.'
+
+                }
+
+
+                else if (
+                    status === '408'
+                ) {
+
+                    reason =
+                        'La solicitud expiró. Inténtalo nuevamente.'
+
+                }
+
+
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -624,7 +947,7 @@ module.exports = {
 
                                 'NO SE PUDO DEGRADAR',
 
-                                `WhatsApp respondió con el código ${status}.`
+                                reason
 
                             )
 
@@ -635,13 +958,39 @@ module.exports = {
             }
 
 
+            /*
+                Limpiar caché de administradores
+                porque acaba de cambiar el rango.
+            */
+
+            try {
+
+                const isGroupAdmin =
+                    require('../../src/utils/isAdmin')
+
+
+                if (
+                    typeof isGroupAdmin.clearCache ===
+                    'function'
+                ) {
+
+                    isGroupAdmin.clearCache(
+                        from,
+                        sock
+                    )
+
+                }
+
+            } catch {}
+
+
             /* ─────────────────────────────
                LOG
             ───────────────────────────── */
 
             logger.event(
 
-                `Demote: ${normalizedTarget.split('@')[0]} degradado por ${normalizedSender.split('@')[0]} en ${from.split('@')[0]}`
+                `Demote: ${getNumber(targetJid)} degradado por ${getNumber(sender)} en ${from.split('@')[0]}`
 
             )
 
@@ -650,7 +999,7 @@ module.exports = {
                RESPUESTA
             ───────────────────────────── */
 
-            return await sock.sendMessage(
+            return await sock.safeSendMessage(
 
                 from,
 
@@ -662,22 +1011,18 @@ module.exports = {
                             '👤 USUARIO DEGRADADO',
 
                             [
-
                                 [
                                     'Usuario',
-                                    `@${normalizedTarget.split('@')[0]}`
+                                    `@${getNumber(targetJid)}`
                                 ],
-
                                 [
                                     'Nuevo rango',
                                     '○ MIEMBRO'
                                 ],
-
                                 [
                                     'Acción realizada por',
-                                    `@${normalizedSender.split('@')[0]}`
+                                    `@${getNumber(sender)}`
                                 ]
-
                             ],
 
                             'El rango de administrador fue retirado correctamente.'
@@ -685,8 +1030,8 @@ module.exports = {
                         ),
 
                     mentions: [
-                        normalizedTarget,
-                        normalizedSender
+                        targetJid,
+                        sender
                     ]
 
                 }
@@ -705,7 +1050,7 @@ module.exports = {
 
             try {
 
-                await sock.sendMessage(
+                await sock.safeSendMessage(
 
                     from,
 

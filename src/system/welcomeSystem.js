@@ -26,69 +26,304 @@ const joinPath =
         '../../database/joinMessages.json'
     )
 
-const metadataCache =
-    new Map()
-
-const joinTracker =
-    new Map()
+const socketStates =
+    new WeakMap()
 
 const CONFIG = {
-    cacheTime: 60000,
-    joinDelay: 3000,
-    maxMentions: 5,
-    antiRaidLimit: 10,
-    antiRaidInterval: 15000
+    cacheTime:
+        60000,
+
+    joinDelay:
+        3000,
+
+    maxMentions:
+        5,
+
+    antiRaidLimit:
+        10,
+
+    antiRaidInterval:
+        15000
 }
 
-const sleep = ms =>
-    new Promise(
-        resolve =>
-            setTimeout(resolve, ms)
+const sleep =
+    ms =>
+        new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    ms
+                )
+        )
+
+function normalizeJid(
+    jid
+) {
+
+    if (!jid) {
+
+        return null
+
+    }
+
+    return String(
+        jid
     )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+function getBotProfileId(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.id ||
+        sock?.botProfileId ||
+        'main'
+    )
+        .trim()
+        .toLowerCase()
+
+}
+
+function getBotName(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
+function getSocketState(
+    sock
+) {
+
+    if (
+        !sock ||
+        (
+            typeof sock !==
+            'object' &&
+            typeof sock !==
+            'function'
+        )
+    ) {
+
+        throw new Error(
+            'Socket inválido'
+        )
+
+    }
+
+    if (
+        !socketStates.has(
+            sock
+        )
+    ) {
+
+        socketStates.set(
+            sock,
+            {
+                metadataCache:
+                    new Map(),
+
+                joinTracker:
+                    new Map()
+            }
+        )
+
+    }
+
+    return socketStates.get(
+        sock
+    )
+
+}
 
 function ensureFiles() {
 
+    const directory =
+        path.dirname(
+            welcomePath
+        )
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        fs.mkdirSync(
+            directory,
+            {
+                recursive:
+                    true
+            }
+        )
+
+    }
+
     const databases = [
-        [welcomePath, []],
-        [joinPath, {}]
+        [
+            welcomePath,
+            []
+        ],
+        [
+            joinPath,
+            {}
+        ]
     ]
 
-    for (const [file, def] of databases) {
+    for (
+        const [
+            file,
+            defaultValue
+        ]
+        of databases
+    ) {
 
-        if (!fs.existsSync(file)) {
+        if (
+            !fs.existsSync(
+                file
+            )
+        ) {
+
             fs.writeFileSync(
                 file,
-                JSON.stringify(def, null, 2)
+                JSON.stringify(
+                    defaultValue,
+                    null,
+                    2
+                ),
+                'utf8'
             )
+
         }
 
     }
 
 }
 
-async function getMetadata(sock, group) {
+function readJson(
+    file,
+    fallback
+) {
 
-    const cached =
-        metadataCache.get(group)
+    try {
+
+        const raw =
+            fs.readFileSync(
+                file,
+                'utf8'
+            )
+
+        const parsed =
+            JSON.parse(
+                raw
+            )
+
+        return parsed
+
+    } catch {
+
+        return fallback
+
+    }
+
+}
+
+async function sendWelcomeMessage(
+    sock,
+    jid,
+    content
+) {
+
+    if (
+        typeof sock.safeSendMessage ===
+        'function'
+    ) {
+
+        return await sock.safeSendMessage(
+            jid,
+            content
+        )
+
+    }
+
+    return await sock.sendMessage(
+        jid,
+        content
+    )
+
+}
+
+async function getMetadata(
+    sock,
+    group,
+    forceRefresh = false
+) {
+
+    const groupJid =
+        normalizeJid(
+            group
+        )
+
+    if (
+        !groupJid
+    ) {
+
+        throw new Error(
+            'Grupo inválido'
+        )
+
+    }
+
+    const state =
+        getSocketState(
+            sock
+        )
 
     const now =
         Date.now()
 
+    const cached =
+        state.metadataCache.get(
+            groupJid
+        )
+
     if (
+        !forceRefresh &&
         cached &&
-        now - cached.timestamp < CONFIG.cacheTime
+        now -
+            cached.timestamp <
+            CONFIG.cacheTime
     ) {
+
         return cached.data
+
     }
 
     const metadata =
-        await sock.groupMetadata(group)
+        await sock.groupMetadata(
+            groupJid
+        )
 
-    metadataCache.set(
-        group,
+    state.metadataCache.set(
+        groupJid,
         {
-            data: metadata,
-            timestamp: now
+            data:
+                metadata,
+
+            timestamp:
+                now
         }
     )
 
@@ -96,22 +331,54 @@ async function getMetadata(sock, group) {
 
 }
 
-function detectRaid(group) {
+function detectRaid(
+    sock,
+    group
+) {
+
+    const groupJid =
+        normalizeJid(
+            group
+        )
+
+    if (
+        !groupJid
+    ) {
+
+        return false
+
+    }
+
+    const state =
+        getSocketState(
+            sock
+        )
 
     const now =
         Date.now()
 
     const joins =
-        joinTracker.get(group) || []
+        state.joinTracker.get(
+            groupJid
+        ) ||
+        []
 
     const filtered =
         joins.filter(
-            t => now - t < CONFIG.antiRaidInterval
+            timestamp =>
+                now -
+                    timestamp <
+                CONFIG.antiRaidInterval
         )
 
-    filtered.push(now)
+    filtered.push(
+        now
+    )
 
-    joinTracker.set(group, filtered)
+    state.joinTracker.set(
+        groupJid,
+        filtered
+    )
 
     return (
         filtered.length >=
@@ -120,103 +387,284 @@ function detectRaid(group) {
 
 }
 
-module.exports = async (sock, update) => {
+function getDisplayNumber(
+    jid
+) {
+
+    const normalized =
+        normalizeJid(
+            jid
+        )
+
+    if (
+        !normalized
+    ) {
+
+        return 'desconocido'
+
+    }
+
+    return normalized
+        .split('@')[0]
+
+}
+
+async function welcomeSystem(
+    sock,
+    update
+) {
 
     try {
 
         ensureFiles()
 
-        const welcomeGroups =
-            JSON.parse(
-                fs.readFileSync(welcomePath)
+        const groupJid =
+            normalizeJid(
+                update?.id
             )
 
-        if (!welcomeGroups.includes(update.id)) return
-
-        if (detectRaid(update.id)) {
-
-            logger.warn(
-                `Raid detectado: ${update.id}`
+        if (
+            !groupJid ||
+            !groupJid.endsWith(
+                '@g.us'
             )
+        ) {
 
-            return await sock.safeSendMessage(
-                update.id,
-                {
-                    text:
-                        ui.error(
-                            'ANTI RAID',
-                            'Demasiados usuarios entrando en poco tiempo.'
-                        )
-                }
-            )
+            return false
 
         }
 
-        if (isGroupLimited(update.id, 'joins')) {
-
-            logger.warn(
-                `Join flood: ${update.id}`
+        const welcomeGroups =
+            readJson(
+                welcomePath,
+                []
             )
 
-            return
+        if (
+            !Array.isArray(
+                welcomeGroups
+            ) ||
+            !welcomeGroups.includes(
+                groupJid
+            )
+        ) {
+
+            return false
+
+        }
+
+        const action =
+            String(
+                update?.action ||
+                ''
+            )
+                .trim()
+                .toLowerCase()
+
+        if (
+            action !==
+                'add' &&
+            action !==
+                'remove'
+        ) {
+
+            return false
+
+        }
+
+        const botProfileId =
+            getBotProfileId(
+                sock
+            )
+
+        const botName =
+            getBotName(
+                sock
+            )
+
+        if (
+            action ===
+            'add'
+        ) {
+
+            if (
+                detectRaid(
+                    sock,
+                    groupJid
+                )
+            ) {
+
+                logger.warn(
+                    `${botName} | Raid detectado: ${groupJid}`
+                )
+
+                await sendWelcomeMessage(
+                    sock,
+                    groupJid,
+                    {
+                        text:
+                            ui.error(
+                                'ANTI RAID',
+                                'Demasiados usuarios entrando en poco tiempo.'
+                            )
+                    }
+                )
+
+                return false
+
+            }
+
+            if (
+                isGroupLimited(
+                    groupJid,
+                    'joins',
+                    botProfileId
+                )
+            ) {
+
+                logger.warn(
+                    `${botName} | Join flood: ${groupJid}`
+                )
+
+                return false
+
+            }
 
         }
 
         const metadata =
-            await getMetadata(sock, update.id)
-
-        const groupName =
-            metadata.subject
-
-        const joinMessages =
-            JSON.parse(
-                fs.readFileSync(joinPath)
+            await getMetadata(
+                sock,
+                groupJid
             )
 
+        const groupName =
+            String(
+                metadata?.subject ||
+                'Grupo'
+            )
+
+        const joinMessages =
+            readJson(
+                joinPath,
+                {}
+            )
+
+        const rawParticipants =
+            Array.isArray(
+                update?.participants
+            )
+                ? update.participants
+                : []
+
         const participants =
-            update.participants.slice(0, CONFIG.maxMentions)
-
-        if (update.action === 'add') {
-
-            for (const user of participants) {
-
-                await sleep(CONFIG.joinDelay)
-
-                logger.event(
-                    `Join: ${user.split('@')[0]}`
+            rawParticipants
+                .map(
+                    normalizeJid
+                )
+                .filter(
+                    Boolean
+                )
+                .slice(
+                    0,
+                    CONFIG.maxMentions
                 )
 
-                await sock.safeSendMessage(
-                    update.id,
+        if (
+            participants.length ===
+            0
+        ) {
+
+            return false
+
+        }
+
+        if (
+            action ===
+            'add'
+        ) {
+
+            for (
+                const user
+                of participants
+            ) {
+
+                await sleep(
+                    CONFIG.joinDelay
+                )
+
+                const number =
+                    getDisplayNumber(
+                        user
+                    )
+
+                logger.event(
+                    `${botName} | Join: ${number}`
+                )
+
+                await sendWelcomeMessage(
+                    sock,
+                    groupJid,
                     {
                         text:
                             ui.success(
                                 'BIENVENIDO',
                                 [
-                                    ['Usuario', `@${user.split('@')[0]}`],
-                                    ['Grupo', groupName]
+                                    [
+                                        'Usuario',
+                                        `@${number}`
+                                    ],
+                                    [
+                                        'Grupo',
+                                        groupName
+                                    ]
                                 ]
                             ),
-                        mentions: [user]
+
+                        mentions:
+                            [
+                                user
+                            ]
                     }
                 )
 
                 const customMessages =
-                    joinMessages[update.id] || []
+                    Array.isArray(
+                        joinMessages?.[
+                            groupJid
+                        ]
+                    )
+                        ? joinMessages[
+                            groupJid
+                        ]
+                        : []
 
-                for (const message of customMessages) {
+                for (
+                    const message
+                    of customMessages
+                ) {
 
-                    await sleep(1000)
+                    await sleep(
+                        1000
+                    )
 
-                    await sock.safeSendMessage(
-                        update.id,
+                    await sendWelcomeMessage(
+                        sock,
+                        groupJid,
                         {
                             text:
-                                message.replace(
-                                    /@user/g,
-                                    `@${user.split('@')[0]}`
-                                ),
-                            mentions: [user]
+                                String(
+                                    message
+                                )
+                                    .replace(
+                                        /@user/g,
+                                        `@${number}`
+                                    ),
+
+                            mentions:
+                                [
+                                    user
+                                ]
                         }
                     )
 
@@ -224,43 +672,147 @@ module.exports = async (sock, update) => {
 
             }
 
+            return true
+
         }
 
-        if (update.action === 'remove') {
+        if (
+            action ===
+            'remove'
+        ) {
 
-            for (const user of participants) {
+            for (
+                const user
+                of participants
+            ) {
 
-                await sleep(1500)
-
-                logger.event(
-                    `Leave: ${user.split('@')[0]}`
+                await sleep(
+                    1500
                 )
 
-                await sock.safeSendMessage(
-                    update.id,
+                const number =
+                    getDisplayNumber(
+                        user
+                    )
+
+                logger.event(
+                    `${botName} | Leave: ${number}`
+                )
+
+                await sendWelcomeMessage(
+                    sock,
+                    groupJid,
                     {
                         text:
                             ui.info(
                                 'HASTA LUEGO',
                                 [
-                                    ['Usuario', `@${user.split('@')[0]}`],
-                                    ['Grupo', groupName]
+                                    [
+                                        'Usuario',
+                                        `@${number}`
+                                    ],
+                                    [
+                                        'Grupo',
+                                        groupName
+                                    ]
                                 ]
                             ),
-                        mentions: [user]
+
+                        mentions:
+                            [
+                                user
+                            ]
                     }
                 )
 
             }
 
+            return true
+
         }
+
+        return false
 
     } catch (err) {
 
         logger.error(
-            `WelcomeSystem Error: ${err.message}`
+            `${getBotName(sock)} | WelcomeSystem Error: ${err.stack || err.message}`
         )
+
+        return false
 
     }
 
 }
+
+welcomeSystem.clearMetadataCache =
+    (
+        sock,
+        group = null
+    ) => {
+
+        const state =
+            socketStates.get(
+                sock
+            )
+
+        if (
+            !state
+        ) {
+
+            return false
+
+        }
+
+        if (
+            !group
+        ) {
+
+            state.metadataCache.clear()
+
+            return true
+
+        }
+
+        const groupJid =
+            normalizeJid(
+                group
+            )
+
+        if (
+            !groupJid
+        ) {
+
+            return false
+
+        }
+
+        return state.metadataCache.delete(
+            groupJid
+        )
+
+    }
+
+welcomeSystem.clearSocketState =
+    sock => {
+
+        if (
+            !socketStates.has(
+                sock
+            )
+        ) {
+
+            return false
+
+        }
+
+        socketStates.delete(
+            sock
+        )
+
+        return true
+
+    }
+
+module.exports =
+    welcomeSystem

@@ -275,6 +275,28 @@ function pickCondensedFont(chain, text) {
         )
     ) || chain[0]
 }
+function commandsToPathData(commands) {
+    const round = value =>
+        (Math.round(value * 100) / 100).toString()
+
+    return commands
+        .map(command => {
+            if (command.type === 'M' || command.type === 'L') {
+                return `${command.type}${round(command.x)} ${round(command.y)}`
+            }
+
+            if (command.type === 'Q') {
+                return `Q${round(command.x1)} ${round(command.y1)} ${round(command.x)} ${round(command.y)}`
+            }
+
+            if (command.type === 'C') {
+                return `C${round(command.x1)} ${round(command.y1)} ${round(command.x2)} ${round(command.y2)} ${round(command.x)} ${round(command.y)}`
+            }
+
+            return 'Z'
+        })
+        .join('')
+}
 
 function textToPath({ chain, text, x, y, size, fill, anchor = 'start', letterSpacing = 0 }) {
     const value = String(text ?? '')
@@ -311,7 +333,7 @@ function textToPath({ chain, text, x, y, size, fill, anchor = 'start', letterSpa
         }
     )
 
-    return `<path d="${glyphPath.toPathData(2)}" fill="${fill}"/>`
+    return `<path d="${commandsToPathData(glyphPath.commands)}" fill="${fill}"/>`
 }
 
 // Valores por defecto = calibrados con la Müller de Halloween.

@@ -26,9 +26,11 @@ function normalizeJid(
             jid
         )
 
+
     } catch {
 
         return String(jid)
+            .trim()
             .replace(
                 /:\d+@/,
                 '@'
@@ -137,10 +139,12 @@ function findParticipant(
 
 
                     return (
+
                         getNumber(
                             participantJid
                         ) ===
                         targetNumber
+
                     )
 
                 }
@@ -154,7 +158,7 @@ function findParticipant(
 }
 
 
-function getMentionedJids(
+function getContextInfo(
     msg
 ) {
 
@@ -163,25 +167,82 @@ function getMentionedJids(
         msg.message
             ?.extendedTextMessage
             ?.contextInfo
-            ?.mentionedJid
 
         ||
 
         msg.message
             ?.imageMessage
             ?.contextInfo
-            ?.mentionedJid
 
         ||
 
         msg.message
             ?.videoMessage
             ?.contextInfo
-            ?.mentionedJid
 
         ||
 
-        []
+        msg.message
+            ?.documentMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.audioMessage
+            ?.contextInfo
+
+        ||
+
+        msg.message
+            ?.stickerMessage
+            ?.contextInfo
+
+        ||
+
+        null
+
+    )
+
+}
+
+
+function getMentionedJids(
+    msg
+) {
+
+    const contextInfo =
+        getContextInfo(
+            msg
+        )
+
+
+    return Array.isArray(
+        contextInfo?.mentionedJid
+    )
+        ? contextInfo.mentionedJid
+        : []
+
+}
+
+
+function getQuotedParticipant(
+    msg
+) {
+
+    const contextInfo =
+        getContextInfo(
+            msg
+        )
+
+
+    return normalizeJid(
+
+        contextInfo?.participant ||
+
+        contextInfo?.remoteJid ||
+
+        null
 
     )
 
@@ -237,6 +298,40 @@ function findBotParticipant(
 }
 
 
+function getBestParticipantJid(
+    participant,
+    fallback = null
+) {
+
+    if (!participant) {
+
+        return normalizeJid(
+            fallback
+        )
+
+    }
+
+
+    /*
+        Para acciones de grupo preferimos
+        el ID principal entregado por Baileys.
+    */
+
+    return normalizeJid(
+
+        participant.id ||
+
+        participant.phoneNumber ||
+
+        participant.lid ||
+
+        fallback
+
+    )
+
+}
+
+
 module.exports = {
 
     name:
@@ -263,7 +358,9 @@ module.exports = {
     async execute({
 
         sock,
+
         from,
+
         msg
 
     }) {
@@ -280,7 +377,7 @@ module.exports = {
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -324,7 +421,7 @@ module.exports = {
                 participants.length === 0
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -351,17 +448,32 @@ module.exports = {
             ───────────────────────────── */
 
             const sender =
+                normalizeJid(
 
-                msg.key.participant ||
+                    msg.key?.participant ||
 
-                msg.participant ||
+                    msg.participant ||
 
-                msg.key.remoteJid
+                    msg.key?.remoteJid
+
+                )
+
+
+            const senderAlt =
+                normalizeJid(
+
+                    msg.key?.participantAlt ||
+
+                    msg.participantAlt ||
+
+                    null
+
+                )
 
 
             if (!sender) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -383,7 +495,7 @@ module.exports = {
             }
 
 
-            const senderData =
+            let senderData =
                 findParticipant(
 
                     participants,
@@ -394,12 +506,29 @@ module.exports = {
 
 
             if (
+                !senderData &&
+                senderAlt
+            ) {
+
+                senderData =
+                    findParticipant(
+
+                        participants,
+
+                        senderAlt
+
+                    )
+
+            }
+
+
+            if (
                 !isAdministrator(
                     senderData
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -446,7 +575,7 @@ module.exports = {
                 )
 
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -474,7 +603,7 @@ module.exports = {
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -506,13 +635,34 @@ module.exports = {
                 )
 
 
+            const quotedParticipant =
+                getQuotedParticipant(
+                    msg
+                )
+
+
+            /*
+                Prioridad:
+
+                1. Usuario mencionado
+                2. Usuario del mensaje respondido
+            */
+
             const target =
-                mentions[0]
+                normalizeJid(
+
+                    mentions[0] ||
+
+                    quotedParticipant ||
+
+                    null
+
+                )
 
 
             if (!target) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -523,7 +673,13 @@ module.exports = {
 
                                 'USUARIO REQUERIDO',
 
-                                'Menciona al usuario que quieres promover.\n\nUso: /promote @usuario'
+                                [
+                                    'Menciona al usuario que quieres promover o responde uno de sus mensajes.',
+                                    '',
+                                    'Ejemplos:',
+                                    '• .promote @usuario',
+                                    '• Responde un mensaje y escribe .promote'
+                                ].join('\n')
 
                             )
 
@@ -544,9 +700,11 @@ module.exports = {
                 )
 
 
-            if (!targetData) {
+            if (
+                !targetData
+            ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -569,14 +727,37 @@ module.exports = {
 
 
             const targetJid =
+                getBestParticipantJid(
 
-                targetData.id ||
+                    targetData,
 
-                targetData.phoneNumber ||
-
-                normalizeJid(
                     target
+
                 )
+
+
+            if (!targetJid) {
+
+                return await sock.safeSendMessage(
+
+                    from,
+
+                    {
+
+                        text:
+                            ui.error(
+
+                                'USUARIO NO IDENTIFICADO',
+
+                                'No se pudo obtener el identificador del usuario.'
+
+                            )
+
+                    }
+
+                )
+
+            }
 
 
             /* ─────────────────────────────
@@ -588,7 +769,7 @@ module.exports = {
                 targetData
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -615,7 +796,7 @@ module.exports = {
                 botData
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -643,7 +824,7 @@ module.exports = {
                 )
             ) {
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -688,7 +869,9 @@ module.exports = {
 
 
             const result =
-                Array.isArray(response)
+                Array.isArray(
+                    response
+                )
                     ? response[0]
                     : null
 
@@ -738,7 +921,7 @@ module.exports = {
                 }
 
 
-                return await sock.sendMessage(
+                return await sock.safeSendMessage(
 
                     from,
 
@@ -760,6 +943,32 @@ module.exports = {
             }
 
 
+            /*
+                Limpiar caché de administradores
+                porque acaba de cambiar el rango.
+            */
+
+            try {
+
+                const isGroupAdmin =
+                    require('../../src/utils/isAdmin')
+
+
+                if (
+                    typeof isGroupAdmin.clearCache ===
+                    'function'
+                ) {
+
+                    isGroupAdmin.clearCache(
+                        from,
+                        sock
+                    )
+
+                }
+
+            } catch {}
+
+
             /* ─────────────────────────────
                LOG
             ───────────────────────────── */
@@ -775,7 +984,7 @@ module.exports = {
                RESPUESTA
             ───────────────────────────── */
 
-            return await sock.sendMessage(
+            return await sock.safeSendMessage(
 
                 from,
 
@@ -787,22 +996,18 @@ module.exports = {
                             '👑 NUEVO ADMINISTRADOR',
 
                             [
-
                                 [
                                     'Usuario',
                                     `@${getNumber(targetJid)}`
                                 ],
-
                                 [
                                     'Nuevo rango',
                                     '👑 ADMINISTRADOR'
                                 ],
-
                                 [
                                     'Promovido por',
                                     `@${getNumber(sender)}`
                                 ]
-
                             ],
 
                             'El usuario recibió permisos de administrador correctamente.'
@@ -830,7 +1035,7 @@ module.exports = {
 
             try {
 
-                await sock.sendMessage(
+                await sock.safeSendMessage(
 
                     from,
 

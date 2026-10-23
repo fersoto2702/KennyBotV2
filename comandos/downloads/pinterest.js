@@ -28,20 +28,11 @@ async function sendPinterestMessage(
 }
 
 
-/* ─────────────────────────────
-   OBTENER IMAGEN DEL PIN
-───────────────────────────── */
-
 function getPinImage(pin) {
 
     if (!pin?.images)
         return null
 
-
-    /*
-        La API documenta images.orig.url
-        como imagen original.
-    */
 
     if (
         pin.images.orig?.url
@@ -50,12 +41,6 @@ function getPinImage(pin) {
         return pin.images.orig.url
 
     }
-
-
-    /*
-        Fallback por si Pinterest devuelve
-        otro tamaño disponible.
-    */
 
     const candidates =
         Object.values(
@@ -84,10 +69,6 @@ function getPinImage(pin) {
 
 }
 
-
-/* ─────────────────────────────
-   MEZCLAR RESULTADOS
-───────────────────────────── */
 
 function shuffle(array) {
 
@@ -139,9 +120,6 @@ module.exports = {
     category:
         'descargas',
 
-    cooldown:
-        5,
-
 
     async execute({
 
@@ -152,10 +130,6 @@ module.exports = {
     }) {
 
         try {
-
-            /* ─────────────────────────────
-               BÚSQUEDA
-            ───────────────────────────── */
 
             const query =
                 args
@@ -182,11 +156,6 @@ module.exports = {
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               API KEY
-            ───────────────────────────── */
 
             const apiKey =
                 process.env.SCRAPEATLAS_API_KEY
@@ -216,11 +185,6 @@ module.exports = {
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               AVISO
-            ───────────────────────────── */
 
             await sendPinterestMessage(
 
@@ -252,11 +216,6 @@ module.exports = {
 
             )
 
-
-            /* ─────────────────────────────
-               CONSULTAR API
-            ───────────────────────────── */
-
             const response =
                 await axios.get(
 
@@ -267,11 +226,6 @@ module.exports = {
                         params: {
 
                             query,
-
-                            /*
-                                Hace que la respuesta sea
-                                más sencilla de procesar.
-                            */
 
                             trim:
                                 'true'
@@ -305,11 +259,6 @@ module.exports = {
                 `Pinterest API status: ${data?.status || 'unknown'}`
 
             )
-
-
-            /* ─────────────────────────────
-               VALIDAR RESPUESTA
-            ───────────────────────────── */
 
             if (
                 !data ||
@@ -352,11 +301,6 @@ module.exports = {
                 )
                     ? data.pins
                     : []
-
-
-            /* ─────────────────────────────
-               EXTRAER IMÁGENES
-            ───────────────────────────── */
 
             const usablePins =
 
@@ -401,13 +345,6 @@ module.exports = {
 
             }
 
-
-            /*
-                Mezclamos los resultados para que
-                no aparezcan siempre los mismos
-                cinco primeros.
-            */
-
             const selected =
                 shuffle(
                     usablePins
@@ -416,11 +353,6 @@ module.exports = {
                         0,
                         5
                     )
-
-
-            /* ─────────────────────────────
-               ENVIAR RESULTADOS
-            ───────────────────────────── */
 
             let enviados = 0
 
@@ -502,12 +434,6 @@ module.exports = {
 
                     enviados++
 
-
-                    /*
-                        Pequeña pausa para no lanzar
-                        cinco envíos simultáneamente.
-                    */
-
                     if (
                         i <
                         selected.length - 1
@@ -538,11 +464,6 @@ module.exports = {
 
             }
 
-
-            /* ─────────────────────────────
-               VALIDAR ENVÍO
-            ───────────────────────────── */
-
             if (
                 enviados === 0
             ) {
@@ -564,11 +485,6 @@ module.exports = {
                 )
 
             }
-
-
-            /* ─────────────────────────────
-               FINAL
-            ───────────────────────────── */
 
             await sendPinterestMessage(
 

@@ -13,84 +13,242 @@ const TIME =
 const CLEANUP_TIME =
     60000
 
-setInterval(() => {
+function normalizeJid(
+    jid
+) {
 
-    const now =
-        Date.now()
+    if (!jid) {
 
-    for (const [id, data] of users) {
-
-        if (now - data.lastMessage > CLEANUP_TIME) {
-            users.delete(id)
-        }
+        return null
 
     }
 
-}, CLEANUP_TIME)
+    return String(
+        jid
+    )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
 
-module.exports = async (sock, msg, from) => {
+}
 
-    try {
+function getBotId(
+    sock
+) {
 
-        const sender =
-            msg.key.participant ||
-            msg.key.remoteJid
+    return String(
+        sock?.botProfile?.id ||
+        sock?.botProfileId ||
+        'main'
+    )
+        .trim()
+        .toLowerCase()
 
-        if (sender === sock.user.id) {
-            return false
-        }
+}
+
+function getBotName(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
+function buildUserKey(
+    sock,
+    from,
+    sender
+) {
+
+    return [
+        getBotId(
+            sock
+        ),
+        normalizeJid(
+            from
+        ) || 'unknown',
+        normalizeJid(
+            sender
+        ) || 'unknown'
+    ]
+        .join(':')
+
+}
+
+setInterval(
+    () => {
 
         const now =
             Date.now()
 
-        if (!users.has(sender)) {
+        for (
+            const [
+                id,
+                data
+            ]
+            of users
+        ) {
 
-            users.set(sender, {
-                messages: 1,
-                firstMessage: now,
-                lastMessage: now
-            })
+            if (
+                now -
+                data.lastMessage >
+                CLEANUP_TIME
+            ) {
 
-            return false
+                users.delete(
+                    id
+                )
 
-        }
-
-        const data =
-            users.get(sender)
-
-        if (now - data.firstMessage > TIME) {
-
-            data.messages     = 1
-            data.firstMessage = now
-            data.lastMessage  = now
-
-            return false
+            }
 
         }
 
-        data.messages++
-        data.lastMessage = now
+    },
+    CLEANUP_TIME
+)
 
-        if (data.messages > LIMIT) {
+module.exports =
+    async (
+        sock,
+        msg,
+        from
+    ) => {
 
-            logger.warn(
-                `Spam detectado: ${sender.split('@')[0]}`
+        try {
+
+            const sender =
+                normalizeJid(
+
+                    msg.key?.participant ||
+
+                    msg.participant ||
+
+                    msg.key?.remoteJid
+
+                )
+
+            if (
+                !sender
+            ) {
+
+                return false
+
+            }
+
+            const botJids = [
+
+                sock.user?.id,
+
+                sock.user?.lid
+
+            ]
+                .map(
+                    normalizeJid
+                )
+                .filter(Boolean)
+
+            if (
+                botJids.includes(
+                    sender
+                )
+            ) {
+
+                return false
+
+            }
+
+            const key =
+                buildUserKey(
+                    sock,
+                    from,
+                    sender
+                )
+
+            const now =
+                Date.now()
+
+            if (
+                !users.has(
+                    key
+                )
+            ) {
+
+                users.set(
+                    key,
+                    {
+                        messages:
+                            1,
+
+                        firstMessage:
+                            now,
+
+                        lastMessage:
+                            now
+                    }
+                )
+
+                return false
+
+            }
+
+            const data =
+                users.get(
+                    key
+                )
+
+            if (
+                now -
+                data.firstMessage >
+                TIME
+            ) {
+
+                data.messages =
+                    1
+
+                data.firstMessage =
+                    now
+
+                data.lastMessage =
+                    now
+
+                return false
+
+            }
+
+            data.messages++
+
+            data.lastMessage =
+                now
+
+            if (
+                data.messages >
+                LIMIT
+            ) {
+
+                logger.warn(
+                    `${getBotName(sock)} | Spam detectado: ${sender.split('@')[0]}`
+                )
+
+                return true
+
+            }
+
+            return false
+
+        } catch (err) {
+
+            logger.error(
+                `Error SpamHandler: ${err.stack || err.message}`
             )
 
-            return true
+            return false
 
         }
 
-        return false
-
-    } catch (err) {
-
-        logger.error(
-            `Error SpamHandler: ${err.message}`
-        )
-
-        return false
-
     }
-
-}

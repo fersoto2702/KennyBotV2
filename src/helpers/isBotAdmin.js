@@ -1,81 +1,322 @@
 const logger =
     require('../utils/logger')
 
-const cache =
-    new Map()
+const socketCaches =
+    new WeakMap()
 
 const CACHE_TIME =
     60 * 1000
 
-const normalize = jid =>
-
+function normalizeJid(
     jid
-        ?.split(':')[0]
-        ?.split('@')[0]
+) {
 
-module.exports = async (
+    if (!jid) {
+
+        return null
+
+    }
+
+    return String(
+        jid
+    )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
+
+}
+
+function getSocketCache(
+    sock
+) {
+
+    if (
+        !sock ||
+        (
+            typeof sock !==
+            'object' &&
+            typeof sock !==
+            'function'
+        )
+    ) {
+
+        return null
+
+    }
+
+    if (
+        !socketCaches.has(
+            sock
+        )
+    ) {
+
+        socketCaches.set(
+            sock,
+            new Map()
+        )
+
+    }
+
+    return socketCaches.get(
+        sock
+    )
+
+}
+
+function getParticipantAliases(
+    participant
+) {
+
+    if (
+        !participant
+    ) {
+
+        return []
+
+    }
+
+    return [
+
+        participant.id,
+
+        participant.phoneNumber,
+
+        participant.lid
+
+    ]
+        .map(
+            normalizeJid
+        )
+        .filter(
+            Boolean
+        )
+
+}
+
+function participantIsAdmin(
+    participant
+) {
+
+    return (
+        participant?.admin ===
+            'admin'
+        ||
+        participant?.admin ===
+            'superadmin'
+    )
+
+}
+
+function findBotParticipant(
+    participants,
+    sock
+) {
+
+    const botJids = [
+
+        sock?.user?.id,
+
+        sock?.user?.lid
+
+    ]
+        .map(
+            normalizeJid
+        )
+        .filter(
+            Boolean
+        )
+
+    if (
+        botJids.length ===
+        0
+    ) {
+
+        return null
+
+    }
+
+    return (
+        participants.find(
+            participant => {
+
+                const aliases =
+                    getParticipantAliases(
+                        participant
+                    )
+
+                return botJids.some(
+                    jid =>
+                        aliases.includes(
+                            jid
+                        )
+                )
+
+            }
+        )
+        ||
+        null
+    )
+
+}
+
+async function getParticipants(
+    sock,
+    from,
+    forceRefresh = false
+) {
+
+    const cache =
+        getSocketCache(
+            sock
+        )
+
+    if (
+        !cache
+    ) {
+
+        throw new Error(
+            'Socket inválido'
+        )
+
+    }
+
+    const groupJid =
+        normalizeJid(
+            from
+        )
+
+    if (
+        !groupJid ||
+        !groupJid.endsWith(
+            '@g.us'
+        )
+    ) {
+
+        return []
+    }
+
+    const now =
+        Date.now()
+
+    const cached =
+        cache.get(
+            groupJid
+        )
+
+    if (
+        !forceRefresh &&
+        cached &&
+        now <
+        cached.expire
+    ) {
+
+        return cached.participants
+
+    }
+
+    const metadata =
+        await sock.groupMetadata(
+            groupJid
+        )
+
+    const participants =
+        Array.isArray(
+            metadata?.participants
+        )
+            ? metadata.participants
+            : []
+
+    cache.set(
+        groupJid,
+        {
+            participants,
+
+            expire:
+                now +
+                CACHE_TIME
+        }
+    )
+
+    return participants
+
+}
+
+async function isBotAdmin(
     sock,
     from
-) => {
+) {
 
     try {
 
-        const now =
-            Date.now()
-
-        const cached =
-            cache.get(from)
-
-        let participants
+        const groupJid =
+            normalizeJid(
+                from
+            )
 
         if (
-            cached &&
-            now < cached.expire
+            !groupJid ||
+            !groupJid.endsWith(
+                '@g.us'
+            )
         ) {
 
-            participants =
-                cached.participants
-
-        } else {
-
-            const metadata =
-                await sock.groupMetadata(from)
-
-            participants =
-                metadata.participants
-
-            cache.set(from, {
-
-                participants,
-                expire:
-                    now + CACHE_TIME
-
-            })
+            return false
 
         }
 
-        const botId =
-            normalize(sock.user.id)
-
-        const bot =
-            participants.find(
-                p =>
-                    normalize(p.id) ===
-                    botId
+        let participants =
+            await getParticipants(
+                sock,
+                groupJid,
+                false
             )
 
-        return (
+        let bot =
+            findBotParticipant(
+                participants,
+                sock
+            )
 
-            bot?.admin === 'admin' ||
+        if (
+            bot
+        ) {
 
-            bot?.admin === 'superadmin'
+            return participantIsAdmin(
+                bot
+            )
 
+        }
+
+        participants =
+            await getParticipants(
+                sock,
+                groupJid,
+                true
+            )
+
+        bot =
+            findBotParticipant(
+                participants,
+                sock
+            )
+
+        return participantIsAdmin(
+            bot
         )
 
     } catch (err) {
 
+        const botName =
+            String(
+                sock?.botProfile?.name ||
+                'KennyBot'
+            )
+                .trim()
+
         logger.error(
-            `Error isBotAdmin: ${err.message}`
+            `${botName} | Error isBotAdmin: ${err.stack || err.message}`
         )
 
         return false
@@ -83,3 +324,71 @@ module.exports = async (
     }
 
 }
+
+isBotAdmin.clearCache =
+    (
+        from,
+        sock
+    ) => {
+
+        const cache =
+            socketCaches.get(
+                sock
+            )
+
+        if (
+            !cache
+        ) {
+
+            return false
+
+        }
+
+        const groupJid =
+            normalizeJid(
+                from
+            )
+
+        if (
+            !groupJid
+        ) {
+
+            return false
+
+        }
+
+        return cache.delete(
+            groupJid
+        )
+
+    }
+
+isBotAdmin.clearSocketCache =
+    sock => {
+
+        if (
+            !socketCaches.has(
+                sock
+            )
+        ) {
+
+            return false
+
+        }
+
+        socketCaches.delete(
+            sock
+        )
+
+        return true
+
+    }
+
+isBotAdmin.normalizeJid =
+    normalizeJid
+
+isBotAdmin.findBotParticipant =
+    findBotParticipant
+
+module.exports =
+    isBotAdmin
