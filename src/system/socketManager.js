@@ -7,19 +7,19 @@ const socketStates =
 const CONFIG = {
 
     delay:
-        100,
+        25,
 
     retries:
-        3,
+        2,
 
     retryDelay:
-        2000,
+        750,
 
     burstLimit:
-        20,
+        30,
 
     burstDelay:
-        500,
+        250,
 
     burstWindow:
         10000
@@ -77,7 +77,6 @@ function getState(
         socketStates.set(
             sock,
             {
-
                 queue:
                     [],
 
@@ -92,7 +91,6 @@ function getState(
 
                 closed:
                     false
-
             }
         )
 
@@ -165,24 +163,10 @@ async function processQueue(
         )
 
     if (
-        state.processing
-    ) {
-
-        return
-
-    }
-
-    if (
-        state.closed
-    ) {
-
-        return
-
-    }
-
-    if (
+        state.processing ||
+        state.closed ||
         state.queue.length ===
-        0
+            0
     ) {
 
         return
@@ -196,7 +180,7 @@ async function processQueue(
 
         while (
             state.queue.length >
-            0 &&
+                0 &&
             !state.closed
         ) {
 
@@ -225,7 +209,8 @@ async function processQueue(
 
                 for (
                     let attempt = 1;
-                    attempt <= CONFIG.retries;
+                    attempt <=
+                        CONFIG.retries;
                     attempt++
                 ) {
 
@@ -293,7 +278,7 @@ async function processQueue(
 
             if (
                 state.queue.length >
-                0 &&
+                    0 &&
                 !state.closed
             ) {
 
@@ -497,7 +482,6 @@ function patchSocket(
         sock,
         '__kennySocketPatched',
         {
-
             value:
                 true,
 
@@ -509,7 +493,6 @@ function patchSocket(
 
             writable:
                 false
-
         }
     )
 
@@ -537,7 +520,7 @@ function patchSocket(
             if (
                 !content ||
                 typeof content !==
-                'object'
+                    'object'
             ) {
 
                 throw new Error(
@@ -609,7 +592,7 @@ function patchSocket(
                     users
                 ) ||
                 users.length ===
-                0
+                    0
             ) {
 
                 throw new Error(
@@ -653,13 +636,9 @@ function patchSocket(
 
             try {
 
-                return await enqueue(
-                    sock,
-                    async () =>
-                        sock.sendPresenceUpdate(
-                            'composing',
-                            jid
-                        )
+                return await sock.sendPresenceUpdate(
+                    'composing',
+                    jid
                 )
 
             } catch {
@@ -683,13 +662,9 @@ function patchSocket(
 
             try {
 
-                return await enqueue(
-                    sock,
-                    async () =>
-                        sock.sendPresenceUpdate(
-                            'paused',
-                            jid
-                        )
+                return await sock.sendPresenceUpdate(
+                    'paused',
+                    jid
                 )
 
             } catch {
@@ -709,7 +684,6 @@ function patchSocket(
                 )
 
             return {
-
                 queue:
                     state.queue.length,
 
@@ -721,7 +695,6 @@ function patchSocket(
 
                 closed:
                     state.closed
-
             }
 
         }

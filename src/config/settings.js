@@ -91,10 +91,10 @@ const settings = {
                 'brazil',
 
             name:
-                'KennyBot BR',
+                '𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢',
 
             slogan:
-                'Bot oficial da sociedade Golden Empire.',
+                '𝖡𝖮𝖳 𝖮𝖥𝖨𝖢𝖨𝖠𝖫　🇧🇷　𝖣𝖠 𝖲𝖮𝖢𝖨𝖤𝖣𝖠𝖣𝖤 𝖦𝖮𝖫𝖣𝖤𝖭 𝖤𝖬𝖯𝖨𝖱𝖤',
 
             country:
                 'BR',

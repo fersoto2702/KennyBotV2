@@ -1171724,3 +1171724,129 @@ Porque antes que una eternidad sin usted, elegiría mil años aguardando su regr
 [13:17:46] [INFO] Socket cerrado | main
 [13:17:46] [INFO] Socket cerrado | brazil
 [13:17:46] [OK] Todas las sesiones fueron cerradas
+[13:19:13] [OK] UnifiedRateLimiter cargado
+[13:19:13] [OK] Comando cargado: ban
+[13:19:13] [OK] Comando cargado: unban
+[13:19:13] [OK] Comando cargado: antilink
+[13:19:13] [OK] Comando cargado: card
+[13:19:13] [OK] Comando cargado: cardinfo
+[13:19:13] [OK] Comando cargado: claim
+[13:19:13] [OK] Comando cargado: collection
+[13:19:13] [OK] Comando cargado: antibot
+[13:19:13] [OK] Comando cargado: antifake
+[13:19:13] [OK] Comando cargado: autolevelup
+[13:19:13] [OK] Comando cargado: crush
+[13:19:13] [OK] Comando cargado: fusion
+[13:19:13] [OK] Comando cargado: qc
+[13:19:13] [OK] Comando cargado: rate
+[13:19:13] [OK] Comando cargado: ship
+[13:19:13] [OK] Comando cargado: facebook
+[13:19:13] [OK] Comando cargado: instagram
+[13:19:13] [OK] Comando cargado: pinterest
+[13:19:14] [OK] Comando cargado: play
+[13:19:14] [OK] Comando cargado: spotify
+[13:19:14] [OK] Comando cargado: tiktok
+[13:19:14] [OK] Comando cargado: ytmp3
+[13:19:14] [OK] Comando cargado: ytmp4
+[13:19:14] [OK] Comando cargado: balance
+[13:19:14] [OK] Comando cargado: buy
+[13:19:14] [WARN] Comando duplicado ignorado: buy (crime.js)
+[13:19:14] [OK] Comando cargado: daily
+[13:19:14] [OK] Comando cargado: deposit
+[13:19:14] [OK] Comando cargado: gamble
+[13:19:14] [OK] Comando cargado: inventory
+[13:19:14] [OK] Comando cargado: leaderboardmoney
+[13:19:14] [OK] Comando cargado: open
+[13:19:14] [OK] Comando cargado: pay
+[13:19:14] [OK] Comando cargado: rob
+[13:19:14] [OK] Comando cargado: shop
+[13:19:14] [OK] Comando cargado: slots
+[13:19:14] [OK] Comando cargado: withdraw
+[13:19:14] [OK] Comando cargado: work
+[13:19:14] [OK] Comando cargado: equip
+[13:19:14] [OK] Comando cargado: events
+[13:19:14] [OK] Comando cargado: brat
+[13:19:15] [OK] Comando cargado: exportstats
+[13:19:15] [OK] Comando cargado: inactive
+[13:19:15] [OK] Comando cargado: msgstats
+[13:19:15] [OK] Comando cargado: topmessages
+[13:19:15] [OK] Comando cargado: groups
+[13:19:15] [OK] Comando cargado: add
+[13:19:15] [OK] Comando cargado: admins
+[13:19:15] [OK] Comando cargado: demote
+[13:19:15] [OK] Comando cargado: hidetag
+[13:19:15] [OK] Comando cargado: kick
+[13:19:15] [OK] Comando cargado: link
+[13:19:15] [OK] Comando cargado: mute
+[13:19:15] [OK] Comando cargado: promote
+[13:19:15] [OK] Comando cargado: tagall
+[13:19:15] [OK] Comando cargado: unwarn
+[13:19:15] [OK] Comando cargado: warn
+[13:19:15] [OK] Comando cargado: warnings
+[13:19:15] [OK] Comando cargado: welcome
+[13:19:15] [OK] Comando cargado: ia
+[13:19:15] [OK] Comando cargado: join
+[13:19:15] [OK] Comando cargado: leaderboard
+[13:19:15] [OK] Comando cargado: level
+[13:19:15] [WARN] Comando duplicado ignorado: rank (rank.js)
+[13:19:15] [OK] Comando cargado: menu
+[13:19:15] [OK] Comando cargado: myclub
+[13:19:15] [OK] Comando cargado: objectives
+[13:19:15] [OK] Comando cargado: openpack
+[13:19:15] [OK] Comando cargado: packs
+[13:19:15] [OK] Comando cargado: pick
+[13:19:15] [OK] Comando cargado: ping
+[13:19:15] [OK] Comando cargado: addpremium
+[13:19:15] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[13:19:15] [OK] Comando cargado: delpremium
+[13:19:15] [OK] Comando cargado: profile
+[13:19:15] [OK] Comando cargado: sticker
+[13:19:15] [OK] Comando cargado: addjoinmsg
+[13:19:15] [OK] Comando cargado: clearjoinmsg
+[13:19:15] [OK] Comando cargado: deljoinmsg
+[13:19:15] [OK] Comando cargado: listjoinmsg
+[13:19:15] [INFO] Iniciando sistema multi-bot...
+[13:19:15] [INFO] Instancias configuradas: main, brazil
+[13:19:15] [OK] MySQL conectado y tabla lista
+[13:19:15] [OK] Base de datos inicializada
+[13:19:15] [INFO] Iniciando 2 instancia(s): main, brazil
+[13:19:15] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[13:19:15] [OK] KennyBot | SocketManager cargado
+[13:19:15] [INFO] KennyBot BR | Usando WA v2.3000.1043857760
+[13:19:15] [OK] KennyBot BR | SocketManager cargado
+[13:19:16] [OK] KennyBot BR conectado
+[13:19:18] [OK] KennyBot conectado
+[13:20:21] [EVENT] [brazil] SELF -> .menu
+[13:20:21] [CMD] KennyBot BR | menu → 87295965310994
+[13:20:27] [EVENT] KennyBot BR | Menu consultado | comandos=77 | mantenimiento=12 | categorias=12
+[13:24:06] [EVENT] [brazil] SELF -> .menu
+[13:24:06] [CMD] KennyBot BR | menu → 87295965310994
+[13:24:07] [EVENT] KennyBot BR | Menu consultado | comandos=77 | mantenimiento=12 | categorias=12
+[13:25:21] [EVENT] [main] 22313059807249 -> Holaaaaaa
+[13:25:21] [EVENT] KennyBot | PassiveCoins: 22313059807249 +8
+[13:26:13] [EVENT] [main] 215762748846123 -> ¿En dónde te perdiste?
+[13:26:13] [EVENT] KennyBot | PassiveCoins: 215762748846123 +3
+[13:26:36] [EVENT] [main] 24018161811481 -> Holitaa
+[13:26:36] [EVENT] KennyBot | PassiveCoins: 24018161811481 +2
+[13:26:46] [EVENT] [main] 185199677718758 -> Holaaa
+[13:26:46] [EVENT] KennyBot | PassiveCoins: 185199677718758 +9
+[13:26:46] [EVENT] [main] 185199677718758 -> Como estas?
+[13:26:55] [EVENT] [main] 185199677718758 -> En donde te oerdiste?
+[13:28:15] [EVENT] [main] 275187933122782 -> Amikos pasen a mi priv para firmar contrato
+[13:28:15] [EVENT] KennyBot | PassiveCoins: 275187933122782 +3
+[13:28:37] [EVENT] [main] 105910252925156 -> oña
+[13:28:37] [EVENT] KennyBot | PassiveCoins: 105910252925156 +6
+[13:29:29] [INFO] Global Role Sync ignorado en grupo de prueba/no productivo: 120363343360264412@g.us
+[13:30:11] [EVENT] [main] 177898216538250 -> HOLAA JACKSON, BIENVENIDOO
+[13:30:11] [EVENT] KennyBot | PassiveCoins: 177898216538250 +4
+[13:32:12] [EVENT] [main] 175759457034250 -> En media funa
+[13:32:12] [EVENT] KennyBot | PassiveCoins: 175759457034250 +3
+[13:32:27] [EVENT] [main] 175759457034250 -> Que en media discusión
+[13:32:53] [EVENT] [main] 105910252925156 -> bienbenido Jackson😖
+[13:32:53] [EVENT] KennyBot | PassiveCoins: 105910252925156 +6
+[13:33:23] [INFO] Cerrando KennyBot...
+[13:33:23] [INFO] Deteniendo main...
+[13:33:23] [INFO] Deteniendo brazil...
+[13:33:23] [INFO] Socket cerrado | main
+[13:33:23] [INFO] Socket cerrado | brazil
+[13:33:23] [OK] Todas las sesiones fueron cerradas

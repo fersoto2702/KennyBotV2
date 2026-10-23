@@ -30,11 +30,9 @@ const socketStates =
     new WeakMap()
 
 const CONFIG = {
+
     cacheTime:
         60000,
-
-    joinDelay:
-        3000,
 
     maxMentions:
         5,
@@ -44,17 +42,8 @@ const CONFIG = {
 
     antiRaidInterval:
         15000
-}
 
-const sleep =
-    ms =>
-        new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    ms
-                )
-        )
+}
 
 function normalizeJid(
     jid
@@ -333,7 +322,8 @@ async function getMetadata(
 
 function detectRaid(
     sock,
-    group
+    group,
+    count = 1
 ) {
 
     const groupJid =
@@ -371,9 +361,26 @@ function detectRaid(
                 CONFIG.antiRaidInterval
         )
 
-    filtered.push(
-        now
-    )
+    const additions =
+        Math.max(
+            1,
+            Number(
+                count
+            ) ||
+            1
+        )
+
+    for (
+        let i = 0;
+        i < additions;
+        i++
+    ) {
+
+        filtered.push(
+            now
+        )
+
+    }
 
     state.joinTracker.set(
         groupJid,
@@ -482,6 +489,35 @@ async function welcomeSystem(
                 sock
             )
 
+        const rawParticipants =
+            Array.isArray(
+                update?.participants
+            )
+                ? update.participants
+                : []
+
+        const participants =
+            rawParticipants
+                .map(
+                    normalizeJid
+                )
+                .filter(
+                    Boolean
+                )
+                .slice(
+                    0,
+                    CONFIG.maxMentions
+                )
+
+        if (
+            participants.length ===
+            0
+        ) {
+
+            return false
+
+        }
+
         if (
             action ===
             'add'
@@ -490,7 +526,8 @@ async function welcomeSystem(
             if (
                 detectRaid(
                     sock,
-                    groupJid
+                    groupJid,
+                    participants.length
                 )
             ) {
 
@@ -545,53 +582,34 @@ async function welcomeSystem(
             )
 
         const joinMessages =
-            readJson(
-                joinPath,
-                {}
-            )
-
-        const rawParticipants =
-            Array.isArray(
-                update?.participants
-            )
-                ? update.participants
-                : []
-
-        const participants =
-            rawParticipants
-                .map(
-                    normalizeJid
+            action ===
+            'add'
+                ? readJson(
+                    joinPath,
+                    {}
                 )
-                .filter(
-                    Boolean
-                )
-                .slice(
-                    0,
-                    CONFIG.maxMentions
-                )
-
-        if (
-            participants.length ===
-            0
-        ) {
-
-            return false
-
-        }
+                : {}
 
         if (
             action ===
             'add'
         ) {
 
+            const customMessages =
+                Array.isArray(
+                    joinMessages?.[
+                        groupJid
+                    ]
+                )
+                    ? joinMessages[
+                        groupJid
+                    ]
+                    : []
+
             for (
                 const user
                 of participants
             ) {
-
-                await sleep(
-                    CONFIG.joinDelay
-                )
 
                 const number =
                     getDisplayNumber(
@@ -628,25 +646,10 @@ async function welcomeSystem(
                     }
                 )
 
-                const customMessages =
-                    Array.isArray(
-                        joinMessages?.[
-                            groupJid
-                        ]
-                    )
-                        ? joinMessages[
-                            groupJid
-                        ]
-                        : []
-
                 for (
                     const message
                     of customMessages
                 ) {
-
-                    await sleep(
-                        1000
-                    )
 
                     await sendWelcomeMessage(
                         sock,
@@ -685,10 +688,6 @@ async function welcomeSystem(
                 const user
                 of participants
             ) {
-
-                await sleep(
-                    1500
-                )
 
                 const number =
                     getDisplayNumber(
