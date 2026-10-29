@@ -28,6 +28,18 @@ const economyHandler =
 const messageStatsHandler =
     require('../src/handlers/messageStatsHandler')
 
+const trivia =
+    require('../comandos/diversion/trivia')
+
+const adivinaNumero =
+    require('../comandos/diversion/adivinanumero')
+
+const ahorcado =
+    require('../comandos/diversion/ahorcado')
+
+const adivinanza =
+    require('../comandos/diversion/adivinanza')
+
 const {
     ensureMember
 } = require(
@@ -1019,6 +1031,107 @@ module.exports =
                 }
 
             }
+
+try {
+
+    const triviaHandled =
+        await trivia.checkAnswer({
+            sock,
+            msg,
+            from
+        })
+
+    if (
+        triviaHandled
+    ) {
+
+        return
+
+    }
+
+} catch (err) {
+
+    logger.error(
+        `${botName} | Trivia Handler Error: ${err.stack || err.message}`
+    )
+
+}
+
+try {
+
+    const riddleHandled =
+        await adivinanza.checkAnswer({
+            sock,
+            msg,
+            from
+        })
+
+    if (
+        riddleHandled
+    ) {
+
+        return
+
+    }
+
+} catch (err) {
+
+    logger.error(
+        `${botName} | Adivinanza Handler Error: ${err.stack || err.message}`
+    )
+
+}
+
+try {
+
+    const numberGameHandled =
+        await adivinaNumero.checkAnswer({
+            sock,
+            msg,
+            from
+        })
+
+    if (
+        numberGameHandled
+    ) {
+
+        return
+
+    }
+
+} catch (err) {
+
+    logger.error(
+        `${botName} | AdivinaNumero Handler Error: ${err.stack || err.message}`
+    )
+
+}
+
+
+try {
+
+    const hangmanHandled =
+        await ahorcado.checkAnswer({
+            sock,
+            msg,
+            from
+        })
+
+    if (
+        hangmanHandled
+    ) {
+
+        return
+
+    }
+
+} catch (err) {
+
+    logger.error(
+        `${botName} | Ahorcado Handler Error: ${err.stack || err.message}`
+    )
+
+}
 
             try {
 
