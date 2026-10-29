@@ -77,8 +77,27 @@ function normalizeJid(
 
     }
 
+    const value =
+        typeof jid ===
+            'object'
+            ? (
+                jid.id ||
+                jid.phoneNumber ||
+                jid.lid ||
+                null
+            )
+            : jid
+
+    if (
+        !value
+    ) {
+
+        return null
+
+    }
+
     return String(
-        jid
+        value
     )
         .trim()
         .replace(
@@ -965,6 +984,10 @@ async function welcomeSystem(
 
         }
 
+        logger.info(
+            `${getBotName(sock)} | Group participant update | ${action} | ${groupJid}`
+        )
+
         const config =
             getGroupConfig(
                 groupJid
@@ -1008,13 +1031,20 @@ async function welcomeSystem(
                 : []
 
         const participants =
-            rawParticipants
-                .map(
-                    normalizeJid
+            [
+                ...new Set(
+                    rawParticipants
+                        .map(
+                            participant =>
+                                normalizeJid(
+                                    participant
+                                )
+                        )
+                        .filter(
+                            Boolean
+                        )
                 )
-                .filter(
-                    Boolean
-                )
+            ]
                 .slice(
                     0,
                     CONFIG.maxMentions
