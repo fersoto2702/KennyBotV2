@@ -1,3 +1,16 @@
-[
-  "120363414119661740@g.us"
-]
+{
+  "120363414119661740@g.us": {
+    "welcome": true,
+    "goodbye": true,
+    "welcomeMessage": "Bienvenido/a {user} a *{group}*.\n\nAhora somos *{members}* miembros.",
+    "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
+    "updatedAt": 1793255893748
+  },
+  "120363425530676036@g.us": {
+    "welcome": false,
+    "goodbye": false,
+    "welcomeMessage": "Bienvenido/a {user} a *{group}*.\n\nAhora somos *{members}* miembros.",
+    "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
+    "updatedAt": 1793256002160
+  }
+}
