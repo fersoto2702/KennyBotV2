@@ -1263295,3 +1263295,159 @@ Require stack:
 [23:32:55] [INFO] Socket cerrado | main
 [23:32:55] [INFO] Socket cerrado | brazil
 [23:32:55] [OK] Todas las sesiones fueron cerradas
+[23:33:23] [OK] UnifiedRateLimiter cargado
+[23:33:23] [OK] Comando cargado: ban
+[23:33:23] [OK] Comando cargado: unban
+[23:33:23] [OK] Comando cargado: antilink
+[23:33:24] [OK] Comando cargado: card
+[23:33:24] [OK] Comando cargado: cardinfo
+[23:33:24] [OK] Comando cargado: claim
+[23:33:24] [OK] Comando cargado: collection
+[23:33:24] [OK] Comando cargado: antibot
+[23:33:24] [OK] Comando cargado: antifake
+[23:33:24] [OK] Comando cargado: autolevelup
+[23:33:24] [OK] Comando cargado: adivinanumero
+[23:33:24] [OK] Comando cargado: adivinanza
+[23:33:24] [OK] Comando cargado: ahorcado
+[23:33:24] [OK] Comando cargado: crush
+[23:33:24] [OK] Comando cargado: dado
+[23:33:24] [OK] Comando cargado: fusion
+[23:33:24] [OK] Comando cargado: moneda
+[23:33:24] [OK] Comando cargado: ppt
+[23:33:24] [OK] Comando cargado: qc
+[23:33:24] [OK] Comando cargado: rate
+[23:33:24] [OK] Comando cargado: reto
+[23:33:24] [OK] Comando cargado: ship
+[23:33:24] [OK] Comando cargado: top
+[23:33:24] [OK] Comando cargado: trivia
+[23:33:24] [OK] Comando cargado: verdad
+[23:33:24] [OK] Comando cargado: facebook
+[23:33:24] [OK] Comando cargado: instagram
+[23:33:24] [OK] Comando cargado: pinterest
+[23:33:25] [OK] Comando cargado: play
+[23:33:25] [OK] Comando cargado: spotify
+[23:33:25] [OK] Comando cargado: tiktok
+[23:33:25] [OK] Comando cargado: ytmp3
+[23:33:25] [OK] Comando cargado: ytmp4
+[23:33:25] [OK] Comando cargado: balance
+[23:33:25] [OK] Comando cargado: buy
+[23:33:25] [WARN] Comando duplicado ignorado: buy (crime.js)
+[23:33:25] [OK] Comando cargado: daily
+[23:33:25] [OK] Comando cargado: deposit
+[23:33:25] [OK] Comando cargado: gamble
+[23:33:25] [OK] Comando cargado: inventory
+[23:33:25] [OK] Comando cargado: leaderboardmoney
+[23:33:25] [OK] Comando cargado: open
+[23:33:25] [OK] Comando cargado: pay
+[23:33:25] [OK] Comando cargado: rob
+[23:33:25] [OK] Comando cargado: shop
+[23:33:25] [OK] Comando cargado: slots
+[23:33:25] [OK] Comando cargado: withdraw
+[23:33:25] [OK] Comando cargado: work
+[23:33:25] [OK] Comando cargado: equip
+[23:33:25] [OK] Comando cargado: events
+[23:33:25] [OK] Comando cargado: brat
+[23:33:26] [OK] Comando cargado: exportstats
+[23:33:26] [OK] Comando cargado: inactive
+[23:33:26] [OK] Comando cargado: msgstats
+[23:33:26] [OK] Comando cargado: topmessages
+[23:33:26] [OK] Comando cargado: groups
+[23:33:26] [OK] Comando cargado: add
+[23:33:26] [OK] Comando cargado: admins
+[23:33:26] [OK] Comando cargado: demote
+[23:33:26] [ERROR] Error cargando goodbye.js: Error: Cannot find module '../../src/handlers/welcomeSystem'
+Require stack:
+- C:\Users\Ferna\KennyBotV2\comandos\grupos\goodbye.js
+- C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js
+- C:\Users\Ferna\KennyBotV2\eventos\messages.js
+- C:\Users\Ferna\KennyBotV2\index.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (C:\Users\Ferna\KennyBotV2\comandos\grupos\goodbye.js:21:5)
+    at Module._compile (node:internal/modules/cjs/loader:1521:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at loadCommands (C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js:1666:17)
+    at loadCommands (C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js:1606:13)
+    at Object.<anonymous> (C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js:1708:1)
+    at Module._compile (node:internal/modules/cjs/loader:1521:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+[23:33:26] [OK] Comando cargado: hidetag
+[23:33:26] [OK] Comando cargado: kick
+[23:33:26] [OK] Comando cargado: link
+[23:33:26] [OK] Comando cargado: mute
+[23:33:26] [OK] Comando cargado: promote
+[23:33:26] [OK] Comando cargado: tagall
+[23:33:26] [OK] Comando cargado: unwarn
+[23:33:26] [OK] Comando cargado: warn
+[23:33:26] [OK] Comando cargado: warnings
+[23:33:26] [ERROR] Error cargando welcome.js: Error: Cannot find module '../../src/handlers/welcomeSystem'
+Require stack:
+- C:\Users\Ferna\KennyBotV2\comandos\grupos\welcome.js
+- C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js
+- C:\Users\Ferna\KennyBotV2\eventos\messages.js
+- C:\Users\Ferna\KennyBotV2\index.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+    at Module._load (node:internal/modules/cjs/loader:1038:27)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at Object.<anonymous> (C:\Users\Ferna\KennyBotV2\comandos\grupos\welcome.js:11:5)
+    at Module._compile (node:internal/modules/cjs/loader:1521:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+    at Module.load (node:internal/modules/cjs/loader:1266:32)
+    at Module._load (node:internal/modules/cjs/loader:1091:12)
+    at Module.require (node:internal/modules/cjs/loader:1289:19)
+    at require (node:internal/modules/helpers:182:18)
+    at loadCommands (C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js:1666:17)
+    at loadCommands (C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js:1606:13)
+    at Object.<anonymous> (C:\Users\Ferna\KennyBotV2\src\handlers\commandHandler.js:1708:1)
+    at Module._compile (node:internal/modules/cjs/loader:1521:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+[23:33:26] [OK] Comando cargado: ia
+[23:33:26] [OK] Comando cargado: join
+[23:33:26] [WARN] Alias duplicado "top" en leaderboard.js
+[23:33:26] [OK] Comando cargado: leaderboard
+[23:33:26] [WARN] Alias duplicado "rank" en level.js
+[23:33:26] [OK] Comando cargado: level
+[23:33:26] [WARN] Comando duplicado ignorado: rank (rank.js)
+[23:33:26] [OK] Comando cargado: menu
+[23:33:26] [OK] Comando cargado: myclub
+[23:33:26] [OK] Comando cargado: objectives
+[23:33:26] [OK] Comando cargado: openpack
+[23:33:26] [OK] Comando cargado: packs
+[23:33:26] [OK] Comando cargado: pick
+[23:33:26] [OK] Comando cargado: ping
+[23:33:26] [OK] Comando cargado: addpremium
+[23:33:26] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[23:33:26] [OK] Comando cargado: delpremium
+[23:33:26] [OK] Comando cargado: profile
+[23:33:26] [OK] Comando cargado: sticker
+[23:33:26] [OK] Comando cargado: addjoinmsg
+[23:33:26] [OK] Comando cargado: clearjoinmsg
+[23:33:26] [OK] Comando cargado: deljoinmsg
+[23:33:26] [OK] Comando cargado: listjoinmsg
+[23:33:26] [INFO] Iniciando sistema multi-bot...
+[23:33:26] [INFO] Instancias configuradas: main, brazil
+[23:33:26] [OK] MySQL conectado y tabla lista
+[23:33:26] [OK] Base de datos inicializada
+[23:33:26] [INFO] Iniciando 2 instancia(s): main, brazil
+[23:33:26] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[23:33:27] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[23:33:27] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[23:33:27] [OK] KennyBot | SocketManager cargado
+[23:33:29] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[23:33:29] [OK] KennyBot conectado
+[23:33:33] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[23:34:42] [EVENT] [brazil] 213421756797054 -> Volveré, okei.
+[23:34:42] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 213421756797054 +10
+[23:36:57] [INFO] Cerrando KennyBot...
+[23:36:57] [INFO] Deteniendo main...
+[23:36:57] [INFO] Deteniendo brazil...
+[23:36:57] [INFO] Socket cerrado | main
+[23:36:57] [INFO] Socket cerrado | brazil
+[23:36:57] [OK] Todas las sesiones fueron cerradas

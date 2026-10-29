@@ -2,26 +2,17 @@ const isGroupAdmin =
 
     require('../../src/utils/isAdmin')
 
-
-
 const logger =
 
     require('../../src/utils/logger')
 
-
-
-const ui =
+    const ui =
 
     require('../../src/utils/ui')
 
+    const welcomeSystem =
 
-
-const welcomeSystem =
-
-    require('../../src/handlers/welcomeSystem')
-
-
-
+    require('../../src/system/welcomeSystem')
 function normalizeJid(
 
     jid

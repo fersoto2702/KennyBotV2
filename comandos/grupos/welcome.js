@@ -8,7 +8,7 @@ const ui =
     require('../../src/utils/ui')
 
 const welcomeSystem =
-    require('../../src/handlers/welcomeSystem')
+    require('../../src/system/welcomeSystem')
 
 function normalizeJid(
     jid
