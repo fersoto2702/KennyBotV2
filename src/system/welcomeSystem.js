@@ -26,6 +26,12 @@ const joinPath =
         '../../database/joinMessages.json'
     )
 
+const goodbyePath =
+    path.join(
+        __dirname,
+        '../../database/goodbyeMessages.json'
+    )
+
 const socketStates =
     new WeakMap()
 
@@ -42,6 +48,22 @@ const CONFIG = {
 
     antiRaidInterval:
         15000
+
+}
+
+const DEFAULTS = {
+
+    welcome:
+        false,
+
+    goodbye:
+        false,
+
+    welcomeMessage:
+        'Bienvenido/a {user} a *{group}*.\n\nAhora somos *{members}* miembros.',
+
+    goodbyeMessage:
+        'Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.'
 
 }
 
@@ -100,9 +122,9 @@ function getSocketState(
         !sock ||
         (
             typeof sock !==
-            'object' &&
+                'object' &&
             typeof sock !==
-            'function'
+                'function'
         )
     ) {
 
@@ -121,11 +143,13 @@ function getSocketState(
         socketStates.set(
             sock,
             {
+
                 metadataCache:
                     new Map(),
 
                 joinTracker:
                     new Map()
+
             }
         )
 
@@ -161,14 +185,22 @@ function ensureFiles() {
     }
 
     const databases = [
+
         [
             welcomePath,
-            []
+            {}
         ],
+
         [
             joinPath,
             {}
+        ],
+
+        [
+            goodbyePath,
+            {}
         ]
+
     ]
 
     for (
@@ -214,18 +246,354 @@ function readJson(
                 'utf8'
             )
 
-        const parsed =
-            JSON.parse(
-                raw
-            )
-
-        return parsed
+        return JSON.parse(
+            raw
+        )
 
     } catch {
 
         return fallback
 
     }
+
+}
+
+function writeJson(
+    file,
+    data
+) {
+
+    try {
+
+        fs.writeFileSync(
+            file,
+            JSON.stringify(
+                data,
+                null,
+                2
+            ),
+            'utf8'
+        )
+
+        return true
+
+    } catch (err) {
+
+        logger.error(
+            `WelcomeSystem Write Error (${path.basename(file)}): ${err.stack || err.message}`
+        )
+
+        return false
+
+    }
+
+}
+
+function migrateLegacyWelcomeData(
+    data
+) {
+
+    if (
+        Array.isArray(
+            data
+        )
+    ) {
+
+        const migrated =
+            {}
+
+        for (
+            const group
+            of data
+        ) {
+
+            const groupJid =
+                normalizeJid(
+                    group
+                )
+
+            if (
+                !groupJid
+            ) {
+
+                continue
+
+            }
+
+            migrated[groupJid] = {
+
+                welcome:
+                    true,
+
+                goodbye:
+                    true,
+
+                welcomeMessage:
+                    DEFAULTS.welcomeMessage,
+
+                goodbyeMessage:
+                    DEFAULTS.goodbyeMessage,
+
+                updatedAt:
+                    Date.now()
+
+            }
+
+        }
+
+        writeJson(
+            welcomePath,
+            migrated
+        )
+
+        return migrated
+
+    }
+
+    if (
+        !data ||
+        typeof data !==
+            'object'
+    ) {
+
+        return {}
+
+    }
+
+    return data
+
+}
+
+function readConfigDatabase() {
+
+    ensureFiles()
+
+    const data =
+        readJson(
+            welcomePath,
+            {}
+        )
+
+    return migrateLegacyWelcomeData(
+        data
+    )
+
+}
+
+function getGroupConfig(
+    groupJid
+) {
+
+    const normalized =
+        normalizeJid(
+            groupJid
+        )
+
+    const data =
+        readConfigDatabase()
+
+    const config =
+        normalized
+            ? data[normalized] || {}
+            : {}
+
+    return {
+
+        welcome:
+            config.welcome ===
+                true,
+
+        goodbye:
+            config.goodbye ===
+                true,
+
+        welcomeMessage:
+            typeof config.welcomeMessage ===
+                'string' &&
+            config.welcomeMessage.trim()
+                ? config.welcomeMessage
+                : DEFAULTS.welcomeMessage,
+
+        goodbyeMessage:
+            typeof config.goodbyeMessage ===
+                'string' &&
+            config.goodbyeMessage.trim()
+                ? config.goodbyeMessage
+                : DEFAULTS.goodbyeMessage,
+
+        updatedAt:
+            Number(
+                config.updatedAt ||
+                0
+            )
+
+    }
+
+}
+
+function updateGroupConfig(
+    groupJid,
+    changes
+) {
+
+    const normalized =
+        normalizeJid(
+            groupJid
+        )
+
+    if (
+        !normalized ||
+        !normalized.endsWith(
+            '@g.us'
+        )
+    ) {
+
+        return false
+
+    }
+
+    const data =
+        readConfigDatabase()
+
+    data[normalized] = {
+
+        ...getGroupConfig(
+            normalized
+        ),
+
+        ...changes,
+
+        updatedAt:
+            Date.now()
+
+    }
+
+    return writeJson(
+        welcomePath,
+        data
+    )
+
+}
+
+function setWelcomeEnabled(
+    groupJid,
+    enabled
+) {
+
+    return updateGroupConfig(
+        groupJid,
+        {
+            welcome:
+                Boolean(
+                    enabled
+                )
+        }
+    )
+
+}
+
+function setGoodbyeEnabled(
+    groupJid,
+    enabled
+) {
+
+    return updateGroupConfig(
+        groupJid,
+        {
+            goodbye:
+                Boolean(
+                    enabled
+                )
+        }
+    )
+
+}
+
+function setWelcomeMessage(
+    groupJid,
+    message
+) {
+
+    const text =
+        String(
+            message ||
+            ''
+        )
+            .trim()
+
+    if (
+        !text
+    ) {
+
+        return false
+
+    }
+
+    return updateGroupConfig(
+        groupJid,
+        {
+            welcomeMessage:
+                text
+        }
+    )
+
+}
+
+function setGoodbyeMessage(
+    groupJid,
+    message
+) {
+
+    const text =
+        String(
+            message ||
+            ''
+        )
+            .trim()
+
+    if (
+        !text
+    ) {
+
+        return false
+
+    }
+
+    return updateGroupConfig(
+        groupJid,
+        {
+            goodbyeMessage:
+                text
+        }
+    )
+
+}
+
+function resetWelcomeMessage(
+    groupJid
+) {
+
+    return updateGroupConfig(
+        groupJid,
+        {
+            welcomeMessage:
+                DEFAULTS.welcomeMessage
+        }
+    )
+
+}
+
+function resetGoodbyeMessage(
+    groupJid
+) {
+
+    return updateGroupConfig(
+        groupJid,
+        {
+            goodbyeMessage:
+                DEFAULTS.goodbyeMessage
+        }
+    )
 
 }
 
@@ -308,11 +676,13 @@ async function getMetadata(
     state.metadataCache.set(
         groupJid,
         {
+
             data:
                 metadata,
 
             timestamp:
                 now
+
         }
     )
 
@@ -416,6 +786,41 @@ function getDisplayNumber(
 
 }
 
+function replaceVariables(
+    template,
+    {
+        user,
+        group,
+        members,
+        bot
+    }
+) {
+
+    return String(
+        template ||
+        ''
+    )
+        .replace(
+            /\{user\}/gi,
+            user
+        )
+        .replace(
+            /\{group\}/gi,
+            group
+        )
+        .replace(
+            /\{members\}/gi,
+            String(
+                members
+            )
+        )
+        .replace(
+            /\{bot\}/gi,
+            bot
+        )
+
+}
+
 async function welcomeSystem(
     sock,
     update
@@ -441,25 +846,6 @@ async function welcomeSystem(
 
         }
 
-        const welcomeGroups =
-            readJson(
-                welcomePath,
-                []
-            )
-
-        if (
-            !Array.isArray(
-                welcomeGroups
-            ) ||
-            !welcomeGroups.includes(
-                groupJid
-            )
-        ) {
-
-            return false
-
-        }
-
         const action =
             String(
                 update?.action ||
@@ -473,6 +859,31 @@ async function welcomeSystem(
                 'add' &&
             action !==
                 'remove'
+        ) {
+
+            return false
+
+        }
+
+        const config =
+            getGroupConfig(
+                groupJid
+            )
+
+        if (
+            action ===
+                'add' &&
+            !config.welcome
+        ) {
+
+            return false
+
+        }
+
+        if (
+            action ===
+                'remove' &&
+            !config.goodbye
         ) {
 
             return false
@@ -572,7 +983,8 @@ async function welcomeSystem(
         const metadata =
             await getMetadata(
                 sock,
-                groupJid
+                groupJid,
+                true
             )
 
         const groupName =
@@ -581,11 +993,27 @@ async function welcomeSystem(
                 'Grupo'
             )
 
-        const joinMessages =
+        const memberCount =
+            Array.isArray(
+                metadata?.participants
+            )
+                ? metadata.participants.length
+                : 0
+
+        const legacyJoinMessages =
             action ===
             'add'
                 ? readJson(
                     joinPath,
+                    {}
+                )
+                : {}
+
+        const legacyGoodbyeMessages =
+            action ===
+            'remove'
+                ? readJson(
+                    goodbyePath,
                     {}
                 )
                 : {}
@@ -597,11 +1025,11 @@ async function welcomeSystem(
 
             const customMessages =
                 Array.isArray(
-                    joinMessages?.[
+                    legacyJoinMessages?.[
                         groupJid
                     ]
                 )
-                    ? joinMessages[
+                    ? legacyJoinMessages[
                         groupJid
                     ]
                     : []
@@ -616,33 +1044,40 @@ async function welcomeSystem(
                         user
                     )
 
+                const mention =
+                    `@${number}`
+
                 logger.event(
                     `${botName} | Join: ${number}`
                 )
+
+                const text =
+                    replaceVariables(
+                        config.welcomeMessage,
+                        {
+                            user:
+                                mention,
+
+                            group:
+                                groupName,
+
+                            members:
+                                memberCount,
+
+                            bot:
+                                botName
+                        }
+                    )
 
                 await sendWelcomeMessage(
                     sock,
                     groupJid,
                     {
-                        text:
-                            ui.success(
-                                'BIENVENIDO',
-                                [
-                                    [
-                                        'Usuario',
-                                        `@${number}`
-                                    ],
-                                    [
-                                        'Grupo',
-                                        groupName
-                                    ]
-                                ]
-                            ),
+                        text,
 
-                        mentions:
-                            [
-                                user
-                            ]
+                        mentions: [
+                            user
+                        ]
                     }
                 )
 
@@ -661,13 +1096,12 @@ async function welcomeSystem(
                                 )
                                     .replace(
                                         /@user/g,
-                                        `@${number}`
+                                        mention
                                     ),
 
-                            mentions:
-                                [
-                                    user
-                                ]
+                            mentions: [
+                                user
+                            ]
                         }
                     )
 
@@ -684,6 +1118,17 @@ async function welcomeSystem(
             'remove'
         ) {
 
+            const customMessages =
+                Array.isArray(
+                    legacyGoodbyeMessages?.[
+                        groupJid
+                    ]
+                )
+                    ? legacyGoodbyeMessages[
+                        groupJid
+                    ]
+                    : []
+
             for (
                 const user
                 of participants
@@ -694,35 +1139,68 @@ async function welcomeSystem(
                         user
                     )
 
+                const mention =
+                    `@${number}`
+
                 logger.event(
                     `${botName} | Leave: ${number}`
                 )
+
+                const text =
+                    replaceVariables(
+                        config.goodbyeMessage,
+                        {
+                            user:
+                                mention,
+
+                            group:
+                                groupName,
+
+                            members:
+                                memberCount,
+
+                            bot:
+                                botName
+                        }
+                    )
 
                 await sendWelcomeMessage(
                     sock,
                     groupJid,
                     {
-                        text:
-                            ui.info(
-                                'HASTA LUEGO',
-                                [
-                                    [
-                                        'Usuario',
-                                        `@${number}`
-                                    ],
-                                    [
-                                        'Grupo',
-                                        groupName
-                                    ]
-                                ]
-                            ),
+                        text,
 
-                        mentions:
-                            [
-                                user
-                            ]
+                        mentions: [
+                            user
+                        ]
                     }
                 )
+
+                for (
+                    const message
+                    of customMessages
+                ) {
+
+                    await sendWelcomeMessage(
+                        sock,
+                        groupJid,
+                        {
+                            text:
+                                String(
+                                    message
+                                )
+                                    .replace(
+                                        /@user/g,
+                                        mention
+                                    ),
+
+                            mentions: [
+                                user
+                            ]
+                        }
+                    )
+
+                }
 
             }
 
@@ -812,6 +1290,30 @@ welcomeSystem.clearSocketState =
         return true
 
     }
+
+welcomeSystem.getGroupConfig =
+    getGroupConfig
+
+welcomeSystem.setWelcomeEnabled =
+    setWelcomeEnabled
+
+welcomeSystem.setGoodbyeEnabled =
+    setGoodbyeEnabled
+
+welcomeSystem.setWelcomeMessage =
+    setWelcomeMessage
+
+welcomeSystem.setGoodbyeMessage =
+    setGoodbyeMessage
+
+welcomeSystem.resetWelcomeMessage =
+    resetWelcomeMessage
+
+welcomeSystem.resetGoodbyeMessage =
+    resetGoodbyeMessage
+
+welcomeSystem.DEFAULTS =
+    DEFAULTS
 
 module.exports =
     welcomeSystem

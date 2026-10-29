@@ -1,9 +1,3 @@
-const fs =
-    require('fs')
-
-const path =
-    require('path')
-
 const isGroupAdmin =
     require('../../src/utils/isAdmin')
 
@@ -13,108 +7,66 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
+const welcomeSystem =
+    require('../../src/handlers/welcomeSystem')
 
-const welcomePath =
-    path.join(
-        __dirname,
-        '../../database/welcome.json'
-    )
-
-
-function ensureWelcomeFile() {
-
-    const directory =
-        path.dirname(
-            welcomePath
-        )
-
-
-    if (
-        !fs.existsSync(
-            directory
-        )
-    ) {
-
-        fs.mkdirSync(
-            directory,
-            {
-                recursive: true
-            }
-        )
-
-    }
-
-
-    if (
-        !fs.existsSync(
-            welcomePath
-        )
-    ) {
-
-        fs.writeFileSync(
-            welcomePath,
-            JSON.stringify(
-                [],
-                null,
-                2
-            ),
-            'utf8'
-        )
-
-    }
-
-}
-
-
-function readWelcomeData() {
-
-    ensureWelcomeFile()
-
-
-    try {
-
-        const data =
-            JSON.parse(
-                fs.readFileSync(
-                    welcomePath,
-                    'utf8'
-                )
-            )
-
-
-        return Array.isArray(data)
-            ? data
-            : []
-
-    } catch (err) {
-
-        logger.error(
-            `Error leyendo welcome.json: ${err.message}`
-        )
-
-        return []
-
-    }
-
-}
-
-
-function saveWelcomeData(
-    data
+function normalizeJid(
+    jid
 ) {
 
-    fs.writeFileSync(
-        welcomePath,
-        JSON.stringify(
-            data,
-            null,
-            2
-        ),
-        'utf8'
+    if (!jid) {
+
+        return null
+
+    }
+
+    return String(
+        jid
     )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
 
 }
 
+function getBotName(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
+async function sendMessage(
+    sock,
+    jid,
+    content
+) {
+
+    if (
+        typeof sock.safeSendMessage ===
+        'function'
+    ) {
+
+        return await sock.safeSendMessage(
+            jid,
+            content
+        )
+
+    }
+
+    return await sock.sendMessage(
+        jid,
+        content
+    )
+
+}
 
 module.exports = {
 
@@ -138,367 +90,403 @@ module.exports = {
     groupOnly:
         true,
 
-
     async execute({
 
         sock,
         from,
         args,
-        msg
+        msg,
+        prefix = '.'
 
     }) {
 
         try {
 
-            /* ─────────────────────────────
-               SOLO GRUPOS
-            ───────────────────────────── */
+            /*
+             * ─────────────────────────────
+             * SOLO GRUPOS
+             * ─────────────────────────────
+             */
 
             if (
+                !from ||
                 !from.endsWith(
                     '@g.us'
                 )
             ) {
 
-                return await sock.sendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'SOLO GRUPOS',
-
                                 'Este comando solo funciona dentro de grupos.'
-
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               REMITENTE
-            ───────────────────────────── */
+            /*
+             * ─────────────────────────────
+             * REMITENTE
+             * ─────────────────────────────
+             */
 
             const sender =
+                normalizeJid(
 
-                msg.key.participant ||
+                    msg?.key?.fromMe
 
-                msg.participant ||
+                        ? (
+                            sock?.user?.lid ||
+                            sock?.user?.id
+                        )
 
-                msg.key.remoteJid
+                        : (
+                            msg?.key?.participant ||
+                            msg?.participant ||
+                            msg?.key?.remoteJid
+                        )
 
+                )
 
-            if (!sender) {
+            if (
+                !sender
+            ) {
 
-                return await sock.sendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR DE USUARIO',
-
                                 'No se pudo identificar al usuario.'
-
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               VALIDAR ADMIN
-            ───────────────────────────── */
+            /*
+             * ─────────────────────────────
+             * VALIDAR ADMIN
+             * ─────────────────────────────
+             */
 
             const admin =
                 await isGroupAdmin(
-
                     sock,
-
                     from,
-
                     sender
-
                 )
 
+            if (
+                !admin
+            ) {
 
-            if (!admin) {
-
-                return await sock.sendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ACCESO DENEGADO',
-
                                 'Solo los administradores pueden cambiar la bienvenida.'
-
                             )
-
                     }
-
                 )
 
             }
 
+            /*
+             * ─────────────────────────────
+             * CONFIGURACIÓN ACTUAL
+             * ─────────────────────────────
+             */
 
-            /* ─────────────────────────────
-               DATOS
-            ───────────────────────────── */
-
-            let data =
-                readWelcomeData()
-
+            const config =
+                welcomeSystem.getGroupConfig(
+                    from
+                )
 
             const option =
                 String(
-                    args?.[0] || ''
+                    args?.[0] ||
+                    ''
                 )
                     .trim()
                     .toLowerCase()
 
-
-            const enabled =
-                data.includes(
-                    from
+            const botName =
+                getBotName(
+                    sock
                 )
 
-
-            /* ─────────────────────────────
-               ACTIVAR
-            ───────────────────────────── */
+            /*
+             * ─────────────────────────────
+             * ACTIVAR
+             * ─────────────────────────────
+             */
 
             if (
-                option === 'on'
+                [
+                    'on',
+                    'activar',
+                    'activa',
+                    'enable',
+                    '1',
+                    'true'
+                ].includes(
+                    option
+                )
             ) {
 
                 if (
-                    !enabled
+                    config.welcome
                 ) {
 
-                    data.push(
-                        from
-                    )
+                    return await sendMessage(
+                        sock,
+                        from,
+                        {
+                            text:
+                                ui.info(
+                                    '👋 WELCOME',
+                                    [
+                                        [
+                                            'Estado',
+                                            '● ACTIVADO'
+                                        ],
+                                        [
+                                            'Configurado por',
+                                            `@${sender.split('@')[0]}`
+                                        ]
+                                    ],
+                                    'El mensaje de bienvenida ya estaba activado.'
+                                ),
 
-
-                    saveWelcomeData(
-                        data
+                            mentions: [
+                                sender
+                            ]
+                        }
                     )
 
                 }
 
+                const success =
+                    welcomeSystem.setWelcomeEnabled(
+                        from,
+                        true
+                    )
+
+                if (
+                    !success
+                ) {
+
+                    throw new Error(
+                        'No se pudo guardar la configuración de bienvenida.'
+                    )
+
+                }
 
                 logger.event(
-
-                    `Welcome ON: ${from.split('@')[0]} | ${sender.split('@')[0]}`
-
+                    `${botName} | Welcome ON | ${from.split('@')[0]} | ${sender.split('@')[0]}`
                 )
 
-
-                return await sock.sendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.success(
-
                                 '👋 WELCOME ACTIVADO',
-
                                 [
-
                                     [
                                         'Estado',
                                         '● ACTIVADO'
                                     ],
-
                                     [
                                         'Configurado por',
                                         `@${sender.split('@')[0]}`
                                     ]
-
                                 ],
-
-                                enabled
-                                    ? 'El mensaje de bienvenida ya estaba activado.'
-                                    : 'KennyBot enviará un mensaje cuando entre un nuevo miembro.'
-
+                                `${botName} enviará un mensaje cuando entre un nuevo miembro.`
                             ),
 
                         mentions: [
                             sender
                         ]
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               DESACTIVAR
-            ───────────────────────────── */
+            /*
+             * ─────────────────────────────
+             * DESACTIVAR
+             * ─────────────────────────────
+             */
 
             if (
-                option === 'off'
+                [
+                    'off',
+                    'desactivar',
+                    'desactiva',
+                    'disable',
+                    '0',
+                    'false'
+                ].includes(
+                    option
+                )
             ) {
 
                 if (
-                    enabled
+                    !config.welcome
                 ) {
 
-                    data =
-                        data.filter(
-                            id =>
-                                id !== from
-                        )
+                    return await sendMessage(
+                        sock,
+                        from,
+                        {
+                            text:
+                                ui.info(
+                                    '👋 WELCOME',
+                                    [
+                                        [
+                                            'Estado',
+                                            '○ DESACTIVADO'
+                                        ],
+                                        [
+                                            'Configurado por',
+                                            `@${sender.split('@')[0]}`
+                                        ]
+                                    ],
+                                    'La bienvenida ya estaba desactivada.'
+                                ),
 
-
-                    saveWelcomeData(
-                        data
+                            mentions: [
+                                sender
+                            ]
+                        }
                     )
 
                 }
 
+                const success =
+                    welcomeSystem.setWelcomeEnabled(
+                        from,
+                        false
+                    )
+
+                if (
+                    !success
+                ) {
+
+                    throw new Error(
+                        'No se pudo guardar la configuración de bienvenida.'
+                    )
+
+                }
 
                 logger.event(
-
-                    `Welcome OFF: ${from.split('@')[0]} | ${sender.split('@')[0]}`
-
+                    `${botName} | Welcome OFF | ${from.split('@')[0]} | ${sender.split('@')[0]}`
                 )
 
-
-                return await sock.sendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.success(
-
                                 '👋 WELCOME DESACTIVADO',
-
                                 [
-
                                     [
                                         'Estado',
                                         '○ DESACTIVADO'
                                     ],
-
                                     [
                                         'Configurado por',
                                         `@${sender.split('@')[0]}`
                                     ]
-
                                 ],
-
-                                enabled
-                                    ? 'KennyBot dejó de enviar mensajes de bienvenida.'
-                                    : 'La bienvenida ya estaba desactivada.'
-
+                                `${botName} dejó de enviar mensajes de bienvenida.`
                             ),
 
                         mentions: [
                             sender
                         ]
-
                     }
-
                 )
 
             }
 
+            /*
+             * ─────────────────────────────
+             * ESTADO ACTUAL
+             * ─────────────────────────────
+             */
 
-            /* ─────────────────────────────
-               ESTADO ACTUAL
-            ───────────────────────────── */
-
-            return await sock.sendMessage(
-
+            return await sendMessage(
+                sock,
                 from,
-
                 {
-
                     text:
                         ui.info(
-
                             '👋 WELCOME DEL GRUPO',
-
                             [
-
                                 [
                                     'Estado',
-                                    enabled
+                                    config.welcome
                                         ? '● ACTIVADO'
                                         : '○ DESACTIVADO'
+                                ],
+                                [
+                                    'Bot',
+                                    botName
                                 ]
-
                             ],
-
                             [
                                 'Uso:',
-                                '/welcome on',
-                                '/welcome off'
-                            ].join('\n')
-
+                                `${prefix}welcome on`,
+                                `${prefix}welcome off`,
+                                '',
+                                `Mensaje personalizado:`,
+                                `${prefix}setwelcome <mensaje>`
+                            ]
+                                .join(
+                                    '\n'
+                                )
                         )
-
                 }
-
             )
-
 
         } catch (err) {
 
             logger.error(
-
-                `Error welcome: ${err.stack || err.message}`
-
+                `${getBotName(sock)} | Error welcome: ${err.stack || err.message}`
             )
-
 
             try {
 
-                await sock.sendMessage(
-
+                await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR DE WELCOME',
-
                                 'No se pudo cambiar el estado de la bienvenida.'
-
                             )
-
                     }
-
                 )
 
             } catch {}
+
+            return false
 
         }
 

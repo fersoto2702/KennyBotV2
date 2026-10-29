@@ -1262970,3 +1262970,162 @@ Yo tipo: No hay cosa que me la pele menos que esa
 [23:01:40] [INFO] Socket cerrado | main
 [23:01:40] [INFO] Socket cerrado | brazil
 [23:01:40] [OK] Todas las sesiones fueron cerradas
+[23:03:59] [OK] UnifiedRateLimiter cargado
+[23:03:59] [OK] Comando cargado: ban
+[23:03:59] [OK] Comando cargado: unban
+[23:03:59] [OK] Comando cargado: antilink
+[23:04:03] [OK] Comando cargado: card
+[23:04:03] [OK] Comando cargado: cardinfo
+[23:04:03] [OK] Comando cargado: claim
+[23:04:03] [OK] Comando cargado: collection
+[23:04:03] [OK] Comando cargado: antibot
+[23:04:03] [OK] Comando cargado: antifake
+[23:04:03] [OK] Comando cargado: autolevelup
+[23:04:03] [OK] Comando cargado: adivinanumero
+[23:04:03] [OK] Comando cargado: adivinanza
+[23:04:03] [OK] Comando cargado: ahorcado
+[23:04:03] [OK] Comando cargado: crush
+[23:04:03] [OK] Comando cargado: dado
+[23:04:03] [OK] Comando cargado: fusion
+[23:04:03] [OK] Comando cargado: moneda
+[23:04:03] [OK] Comando cargado: ppt
+[23:04:07] [OK] Comando cargado: qc
+[23:04:07] [OK] Comando cargado: rate
+[23:04:07] [OK] Comando cargado: reto
+[23:04:07] [OK] Comando cargado: ship
+[23:04:07] [OK] Comando cargado: top
+[23:04:07] [OK] Comando cargado: trivia
+[23:04:07] [OK] Comando cargado: verdad
+[23:04:07] [OK] Comando cargado: facebook
+[23:04:07] [OK] Comando cargado: instagram
+[23:04:07] [OK] Comando cargado: pinterest
+[23:04:15] [OK] Comando cargado: play
+[23:04:16] [OK] Comando cargado: spotify
+[23:04:16] [OK] Comando cargado: tiktok
+[23:04:16] [OK] Comando cargado: ytmp3
+[23:04:16] [OK] Comando cargado: ytmp4
+[23:04:16] [OK] Comando cargado: balance
+[23:04:16] [OK] Comando cargado: buy
+[23:04:16] [WARN] Comando duplicado ignorado: buy (crime.js)
+[23:04:16] [OK] Comando cargado: daily
+[23:04:16] [OK] Comando cargado: deposit
+[23:04:16] [OK] Comando cargado: gamble
+[23:04:16] [OK] Comando cargado: inventory
+[23:04:16] [OK] Comando cargado: leaderboardmoney
+[23:04:16] [OK] Comando cargado: open
+[23:04:16] [OK] Comando cargado: pay
+[23:04:16] [OK] Comando cargado: rob
+[23:04:16] [OK] Comando cargado: shop
+[23:04:16] [OK] Comando cargado: slots
+[23:04:16] [OK] Comando cargado: withdraw
+[23:04:16] [OK] Comando cargado: work
+[23:04:16] [OK] Comando cargado: equip
+[23:04:17] [OK] Comando cargado: events
+[23:04:17] [OK] Comando cargado: brat
+[23:04:34] [OK] Comando cargado: exportstats
+[23:04:34] [OK] Comando cargado: inactive
+[23:04:34] [OK] Comando cargado: msgstats
+[23:04:34] [OK] Comando cargado: topmessages
+[23:04:34] [OK] Comando cargado: groups
+[23:04:34] [OK] Comando cargado: add
+[23:04:34] [OK] Comando cargado: admins
+[23:04:34] [OK] Comando cargado: demote
+[23:04:34] [OK] Comando cargado: hidetag
+[23:04:34] [OK] Comando cargado: kick
+[23:04:34] [OK] Comando cargado: link
+[23:04:34] [OK] Comando cargado: mute
+[23:04:34] [OK] Comando cargado: promote
+[23:04:34] [OK] Comando cargado: tagall
+[23:04:34] [OK] Comando cargado: unwarn
+[23:04:34] [OK] Comando cargado: warn
+[23:04:34] [OK] Comando cargado: warnings
+[23:04:34] [OK] Comando cargado: welcome
+[23:04:34] [OK] Comando cargado: ia
+[23:04:34] [OK] Comando cargado: join
+[23:04:34] [WARN] Alias duplicado "top" en leaderboard.js
+[23:04:34] [OK] Comando cargado: leaderboard
+[23:04:35] [WARN] Alias duplicado "rank" en level.js
+[23:04:35] [OK] Comando cargado: level
+[23:04:35] [WARN] Comando duplicado ignorado: rank (rank.js)
+[23:04:35] [OK] Comando cargado: menu
+[23:04:35] [OK] Comando cargado: myclub
+[23:04:35] [OK] Comando cargado: objectives
+[23:04:35] [OK] Comando cargado: openpack
+[23:04:35] [OK] Comando cargado: packs
+[23:04:35] [OK] Comando cargado: pick
+[23:04:35] [OK] Comando cargado: ping
+[23:04:35] [OK] Comando cargado: addpremium
+[23:04:35] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[23:04:35] [OK] Comando cargado: delpremium
+[23:04:35] [OK] Comando cargado: profile
+[23:04:35] [OK] Comando cargado: sticker
+[23:04:35] [OK] Comando cargado: addjoinmsg
+[23:04:35] [OK] Comando cargado: clearjoinmsg
+[23:04:35] [OK] Comando cargado: deljoinmsg
+[23:04:35] [OK] Comando cargado: listjoinmsg
+[23:04:36] [INFO] Iniciando sistema multi-bot...
+[23:04:36] [INFO] Instancias configuradas: main, brazil
+[23:04:37] [OK] MySQL conectado y tabla lista
+[23:04:37] [OK] Base de datos inicializada
+[23:04:37] [INFO] Iniciando 2 instancia(s): main, brazil
+[23:04:37] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[23:04:37] [OK] KennyBot | SocketManager cargado
+[23:04:37] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[23:04:37] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[23:04:39] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[23:04:40] [OK] KennyBot conectado
+[23:04:44] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[23:05:40] [EVENT] [main] 51201043382397 -> PUAJAKAJAJJAJAJAJAJAAN
+[23:05:41] [EVENT] KennyBot | PassiveCoins: 51201043382397 +10
+[23:05:50] [EVENT] [main] 51201043382397 -> Mañana viendo que si voy a estar disponible
+[23:05:53] [EVENT] [main] 51201043382397 -> Así que
+[23:06:00] [EVENT] [main] 51201043382397 -> Escríbanme temprana
+[23:06:04] [EVENT] [main] 9063253438484 -> /tt https://vt.tiktok.com/ZSgGRGHWs/
+[23:06:04] [EVENT] KennyBot | PassiveCoins: 9063253438484 +1
+[23:06:04] [CMD] KennyBot | tiktok → 9063253438484
+[23:06:07] [INFO] KennyBot | TikTok API response: {"code":0,"msg":"success","processed_time":0.7797,"data":{"id":"7699649653763165448","region":"MX","title":"PARTE DOOOOS, que opinaron de Duraznalda?  #fyp #frutinovela #rosadeguadalupe #cazzuva ","content_desc":["PARTE DOOOOS, que opinaron de Duraznalda? ","#fyp #frutinovela #rosadeguadalupe #cazzuva "],"cover":"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0Ipa1pCCAVOKwIjwVIATiiAMpBkgbDGTf2Hqq~tplv-tiktokx-cropcenter-q:300:400:q70.jpeg?dr=8596&refresh_token=594c6b94&x-expires=1793340000&x-signature=yVwk7Qc2Ks2UxsmOva4FujGhqBc%3D&t=bacd0480&ps=933b5bde&shp=d05b14bd&shcp=1d1a97fc&idc=useast5&biz_tag=tt_video&s=AWEME_DETAIL&sc=cover","ai_dynamic_cover":"https://p19-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/o0FjAVfBqIwZIp1CTpV2DbgVaAqAkiMRiBtHIw~tplv-tiktokx-origin.image?dr=8606&refresh_token=01e32c1a&x-expires=1793340000&x-signature=U0ooZCvIJ82XcmBW%2FIyWLnf5ABQ%3D&t=bacd0480&ps=4f5296ae&shp=d05b14bd&shcp=1d1a97fc&idc=useast5&biz_tag=tt_video&s=AWEME_DETAIL&sc=dynamic_cover","origin_cover":"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-p-0037/oYBaPnYEjGRrCQLQGBFqApPDgsUneBtqfq2ETg~tplv-tiktokx-shrink-aq:360:360:q75.webp?dr=11731&refresh_token=b60d0299&x-expires=1793340000&x-signature=R%2B6IZ2cTQKQ2GIP%2FW5%2BF%2FSKXhjg%3D&t=bacd0480&ps=d97f9a4f&shp=d05b14bd&shcp=1d1a97fc&idc=useast5&biz_tag=tt_video&s=AWEME_DETAIL&sc=feed_cover","duration":46,"play":"https://v16m.tiktokcdn-us.com/10ebe61de985bd4854b4e850770fa9ab/6ae336dd/video/tos/alisg/tos-alisg-pve-0037c001/ogIaEQAQIpVbAtB1Ti3Kfg7j2MwCHiCwqpVqAG/?a=1233&bti=OUBzOTg7QGo6OjZAL3AjLTAzYCMxNDNg&&bt=401&ft=4bUg3MX_8Zmo03.mla4jVxOB.NWrKsd.&mime_type=video_mp4&rc=NWU4Ojw0ZGhkNDU3NTU1aEBpMzNwcmo5cjZkZTMzODczNEAvLWMvNmJhXmExNTFfLjBiYSNvZ242MmRzYGFhLS1kMTFzcw%3D%3D&vvpl=1&l=2026102906060752316E6B7FBDD306FAF8&btag=e000c8000","wmplay":"https://api16-normal-useast5.tiktokv.us/aweme/v1/play/?video_id=v14044g50000dbdac3vog65g9oqmj0r0&line=0&watermark=0&logo_name=tiktok_m&source=AWEME_DETAIL&file_id=ee3212b2448241daaedae19927f50b22&item_id=7699649653763165448&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjkzZmI0Mzc1ZjQ1YjJmYzY3YWM5YjU5NjM0NzU4ZjMw&shp=d05b14bd&shcp=-","size":2373410,"wm_size":2373410,"music":"https://v16-ies-music.tiktokcdn-us.com/904d93b50947f1971339e37672ca9999/6aec1d2b/video/tos/alisg/tos-alisg-v-27dcd7/oEEt5LgF1tX8GyeNTeXCUSotAgITDeOwOVa3gk/?a=583965&bti=OUBzOTg7QGo6OjZAL3AjLTAzYCMxNDNg&&bt=125&ft=4KUr5MX_8Zmo03.mla4jVxOB.NWrKsd.&mime_type=audio_mpeg&rc=OTM5NTVlNzQ5NzllaDQ0ZUBpajZxd3U5cjtkZTMzODU8NEA0Y18vM19fNmAxNGJeMV4wYSNoZGNeMmRrYWFhLS1kMS1zcw%3D%3D&vvpl=1&l=2026102906060752316E6B7FBDD306FAF8&btag=e000c8000&shp=d05b14bd&shcp=-","music_info":{"id":"7699649723174849298","title":"original sound - la.fruta.de.guada5","play":"https://v16-ies-music.tiktokcdn-us.com/904d93b50947f1971339e37672ca9999/6aec1d2b/video/tos/alisg/tos-alisg-v-27dcd7/oEEt5LgF1tX8GyeNTeXCUSotAgITDeOwOVa3gk/?a=583965&bti=OUBzOTg7QGo6OjZAL3AjLTAzYCMxNDNg&&bt=125&ft=4KUr5MX_8Zmo03.mla4jVxOB.NWrKsd.&mime_type=audio_mpeg&rc=OTM5NTVlNzQ5NzllaDQ0ZUBpajZxd3U5cjtkZTMzODU8NEA0Y18vM19fNmAxNGJeMV4wYSNoZGNeMmRrYWFhLS1kMS1zcw%3D%3D&vvpl=1&l=2026102906060752316E6B7FBDD306FAF8&btag=e000c8000&shp=d05b14bd&shcp=-","cover":"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/1aa993595777d06a37ec171dede567ad~tplv-tiktokx-cropcenter-q:1080:1080:q70.jpeg?dr=8837&refresh_token=5686fe91&x-expires=1793340000&x-signature=e8dNDX%2FyvhW%2FS1AKllm%2BYNVqlds%3D&t=223449c4&ps=87d6e48a&shp=d05b14bd&shcp=1d1a97fc&idc=useast5&sc=avatar&s=AWEME_DETAIL","author":"La fruta de Guadalupe","original":true,"duration":46,"album":"","create_time":1792714403},"play_count":661645,"digg_count":67728,"comment_count":1309,"share_count":8972,"download_count":208,"collect_count":4160,"create_time":1792714393,"anchors":null,"anchors_extras":"","is_ad":false,"commerce_info":{"adv_promotable":false,"auction_ad_invited":false,"branded_content_type":0,"is_diversion_ad":0,"organic_log_extra":"{\"req_id\":\"2026102906060752316E6B7FBDD306FAF8\"}","with_comment_filter_words":false},"commercial_video_info":"","item_comment_settings":0,"mentioned_users":"","author":{"id":"7697012975819883521","unique_id":"la.fruta.de.guada5","nickname":"La fruta de Guadalupe","avatar":"https://p16-common-sign.tiktokcdn-us.com/tos-alisg-avt-0068/1aa993595777d06a37ec171dede567ad~tplv-tiktokx-cropcenter-q:300:300:q70.jpeg?dr=8834&refresh_token=dfc3630e&x-expires=1793340000&x-signature=BwnQizqsvBg9M6tO%2Bg8v0yPDo08%3D&t=223449c4&ps=87d6e48a&shp=d05b14bd&shcp=1d1a97fc&idc=useast5&sc=avatar&s=AWEME_DETAIL"},"is_nff_or_nr":false}}
+[23:06:13] [EVENT] [main] 51201043382397 -> Si quieren algo
+[23:06:14] [EVENT] KennyBot | TikTok descargado: la.fruta.de.guada5 | 9063253438484
+[23:08:16] [EVENT] [brazil] 44105388294173 -> Mentira pa yutuo
+[23:08:16] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 44105388294173 +10
+[23:10:16] [EVENT] [brazil] 88790714601581 -> Denme las buenas noches
+[23:10:16] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 88790714601581 +2
+[23:10:22] [EVENT] [brazil] 88790714601581 -> corranle
+[23:10:55] [EVENT] [main] 112296902824099 -> Se quien era
+[23:10:55] [EVENT] KennyBot | PassiveCoins: 112296902824099 +9
+[23:11:53] [EVENT] [main] 80453981761577 -> Mande
+[23:11:53] [EVENT] KennyBot | PassiveCoins: 80453981761577 +9
+[23:12:02] [EVENT] [main] 80453981761577 -> Buenas noches hermano
+[23:12:05] [EVENT] [main] 80453981761577 -> Cómo estás
+[23:13:58] [EVENT] [main] 112296902824099 -> Buenas noches
+[23:13:58] [EVENT] KennyBot | PassiveCoins: 112296902824099 +9
+[23:14:17] [EVENT] [main] 80453981761577 -> K tal hermano
+[23:14:17] [EVENT] KennyBot | PassiveCoins: 80453981761577 +4
+[23:16:02] [EVENT] [main] 112296902824099 -> Ando en el trabajo
+[23:16:02] [EVENT] KennyBot | PassiveCoins: 112296902824099 +4
+[23:16:12] [EVENT] [main] 80453981761577 -> Ánimo mano
+[23:16:12] [EVENT] KennyBot | PassiveCoins: 80453981761577 +5
+[23:16:23] [EVENT] [main] 80453981761577 -> Que tengas un excelente turno
+[23:18:14] [EVENT] [brazil] 44105388294173 -> Buenas noches y así
+[23:18:14] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 44105388294173 +7
+[23:18:19] [EVENT] [brazil] 44105388294173 -> Aloboo
+[23:18:25] [EVENT] [brazil] 44105388294173 -> Alobio*
+[23:18:34] [EVENT] [brazil] 88790714601581 -> Te alobo más
+[23:18:35] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 88790714601581 +1
+[23:25:34] [EVENT] [main] 165253195264101 -> .welcome
+[23:25:34] [EVENT] KennyBot | PassiveCoins: 165253195264101 +2
+[23:25:34] [CMD] KennyBot | welcome → 165253195264101
+[23:25:44] [EVENT] [main] 165253195264101 -> .welcome on
+[23:25:45] [CMD] KennyBot | welcome → 165253195264101
+[23:25:45] [EVENT] Welcome ON: 120363425530676036 | 165253195264101
+[23:26:03] [EVENT] [main] 165253195264101 -> .welcome off
+[23:26:03] [CMD] KennyBot | welcome → 165253195264101
+[23:26:04] [EVENT] Welcome OFF: 120363425530676036 | 165253195264101
+[23:26:16] [EVENT] [main] 165253195264101 -> .goodbye
+[23:26:31] [EVENT] [main] 165253195264101 -> .goodbye
+[23:26:52] [INFO] Cerrando KennyBot...
+[23:26:52] [INFO] Deteniendo main...
+[23:26:52] [INFO] Deteniendo brazil...
+[23:26:52] [INFO] Socket cerrado | main
+[23:26:52] [INFO] Socket cerrado | brazil
+[23:26:52] [OK] Todas las sesiones fueron cerradas
