@@ -10,6 +10,7 @@ const isGroupAdmin =
 const isBotAdmin =
     require('../../src/helpers/isBotAdmin')
 
+
 function normalizeJid(
     jid
 ) {
@@ -30,6 +31,20 @@ function normalizeJid(
         )
 
 }
+
+
+function getBotName(
+    sock
+) {
+
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
+
 
 async function sendMessage(
     sock,
@@ -56,6 +71,50 @@ async function sendMessage(
 
 }
 
+
+async function getGroupPhoto(
+    sock,
+    groupJid
+) {
+
+    try {
+
+        if (
+            typeof sock.profilePictureUrl !==
+            'function'
+        ) {
+
+            return null
+
+        }
+
+        const url =
+            await sock.profilePictureUrl(
+                groupJid,
+                'image'
+            )
+
+        if (
+            typeof url !==
+                'string' ||
+            !url.trim()
+        ) {
+
+            return null
+
+        }
+
+        return url.trim()
+
+    } catch {
+
+        return null
+
+    }
+
+}
+
+
 module.exports = {
 
     name:
@@ -78,10 +137,13 @@ module.exports = {
     adminOnly:
         true,
 
+
     async execute({
+
         sock,
         from,
         msg
+
     }) {
 
         try {
@@ -90,6 +152,7 @@ module.exports = {
                 normalizeJid(
                     from
                 )
+
 
             if (
                 !groupJid ||
@@ -112,16 +175,25 @@ module.exports = {
 
             }
 
+
             const sender =
                 normalizeJid(
 
-                    msg.key?.participant ||
+                    msg?.key?.fromMe
 
-                    msg.participant ||
+                        ? (
+                            sock?.user?.lid ||
+                            sock?.user?.id
+                        )
 
-                    msg.key?.remoteJid
+                        : (
+                            msg?.key?.participant ||
+                            msg?.participant ||
+                            msg?.key?.remoteJid
+                        )
 
                 )
+
 
             if (
                 !sender
@@ -129,7 +201,7 @@ module.exports = {
 
                 return await sendMessage(
                     sock,
-                    from,
+                    groupJid,
                     {
                         text:
                             ui.error(
@@ -141,12 +213,14 @@ module.exports = {
 
             }
 
+
             const admin =
                 await isGroupAdmin(
                     sock,
                     groupJid,
                     sender
                 )
+
 
             if (
                 !admin
@@ -166,11 +240,13 @@ module.exports = {
 
             }
 
+
             const botAdmin =
                 await isBotAdmin(
                     sock,
                     groupJid
                 )
+
 
             if (
                 !botAdmin
@@ -190,10 +266,27 @@ module.exports = {
 
             }
 
-            const code =
-                await sock.groupInviteCode(
-                    groupJid
-                )
+
+            const [
+                code,
+                metadata,
+                groupPhoto
+            ] =
+                await Promise.all([
+                    sock.groupInviteCode(
+                        groupJid
+                    ),
+
+                    sock.groupMetadata(
+                        groupJid
+                    ),
+
+                    getGroupPhoto(
+                        sock,
+                        groupJid
+                    )
+                ])
+
 
             if (
                 !code
@@ -205,13 +298,10 @@ module.exports = {
 
             }
 
+
             const link =
                 `https://chat.whatsapp.com/${code}`
 
-            const metadata =
-                await sock.groupMetadata(
-                    groupJid
-                )
 
             const groupName =
                 String(
@@ -219,45 +309,83 @@ module.exports = {
                     'Grupo'
                 )
 
-            await sendMessage(
-                sock,
-                groupJid,
-                {
-                    text:
-                        ui.success(
-                            'ENLACE DEL GRUPO',
-                            [
-                                [
-                                    'Grupo',
-                                    groupName
-                                ],
-                                [
-                                    'Link',
-                                    link
-                                ]
-                            ],
-                            'Comparte este enlace únicamente con personas de confianza.'
-                        )
-                }
-            )
+
+            const members =
+                Array.isArray(
+                    metadata?.participants
+                )
+                    ? metadata.participants.length
+                    : 0
+
 
             const botName =
-                String(
-                    sock?.botProfile?.name ||
-                    'KennyBot'
+                getBotName(
+                    sock
                 )
+
+
+            const caption =
+                [
+                    'ㅤ۟∩　ׅ　🔗　ׅ　*ENLACE DEL GRUPO*　ׄᰙ',
+                    '',
+                    `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ *Grupo:* ${groupName}`,
+                    `𖣣ֶㅤ֯⌗ ❖  ׄ ⬭ *Miembros:* ${members}`,
+                    `𖣣ֶㅤ֯⌗ ♛  ׄ ⬭ *Link:* ${link}`,
+                    '',
+                    '╰─ 𓂃 Comparte este enlace únicamente con personas de confianza.',
+                    '',
+                    `— ${botName}`
+                ]
+                    .join(
+                        '\n'
+                    )
+
+
+            if (
+                groupPhoto
+            ) {
+
+                await sendMessage(
+                    sock,
+                    groupJid,
+                    {
+                        image: {
+                            url:
+                                groupPhoto
+                        },
+
+                        caption
+                    }
+                )
+
+            } else {
+
+                await sendMessage(
+                    sock,
+                    groupJid,
+                    {
+                        text:
+                            caption
+                    }
+                )
+
+            }
+
 
             logger.event(
                 `${botName} | Link generado: ${groupName}`
             )
 
+
             return true
+
 
         } catch (err) {
 
             logger.error(
                 `Error link: ${err.stack || err.message}`
             )
+
 
             try {
 
@@ -274,6 +402,7 @@ module.exports = {
                 )
 
             } catch {}
+
 
             return false
 

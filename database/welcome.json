@@ -7,10 +7,10 @@
     "updatedAt": 1793255893748
   },
   "120363425530676036@g.us": {
-    "welcome": false,
+    "welcome": true,
     "goodbye": true,
     "welcomeMessage": "👋 Bienvenido/a {user} a *{group}*. Ahora somos {members} miembros.",
     "goodbyeMessage": "👋 Hasta luego {user}. Gracias por formar parte de *{group}*.",
-    "updatedAt": 1793257359188
+    "updatedAt": 1793257808262
   }
 }

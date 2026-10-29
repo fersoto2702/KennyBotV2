@@ -1,5 +1,6 @@
 const {
-    downloadContentFromMessage
+    generateForwardMessageContent,
+    generateWAMessageFromContent
 } = require('@whiskeysockets/baileys')
 
 const isGroupAdmin =
@@ -15,115 +16,580 @@ const ui =
 const MAX_MENTIONS =
     1000
 
-const MAX_MEDIA_MB =
-    15
 
+function normalizeJid(
+    participant
+) {
 
-const getSizeMB = bytes =>
-    (
-        bytes /
-        1024 /
-        1024
-    ).toFixed(2)
+    if (
+        !participant
+    ) {
 
-
-function normalizeJid(participant) {
-
-    if (!participant)
         return null
 
-    return (
-        participant.phoneNumber ||
-        participant.id ||
-        null
+    }
+
+    const value =
+        typeof participant ===
+            'object'
+            ? (
+                participant.phoneNumber ||
+                participant.id ||
+                participant.lid ||
+                null
+            )
+            : participant
+
+    if (
+        !value
+    ) {
+
+        return null
+
+    }
+
+    return String(
+        value
     )
+        .trim()
+        .replace(
+            /:\d+@/,
+            '@'
+        )
 
 }
 
 
-function uniqueJids(jids = []) {
+function uniqueJids(
+    jids = []
+) {
 
     return [
         ...new Set(
-            jids.filter(Boolean)
+            jids.filter(
+                Boolean
+            )
         )
     ]
 
 }
 
 
-async function downloadMedia(
-    message,
-    type
+function getBotName(
+    sock
 ) {
 
-    const stream =
-        await downloadContentFromMessage(
-            message,
-            type
-        )
+    return String(
+        sock?.botProfile?.name ||
+        'KennyBot'
+    )
+        .trim()
+
+}
 
 
-    const chunks = []
+async function sendMessage(
+    sock,
+    jid,
+    content
+) {
 
-    let totalBytes =
-        0
-
-
-    for await (
-        const chunk of stream
+    if (
+        typeof sock.safeSendMessage ===
+        'function'
     ) {
 
-        totalBytes +=
-            chunk.length
-
-
-        if (
-            totalBytes /
-            1024 /
-            1024 >
-            MAX_MEDIA_MB
-        ) {
-
-            throw new Error(
-                `Media demasiado pesada (${getSizeMB(totalBytes)}MB)`
-            )
-
-        }
-
-
-        chunks.push(
-            chunk
+        return await sock.safeSendMessage(
+            jid,
+            content
         )
 
     }
 
-
-    return Buffer.concat(
-        chunks
+    return await sock.sendMessage(
+        jid,
+        content
     )
 
 }
 
 
-async function logAndSend({
+function getContextInfo(
+    message
+) {
+
+    if (
+        !message ||
+        typeof message !==
+            'object'
+    ) {
+
+        return null
+
+    }
+
+    const possibleMessages = [
+
+        message.extendedTextMessage,
+        message.imageMessage,
+        message.videoMessage,
+        message.audioMessage,
+        message.documentMessage,
+        message.stickerMessage,
+        message.buttonsResponseMessage,
+        message.listResponseMessage,
+        message.templateButtonReplyMessage
+
+    ]
+
+    for (
+        const item
+        of possibleMessages
+    ) {
+
+        if (
+            item?.contextInfo
+        ) {
+
+            return item.contextInfo
+
+        }
+
+    }
+
+    return null
+
+}
+
+
+function findContentNode(
+    content
+) {
+
+    if (
+        !content ||
+        typeof content !==
+            'object'
+    ) {
+
+        return null
+
+    }
+
+    /*
+     * Priorizamos tipos especiales de WhatsApp,
+     * entre ellos todas las variantes de encuesta.
+     */
+    const preferredKeys = [
+
+        'pollCreationMessageV3',
+        'pollCreationMessageV2',
+        'pollCreationMessage',
+        'pollResultSnapshotMessage',
+        'newsletterAdminInviteMessage',
+        'groupInviteMessage',
+        'interactiveMessage',
+        'productMessage',
+        'imageMessage',
+        'videoMessage',
+        'audioMessage',
+        'documentMessage',
+        'stickerMessage',
+        'extendedTextMessage',
+        'conversation'
+
+    ]
+
+    let key =
+        preferredKeys.find(
+            name =>
+                content[name] != null
+        )
+
+    if (
+        !key
+    ) {
+
+        key =
+            Object.keys(
+                content
+            )
+                .find(
+                    name =>
+                        name !==
+                            'messageContextInfo' &&
+                        content[name] != null
+                )
+
+    }
+
+    if (
+        !key
+    ) {
+
+        return null
+
+    }
+
+    return {
+        key,
+        value:
+            content[key]
+    }
+
+}
+
+
+function getQuotedType(
+    quoted
+) {
+
+    if (
+        !quoted ||
+        typeof quoted !==
+            'object'
+    ) {
+
+        return 'mensaje'
+
+    }
+
+    if (
+        quoted.pollCreationMessageV3 ||
+        quoted.pollCreationMessageV2 ||
+        quoted.pollCreationMessage
+    ) {
+
+        return 'encuesta'
+
+    }
+
+    if (
+        quoted.pollResultSnapshotMessage
+    ) {
+
+        return 'resultado de encuesta'
+
+    }
+
+    if (
+        quoted.imageMessage
+    ) {
+
+        return 'imagen'
+
+    }
+
+    if (
+        quoted.videoMessage
+    ) {
+
+        return 'video'
+
+    }
+
+    if (
+        quoted.audioMessage
+    ) {
+
+        return 'audio'
+
+    }
+
+    if (
+        quoted.stickerMessage
+    ) {
+
+        return 'sticker'
+
+    }
+
+    if (
+        quoted.documentMessage
+    ) {
+
+        return 'documento'
+
+    }
+
+    if (
+        quoted.newsletterAdminInviteMessage
+    ) {
+
+        return 'canal'
+    }
+
+    if (
+        quoted.groupInviteMessage
+    ) {
+
+        return 'invitación de grupo'
+    }
+
+    if (
+        quoted.interactiveMessage
+    ) {
+
+        return 'mensaje interactivo'
+    }
+
+    if (
+        quoted.productMessage
+    ) {
+
+        return 'producto'
+    }
+
+    if (
+        quoted.extendedTextMessage?.contextInfo
+            ?.forwardedNewsletterMessageInfo
+    ) {
+
+        return 'publicación de canal'
+    }
+
+    if (
+        quoted.extendedTextMessage?.canonicalUrl ||
+        quoted.extendedTextMessage?.matchedText ||
+        quoted.extendedTextMessage?.jpegThumbnail
+    ) {
+
+        return 'enlace con vista previa'
+    }
+
+    if (
+        quoted.conversation ||
+        quoted.extendedTextMessage
+    ) {
+
+        return 'texto'
+
+    }
+
+    return 'mensaje'
+
+}
+
+
+function getOriginalContentNode(
+    quoted
+) {
+
+    if (
+        !quoted ||
+        typeof quoted !==
+            'object'
+    ) {
+
+        return null
+
+    }
+
+    const preferredKeys = [
+
+        'pollCreationMessageV3',
+        'pollCreationMessageV2',
+        'pollCreationMessage',
+        'pollResultSnapshotMessage',
+        'newsletterAdminInviteMessage',
+        'groupInviteMessage',
+        'interactiveMessage',
+        'productMessage',
+        'imageMessage',
+        'videoMessage',
+        'audioMessage',
+        'documentMessage',
+        'stickerMessage',
+        'extendedTextMessage'
+
+    ]
+
+    const key =
+        preferredKeys.find(
+            name =>
+                quoted[name] != null
+        ) ||
+        Object.keys(
+            quoted
+        )
+            .find(
+                name =>
+                    quoted[name] != null
+            )
+
+    if (
+        !key
+    ) {
+
+        return null
+
+    }
+
+    return {
+        key,
+        value:
+            quoted[key]
+    }
+
+}
+
+
+async function forwardWithHiddenMentions({
+
     sock,
     from,
-    payload,
-    sender,
-    mentionsCount,
-    type
+    quoted,
+    contextInfo,
+    mentions
+
 }) {
 
-    await sock.safeSendMessage(
+    const participant =
+        normalizeJid(
+            contextInfo?.participant
+        )
+
+    const quotedMessage = {
+
+        key: {
+
+            remoteJid:
+                from,
+
+            fromMe:
+                false,
+
+            id:
+                contextInfo?.stanzaId ||
+                `hidetag-${Date.now()}`,
+
+            participant:
+                participant ||
+                undefined
+
+        },
+
+        message:
+            quoted
+
+    }
+
+
+    const originalNode =
+        getOriginalContentNode(
+            quoted
+        )
+
+
+    const originalContextInfo =
+        originalNode?.value &&
+        typeof originalNode.value ===
+            'object'
+            ? (
+                originalNode.value.contextInfo ||
+                {}
+            )
+            : {}
+
+
+    const forwardContent =
+        await generateForwardMessageContent(
+            quotedMessage,
+            false
+        )
+
+
+    const node =
+        findContentNode(
+            forwardContent
+        )
+
+
+    if (
+        !node
+    ) {
+
+        throw new Error(
+            'No se pudo preparar el mensaje citado para reenviarlo.'
+        )
+
+    }
+
+
+    if (
+        node.value &&
+        typeof node.value ===
+            'object'
+    ) {
+
+        node.value.contextInfo = {
+
+            ...originalContextInfo,
+
+            ...(
+                node.value.contextInfo ||
+                {}
+            ),
+
+            mentionedJid:
+                uniqueJids(
+                    [
+                        ...(
+                            Array.isArray(
+                                originalContextInfo?.mentionedJid
+                            )
+                                ? originalContextInfo.mentionedJid
+                                : []
+                        ),
+                        ...mentions
+                    ]
+                )
+
+        }
+
+    }
+
+
+    forwardContent.messageContextInfo = {
+
+        ...(
+            forwardContent.messageContextInfo ||
+            {}
+        ),
+
+        mentionedJid:
+            mentions
+
+    }
+
+
+    const generated =
+        generateWAMessageFromContent(
+            from,
+            forwardContent,
+            {
+
+                userJid:
+                    normalizeJid(
+                        sock?.user?.id
+                    ) ||
+                    sock?.user?.id
+
+            }
+        )
+
+
+    await sock.relayMessage(
         from,
-        payload
+        generated.message,
+        {
+            messageId:
+                generated.key.id
+        }
     )
 
 
-    logger.event(
-        `Hidetag usado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentionsCount} menciones | ${type}`
-    )
+    return true
 
 }
 
@@ -140,7 +606,7 @@ module.exports = {
     ],
 
     description:
-        'Menciona a todos sin mostrar etiquetas visibles',
+        'Reenvía un mensaje mencionando a todos de forma oculta',
 
     category:
         'grupos',
@@ -150,7 +616,9 @@ module.exports = {
 
     groupOnly:
         true,
-async execute({
+
+
+    async execute({
 
         sock,
         from,
@@ -161,40 +629,27 @@ async execute({
 
         try {
 
-            /* ─────────────────────────────
-               SOLO GRUPOS
-            ───────────────────────────── */
-
             if (
                 !from ||
-                !from.endsWith('@g.us')
+                !from.endsWith(
+                    '@g.us'
+                )
             ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'SOLO GRUPOS',
-
                                 'Este comando solo funciona en grupos.'
-
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               PRESENCIA
-            ───────────────────────────── */
 
             try {
 
@@ -206,84 +661,70 @@ async execute({
             } catch {}
 
 
-            /* ─────────────────────────────
-               USUARIO
-            ───────────────────────────── */
-
             const sender =
+                normalizeJid(
 
-                msg.key.participant ||
+                    msg?.key?.fromMe
 
-                msg.participant ||
+                        ? (
+                            sock?.user?.lid ||
+                            sock?.user?.id
+                        )
 
-                msg.key.remoteJid
+                        : (
+                            msg?.key?.participant ||
+                            msg?.participant ||
+                            msg?.key?.remoteJid
+                        )
+
+                )
 
 
-            if (!sender) {
+            if (
+                !sender
+            ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR DE USUARIO',
-
                                 'No se pudo identificar al usuario que ejecutó el comando.'
-
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               VERIFICAR ADMIN
-            ───────────────────────────── */
 
             const admin =
                 await isGroupAdmin(
-
                     sock,
                     from,
                     sender
-
                 )
 
 
-            if (!admin) {
+            if (
+                !admin
+            ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ACCESO DENEGADO',
-
                                 'Solo administradores pueden usar este comando.'
-
                             )
-
                     }
-
                 )
 
             }
 
-
-            /* ─────────────────────────────
-               PARTICIPANTES
-            ───────────────────────────── */
 
             const metadata =
                 await sock.groupMetadata(
@@ -300,26 +741,20 @@ async execute({
 
 
             if (
-                participants.length === 0
+                participants.length ===
+                0
             ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'GRUPO VACÍO',
-
                                 'No hay participantes para mencionar.'
-
                             )
-
                     }
-
                 )
 
             }
@@ -344,397 +779,158 @@ async execute({
 
 
             if (
-                mentions.length === 0
+                mentions.length ===
+                0
             ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'SIN MENCIONES',
-
                                 'No se pudieron obtener identificadores válidos de los participantes.'
-
                             )
-
                     }
-
                 )
 
             }
 
 
-            /* ─────────────────────────────
-               MENSAJE RESPONDIDO
-            ───────────────────────────── */
-
             const contextInfo =
-
-                msg.message
-                    ?.extendedTextMessage
-                    ?.contextInfo
+                getContextInfo(
+                    msg?.message
+                )
 
 
             const quoted =
-                contextInfo
-                    ?.quotedMessage
+                contextInfo?.quotedMessage
 
 
-            /* ─────────────────────────────
-               IMAGEN
-            ───────────────────────────── */
-
+            /*
+             * Si responde a cualquier mensaje,
+             * lo reenvía tal cual y agrega
+             * las menciones ocultas.
+             */
             if (
-                quoted?.imageMessage
-            ) {
-
-                const buffer =
-                    await downloadMedia(
-
-                        quoted.imageMessage,
-
-                        'image'
-
-                    )
-
-
-                const caption =
-
-                    quoted.imageMessage
-                        ?.caption ||
-                    ''
-
-
-                return await logAndSend({
-
-                    sock,
-                    from,
-                    sender,
-                    mentionsCount:
-                        mentions.length,
-                    type:
-                        'imagen',
-
-                    payload: {
-
-                        image:
-                            buffer,
-
-                        caption,
-
-                        mentions
-
-                    }
-
-                })
-
-            }
-
-
-            /* ─────────────────────────────
-               VIDEO
-            ───────────────────────────── */
-
-            if (
-                quoted?.videoMessage
-            ) {
-
-                const buffer =
-                    await downloadMedia(
-
-                        quoted.videoMessage,
-
-                        'video'
-
-                    )
-
-
-                const caption =
-
-                    quoted.videoMessage
-                        ?.caption ||
-                    ''
-
-
-                return await logAndSend({
-
-                    sock,
-                    from,
-                    sender,
-                    mentionsCount:
-                        mentions.length,
-                    type:
-                        'video',
-
-                    payload: {
-
-                        video:
-                            buffer,
-
-                        caption,
-
-                        mimetype:
-                            quoted.videoMessage
-                                ?.mimetype ||
-                            'video/mp4',
-
-                        mentions
-
-                    }
-
-                })
-
-            }
-
-
-            /* ─────────────────────────────
-               AUDIO
-            ───────────────────────────── */
-
-            if (
-                quoted?.audioMessage
-            ) {
-
-                const buffer =
-                    await downloadMedia(
-
-                        quoted.audioMessage,
-
-                        'audio'
-
-                    )
-
-
-                return await logAndSend({
-
-                    sock,
-                    from,
-                    sender,
-                    mentionsCount:
-                        mentions.length,
-                    type:
-                        'audio',
-
-                    payload: {
-
-                        audio:
-                            buffer,
-
-                        mimetype:
-                            quoted.audioMessage
-                                ?.mimetype ||
-                            'audio/mpeg',
-
-                        ptt:
-                            Boolean(
-                                quoted.audioMessage
-                                    ?.ptt
-                            ),
-
-                        mentions
-
-                    }
-
-                })
-
-            }
-
-
-            /* ─────────────────────────────
-               STICKER
-            ───────────────────────────── */
-
-            if (
-                quoted?.stickerMessage
-            ) {
-
-                const buffer =
-                    await downloadMedia(
-
-                        quoted.stickerMessage,
-
-                        'sticker'
-
-                    )
-
-
-                return await logAndSend({
-
-                    sock,
-                    from,
-                    sender,
-                    mentionsCount:
-                        mentions.length,
-                    type:
-                        'sticker',
-
-                    payload: {
-
-                        sticker:
-                            buffer,
-
-                        mentions
-
-                    }
-
-                })
-
-            }
-
-
-            /* ─────────────────────────────
-               TEXTO RESPONDIDO
-            ───────────────────────────── */
-
-            const quotedText =
-
                 quoted
-                    ?.extendedTextMessage
-                    ?.text ||
-
-                quoted
-                    ?.conversation ||
-
-                null
-
-
-            if (
-                quotedText
             ) {
 
-                return await logAndSend({
+                const quotedType =
+                    getQuotedType(
+                        quoted
+                    )
+
+
+                await forwardWithHiddenMentions({
 
                     sock,
                     from,
-                    sender,
-                    mentionsCount:
-                        mentions.length,
-                    type:
-                        'texto citado',
-
-                    payload: {
-
-                        text:
-                            quotedText,
-
-                        mentions
-
-                    }
+                    quoted,
+                    contextInfo,
+                    mentions
 
                 })
+
+
+                logger.event(
+                    `Hidetag reenviado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentions.length} menciones | ${quotedType}`
+                )
+
+
+                return true
 
             }
 
 
-            /* ─────────────────────────────
-               TEXTO DIRECTO
-            ───────────────────────────── */
-
+            /*
+             * Si no responde a ningún mensaje,
+             * usa el texto escrito después del comando.
+             */
             const text =
-                args
-                    .join(' ')
-                    .trim()
+                Array.isArray(
+                    args
+                )
+                    ? args
+                        .join(
+                            ' '
+                        )
+                        .trim()
+                    : ''
 
 
-            if (!text) {
+            if (
+                !text
+            ) {
 
-                return await sock.safeSendMessage(
-
+                return await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.warn(
-
                                 'MENSAJE REQUERIDO',
-
-                                'Escribe un mensaje o responde a texto, imagen, video, audio o sticker.\n\nUso: /hidetag mensaje'
-
+                                [
+                                    'Escribe un mensaje o responde al mensaje que quieras reenviar.',
+                                    '',
+                                    'Ejemplos:',
+                                    '/hidetag Aviso importante',
+                                    '/hidetag respondiendo a una imagen, video, audio, sticker o mensaje'
+                                ]
+                                    .join(
+                                        '\n'
+                                    )
                             )
-
                     }
-
                 )
 
             }
 
 
-            return await logAndSend({
-
+            await sendMessage(
                 sock,
                 from,
-                sender,
-                mentionsCount:
-                    mentions.length,
-                type:
-                    'texto',
-
-                payload: {
-
+                {
                     text,
-
                     mentions
-
                 }
+            )
 
-            })
+
+            logger.event(
+                `Hidetag usado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentions.length} menciones | texto`
+            )
+
+
+            return true
 
 
         } catch (err) {
 
             logger.error(
-
-                `Error hidetag: ${err.stack || err.message}`
-
+                `${getBotName(sock)} | Error hidetag: ${err.stack || err.message}`
             )
-
-
-            let detail =
-                'No se pudo ejecutar el hidetag.'
-
-
-            if (
-                String(
-                    err.message
-                ).includes(
-                    'Media demasiado pesada'
-                )
-            ) {
-
-                detail =
-                    `El archivo supera el límite permitido de ${MAX_MEDIA_MB} MB.`
-
-            }
 
 
             try {
 
-                await sock.safeSendMessage(
-
+                await sendMessage(
+                    sock,
                     from,
-
                     {
-
                         text:
                             ui.error(
-
                                 'ERROR HIDETAG',
-
-                                detail
-
+                                'No se pudo reenviar el mensaje con menciones ocultas.'
                             )
-
                     }
-
                 )
 
             } catch {}
+
+
+            return false
 
         }
 
