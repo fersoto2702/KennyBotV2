@@ -8,9 +8,9 @@
   },
   "120363425530676036@g.us": {
     "welcome": false,
-    "goodbye": false,
+    "goodbye": true,
     "welcomeMessage": "👋 Bienvenido/a {user} a *{group}*. Ahora somos {members} miembros.",
     "goodbyeMessage": "👋 Hasta luego {user}. Gracias por formar parte de *{group}*.",
-    "updatedAt": 1793256512142
+    "updatedAt": 1793257359188
   }
 }

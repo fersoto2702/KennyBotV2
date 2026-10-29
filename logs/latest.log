@@ -1263830,3 +1263830,125 @@ Require stack:
 [00:01:40] [INFO] Socket cerrado | main
 [00:01:40] [INFO] Socket cerrado | brazil
 [00:01:40] [OK] Todas las sesiones fueron cerradas
+[00:02:18] [OK] UnifiedRateLimiter cargado
+[00:02:18] [OK] Comando cargado: ban
+[00:02:18] [OK] Comando cargado: unban
+[00:02:18] [OK] Comando cargado: antilink
+[00:02:18] [OK] Comando cargado: card
+[00:02:18] [OK] Comando cargado: cardinfo
+[00:02:18] [OK] Comando cargado: claim
+[00:02:18] [OK] Comando cargado: collection
+[00:02:18] [OK] Comando cargado: antibot
+[00:02:18] [OK] Comando cargado: antifake
+[00:02:18] [OK] Comando cargado: autolevelup
+[00:02:18] [OK] Comando cargado: adivinanumero
+[00:02:18] [OK] Comando cargado: adivinanza
+[00:02:18] [OK] Comando cargado: ahorcado
+[00:02:18] [OK] Comando cargado: crush
+[00:02:18] [OK] Comando cargado: dado
+[00:02:18] [OK] Comando cargado: fusion
+[00:02:18] [OK] Comando cargado: moneda
+[00:02:18] [OK] Comando cargado: ppt
+[00:02:19] [OK] Comando cargado: qc
+[00:02:19] [OK] Comando cargado: rate
+[00:02:19] [OK] Comando cargado: reto
+[00:02:19] [OK] Comando cargado: ship
+[00:02:19] [OK] Comando cargado: top
+[00:02:19] [OK] Comando cargado: trivia
+[00:02:19] [OK] Comando cargado: verdad
+[00:02:19] [OK] Comando cargado: facebook
+[00:02:19] [OK] Comando cargado: instagram
+[00:02:19] [OK] Comando cargado: pinterest
+[00:02:19] [OK] Comando cargado: play
+[00:02:19] [OK] Comando cargado: spotify
+[00:02:19] [OK] Comando cargado: tiktok
+[00:02:19] [OK] Comando cargado: ytmp3
+[00:02:19] [OK] Comando cargado: ytmp4
+[00:02:19] [OK] Comando cargado: balance
+[00:02:19] [OK] Comando cargado: buy
+[00:02:19] [WARN] Comando duplicado ignorado: buy (crime.js)
+[00:02:19] [OK] Comando cargado: daily
+[00:02:19] [OK] Comando cargado: deposit
+[00:02:19] [OK] Comando cargado: gamble
+[00:02:19] [OK] Comando cargado: inventory
+[00:02:19] [OK] Comando cargado: leaderboardmoney
+[00:02:19] [OK] Comando cargado: open
+[00:02:19] [OK] Comando cargado: pay
+[00:02:19] [OK] Comando cargado: rob
+[00:02:19] [OK] Comando cargado: shop
+[00:02:19] [OK] Comando cargado: slots
+[00:02:19] [OK] Comando cargado: withdraw
+[00:02:19] [OK] Comando cargado: work
+[00:02:19] [OK] Comando cargado: equip
+[00:02:19] [OK] Comando cargado: events
+[00:02:19] [OK] Comando cargado: brat
+[00:02:20] [OK] Comando cargado: exportstats
+[00:02:20] [OK] Comando cargado: inactive
+[00:02:20] [OK] Comando cargado: msgstats
+[00:02:20] [OK] Comando cargado: topmessages
+[00:02:20] [OK] Comando cargado: groups
+[00:02:20] [OK] Comando cargado: add
+[00:02:20] [OK] Comando cargado: admins
+[00:02:20] [OK] Comando cargado: demote
+[00:02:20] [OK] Comando cargado: goodbye
+[00:02:20] [OK] Comando cargado: hidetag
+[00:02:20] [OK] Comando cargado: kick
+[00:02:20] [OK] Comando cargado: link
+[00:02:20] [OK] Comando cargado: mute
+[00:02:20] [OK] Comando cargado: promote
+[00:02:20] [OK] Comando cargado: resetgoodbye
+[00:02:20] [OK] Comando cargado: resetwelcome
+[00:02:20] [OK] Comando cargado: setgoodbye
+[00:02:20] [OK] Comando cargado: setwelcome
+[00:02:20] [OK] Comando cargado: tagall
+[00:02:20] [OK] Comando cargado: unwarn
+[00:02:20] [OK] Comando cargado: warn
+[00:02:20] [OK] Comando cargado: warnings
+[00:02:20] [OK] Comando cargado: welcome
+[00:02:20] [OK] Comando cargado: ia
+[00:02:20] [OK] Comando cargado: join
+[00:02:20] [WARN] Alias duplicado "top" en leaderboard.js
+[00:02:20] [OK] Comando cargado: leaderboard
+[00:02:20] [WARN] Alias duplicado "rank" en level.js
+[00:02:20] [OK] Comando cargado: level
+[00:02:20] [WARN] Comando duplicado ignorado: rank (rank.js)
+[00:02:20] [OK] Comando cargado: menu
+[00:02:20] [OK] Comando cargado: myclub
+[00:02:20] [OK] Comando cargado: objectives
+[00:02:20] [OK] Comando cargado: openpack
+[00:02:20] [OK] Comando cargado: packs
+[00:02:20] [OK] Comando cargado: pick
+[00:02:20] [OK] Comando cargado: ping
+[00:02:20] [OK] Comando cargado: addpremium
+[00:02:20] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[00:02:20] [OK] Comando cargado: delpremium
+[00:02:20] [OK] Comando cargado: profile
+[00:02:20] [OK] Comando cargado: sticker
+[00:02:20] [OK] Comando cargado: addjoinmsg
+[00:02:20] [OK] Comando cargado: clearjoinmsg
+[00:02:20] [OK] Comando cargado: deljoinmsg
+[00:02:20] [OK] Comando cargado: listjoinmsg
+[00:02:20] [INFO] Iniciando sistema multi-bot...
+[00:02:20] [INFO] Instancias configuradas: main, brazil
+[00:02:20] [OK] MySQL conectado y tabla lista
+[00:02:20] [OK] Base de datos inicializada
+[00:02:20] [INFO] Iniciando 2 instancia(s): main, brazil
+[00:02:21] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[00:02:21] [OK] KennyBot | SocketManager cargado
+[00:02:21] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[00:02:21] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[00:02:23] [OK] KennyBot conectado
+[00:02:23] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[00:02:27] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[00:02:38] [EVENT] [main] SELF -> .goodbye on
+[00:02:38] [CMD] KennyBot | goodbye → 202422597214258
+[00:02:39] [EVENT] KennyBot | Goodbye ON | 120363425530676036 | 202422597214258
+[00:02:50] [INFO] KennyBot | Group participant update | remove | 120363425530676036@g.us
+[00:02:50] [EVENT] KennyBot | Leave: 165253195264101
+[00:04:27] [INFO] KennyBot | Group participant update | add | 120363425530676036@g.us
+[00:09:09] [INFO] Cerrando KennyBot...
+[00:09:09] [INFO] Deteniendo main...
+[00:09:09] [INFO] Deteniendo brazil...
+[00:09:09] [INFO] Socket cerrado | main
+[00:09:09] [INFO] Socket cerrado | brazil
+[00:09:09] [OK] Todas las sesiones fueron cerradas

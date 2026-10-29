@@ -940,6 +940,247 @@ function replaceVariables(
 
 }
 
+
+function getProfileStyle(
+    sock
+) {
+
+    const profileId =
+        getBotProfileId(
+            sock
+        )
+
+    const botName =
+        getBotName(
+            sock
+        )
+
+    const isGoldenEmpire =
+        profileId ===
+            'brazil' ||
+        /golden\s*empire/i.test(
+            botName
+        )
+
+    if (
+        isGoldenEmpire
+    ) {
+
+        return {
+
+            welcomeTitle:
+                '👑 *BEM-VINDO/A À GOLDEN EMPIRE*',
+
+            goodbyeTitle:
+                '👑 *ATÉ LOGO — GOLDEN EMPIRE*',
+
+            welcomeFooter:
+                '╰─ 𓂃 Seja bem-vindo/a à nossa sociedade.',
+
+            goodbyeFooter:
+                '╰─ 𓂃 Obrigado por fazer parte da Golden Empire.',
+
+            botLabel:
+                'Bot oficial da Sociedade Golden Empire'
+
+        }
+
+    }
+
+    return {
+
+        welcomeTitle:
+            '★ *BIENVENIDO/A*',
+
+        goodbyeTitle:
+            '★ *HASTA LUEGO*',
+
+        welcomeFooter:
+            '╰─ 𓂃 Esperamos que disfrutes tu estancia.',
+
+        goodbyeFooter:
+            '╰─ 𓂃 Gracias por haber formado parte del grupo.',
+
+        botLabel:
+            botName
+
+    }
+
+}
+
+
+function formatDateTime() {
+
+    try {
+
+        const now =
+            new Date()
+
+        const date =
+            new Intl.DateTimeFormat(
+                'es-MX',
+                {
+                    timeZone:
+                        'America/Mazatlan',
+
+                    day:
+                        '2-digit',
+
+                    month:
+                        '2-digit',
+
+                    year:
+                        'numeric'
+                }
+            )
+                .format(
+                    now
+                )
+
+        const time =
+            new Intl.DateTimeFormat(
+                'es-MX',
+                {
+                    timeZone:
+                        'America/Mazatlan',
+
+                    hour:
+                        '2-digit',
+
+                    minute:
+                        '2-digit',
+
+                    hour12:
+                        true
+                }
+            )
+                .format(
+                    now
+                )
+
+        return {
+            date,
+            time
+        }
+
+    } catch {
+
+        const now =
+            new Date()
+
+        return {
+
+            date:
+                now.toLocaleDateString(
+                    'es-MX'
+                ),
+
+            time:
+                now.toLocaleTimeString(
+                    'es-MX',
+                    {
+                        hour:
+                            '2-digit',
+
+                        minute:
+                            '2-digit'
+                    }
+                )
+
+        }
+
+    }
+
+}
+
+
+function buildProMessage(
+    sock,
+    action,
+    {
+        user,
+        groupName,
+        memberCount,
+        customMessage
+    }
+) {
+
+    const profileStyle =
+        getProfileStyle(
+            sock
+        )
+
+    const {
+        date,
+        time
+    } =
+        formatDateTime()
+
+    const mention =
+        `@${getDisplayNumber(user)}`
+
+    const title =
+        action ===
+            'add'
+            ? profileStyle.welcomeTitle
+            : profileStyle.goodbyeTitle
+
+    const footer =
+        action ===
+            'add'
+            ? profileStyle.welcomeFooter
+            : profileStyle.goodbyeFooter
+
+    const memberLabel =
+        action ===
+            'add'
+            ? `#${memberCount}`
+            : `${memberCount} restantes`
+
+    const custom =
+        typeof customMessage ===
+            'string' &&
+        customMessage.trim()
+            ? replaceVariables(
+                customMessage,
+                {
+                    user:
+                        mention,
+
+                    group:
+                        groupName,
+
+                    members:
+                        memberCount,
+
+                    bot:
+                        getBotName(
+                            sock
+                        )
+                }
+            )
+            : ''
+
+    return [
+        `ㅤ۟∩　ׅ　${title}　ׄᰙ`,
+        '',
+        `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ *Usuario:* ${mention}`,
+        `𖣣ֶㅤ֯⌗ ❖  ׄ ⬭ *Grupo:* ${groupName}`,
+        `𖣣ֶㅤ֯⌗ ♛  ׄ ⬭ *Miembro:* ${memberLabel}`,
+        `𖣣ֶㅤ֯⌗ ◈  ׄ ⬭ *Fecha:* ${date}`,
+        `𖣣ֶㅤ֯⌗ ◇  ׄ ⬭ *Hora:* ${time}`,
+        `𖣣ֶㅤ֯⌗ ⚙  ׄ ⬭ *Bot:* ${profileStyle.botLabel}`,
+        '',
+        custom ||
+            footer
+    ]
+        .join(
+            '\n'
+        )
+
+}
+
+
 async function welcomeSystem(
     sock,
     update
@@ -1182,20 +1423,15 @@ async function welcomeSystem(
                 )
 
                 const text =
-                    replaceVariables(
-                        config.welcomeMessage,
+                    buildProMessage(
+                        sock,
+                        'add',
                         {
-                            user:
-                                mention,
-
-                            group:
-                                groupName,
-
-                            members:
-                                memberCount,
-
-                            bot:
-                                botName
+                            user,
+                            groupName,
+                            memberCount,
+                            customMessage:
+                                config.welcomeMessage
                         }
                     )
 
@@ -1272,20 +1508,15 @@ async function welcomeSystem(
                 )
 
                 const text =
-                    replaceVariables(
-                        config.goodbyeMessage,
+                    buildProMessage(
+                        sock,
+                        'remove',
                         {
-                            user:
-                                mention,
-
-                            group:
-                                groupName,
-
-                            members:
-                                memberCount,
-
-                            bot:
-                                botName
+                            user,
+                            groupName,
+                            memberCount,
+                            customMessage:
+                                config.goodbyeMessage
                         }
                     )
 
