@@ -622,6 +622,106 @@ async function sendWelcomeMessage(
 
 }
 
+async function getProfilePicture(
+    sock,
+    user
+) {
+
+    try {
+
+        if (
+            typeof sock.profilePictureUrl !==
+            'function'
+        ) {
+
+            return null
+
+        }
+
+        const url =
+            await sock.profilePictureUrl(
+                user,
+                'image'
+            )
+
+        return (
+            typeof url ===
+                'string' &&
+            url.trim()
+                ? url.trim()
+                : null
+        )
+
+    } catch {
+
+        return null
+
+    }
+
+}
+
+
+async function sendParticipantMessage(
+    sock,
+    groupJid,
+    user,
+    text
+) {
+
+    const profilePicture =
+        await getProfilePicture(
+            sock,
+            user
+        )
+
+    if (
+        profilePicture
+    ) {
+
+        try {
+
+            return await sendWelcomeMessage(
+                sock,
+                groupJid,
+                {
+                    image: {
+                        url:
+                            profilePicture
+                    },
+
+                    caption:
+                        text,
+
+                    mentions: [
+                        user
+                    ]
+                }
+            )
+
+        } catch (err) {
+
+            logger.warn(
+                `${getBotName(sock)} | No se pudo enviar foto de perfil de ${getDisplayNumber(user)}: ${err.message}`
+            )
+
+        }
+
+    }
+
+    return await sendWelcomeMessage(
+        sock,
+        groupJid,
+        {
+            text,
+
+            mentions: [
+                user
+            ]
+        }
+    )
+
+}
+
 async function getMetadata(
     sock,
     group,
@@ -1069,16 +1169,11 @@ async function welcomeSystem(
                         }
                     )
 
-                await sendWelcomeMessage(
+                await sendParticipantMessage(
                     sock,
                     groupJid,
-                    {
-                        text,
-
-                        mentions: [
-                            user
-                        ]
-                    }
+                    user,
+                    text
                 )
 
                 for (
@@ -1164,16 +1259,11 @@ async function welcomeSystem(
                         }
                     )
 
-                await sendWelcomeMessage(
+                await sendParticipantMessage(
                     sock,
                     groupJid,
-                    {
-                        text,
-
-                        mentions: [
-                            user
-                        ]
-                    }
+                    user,
+                    text
                 )
 
                 for (
