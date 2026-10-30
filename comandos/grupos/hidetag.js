@@ -1,5 +1,4 @@
 const {
-    generateForwardMessageContent,
     generateWAMessageFromContent
 } = require('@whiskeysockets/baileys')
 
@@ -12,26 +11,13 @@ const logger =
 const ui =
     require('../../src/utils/ui')
 
+const MAX_MENTIONS = 1000
 
-const MAX_MENTIONS =
-    1000
-
-
-function normalizeJid(
-    participant
-) {
-
-    if (
-        !participant
-    ) {
-
-        return null
-
-    }
+function normalizeJid(participant) {
+    if (!participant) return null
 
     const value =
-        typeof participant ===
-            'object'
+        typeof participant === 'object'
             ? (
                 participant.phoneNumber ||
                 participant.id ||
@@ -40,96 +26,42 @@ function normalizeJid(
             )
             : participant
 
-    if (
-        !value
-    ) {
+    if (!value) return null
 
-        return null
-
-    }
-
-    return String(
-        value
-    )
+    return String(value)
         .trim()
-        .replace(
-            /:\d+@/,
-            '@'
-        )
-
+        .replace(/:\d+@/, '@')
 }
 
-
-function uniqueJids(
-    jids = []
-) {
-
+function uniqueJids(jids = []) {
     return [
         ...new Set(
-            jids.filter(
-                Boolean
-            )
+            jids.filter(Boolean)
         )
     ]
-
 }
 
-
-function getBotName(
-    sock
-) {
-
+function getBotName(sock) {
     return String(
         sock?.botProfile?.name ||
         'KennyBot'
-    )
-        .trim()
-
+    ).trim()
 }
 
-
-async function sendMessage(
-    sock,
-    jid,
-    content
-) {
-
-    if (
-        typeof sock.safeSendMessage ===
-        'function'
-    ) {
-
-        return await sock.safeSendMessage(
-            jid,
-            content
-        )
-
+async function sendMessage(sock, jid, content) {
+    if (typeof sock.safeSendMessage === 'function') {
+        return await sock.safeSendMessage(jid, content)
     }
 
-    return await sock.sendMessage(
-        jid,
-        content
-    )
-
+    return await sock.sendMessage(jid, content)
 }
 
-
-function getContextInfo(
-    message
-) {
-
-    if (
-        !message ||
-        typeof message !==
-            'object'
-    ) {
-
+function getContextInfo(message) {
+    if (!message || typeof message !== 'object') {
         return null
-
     }
 
     const possibleMessages = [
-
         message.extendedTextMessage,
         message.imageMessage,
         message.videoMessage,
@@ -139,212 +71,209 @@ function getContextInfo(
         message.buttonsResponseMessage,
         message.listResponseMessage,
         message.templateButtonReplyMessage
-
     ]
 
-    for (
-        const item
-        of possibleMessages
-    ) {
-
-        if (
-            item?.contextInfo
-        ) {
-
+    for (const item of possibleMessages) {
+        if (item?.contextInfo) {
             return item.contextInfo
-
         }
-
     }
 
     return null
-
 }
 
-
-function findContentNode(
-    content
-) {
-
-    if (
-        !content ||
-        typeof content !==
-            'object'
-    ) {
-
-        return null
-
+function deepClone(value) {
+    if (value === null || value === undefined) {
+        return value
     }
 
-    /*
-     * Priorizamos tipos especiales de WhatsApp,
-     * entre ellos todas las variantes de encuesta.
-     */
-    const preferredKeys = [
+    if (Buffer.isBuffer(value)) {
+        return Buffer.from(value)
+    }
 
-        'pollCreationMessageV3',
-        'pollCreationMessageV2',
-        'pollCreationMessage',
-        'pollResultSnapshotMessage',
-        'newsletterAdminInviteMessage',
-        'groupInviteMessage',
-        'interactiveMessage',
-        'productMessage',
+    if (value instanceof Uint8Array) {
+        return new Uint8Array(value)
+    }
+
+    if (Array.isArray(value)) {
+        return value.map(deepClone)
+    }
+
+    if (typeof value === 'object') {
+        const copy = {}
+
+        for (const [key, item] of Object.entries(value)) {
+            copy[key] = deepClone(item)
+        }
+
+        return copy
+    }
+
+    return value
+}
+
+function removeForwardFlags(value) {
+    if (!value || typeof value !== 'object') {
+        return
+    }
+
+    if (Array.isArray(value)) {
+        for (const item of value) {
+            removeForwardFlags(item)
+        }
+        return
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(
+            value,
+            'isForwarded'
+        )
+    ) {
+        delete value.isForwarded
+    }
+
+    if (
+        Object.prototype.hasOwnProperty.call(
+            value,
+            'forwardingScore'
+        )
+    ) {
+        delete value.forwardingScore
+    }
+
+    for (const item of Object.values(value)) {
+        removeForwardFlags(item)
+    }
+}
+
+function mergeMentions(contextInfo, mentions) {
+    const previous =
+        Array.isArray(contextInfo?.mentionedJid)
+            ? contextInfo.mentionedJid
+            : []
+
+    return {
+        ...(contextInfo || {}),
+        mentionedJid: uniqueJids([
+            ...previous,
+            ...mentions
+        ])
+    }
+}
+
+function addHiddenMentions(message, mentions) {
+    if (!message || typeof message !== 'object') {
+        return message
+    }
+
+    if (typeof message.conversation === 'string') {
+        const text = message.conversation
+
+        delete message.conversation
+
+        message.extendedTextMessage = {
+            text,
+            contextInfo: mergeMentions(
+                null,
+                mentions
+            )
+        }
+
+        return message
+    }
+
+    const directKeys = [
+        'extendedTextMessage',
         'imageMessage',
         'videoMessage',
         'audioMessage',
         'documentMessage',
         'stickerMessage',
-        'extendedTextMessage',
-        'conversation'
-
+        'pollCreationMessage',
+        'pollCreationMessageV2',
+        'pollCreationMessageV3',
+        'pollResultSnapshotMessage',
+        'newsletterAdminInviteMessage',
+        'groupInviteMessage',
+        'interactiveMessage',
+        'productMessage'
     ]
 
-    let key =
-        preferredKeys.find(
-            name =>
-                content[name] != null
-        )
+    for (const key of directKeys) {
+        const node = message[key]
 
-    if (
-        !key
-    ) {
-
-        key =
-            Object.keys(
-                content
+        if (node && typeof node === 'object') {
+            node.contextInfo = mergeMentions(
+                node.contextInfo,
+                mentions
             )
-                .find(
-                    name =>
-                        name !==
-                            'messageContextInfo' &&
-                        content[name] != null
-                )
 
+            return message
+        }
     }
 
-    if (
-        !key
-    ) {
+    const wrapperKeys = [
+        'ephemeralMessage',
+        'viewOnceMessage',
+        'viewOnceMessageV2',
+        'viewOnceMessageV2Extension',
+        'documentWithCaptionMessage'
+    ]
 
-        return null
+    for (const key of wrapperKeys) {
+        const nested = message[key]?.message
 
+        if (nested && typeof nested === 'object') {
+            addHiddenMentions(
+                nested,
+                mentions
+            )
+
+            return message
+        }
     }
 
-    return {
-        key,
-        value:
-            content[key]
+    message.messageContextInfo = {
+        ...(message.messageContextInfo || {}),
+        mentionedJid: mentions
     }
 
+    return message
 }
 
-
-function getQuotedType(
-    quoted
-) {
-
-    if (
-        !quoted ||
-        typeof quoted !==
-            'object'
-    ) {
-
+function getQuotedType(quoted) {
+    if (!quoted || typeof quoted !== 'object') {
         return 'mensaje'
-
     }
 
     if (
-        quoted.pollCreationMessageV3 ||
+        quoted.pollCreationMessage ||
         quoted.pollCreationMessageV2 ||
-        quoted.pollCreationMessage
+        quoted.pollCreationMessageV3
     ) {
-
         return 'encuesta'
-
     }
 
-    if (
-        quoted.pollResultSnapshotMessage
-    ) {
-
+    if (quoted.pollResultSnapshotMessage) {
         return 'resultado de encuesta'
-
     }
 
-    if (
-        quoted.imageMessage
-    ) {
-
-        return 'imagen'
-
-    }
-
-    if (
-        quoted.videoMessage
-    ) {
-
-        return 'video'
-
-    }
+    if (quoted.imageMessage) return 'imagen'
+    if (quoted.videoMessage) return 'video'
+    if (quoted.audioMessage) return 'audio'
+    if (quoted.documentMessage) return 'documento'
+    if (quoted.stickerMessage) return 'sticker'
+    if (quoted.newsletterAdminInviteMessage) return 'canal'
+    if (quoted.groupInviteMessage) return 'invitación de grupo'
+    if (quoted.interactiveMessage) return 'mensaje interactivo'
+    if (quoted.productMessage) return 'producto'
 
     if (
-        quoted.audioMessage
-    ) {
-
-        return 'audio'
-
-    }
-
-    if (
-        quoted.stickerMessage
-    ) {
-
-        return 'sticker'
-
-    }
-
-    if (
-        quoted.documentMessage
-    ) {
-
-        return 'documento'
-
-    }
-
-    if (
-        quoted.newsletterAdminInviteMessage
-    ) {
-
-        return 'canal'
-    }
-
-    if (
-        quoted.groupInviteMessage
-    ) {
-
-        return 'invitación de grupo'
-    }
-
-    if (
-        quoted.interactiveMessage
-    ) {
-
-        return 'mensaje interactivo'
-    }
-
-    if (
-        quoted.productMessage
-    ) {
-
-        return 'producto'
-    }
-
-    if (
-        quoted.extendedTextMessage?.contextInfo
+        quoted.extendedTextMessage
+            ?.contextInfo
             ?.forwardedNewsletterMessageInfo
     ) {
-
         return 'publicación de canal'
     }
 
@@ -353,7 +282,6 @@ function getQuotedType(
         quoted.extendedTextMessage?.matchedText ||
         quoted.extendedTextMessage?.jpegThumbnail
     ) {
-
         return 'enlace con vista previa'
     }
 
@@ -361,243 +289,47 @@ function getQuotedType(
         quoted.conversation ||
         quoted.extendedTextMessage
     ) {
-
         return 'texto'
-
     }
 
     return 'mensaje'
-
 }
 
-
-function getOriginalContentNode(
-    quoted
-) {
-
-    if (
-        !quoted ||
-        typeof quoted !==
-            'object'
-    ) {
-
-        return null
-
-    }
-
-    const preferredKeys = [
-
-        'pollCreationMessageV3',
-        'pollCreationMessageV2',
-        'pollCreationMessage',
-        'pollResultSnapshotMessage',
-        'newsletterAdminInviteMessage',
-        'groupInviteMessage',
-        'interactiveMessage',
-        'productMessage',
-        'imageMessage',
-        'videoMessage',
-        'audioMessage',
-        'documentMessage',
-        'stickerMessage',
-        'extendedTextMessage'
-
-    ]
-
-    const key =
-        preferredKeys.find(
-            name =>
-                quoted[name] != null
-        ) ||
-        Object.keys(
-            quoted
-        )
-            .find(
-                name =>
-                    quoted[name] != null
-            )
-
-    if (
-        !key
-    ) {
-
-        return null
-
-    }
-
-    return {
-        key,
-        value:
-            quoted[key]
-    }
-
-}
-
-
-async function forwardWithHiddenMentions({
-
+async function resendAsNewMessage({
     sock,
     from,
     quoted,
-    contextInfo,
     mentions
-
 }) {
+    const freshContent = deepClone(quoted)
 
-    const participant =
-        normalizeJid(
-            contextInfo?.participant
-        )
-
-    const quotedMessage = {
-
-        key: {
-
-            remoteJid:
-                from,
-
-            fromMe:
-                false,
-
-            id:
-                contextInfo?.stanzaId ||
-                `hidetag-${Date.now()}`,
-
-            participant:
-                participant ||
-                undefined
-
-        },
-
-        message:
-            quoted
-
-    }
-
-
-    const originalNode =
-        getOriginalContentNode(
-            quoted
-        )
-
-
-    const originalContextInfo =
-        originalNode?.value &&
-        typeof originalNode.value ===
-            'object'
-            ? (
-                originalNode.value.contextInfo ||
-                {}
-            )
-            : {}
-
-
-    const forwardContent =
-        await generateForwardMessageContent(
-            quotedMessage,
-            false
-        )
-
-
-    const node =
-        findContentNode(
-            forwardContent
-        )
-
-
-    if (
-        !node
-    ) {
-
-        throw new Error(
-            'No se pudo preparar el mensaje citado para reenviarlo.'
-        )
-
-    }
-
-
-    if (
-        node.value &&
-        typeof node.value ===
-            'object'
-    ) {
-
-        node.value.contextInfo = {
-
-            ...originalContextInfo,
-
-            ...(
-                node.value.contextInfo ||
-                {}
-            ),
-
-            mentionedJid:
-                uniqueJids(
-                    [
-                        ...(
-                            Array.isArray(
-                                originalContextInfo?.mentionedJid
-                            )
-                                ? originalContextInfo.mentionedJid
-                                : []
-                        ),
-                        ...mentions
-                    ]
-                )
-
-        }
-
-    }
-
-
-    forwardContent.messageContextInfo = {
-
-        ...(
-            forwardContent.messageContextInfo ||
-            {}
-        ),
-
-        mentionedJid:
-            mentions
-
-    }
-
+    removeForwardFlags(freshContent)
+    addHiddenMentions(freshContent, mentions)
 
     const generated =
         generateWAMessageFromContent(
             from,
-            forwardContent,
+            freshContent,
             {
-
                 userJid:
-                    normalizeJid(
-                        sock?.user?.id
-                    ) ||
+                    normalizeJid(sock?.user?.id) ||
                     sock?.user?.id
-
             }
         )
-
 
     await sock.relayMessage(
         from,
         generated.message,
         {
-            messageId:
-                generated.key.id
+            messageId: generated.key.id
         }
     )
 
-
     return true
-
 }
 
-
 module.exports = {
-
-    name:
-        'hidetag',
+    name: 'hidetag',
 
     aliases: [
         'htag',
@@ -606,98 +338,69 @@ module.exports = {
     ],
 
     description:
-        'Reenvía un mensaje mencionando a todos de forma oculta',
+        'Publica un mensaje mencionando a todos de forma oculta',
 
-    category:
-        'grupos',
+    category: 'grupos',
 
-    adminOnly:
-        true,
-
-    groupOnly:
-        true,
-
+    adminOnly: true,
+    groupOnly: true,
 
     async execute({
-
         sock,
         from,
         args,
         msg
-
     }) {
-
         try {
-
             if (
                 !from ||
-                !from.endsWith(
-                    '@g.us'
-                )
+                !from.endsWith('@g.us')
             ) {
-
                 return await sendMessage(
                     sock,
                     from,
                     {
-                        text:
-                            ui.error(
-                                'SOLO GRUPOS',
-                                'Este comando solo funciona en grupos.'
-                            )
+                        text: ui.error(
+                            'SOLO GRUPOS',
+                            'Este comando solo funciona en grupos.'
+                        )
                     }
                 )
-
             }
 
-
             try {
-
                 await sock.sendPresenceUpdate(
                     'composing',
                     from
                 )
-
             } catch {}
-
 
             const sender =
                 normalizeJid(
-
                     msg?.key?.fromMe
-
                         ? (
                             sock?.user?.lid ||
                             sock?.user?.id
                         )
-
                         : (
                             msg?.key?.participant ||
                             msg?.participant ||
                             msg?.key?.remoteJid
                         )
-
                 )
 
-
-            if (
-                !sender
-            ) {
-
+            if (!sender) {
                 return await sendMessage(
                     sock,
                     from,
                     {
-                        text:
-                            ui.error(
-                                'ERROR DE USUARIO',
-                                'No se pudo identificar al usuario que ejecutó el comando.'
-                            )
+                        text: ui.error(
+                            'ERROR DE USUARIO',
+                            'No se pudo identificar al usuario que ejecutó el comando.'
+                        )
                     }
                 )
-
             }
-
 
             const admin =
                 await isGroupAdmin(
@@ -706,187 +409,110 @@ module.exports = {
                     sender
                 )
 
-
-            if (
-                !admin
-            ) {
-
+            if (!admin) {
                 return await sendMessage(
                     sock,
                     from,
                     {
-                        text:
-                            ui.error(
-                                'ACCESO DENEGADO',
-                                'Solo administradores pueden usar este comando.'
-                            )
+                        text: ui.error(
+                            'ACCESO DENEGADO',
+                            'Solo administradores pueden usar este comando.'
+                        )
                     }
                 )
-
             }
 
-
             const metadata =
-                await sock.groupMetadata(
-                    from
-                )
-
+                await sock.groupMetadata(from)
 
             const participants =
-                Array.isArray(
-                    metadata?.participants
-                )
+                Array.isArray(metadata?.participants)
                     ? metadata.participants
                     : []
 
-
-            if (
-                participants.length ===
-                0
-            ) {
-
+            if (participants.length === 0) {
                 return await sendMessage(
                     sock,
                     from,
                     {
-                        text:
-                            ui.warn(
-                                'GRUPO VACÍO',
-                                'No hay participantes para mencionar.'
-                            )
+                        text: ui.warn(
+                            'GRUPO VACÍO',
+                            'No hay participantes para mencionar.'
+                        )
                     }
                 )
-
             }
-
 
             const mentions =
                 uniqueJids(
-
                     participants
-                        .slice(
-                            0,
-                            MAX_MENTIONS
-                        )
+                        .slice(0, MAX_MENTIONS)
                         .map(
                             participant =>
-                                normalizeJid(
-                                    participant
-                                )
+                                normalizeJid(participant)
                         )
-
                 )
 
-
-            if (
-                mentions.length ===
-                0
-            ) {
-
+            if (mentions.length === 0) {
                 return await sendMessage(
                     sock,
                     from,
                     {
-                        text:
-                            ui.error(
-                                'SIN MENCIONES',
-                                'No se pudieron obtener identificadores válidos de los participantes.'
-                            )
+                        text: ui.error(
+                            'SIN MENCIONES',
+                            'No se pudieron obtener identificadores válidos de los participantes.'
+                        )
                     }
                 )
-
             }
 
-
             const contextInfo =
-                getContextInfo(
-                    msg?.message
-                )
-
+                getContextInfo(msg?.message)
 
             const quoted =
                 contextInfo?.quotedMessage
 
-
-            /*
-             * Si responde a cualquier mensaje,
-             * lo reenvía tal cual y agrega
-             * las menciones ocultas.
-             */
-            if (
-                quoted
-            ) {
-
+            if (quoted) {
                 const quotedType =
-                    getQuotedType(
-                        quoted
-                    )
+                    getQuotedType(quoted)
 
-
-                await forwardWithHiddenMentions({
-
+                await resendAsNewMessage({
                     sock,
                     from,
                     quoted,
-                    contextInfo,
                     mentions
-
                 })
 
-
                 logger.event(
-                    `Hidetag reenviado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentions.length} menciones | ${quotedType}`
+                    `Hidetag publicado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentions.length} menciones | ${quotedType}`
                 )
-
 
                 return true
-
             }
 
-
-            /*
-             * Si no responde a ningún mensaje,
-             * usa el texto escrito después del comando.
-             */
             const text =
-                Array.isArray(
-                    args
-                )
-                    ? args
-                        .join(
-                            ' '
-                        )
-                        .trim()
+                Array.isArray(args)
+                    ? args.join(' ').trim()
                     : ''
 
-
-            if (
-                !text
-            ) {
-
+            if (!text) {
                 return await sendMessage(
                     sock,
                     from,
                     {
-                        text:
-                            ui.warn(
-                                'MENSAJE REQUERIDO',
-                                [
-                                    'Escribe un mensaje o responde al mensaje que quieras reenviar.',
-                                    '',
-                                    'Ejemplos:',
-                                    '/hidetag Aviso importante',
-                                    '/hidetag respondiendo a una imagen, video, audio, sticker o mensaje'
-                                ]
-                                    .join(
-                                        '\n'
-                                    )
-                            )
+                        text: ui.warn(
+                            'MENSAJE REQUERIDO',
+                            [
+                                'Escribe un mensaje o responde al contenido que quieras publicar.',
+                                '',
+                                'Ejemplos:',
+                                '/hidetag Aviso importante',
+                                '/hidetag respondiendo a texto, imagen, video, audio, sticker, documento, encuesta o publicación.'
+                            ].join('\n')
+                        )
                     }
                 )
-
             }
-
 
             await sendMessage(
                 sock,
@@ -897,43 +523,31 @@ module.exports = {
                 }
             )
 
-
             logger.event(
                 `Hidetag usado en ${from.split('@')[0]} por ${sender.split('@')[0]} | ${mentions.length} menciones | texto`
             )
 
-
             return true
 
-
         } catch (err) {
-
             logger.error(
                 `${getBotName(sock)} | Error hidetag: ${err.stack || err.message}`
             )
 
-
             try {
-
                 await sendMessage(
                     sock,
                     from,
                     {
-                        text:
-                            ui.error(
-                                'ERROR HIDETAG',
-                                'No se pudo reenviar el mensaje con menciones ocultas.'
-                            )
+                        text: ui.error(
+                            'ERROR HIDETAG',
+                            'No se pudo publicar el mensaje con menciones ocultas.'
+                        )
                     }
                 )
-
             } catch {}
 
-
             return false
-
         }
-
     }
-
 }

@@ -12,5 +12,12 @@
     "welcomeMessage": "👋 Bienvenido/a {user} a *{group}*. Ahora somos {members} miembros.",
     "goodbyeMessage": "👋 Hasta luego {user}. Gracias por formar parte de *{group}*.",
     "updatedAt": 1793257808262
+  },
+  "120363422240585327@g.us": {
+    "welcome": true,
+    "goodbye": false,
+    "welcomeMessage": "Bienvenido/a {user} a *{group}*.\n\nAhora somos *{members}* miembros.",
+    "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
+    "updatedAt": 1793331568798
   }
 }

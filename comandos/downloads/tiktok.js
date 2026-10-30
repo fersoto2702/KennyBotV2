@@ -1,14 +1,51 @@
 const axios =
     require('axios')
 
+const https =
+    require('https')
+
 const logger =
     require('../../src/utils/logger')
 
 const ui =
     require('../../src/utils/ui')
 
+
 const TIKWM_API =
     'https://www.tikwm.com/api/'
+
+
+/*
+ * Reutilizamos conexiones HTTPS para evitar
+ * abrir una conexión nueva en cada /tiktok.
+ */
+const http =
+    axios.create(
+        {
+            timeout:
+                20000,
+
+            httpsAgent:
+                new https.Agent(
+                    {
+                        keepAlive:
+                            true,
+
+                        maxSockets:
+                            10
+                    }
+                ),
+
+            headers: {
+                'Content-Type':
+                    'application/json',
+
+                'User-Agent':
+                    'Mozilla/5.0'
+            }
+        }
+    )
+
 
 async function sendTikTokMessage(
     sock,
@@ -39,11 +76,40 @@ async function sendTikTokMessage(
 
 }
 
+
+async function sendTikTokContent(
+    sock,
+    from,
+    content
+) {
+
+    if (
+        typeof sock.safeSendMessage ===
+        'function'
+    ) {
+
+        return await sock.safeSendMessage(
+            from,
+            content
+        )
+
+    }
+
+    return await sock.sendMessage(
+        from,
+        content
+    )
+
+}
+
+
 function normalizeJid(
     jid
 ) {
 
-    if (!jid) {
+    if (
+        !jid
+    ) {
 
         return null
 
@@ -60,6 +126,7 @@ function normalizeJid(
 
 }
 
+
 function getBotName(
     sock
 ) {
@@ -71,6 +138,7 @@ function getBotName(
         .trim()
 
 }
+
 
 function isTikTokUrl(
     value = ''
@@ -108,6 +176,7 @@ function isTikTokUrl(
 
 }
 
+
 function formatNumber(
     value
 ) {
@@ -134,6 +203,7 @@ function formatNumber(
 
 }
 
+
 function formatDuration(
     seconds
 ) {
@@ -149,7 +219,7 @@ function formatDuration(
             total
         ) ||
         total <=
-        0
+            0
     ) {
 
         return 'Desconocida'
@@ -172,6 +242,7 @@ function formatDuration(
 
 }
 
+
 module.exports = {
 
     name:
@@ -186,6 +257,7 @@ module.exports = {
 
     category:
         'descargas',
+
 
     async execute({
 
@@ -206,13 +278,14 @@ module.exports = {
             const sender =
                 normalizeJid(
 
-                    msg.key?.participant ||
+                    msg?.key?.participant ||
 
-                    msg.participant ||
+                    msg?.participant ||
 
-                    msg.key?.remoteJid
+                    msg?.key?.remoteJid
 
                 )
+
 
             if (
                 !sender
@@ -229,10 +302,12 @@ module.exports = {
 
             }
 
+
             const botName =
                 getBotName(
                     sock
                 )
+
 
             const url =
                 String(
@@ -240,6 +315,7 @@ module.exports = {
                     ''
                 )
                     .trim()
+
 
             if (
                 !url ||
@@ -259,56 +335,65 @@ module.exports = {
 
             }
 
-            await sendTikTokMessage(
-                sock,
-                from,
-                ui.info(
-                    '🎵 TIKTOK',
-                    [
-                        [
-                            'Fuente',
-                            'TikTok'
-                        ],
-                        [
-                            'Estado',
-                            'PROCESANDO'
-                        ]
-                    ],
-                    'Obteniendo información del video...'
-                )
-            )
 
-            const response =
-                await axios.post(
+            /*
+             * La petición empieza INMEDIATAMENTE.
+             * No esperamos a que WhatsApp termine de enviar
+             * el aviso de "PROCESANDO".
+             */
+            const apiPromise =
+                http.post(
                     TIKWM_API,
                     {
                         url
-                    },
-                    {
-                        timeout:
-                            30000,
-
-                        headers: {
-                            'Content-Type':
-                                'application/json',
-
-                            'User-Agent':
-                                'Mozilla/5.0'
-                        }
                     }
                 )
 
-            const responseData =
-                response.data
 
-            logger.info(
-                `${botName} | TikTok API response: ${JSON.stringify(responseData)}`
-            )
+            const statusPromise =
+                sendTikTokMessage(
+                    sock,
+                    from,
+                    ui.info(
+                        '🎵 TIKTOK',
+                        [
+                            [
+                                'Fuente',
+                                'TikTok'
+                            ],
+                            [
+                                'Estado',
+                                'PROCESANDO'
+                            ]
+                        ],
+                        'Obteniendo información del video...'
+                    )
+                )
+                    .catch(
+                        () =>
+                            null
+                    )
+
+
+            const response =
+                await apiPromise
+
+
+            /*
+             * El aviso puede terminar mientras la API trabaja,
+             * pero nunca retrasa el inicio de la petición.
+             */
+            await statusPromise
+
+
+            const responseData =
+                response?.data
+
 
             if (
                 !responseData ||
                 responseData.code !==
-                0 ||
+                    0 ||
                 !responseData.data
             ) {
 
@@ -324,16 +409,16 @@ module.exports = {
 
             }
 
+
             const data =
                 responseData.data
 
+
             const videoUrl =
-
                 data.hdplay ||
-
                 data.play ||
-
                 data.wmplay
+
 
             if (
                 !videoUrl
@@ -350,104 +435,122 @@ module.exports = {
 
             }
 
+
             const title =
                 data.title ||
                 'Sin título'
 
+
             const nickname =
                 data.author?.nickname ||
                 'Desconocido'
+
 
             const username =
                 data.author?.unique_id ||
                 data.author?.uniqueId ||
                 null
 
+
             const author =
                 username
                     ? `${nickname} (@${username})`
                     : nickname
+
 
             const duration =
                 formatDuration(
                     data.duration
                 )
 
+
             const likes =
                 formatNumber(
                     data.digg_count
                 )
+
 
             const comments =
                 formatNumber(
                     data.comment_count
                 )
 
+
             const views =
                 formatNumber(
                     data.play_count
                 )
+
 
             const shares =
                 formatNumber(
                     data.share_count
                 )
 
+
             const caption = [
+
                 'ㅤ۟∩　ׅ　★　ׅ　*🅣𝗂𝗄𝖳𝗈𝗄 🅓ownload*　ׄᰙ',
+
                 '',
+
                 `𖣣ֶㅤ֯⌗ ✎  ׄ ⬭ *Título:* ${title}`,
+
                 `𖣣ֶㅤ֯⌗ ꕥ  ׄ ⬭ *Autor:* ${author}`,
+
                 `𖣣ֶㅤ֯⌗ ⴵ  ׄ ⬭ *Duración:* ${duration}`,
+
                 `𖣣ֶㅤ֯⌗ ❖  ׄ ⬭ *Likes:* ${likes}`,
+
                 `𖣣ֶㅤ֯⌗ ❀  ׄ ⬭ *Comentarios:* ${comments}`,
+
                 `𖣣ֶㅤ֯⌗ ✿  ׄ ⬭ *Vistas:* ${views}`,
+
                 `𖣣ֶㅤ֯⌗ ☆  ׄ ⬭ *Compartidos:* ${shares}`,
+
                 '',
+
                 '╰─ 𓂃 Video descargado sin marca de agua.'
+
             ]
                 .join(
                     '\n'
                 )
 
-            const videoContent = {
-                video: {
-                    url:
-                        videoUrl
-                },
 
-                mimetype:
-                    'video/mp4',
+            /*
+             * Enviamos primero el video, que es el resultado
+             * principal del comando.
+             */
+            await sendTikTokContent(
+                sock,
+                from,
+                {
+                    video: {
+                        url:
+                            videoUrl
+                    },
 
-                caption
-            }
+                    mimetype:
+                        'video/mp4',
 
-            if (
-                typeof sock.safeSendMessage ===
-                'function'
-            ) {
+                    caption
+                }
+            )
 
-                await sock.safeSendMessage(
-                    from,
-                    videoContent
-                )
 
-            } else {
-
-                await sock.sendMessage(
-                    from,
-                    videoContent
-                )
-
-            }
-
+            /*
+             * El audio es secundario. Si falla,
+             * no invalida el video ya entregado.
+             */
             if (
                 data.music
             ) {
 
-                try {
-
-                    const audioContent = {
+                sendTikTokContent(
+                    sock,
+                    from,
+                    {
                         audio: {
                             url:
                                 data.music
@@ -459,50 +562,37 @@ module.exports = {
                         ptt:
                             false
                     }
+                )
+                    .catch(
+                        audioErr => {
 
-                    if (
-                        typeof sock.safeSendMessage ===
-                        'function'
-                    ) {
+                            logger.warn(
+                                `${botName} | Audio TikTok falló: ${audioErr.message}`
+                            )
 
-                        await sock.safeSendMessage(
-                            from,
-                            audioContent
-                        )
-
-                    } else {
-
-                        await sock.sendMessage(
-                            from,
-                            audioContent
-                        )
-
-                    }
-
-                } catch (audioErr) {
-
-                    logger.warn(
-                        `${botName} | Audio TikTok falló: ${audioErr.message}`
+                        }
                     )
 
-                }
-
             }
+
 
             logger.event(
                 `${botName} | TikTok descargado: ${username || nickname} | ${sender.split('@')[0]}`
             )
+
 
             return {
                 success:
                     true
             }
 
+
         } catch (err) {
 
             logger.error(
                 `Error tiktok: ${err.stack || err.message}`
             )
+
 
             if (
                 err.response
@@ -512,24 +602,25 @@ module.exports = {
                     `TikTok API status: ${err.response.status}`
                 )
 
-                logger.error(
-                    `TikTok API response: ${JSON.stringify(err.response.data)}`
-                )
-
             }
+
 
             let detail =
                 'El servicio de descarga de TikTok se encuentra temporalmente fuera de servicio.'
 
+
             if (
                 err.code ===
-                'ECONNABORTED'
+                    'ECONNABORTED' ||
+                err.code ===
+                    'ETIMEDOUT'
             ) {
 
                 detail =
                     'TikTok tardó demasiado en responder. Inténtalo nuevamente.'
 
             }
+
 
             try {
 
@@ -543,6 +634,7 @@ module.exports = {
                 )
 
             } catch {}
+
 
             return {
                 success:

@@ -684,8 +684,25 @@ async function sendParticipantMessage(
     sock,
     groupJid,
     user,
-    text
+    text,
+    extraMentions = []
 ) {
+
+    const mentions =
+        [
+            ...new Set(
+                [
+                    user,
+                    ...extraMentions
+                ]
+                    .map(
+                        normalizeJid
+                    )
+                    .filter(
+                        Boolean
+                    )
+            )
+        ]
 
     const profilePicture =
         await getProfilePicture(
@@ -711,9 +728,7 @@ async function sendParticipantMessage(
                     caption:
                         text,
 
-                    mentions: [
-                        user
-                    ]
+                    mentions
                 }
             )
 
@@ -733,9 +748,7 @@ async function sendParticipantMessage(
         {
             text,
 
-            mentions: [
-                user
-            ]
+            mentions
         }
     )
 
@@ -1094,6 +1107,71 @@ function formatDateTime() {
 }
 
 
+function isMetadataAdmin(
+    metadata,
+    jid
+) {
+
+    const target =
+        normalizeJid(
+            jid
+        )
+
+    if (
+        !target ||
+        !Array.isArray(
+            metadata?.participants
+        )
+    ) {
+
+        return false
+
+    }
+
+    return metadata.participants.some(
+        participant => {
+
+            const participantJids =
+                [
+                    participant?.id,
+                    participant?.phoneNumber,
+                    participant?.lid
+                ]
+                    .map(
+                        normalizeJid
+                    )
+                    .filter(
+                        Boolean
+                    )
+
+            const isSame =
+                participantJids.includes(
+                    target
+                )
+
+            const role =
+                String(
+                    participant?.admin ||
+                    ''
+                )
+                    .toLowerCase()
+
+            return (
+                isSame &&
+                (
+                    role ===
+                        'admin' ||
+                    role ===
+                        'superadmin'
+                )
+            )
+
+        }
+    )
+
+}
+
+
 function buildProMessage(
     sock,
     action,
@@ -1101,7 +1179,9 @@ function buildProMessage(
         user,
         groupName,
         memberCount,
-        customMessage
+        customMessage,
+        removedBy = null,
+        removedByIsAdmin = false
     }
 ) {
 
@@ -1118,6 +1198,19 @@ function buildProMessage(
 
     const mention =
         `@${getDisplayNumber(user)}`
+
+    const removedByMention =
+        removedBy
+            ? `@${getDisplayNumber(removedBy)}`
+            : null
+
+    const wasRemovedByAdmin =
+        action ===
+            'remove' &&
+        removedByIsAdmin &&
+        removedByMention &&
+        normalizeJid(removedBy) !==
+            normalizeJid(user)
 
     const title =
         action ===
@@ -1161,22 +1254,36 @@ function buildProMessage(
             )
             : ''
 
-    return [
+    const lines = [
         `ㅤ۟∩　ׅ　${title}　ׄᰙ`,
         '',
         `𖣣ֶㅤ֯⌗ ✦  ׄ ⬭ *Usuario:* ${mention}`,
         `𖣣ֶㅤ֯⌗ ❖  ׄ ⬭ *Grupo:* ${groupName}`,
-        `𖣣ֶㅤ֯⌗ ♛  ׄ ⬭ *Miembro:* ${memberLabel}`,
+        `𖣣ֶㅤ֯⌗ ♛  ׄ ⬭ *Miembro:* ${memberLabel}`
+    ]
+
+    if (
+        wasRemovedByAdmin
+    ) {
+
+        lines.push(
+            `𖣣ֶㅤ֯⌗ ⚔  ׄ ⬭ *Eliminado por:* ${removedByMention}`
+        )
+
+    }
+
+    lines.push(
         `𖣣ֶㅤ֯⌗ ◈  ׄ ⬭ *Fecha:* ${date}`,
         `𖣣ֶㅤ֯⌗ ◇  ׄ ⬭ *Hora:* ${time}`,
         `𖣣ֶㅤ֯⌗ ⚙  ׄ ⬭ *Bot:* ${profileStyle.botLabel}`,
         '',
         custom ||
             footer
-    ]
-        .join(
-            '\n'
-        )
+    )
+
+    return lines.join(
+        '\n'
+    )
 
 }
 
@@ -1371,6 +1478,63 @@ async function welcomeSystem(
                 ? metadata.participants.length
                 : 0
 
+        const actor =
+            normalizeJid(
+                update?.author
+            )
+
+        let actorIsAdmin =
+            false
+
+        if (
+            actor
+        ) {
+
+            const actorParticipant =
+                Array.isArray(
+                    metadata?.participants
+                )
+                    ? metadata.participants.find(
+                        participant =>
+                            [
+                                participant?.id,
+                                participant?.phoneNumber,
+                                participant?.lid
+                            ]
+                                .map(
+                                    normalizeJid
+                                )
+                                .filter(
+                                    Boolean
+                                )
+                                .includes(
+                                    actor
+                                )
+                    )
+                    : null
+
+            actorIsAdmin =
+                Boolean(
+                    actorParticipant?.admin
+                )
+
+        }
+
+        const eventAuthor =
+            normalizeJid(
+                update?.author
+            )
+
+        const eventAuthorIsAdmin =
+            action ===
+                'remove' &&
+            eventAuthor
+                ? isMetadataAdmin(
+                    metadata,
+                    eventAuthor
+                )
+                : false
+
         const legacyJoinMessages =
             action ===
             'add'
@@ -1431,7 +1595,9 @@ async function welcomeSystem(
                             groupName,
                             memberCount,
                             customMessage:
-                                config.welcomeMessage
+                                config.welcomeMessage,
+                            actor,
+                            actorIsAdmin
                         }
                     )
 
@@ -1504,7 +1670,11 @@ async function welcomeSystem(
                     `@${number}`
 
                 logger.event(
-                    `${botName} | Leave: ${number}`
+                    eventAuthorIsAdmin &&
+                    eventAuthor !==
+                        normalizeJid(user)
+                        ? `${botName} | Removed: ${number} | By admin: ${getDisplayNumber(eventAuthor)}`
+                        : `${botName} | Leave: ${number}`
                 )
 
                 const text =
@@ -1516,7 +1686,11 @@ async function welcomeSystem(
                             groupName,
                             memberCount,
                             customMessage:
-                                config.goodbyeMessage
+                                config.goodbyeMessage,
+                            removedBy:
+                                eventAuthor,
+                            removedByIsAdmin:
+                                eventAuthorIsAdmin
                         }
                     )
 
@@ -1524,7 +1698,12 @@ async function welcomeSystem(
                     sock,
                     groupJid,
                     user,
-                    text
+                    text,
+                    eventAuthorIsAdmin &&
+                    eventAuthor !==
+                        normalizeJid(user)
+                        ? [eventAuthor]
+                        : []
                 )
 
                 for (

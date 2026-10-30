@@ -1,436 +1,511 @@
-const axios =
-    require('axios')
+const axios = require('axios')
 
-const logger =
-    require('../../src/utils/logger')
+const logger = require('../../src/utils/logger')
 
-const ui =
-    require('../../src/utils/ui')
+const ui = require('../../src/utils/ui')
 
+const INSTAGRAM_API = 'https://api.azbry.com/api/download/instagram'
 
-const INSTAGRAM_API =
-    'https://api.azbry.com/api/download/instagram'
+const API_TIMEOUT = 20000
 
-const API_TIMEOUT =
-    30000
+const MAX_API_RETRIES = 1
 
-const MAX_API_RETRIES =
-    1
-
-const MAX_MEDIA_ITEMS =
-    10
-
-const MEDIA_SEND_DELAY =
-    1500
-
+const MAX_MEDIA_ITEMS = 10
 
 function sleep(
+
     ms
+
 ) {
-
     return new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                ms
-            )
-    )
 
+        resolve =>
+
+            setTimeout(
+
+                resolve,
+
+                ms
+
+            )
+
+    )
 }
 
-
 async function sendInstagramMessage(
+
+    sock,
+
+    from,
+
+    text
+
+) {
+    if (
+
+        typeof sock.safeSendMessage ===
+
+        'function'
+
+    ) {
+        return await sock.safeSendMessage(
+
+            from,
+
+            {
+                text
+
+            }
+
+        )
+
+    }
+
+    return await sock.sendMessage(
+
+        from,
+
+        {
+            text
+
+        }
+
+    )
+}
+
+async function sendInstagramContent(
     sock,
     from,
-    text
+    content
 ) {
-
     if (
         typeof sock.safeSendMessage ===
         'function'
     ) {
-
         return await sock.safeSendMessage(
             from,
-            {
-                text
-            }
+            content
         )
 
     }
 
-
     return await sock.sendMessage(
         from,
-        {
-            text
-        }
+        content
     )
-
 }
 
-
 function normalizeJid(
+
     jid
+
 ) {
-
     if (!jid) {
-
         return null
 
     }
 
-
     return String(jid)
-        .trim()
-        .replace(
-            /:\d+@/,
-            '@'
-        )
 
+        .trim()
+
+        .replace(
+
+            /:\d+@/,
+
+            '@'
+
+        )
 }
 
-
 function isInstagramUrl(
+
     value
+
 ) {
-
     if (!value) {
-
         return false
 
     }
 
-
     try {
+        const url = new URL(
 
-        const url =
-            new URL(
                 value
+
             )
 
+        const hostname = url.hostname
 
-        const hostname =
-            url.hostname
                 .toLowerCase()
-                .replace(
-                    /^www\./,
-                    ''
-                )
 
+                .replace(
+
+                    /^www\\./,
+
+                    ''
+
+                )
 
         return (
 
             hostname ===
+
             'instagram.com'
 
             ||
 
             hostname.endsWith(
+
                 '.instagram.com'
+
             )
 
         )
 
-
     } catch {
-
         return false
 
     }
-
 }
-
 
 function getRetryAfterSeconds(
+
     error
+
 ) {
+    const apiValue = Number(
 
-    const apiValue =
-        Number(
             error.response
+
                 ?.data
+
                 ?.retry_after
+
         )
 
-
     if (
+
         Number.isFinite(apiValue) &&
-        apiValue > 0
-    ) {
 
+        apiValue > 0
+
+    ) {
         return Math.min(
+
             Math.floor(apiValue),
+
             120
+
         )
 
     }
 
+    const headerValue = Number(
 
-    const headerValue =
-        Number(
             error.response
-                ?.headers
-                ?.['retry-after']
-        )
 
+                ?.headers
+
+                ?.['retry-after']
+
+        )
 
     if (
-        Number.isFinite(headerValue) &&
-        headerValue > 0
-    ) {
 
+        Number.isFinite(headerValue) &&
+
+        headerValue > 0
+
+    ) {
         return Math.min(
+
             Math.floor(headerValue),
+
             120
+
         )
 
     }
-
 
     return 60
-
 }
 
-
 function isRetryableApiError(
-    error
-) {
 
-    const status =
-        Number(
+    error
+
+) {
+    const status = Number(
+
             error.response?.status ||
+
             0
+
         )
 
+    const retryable = error.response
 
-    const retryable =
-        error.response
             ?.data
+
             ?.retryable
 
-
     if (
-        retryable === true
-    ) {
 
+        retryable === true
+
+    ) {
         return true
 
     }
 
-
     return [
-        429,
-        500,
-        502,
-        503,
-        504
-    ].includes(
-        status
-    )
 
+        429,
+
+        500,
+
+        502,
+
+        503,
+
+        504
+
+    ].includes(
+
+        status
+
+    )
 }
 
-
 async function requestInstagramApi(
+
     url
+
 ) {
-
-    let lastError =
-        null
-
+    let lastError = null
 
     for (
+
         let attempt = 0;
+
         attempt <= MAX_API_RETRIES;
+
         attempt++
+
     ) {
-
         try {
-
-            const response =
-                await axios.get(
+            const response = await axios.get(
 
                     INSTAGRAM_API,
 
                     {
                         params: {
                             url
+
                         },
 
                         timeout:
+
                             API_TIMEOUT,
 
                         headers: {
                             'User-Agent':
+
                                 'Mozilla/5.0'
+
                         }
+
                     }
 
                 )
 
-
             return response
 
-
         } catch (err) {
-
             lastError =
+
                 err
 
+            const status = Number(
 
-            const status =
-                Number(
                     err.response?.status ||
+
                     0
+
                 )
 
+            const canRetry = isRetryableApiError(
 
-            const canRetry =
-                isRetryableApiError(
                     err
-                )
 
+                )
 
             if (
-                !canRetry ||
-                attempt >= MAX_API_RETRIES
-            ) {
 
+                !canRetry ||
+
+                attempt >= MAX_API_RETRIES
+
+            ) {
                 throw err
 
             }
 
+            const retryAfter = getRetryAfterSeconds(
 
-            const retryAfter =
-                getRetryAfterSeconds(
                     err
-                )
 
+                )
 
             logger.warn(
 
                 `Instagram API ${status || 'ERROR'} | ` +
+
                 `Reintento ${attempt + 1}/${MAX_API_RETRIES} ` +
+
                 `en ${retryAfter}s`
 
             )
 
-
             await sleep(
+
                 retryAfter *
+
                 1000
+
             )
 
         }
 
     }
 
-
     throw lastError ||
-        new Error(
-            'INSTAGRAM_API_FAILED'
-        )
 
+        new Error(
+
+            'INSTAGRAM_API_FAILED'
+
+        )
 }
 
-
 function extractMedia(
-    data
-) {
 
-    const videos =
-        Array.isArray(
+    data
+
+) {
+    const videos = Array.isArray(
+
             data?.videos
+
         )
 
             ? data.videos
+
                 .filter(
+
                     item =>
+
                         typeof item === 'string' &&
+
                         item.trim()
+
                 )
 
             : []
 
+    const images = Array.isArray(
 
-    const images =
-        Array.isArray(
             data?.images
+
         )
 
             ? data.images
+
                 .filter(
+
                     item =>
+
                         typeof item === 'string' &&
+
                         item.trim()
+
                 )
 
             : []
-
 
     return [
 
         ...videos.map(
+
             url => ({
                 type:
+
                     'video',
 
                 url
+
             })
+
         ),
 
         ...images.map(
+
             url => ({
                 type:
+
                     'image',
 
                 url
+
             })
+
         )
 
     ]
-        .slice(
-            0,
-            MAX_MEDIA_ITEMS
-        )
 
+        .slice(
+
+            0,
+
+            MAX_MEDIA_ITEMS
+
+        )
 }
 
-
 module.exports = {
-
     name:
+
         'instagram',
 
     aliases: [
+
         'ig'
+
     ],
 
     description:
+
         'Descarga fotos y videos de Instagram',
 
     category:
+
         'descargas',
 
-
     async execute({
-
         sock,
+
         from,
+
         args = [],
+
         msg
 
     }) {
-
         try {
+            /* USUARIO */
 
-            /* ─────────────────────────────
-               USUARIO
-            ───────────────────────────── */
-
-            const sender =
-                normalizeJid(
+            const sender = normalizeJid(
 
                     msg.key?.participant ||
 
@@ -440,9 +515,7 @@ module.exports = {
 
                 )
 
-
             if (!sender) {
-
                 return await sendInstagramMessage(
 
                     sock,
@@ -461,24 +534,25 @@ module.exports = {
 
             }
 
+            /* URL */
 
-            /* ─────────────────────────────
-               URL
-            ───────────────────────────── */
+            const url = String(
 
-            const url =
-                String(
                     args?.[0] || ''
+
                 )
+
                     .trim()
 
-
             if (
-                !isInstagramUrl(
-                    url
-                )
-            ) {
 
+                !isInstagramUrl(
+
+                    url
+
+                )
+
+            ) {
                 return await sendInstagramMessage(
 
                     sock,
@@ -497,69 +571,62 @@ module.exports = {
 
             }
 
+            /* PROCESANDO + API EN PARALELO */
 
-            /* ─────────────────────────────
-               PROCESANDO
-            ───────────────────────────── */
+            const apiPromise = requestInstagramApi(
+                    url
+                )
 
-            await sendInstagramMessage(
-
-                sock,
-
-                from,
-
-                ui.info(
+            const statusPromise = sendInstagramMessage(
+                    sock,
+                    from,
+                    ui.info(
 
                     '📸 INSTAGRAM',
 
                     [
+
                         [
+
                             'Estado',
+
                             'Procesando descarga'
+
                         ],
+
                         [
+
                             'Fuente',
+
                             'Instagram'
+
                         ]
+
                     ],
 
                     'Buscando el contenido disponible...'
 
                 )
-
-            )
-
-
-            /* ─────────────────────────────
-               API
-            ───────────────────────────── */
-
-            const response =
-                await requestInstagramApi(
-                    url
                 )
+                    .catch(
+                        () =>
+                            null
+                    )
 
+            const response = await apiPromise
 
-            const data =
-                response?.data
+            await statusPromise
 
-
-            logger.info(
-
-                `Instagram API response: ${JSON.stringify(data)}`
-
-            )
-
-
-            /* ─────────────────────────────
-               VALIDAR RESPUESTA
-            ───────────────────────────── */
+            const data = response?.data
+            /* VALIDAR RESPUESTA */
 
             if (
-                !data ||
-                data.status !== true
-            ) {
 
+                !data ||
+
+                data.status !== true
+
+            ) {
                 return await sendInstagramMessage(
 
                     sock,
@@ -578,21 +645,19 @@ module.exports = {
 
             }
 
+            /* CONTENIDO */
 
-            /* ─────────────────────────────
-               CONTENIDO
-            ───────────────────────────── */
+            const media = extractMedia(
 
-            const media =
-                extractMedia(
                     data
+
                 )
 
-
             if (
-                media.length === 0
-            ) {
 
+                media.length === 0
+
+            ) {
                 return await sendInstagramMessage(
 
                     sock,
@@ -611,27 +676,25 @@ module.exports = {
 
             }
 
+            /* ENVIAR MEDIA */
 
-            /* ─────────────────────────────
-               ENVIAR MEDIA
-            ───────────────────────────── */
-
-            let enviados =
-                0
-
+            let enviados = 0
 
             for (
+
                 const item
+
                 of media
+
             ) {
-
                 try {
-
                     if (
-                        item.type ===
-                        'video'
-                    ) {
 
+                        item.type ===
+
+                        'video'
+
+                    ) {
                         await sock.sendMessage(
 
                             from,
@@ -639,43 +702,58 @@ module.exports = {
                             {
                                 video: {
                                     url:
+
                                         item.url
+
                                 },
 
                                 mimetype:
+
                                     'video/mp4',
 
                                 caption:
+
                                     ui.success(
 
                                         '📸 INSTAGRAM DOWNLOAD',
 
                                         [
+
                                             [
+
                                                 'Contenido',
+
                                                 'VIDEO'
+
                                             ],
+
                                             [
+
                                                 'Estado',
+
                                                 'DESCARGADO'
+
                                             ]
+
                                         ],
 
                                         'Video listo para disfrutar.'
 
                                     )
+
                             }
 
                         )
 
                     }
 
-
                     else if (
-                        item.type ===
-                        'image'
-                    ) {
 
+                        item.type ===
+
+                        'image'
+
+                    ) {
                         await sock.sendMessage(
 
                             from,
@@ -683,52 +761,54 @@ module.exports = {
                             {
                                 image: {
                                     url:
+
                                         item.url
+
                                 },
 
                                 caption:
+
                                     ui.success(
 
                                         '📸 INSTAGRAM DOWNLOAD',
 
                                         [
+
                                             [
+
                                                 'Contenido',
+
                                                 'IMAGEN'
+
                                             ],
+
                                             [
+
                                                 'Estado',
+
                                                 'DESCARGADA'
+
                                             ]
+
                                         ],
 
                                         'Imagen descargada correctamente.'
 
                                     )
+
                             }
 
                         )
 
                     }
 
-
                     else {
-
                         continue
 
                     }
 
-
                     enviados++
-
-
-                    await sleep(
-                        MEDIA_SEND_DELAY
-                    )
-
-
                 } catch (mediaErr) {
-
                     logger.warn(
 
                         `Error enviando media Instagram: ${mediaErr.stack || mediaErr.message}`
@@ -739,15 +819,13 @@ module.exports = {
 
             }
 
-
-            /* ─────────────────────────────
-               VALIDAR ENVÍO
-            ───────────────────────────── */
+            /* VALIDAR ENVÍO */
 
             if (
-                enviados === 0
-            ) {
 
+                enviados === 0
+
+            ) {
                 return await sendInstagramMessage(
 
                     sock,
@@ -766,10 +844,7 @@ module.exports = {
 
             }
 
-
-            /* ─────────────────────────────
-               FINAL
-            ───────────────────────────── */
+            /* FINAL */
 
             await sendInstagramMessage(
 
@@ -782,14 +857,23 @@ module.exports = {
                     'DESCARGA COMPLETADA',
 
                     [
+
                         [
+
                             'Archivos enviados',
+
                             `${enviados}`
+
                         ],
+
                         [
+
                             'Estado',
+
                             'COMPLETADO'
+
                         ]
+
                     ],
 
                     'Todo el contenido disponible fue enviado correctamente.'
@@ -798,35 +882,33 @@ module.exports = {
 
             )
 
-
             logger.event(
 
                 `Instagram: ${sender.split('@')[0]} → ${enviados} archivo(s)`
 
             )
 
-
             return {
                 success:
+
                     true,
 
                 sent:
+
                     enviados
+
             }
 
-
         } catch (err) {
+            const status = Number(
 
-            const status =
-                Number(
                     err.response?.status ||
+
                     0
+
                 )
 
-
-            const responseData =
-                err.response?.data
-
+            const responseData = err.response?.data
 
             logger.error(
 
@@ -834,17 +916,16 @@ module.exports = {
 
             )
 
-
             if (
-                err.response
-            ) {
 
+                err.response
+
+            ) {
                 logger.error(
 
                     `Instagram API status: ${status}`
 
                 )
-
 
                 logger.error(
 
@@ -854,11 +935,11 @@ module.exports = {
 
             }
 
-
             if (
-                err.code
-            ) {
 
+                err.code
+
+            ) {
                 logger.error(
 
                     `Instagram error code: ${err.code}`
@@ -867,18 +948,17 @@ module.exports = {
 
             }
 
-
             try {
-
                 if (
+
                     status === 502
+
                 ) {
+                    const retryAfter = getRetryAfterSeconds(
 
-                    const retryAfter =
-                        getRetryAfterSeconds(
                             err
-                        )
 
+                        )
 
                     return await sendInstagramMessage(
 
@@ -898,16 +978,16 @@ module.exports = {
 
                 }
 
-
                 if (
+
                     status === 429
+
                 ) {
+                    const retryAfter = getRetryAfterSeconds(
 
-                    const retryAfter =
-                        getRetryAfterSeconds(
                             err
-                        )
 
+                        )
 
                     return await sendInstagramMessage(
 
@@ -927,12 +1007,13 @@ module.exports = {
 
                 }
 
-
                 if (
-                    status === 503 ||
-                    status === 504
-                ) {
 
+                    status === 503 ||
+
+                    status === 504
+
+                ) {
                     return await sendInstagramMessage(
 
                         sock,
@@ -951,12 +1032,13 @@ module.exports = {
 
                 }
 
-
                 if (
-                    err.code ===
-                    'ECONNABORTED'
-                ) {
 
+                    err.code ===
+
+                    'ECONNABORTED'
+
+                ) {
                     return await sendInstagramMessage(
 
                         sock,
@@ -975,7 +1057,6 @@ module.exports = {
 
                 }
 
-
                 return await sendInstagramMessage(
 
                     sock,
@@ -992,17 +1073,16 @@ module.exports = {
 
                 )
 
-
             } catch {}
-
 
             return {
                 success:
+
                     false
+
             }
 
         }
 
     }
-
 }
