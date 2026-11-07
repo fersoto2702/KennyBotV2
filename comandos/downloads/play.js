@@ -1,516 +1,201 @@
-const fs =
-    require('fs')
+const fs = require('fs')
+const path = require('path')
+const yts = require('yt-search')
+const youtubedl = require('youtube-dl-exec')
+const { isMediaTooLarge, getFileSizeMB } = require('../../src/utils/antiCrash')
+const { addToQueue, getQueueLength } = require('../../src/utils/downloadQueue')
+const generateTempFile = require('../../src/utils/generateTempFile')
+const logger = require('../../src/utils/logger')
+const ui = require('../../src/utils/ui')
 
-const path =
-    require('path')
+const MAX_AUDIO_MB = 25
 
-const {
-    isMediaTooLarge,
-    getFileSizeMB
-} = require('../../src/utils/antiCrash')
-
-const {
-    addToQueue,
-    getQueueLength
-} = require('../../src/utils/downloadQueue')
-
-const generateTempFile =
-    require('../../src/utils/generateTempFile')
-
-const logger =
-    require('../../src/utils/logger')
-
-const ui =
-    require('../../src/utils/ui')
-
-const yts =
-    require('yt-search')
-
-const youtubedl =
-    require('youtube-dl-exec')
-
-
-const TEMP_DIR =
-    path.join(
-        __dirname,
-        '../../temp'
-    )
-
-
-async function sendPlayMessage(
-    sock,
-    from,
-    text
-) {
-
-    return await sock.sendMessage(
-        from,
-        {
-            text
-        }
-    )
-
-}
-
-
-async function findDownloadedFile(
-    filePath
-) {
-
-    const basename =
-        path.basename(
-            filePath
-        )
-
-    const files =
-        await fs.promises.readdir(
-            TEMP_DIR
-        )
-
-    const downloaded =
-        files.find(
-            file =>
-                file.startsWith(
-                    basename
-                )
-        )
-
-    if (
-        !downloaded
-    ) {
-
-        throw new Error(
-            'Archivo no encontrado'
-        )
-
+async function sendMessage(sock, jid, content, options = {}) {
+    if (typeof sock.safeSendMessage === 'function') {
+        return await sock.safeSendMessage(jid, content, options)
     }
-
-    return path.join(
-        TEMP_DIR,
-        downloaded
-    )
-
+    return await sock.sendMessage(jid, content, options)
 }
 
-
-async function removeTempFile(
-    filePath
-) {
-
+async function removeTempFile(filePath) {
+    if (!filePath) return
     try {
-
-        await fs.promises.unlink(
-            filePath
-        )
-
-        logger.info(
-            `Temp eliminado: ${path.basename(filePath)}`
-        )
-
+        await fs.promises.unlink(filePath)
+        logger.info(`Temp eliminado: ${path.basename(filePath)}`)
     } catch (err) {
-
-        if (
-            err?.code !==
-            'ENOENT'
-        ) {
-
-            logger.warn(
-                `No se pudo borrar temp: ${err.message}`
-            )
-
+        if (err?.code !== 'ENOENT') {
+            logger.warn(`No se pudo borrar temp: ${err.message}`)
         }
-
     }
-
 }
-
 
 module.exports = {
+    name: 'play',
+    aliases: ['music'],
+    description: 'Busca y descarga música de YouTube en MP3',
+    category: 'descargas',
 
-    name:
-        'play',
-
-    aliases: [
-        'music'
-    ],
-
-    description:
-        'Busca y descarga música de YouTube',
-
-    category:
-        'descargas',
-
-
-    async execute({
-
-        sock,
-        from,
-        args
-
-    }) {
-
-        let finalPath =
-            null
+    async execute({ sock, from, args }) {
+        let finalPath = null
 
         try {
+            const query = Array.isArray(args) ? args.join(' ').trim() : ''
 
-            const query =
-                Array.isArray(
-                    args
-                )
-                    ? args
-                        .join(' ')
-                        .trim()
-                    : ''
-
-
-            if (
-                !query
-            ) {
-
-                return await sendPlayMessage(
-                    sock,
-                    from,
-                    ui.warn(
+            if (!query) {
+                return await sendMessage(sock, from, {
+                    text: ui.warn(
                         'BÚSQUEDA REQUERIDA',
                         'Uso: /play canción'
                     )
-                )
-
+                })
             }
 
+            const searchPromise = yts(query)
 
-            /*
-             * La búsqueda comienza inmediatamente.
-             * No esperamos a que WhatsApp termine de enviar
-             * el mensaje "BUSCANDO" para iniciar yt-search.
-             */
-            const searchPromise =
-                yts(
-                    query
+            const statusPromise = sendMessage(sock, from, {
+                text: ui.info(
+                    'BUSCANDO',
+                    [['Canción', query]]
                 )
+            }).catch(() => null)
 
+            const search = await searchPromise
+            await statusPromise
 
-            const searchingMessagePromise =
-                sendPlayMessage(
-                    sock,
-                    from,
-                    ui.info(
-                        'BUSCANDO',
-                        [
-                            [
-                                'Canción',
-                                query
-                            ]
-                        ]
-                    )
-                )
-                .catch(
-                    () =>
-                        null
-                )
-
-
-            const search =
-                await searchPromise
-
-
-            await searchingMessagePromise
-
-
-            const videos =
-                Array.isArray(
-                    search?.videos
-                )
-                    ? search.videos
-                    : []
-
+            const videos = Array.isArray(search?.videos) ? search.videos : []
 
             const video =
-                videos.find(
-                    item =>
-                        item.author
-                            ?.name
-                            ?.toLowerCase()
-                            .includes(
-                                'topic'
-                            )
+                videos.find(item =>
+                    item.author?.name?.toLowerCase().includes('topic')
                 ) ||
-                videos.find(
-                    item =>
-                        item.title
-                            ?.toLowerCase()
-                            .includes(
-                                'lyrics'
-                            )
+                videos.find(item =>
+                    item.title?.toLowerCase().includes('lyrics')
                 ) ||
                 videos[0]
 
-
-            if (
-                !video
-            ) {
-
-                return await sendPlayMessage(
-                    sock,
-                    from,
-                    ui.error(
+            if (!video) {
+                return await sendMessage(sock, from, {
+                    text: ui.error(
                         'SIN RESULTADOS',
                         'No se encontró ninguna canción.'
                     )
-                )
-
+                })
             }
 
+            const position = getQueueLength() + 1
+            const filePath = generateTempFile('temp', 'audio')
+            finalPath = `${filePath}.mp3`
 
-            const position =
-                getQueueLength() +
-                1
+            const downloadPromise = addToQueue(async () => {
+                await youtubedl(video.url, {
+                    format: 'bestaudio/best',
+                    extractAudio: true,
+                    audioFormat: 'mp3',
+                    audioQuality: 0,
+                    output: finalPath,
+                    noCheckCertificates: true,
+                    noPlaylist: true,
+                    noWarnings: true
+                })
+            })
 
-
-            const filePath =
-                generateTempFile(
-                    'temp',
-                    'audio'
+            const queuePromise = sendMessage(sock, from, {
+                text: ui.info(
+                    'COLA DE DESCARGA',
+                    [
+                        ['Canción', video.title],
+                        ['Posición', `#${position}`],
+                        ['Formato', 'MP3']
+                    ]
                 )
-
-
-            /*
-             * Entramos a la cola inmediatamente.
-             * El mensaje informativo se manda en paralelo,
-             * así la descarga puede comenzar sin esperar
-             * otro round-trip de WhatsApp.
-             */
-            const downloadPromise =
-                addToQueue(
-
-                    async () => {
-
-                        await youtubedl(
-                            video.url,
-                            {
-
-                                format:
-                                    'bestaudio',
-
-                                output:
-                                    `${filePath}.%(ext)s`,
-
-                                noCheckCertificates:
-                                    true,
-
-                                noPlaylist:
-                                    true,
-
-                                noWarnings:
-                                    true
-
-                            }
-                        )
-
-                    }
-
-                )
-
-
-            const queueMessagePromise =
-                sendPlayMessage(
-                    sock,
-                    from,
-                    ui.info(
-                        'COLA DE DESCARGA',
-                        [
-                            [
-                                'Canción',
-                                video.title
-                            ],
-                            [
-                                'Posición',
-                                `#${position}`
-                            ]
-                        ]
-                    )
-                )
-                .catch(
-                    () =>
-                        null
-                )
-
+            }).catch(() => null)
 
             await downloadPromise
+            await queuePromise
 
+            await fs.promises.access(finalPath, fs.constants.F_OK)
+            const stats = await fs.promises.stat(finalPath)
 
-            await queueMessagePromise
+            if (isMediaTooLarge(stats.size, MAX_AUDIO_MB)) {
+                const size = getFileSizeMB(stats.size)
 
+                await removeTempFile(finalPath)
+                finalPath = null
 
-            /*
-             * Ya no hay setTimeout de 2 segundos.
-             * youtube-dl-exec resuelve cuando yt-dlp terminó,
-             * así que buscamos el archivo inmediatamente.
-             */
-            finalPath =
-                await findDownloadedFile(
-                    filePath
-                )
-
-
-            const stats =
-                await fs.promises.stat(
-                    finalPath
-                )
-
-
-            if (
-                isMediaTooLarge(
-                    stats.size,
-                    25
-                )
-            ) {
-
-                const size =
-                    getFileSizeMB(
-                        stats.size
-                    )
-
-
-                await removeTempFile(
-                    finalPath
-                )
-
-
-                finalPath =
-                    null
-
-
-                return await sendPlayMessage(
-                    sock,
-                    from,
-                    ui.error(
+                return await sendMessage(sock, from, {
+                    text: ui.error(
                         'ARCHIVO MUY PESADO',
                         `Peso: ${size} MB`
                     )
-                )
-
+                })
             }
 
+            const safeName = String(video.title || 'audio')
+                .replace(/[\\/:*?"<>|]/g, '')
+                .slice(0, 80)
 
-            await sock.sendMessage(
-                from,
-                {
+            const audioBuffer = await fs.promises.readFile(finalPath)
 
-                    audio: {
-                        url:
-                            finalPath
-                    },
+            if (!Buffer.isBuffer(audioBuffer) || audioBuffer.length === 0) {
+                throw new Error('El MP3 generado está vacío o no es válido')
+            }
 
-                    mimetype:
-                        'audio/mp4',
+            await sendMessage(sock, from, {
+                audio: audioBuffer,
+                mimetype: 'audio/mpeg',
+                ptt: false,
+                fileName: `${safeName}.mp3`
+            })
 
-                    ptt:
-                        false
-
-                }
-            )
-
-
-            await sendPlayMessage(
-                sock,
-                from,
-                ui.success(
+            await sendMessage(sock, from, {
+                text: ui.success(
                     'DESCARGA COMPLETADA',
                     [
-                        [
-                            'Título',
-                            video.title
-                        ],
-                        [
-                            'Duración',
-                            video.timestamp ||
-                            'Desconocida'
-                        ],
-                        [
-                            'Vistas',
-                            Number(
-                                video.views ||
-                                0
-                            )
-                                .toLocaleString()
-                        ],
-                        [
-                            'Link',
-                            video.url
-                        ]
+                        ['Título', video.title],
+                        ['Duración', video.timestamp || 'Desconocida'],
+                        ['Formato', 'MP3'],
+                        ['Peso', `${getFileSizeMB(stats.size)} MB`],
+                        ['Vistas', Number(video.views || 0).toLocaleString()]
                     ]
                 )
-            )
+            })
 
+            const pathToDelete = finalPath
 
-            /*
-             * Limpieza sin bloquear la respuesta al usuario.
-             */
-            setTimeout(
-                () => {
+            setTimeout(() => {
+                removeTempFile(pathToDelete).catch(() => {})
+            }, 5000)
 
-                    if (
-                        finalPath
-                    ) {
-
-                        removeTempFile(
-                            finalPath
-                        )
-                            .catch(
-                                () => {}
-                            )
-
-                    }
-
-                },
-                5000
-            )
-
-
+            finalPath = null
             return true
-
-
         } catch (err) {
+            logger.error(`Error play: ${err.stack || err.message}`)
 
-            logger.error(
-                `Error play: ${err.stack || err.message}`
-            )
-
-
-            if (
-                finalPath
-            ) {
-
-                removeTempFile(
-                    finalPath
-                )
-                    .catch(
-                        () => {}
-                    )
-
+            if (finalPath) {
+                await removeTempFile(finalPath)
             }
 
+            let detail = 'No se pudo descargar el audio.'
+            const errorText = String(err.message || '').toLowerCase()
+
+            if (errorText.includes('ffmpeg')) {
+                detail =
+                    'No se pudo convertir el audio a MP3. Verifica que FFmpeg esté instalado.'
+            } else if (
+                errorText.includes('vacío') ||
+                errorText.includes('vacio')
+            ) {
+                detail =
+                    'El archivo MP3 generado no contiene datos válidos.'
+            }
 
             try {
-
-                await sendPlayMessage(
-                    sock,
-                    from,
-                    ui.error(
-                        'ERROR',
-                        'No se pudo descargar la música.'
-                    )
-                )
-
+                await sendMessage(sock, from, {
+                    text: ui.error('ERROR PLAY', detail)
+                })
             } catch {}
 
-
             return false
-
         }
-
     }
-
 }

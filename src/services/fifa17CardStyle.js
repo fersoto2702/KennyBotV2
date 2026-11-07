@@ -79,24 +79,83 @@ const FIFA17_CARD_STYLES = {
     chemistryColor: '#36211B',
 
     playerImage: {
-        height: 143,
-        x: 100,
-        y: 37,
+        height: 142,
+        x: 78,
+        y: 34,
         visibleBottom: 174,
         rightInset: 6
     },
 
     nameBand: {
-    top: 158,
-    height: 29
+        top: 158,
+        height: 29
     },
 
     rightBorder: {
-    width: 10,
-    top: 110,
-    height: 85
-    }
+        width: 10,
+        top: 110,
+        height: 85
     },
+
+    club: {
+        size: 41,
+        x: 37,
+        y: 98
+    },
+
+    nation: {
+        width: 36,
+        x: 42,
+        y: 143
+    },
+
+    chemistry: {
+        textX: 125,
+        textY: 311.5,
+        iconX: 63,
+        iconY: 292
+    },
+
+    condensedText: {
+        rating: {
+            x: 59.6,
+            y: 66.1,
+            size: 35
+        },
+
+        position: {
+            x: 58.5,
+            y: 88.3,
+            size: 24
+        },
+
+        name: {
+            x: 113,
+            y: 196.9,
+            size: 23,
+            weight: 'wide',
+            letterSpacing: 1.05
+        },
+
+        stats: {
+            valueCenterX: [57, 141.2],
+            labelX: [74.5, 158.9],
+            rowsY: [224, 251.2, 277.1],
+            valueSize: 21.3,
+            labelSize: 21,
+            valueFont: 'strong',
+            labelFont: 'semi',
+            valueLetterSpacing: 0.8,
+            labelLetterSpacing: 0
+        },
+
+        chemistry: {
+            x: 125,
+            y: 311.5,
+            size: 22
+        }
+    },
+},
 
     gold: {
     template: path.join(
@@ -109,9 +168,9 @@ const FIFA17_CARD_STYLES = {
     chemistryColor: '#36211B',
 
     playerImage: {
-        height: 133,
-        x: 81,
-        y: 41,
+        height: 142,
+        x: 78,
+        y: 34,
         visibleBottom: 174
     },
 
@@ -128,14 +187,14 @@ const FIFA17_CARD_STYLES = {
 
     club: {
         size: 41,
-        x: 45,
-        y: 94
+        x: 37,
+        y: 98
     },
 
     nation: {
-        width: 55,
-        x: 39,
-        y: 135
+        width: 36,
+        x: 42,
+        y: 143
     },
 
     chemistry: {
@@ -147,31 +206,35 @@ const FIFA17_CARD_STYLES = {
 
     condensedText: {
         rating: {
-            x: 66.1,
-            y: 65.8,
-            size: 36.5
+            x: 59.6,
+            y: 66.1,
+            size: 35
         },
 
         position: {
-            x: 66,
-            y: 84,
-            size: 20.6
+            x: 58.5,
+            y: 88.3,
+            size: 24
         },
 
         name: {
-            x: 114.8,
-            y: 197.3,
-            size: 22.5,
-            weight: 'bold',
-            letterSpacing: 0.1
+            x: 113,
+            y: 196.9,
+            size: 23,
+            weight: 'wide',
+            letterSpacing: 1.05
         },
 
         stats: {
-            valueCenterX: [47.2, 149.9],
-            labelX: [62.3, 164.8],
-            rowsY: [224.6, 251, 277.4],
-            valueSize: 22.6,
-            labelSize: 22.6
+            valueCenterX: [57, 141.2],
+            labelX: [74.5, 158.9],
+            rowsY: [224, 251.2, 277.1],
+            valueSize: 21.3,
+            labelSize: 21,
+            valueFont: 'strong',
+            labelFont: 'semi',
+            valueLetterSpacing: 0.8,
+            labelLetterSpacing: 0
         },
 
         chemistry: {
@@ -251,11 +314,15 @@ const FIFA17_CARD_STYLES = {
         },
 
         stats: {
-            valueCenterX: [55.5, 139.8],
+            valueCenterX: [57, 141.2],
             labelX: [74.5, 158.9],
             rowsY: [224, 251.2, 277.1],
-            valueSize: 22,
-            labelSize: 22
+            valueSize: 21.3,
+            labelSize: 21,
+            valueFont: 'strong',
+            labelFont: 'semi',
+            valueLetterSpacing: 0.8,
+            labelLetterSpacing: 0
         },
 
         chemistry: {

@@ -192,6 +192,20 @@ const CONDENSED_FONT_CANDIDATES = {
         'DINPro-Medium.otf',
         'D-DIN.otf',
         '@fontsource/barlow/files/barlow-latin-500-normal.woff'
+    ],
+
+    // Ancho normal, peso semibold (números de stats de Rare Gold)
+    strong: [
+        'DINPro-Bold.otf',
+        'D-DIN-Bold.otf',
+        '@fontsource/barlow/files/barlow-latin-600-normal.woff'
+    ],
+
+    // Intermedia entre condensada y normal (etiquetas de stats de Rare Gold)
+    semi: [
+        'DINPro-Medium.otf',
+        'D-DIN.otf',
+        '@fontsource/barlow-semi-condensed/files/barlow-semi-condensed-latin-500-normal.woff'
     ]
 
 }
@@ -243,7 +257,7 @@ function loadCondensedFont(kind) {
         )
     }
 
-    if (chain.length === 0 && (kind === 'display' || kind === 'wide')) {
+    if (chain.length === 0 && (kind === 'display' || kind === 'wide' || kind === 'semi' || kind === 'strong')) {
         const fallbackChain = loadCondensedFont(
             kind === 'display' ? 'bold' : 'regular'
         )
@@ -275,6 +289,10 @@ function pickCondensedFont(chain, text) {
         )
     ) || chain[0]
 }
+
+// opentype.js toPathData() a veces escribe "NaN" en el trazo (por ejemplo el "2"
+// de "26"), y el renderer descarta el resto del número. Este conversor propio
+// escribe el trazo directamente desde los comandos del glifo y nunca produce NaN.
 function commandsToPathData(commands) {
     const round = value =>
         (Math.round(value * 100) / 100).toString()
@@ -343,6 +361,10 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
     const regular = loadCondensedFont('regular')
     const display = loadCondensedFont('display')
     const wide = loadCondensedFont('wide')
+    const semi = loadCondensedFont('semi')
+    const strong = loadCondensedFont('strong')
+
+    const fontChains = { bold, regular, display, wide, semi, strong }
 
     const rating = {
         x: 65,
@@ -372,7 +394,11 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
         labelX: [68, 156.8],
         rowsY: [224.7, 250.1, 275.5],
         valueSize: 21.4,
-        labelSize: 21.4
+        labelSize: 21.4,
+        valueFont: 'bold',
+        labelFont: 'regular',
+        valueLetterSpacing: 0,
+        labelLetterSpacing: 0
     }
 
     // Centrado automático: si el estilo define statsBlock { top, bottom, centerX? }
@@ -479,24 +505,26 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
 
         paths.push(
             textToPath({
-                chain: bold,
+                chain: fontChains[stats.valueFont] || bold,
                 text: attributes[statName] ?? '--',
                 x: stats.valueCenterX[column],
                 y: stats.rowsY[row],
                 size: stats.valueSize,
                 fill: colors.stats,
-                anchor: 'middle'
+                anchor: 'middle',
+                letterSpacing: stats.valueLetterSpacing
             })
         )
 
         paths.push(
             textToPath({
-                chain: regular,
+                chain: fontChains[stats.labelFont] || regular,
                 text: getStatLabel(statName),
                 x: stats.labelX[column],
                 y: stats.rowsY[row],
                 size: stats.labelSize,
-                fill: colors.stats
+                fill: colors.stats,
+                letterSpacing: stats.labelLetterSpacing
             })
         )
     })

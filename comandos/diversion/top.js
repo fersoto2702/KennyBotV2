@@ -26,7 +26,34 @@ const CATEGORIES = {
     lindos: { title: 'LINDOS', emoji: '🥰' },
     lindas: { title: 'LINDAS', emoji: '🥰' },
     graciosos: { title: 'GRACIOSOS', emoji: '😂' },
-    graciosas: { title: 'GRACIOSAS', emoji: '😂' }
+    graciosas: { title: 'GRACIOSAS', emoji: '😂' },
+    pendejos: { title: 'PENDEJOS', emoji: '🤡' },
+    pendejas: { title: 'PENDEJAS', emoji: '🤡' },
+    idiotas: { title: 'IDIOTAS', emoji: '🧠' },
+    mensos: { title: 'MENSOS', emoji: '😵‍💫' },
+    mensas: { title: 'MENSAS', emoji: '😵‍💫' },
+    despistados: { title: 'DESPISTADOS', emoji: '🫠' },
+    despistadas: { title: 'DESPISTADAS', emoji: '🫠' },
+    racistas: { title: 'RACISTAS', emoji: '🚫' },
+    narcisistas: { title: 'NARCISISTAS', emoji: '🪞' },
+    mentirosos: { title: 'MENTIROSOS', emoji: '🤥' },
+    mentirosas: { title: 'MENTIROSAS', emoji: '🤥' },
+    chismosos: { title: 'CHISMOSOS', emoji: '🗣️' },
+    chismosas: { title: 'CHISMOSAS', emoji: '🗣️' },
+    flojos: { title: 'FLOJOS', emoji: '🛋️' },
+    flojas: { title: 'FLOJAS', emoji: '🛋️' },
+    orgullosos: { title: 'ORGULLOSOS', emoji: '👑' },
+    orgullosas: { title: 'ORGULLOSAS', emoji: '👑' },
+    dramaticos: { title: 'DRAMÁTICOS', emoji: '🎭' },
+    dramaticas: { title: 'DRAMÁTICAS', emoji: '🎭' },
+    manipuladores: { title: 'MANIPULADORES', emoji: '🕸️' },
+    manipuladoras: { title: 'MANIPULADORAS', emoji: '🕸️' },
+    presumidos: { title: 'PRESUMIDOS', emoji: '😏' },
+    presumidas: { title: 'PRESUMIDAS', emoji: '😏' },
+    fiesteros: { title: 'FIESTEROS', emoji: '🥳' },
+    fiesteras: { title: 'FIESTERAS', emoji: '🥳' },
+    mamones: { title: 'MAMONES', emoji: '🙄' },
+    mamonas: { title: 'MAMONAS', emoji: '🙄' }
 }
 
 const CATEGORY_ALIASES = {
@@ -34,15 +61,30 @@ const CATEGORY_ALIASES = {
     soltero: 'solteros', soltera: 'solteras',
     mijagero: 'mijageros', mijagera: 'mijageras',
     celoso: 'celosos', celosa: 'celosas',
-    toxico: 'toxicos', tóxico: 'toxicos', toxicos: 'toxicos', tóxicos: 'toxicos',
-    toxica: 'toxicas', tóxica: 'toxicas', toxicas: 'toxicas', tóxicas: 'toxicas',
+    toxico: 'toxicos', tóxico: 'toxicos', tóxicos: 'toxicos',
+    toxica: 'toxicas', tóxica: 'toxicas', tóxicas: 'toxicas',
     intenso: 'intensos', intensa: 'intensas',
-    romantico: 'romanticos', romántico: 'romanticos', romanticos: 'romanticos', románticos: 'romanticos',
-    romantica: 'romanticas', romántica: 'romanticas', romanticas: 'romanticas', románticas: 'romanticas',
+    romantico: 'romanticos', romántico: 'romanticos', románticos: 'romanticos',
+    romantica: 'romanticas', romántica: 'romanticas', románticas: 'romanticas',
     infiel: 'infieles',
     dormilon: 'dormilones', dormilón: 'dormilones', dormilona: 'dormilonas',
     lindo: 'lindos', linda: 'lindas',
-    gracioso: 'graciosos', graciosa: 'graciosas'
+    gracioso: 'graciosos', graciosa: 'graciosas',
+    pendejo: 'pendejos', pendeja: 'pendejas',
+    idiota: 'idiotas',
+    menso: 'mensos', mensa: 'mensas',
+    despistado: 'despistados', despistada: 'despistadas',
+    racista: 'racistas',
+    narcisista: 'narcisistas', narcicista: 'narcisistas', narcicistas: 'narcisistas',
+    mentiroso: 'mentirosos', mentirosa: 'mentirosas',
+    chismoso: 'chismosos', chismosa: 'chismosas',
+    flojo: 'flojos', floja: 'flojas',
+    orgulloso: 'orgullosos', orgullosa: 'orgullosas',
+    dramatico: 'dramaticos', dramático: 'dramaticos', dramatica: 'dramaticas', dramática: 'dramaticas',
+    manipulador: 'manipuladores', manipuladora: 'manipuladoras',
+    presumido: 'presumidos', presumida: 'presumidas',
+    fiestero: 'fiesteros', fiestera: 'fiesteras',
+    mamon: 'mamones', mamón: 'mamones', mamona: 'mamonas'
 }
 
 function normalizeJid(jid) {
@@ -82,7 +124,7 @@ function shuffle(array) {
 
 function parseArguments(args) {
     const values = Array.isArray(args)
-        ? args.map(value => String(value || '').trim()).filter(Boolean)
+        ? args.map(v => String(v || '').trim()).filter(Boolean)
         : []
 
     let amount = DEFAULT_AMOUNT
@@ -128,8 +170,8 @@ function buildHelpText(prefix) {
         '',
         `𖣣ֶㅤ֯⌗ •  ׄ ⬭ ${prefix}top 5 solteros`,
         `𖣣ֶㅤ֯⌗ •  ׄ ⬭ ${prefix}top 3 guapas`,
-        `𖣣ֶㅤ֯⌗ •  ׄ ⬭ ${prefix}top mijageros`,
-        `𖣣ֶㅤ֯⌗ •  ׄ ⬭ ${prefix}top 10 toxicos`,
+        `𖣣ֶㅤ֯⌗ •  ׄ ⬭ ${prefix}top pendejos`,
+        `𖣣ֶㅤ֯⌗ •  ׄ ⬭ ${prefix}top 10 narcisistas`,
         '',
         'ㅤ۟∩　ׅ　📂　ׅ　*CATEGORÍAS DISPONIBLES*　ׄᰙ',
         '',
@@ -190,7 +232,10 @@ module.exports = {
             }
 
             const metadata = await sock.groupMetadata(from)
-            const rawParticipants = Array.isArray(metadata?.participants) ? metadata.participants : []
+            const rawParticipants = Array.isArray(metadata?.participants)
+                ? metadata.participants
+                : []
+
             const botJids = getBotJids(sock)
             const seen = new Set()
 
@@ -202,7 +247,7 @@ module.exports = {
                     return true
                 })
 
-            if (participants.length === 0) {
+            if (!participants.length) {
                 return await sendMessage(sock, from, {
                     text: ui.warn(
                         'SIN PARTICIPANTES',
@@ -215,23 +260,23 @@ module.exports = {
             const selected = shuffle(participants).slice(0, finalAmount)
             const mentions = [...selected]
 
-            const lines = selected.map((jid, index) => {
-                const number = getDisplayUser(jid)
-                return `𖣣ֶㅤ֯⌗ ${getPositionEmoji(index)}  ׄ ⬭ @${number}`
-            })
+            const lines = selected.map((jid, index) =>
+                `𖣣ֶㅤ֯⌗ ${getPositionEmoji(index)}  ׄ ⬭ @${getDisplayUser(jid)}`
+            )
 
             const botName = getBotName(sock)
             const title = `TOP ${finalAmount} ${categoryData.title}`
 
-            const message = [
-                `ㅤ۟∩　ׅ　${categoryData.emoji}　ׅ　*${title}*　ׄᰙ`,
-                '',
-                ...lines,
-                '',
-                `╰─ 𓂃 Ranking aleatorio generado por ${botName}`
-            ].join('\n')
-
-            await sendMessage(sock, from, { text: message, mentions })
+            await sendMessage(sock, from, {
+                text: [
+                    `ㅤ۟∩　ׅ　${categoryData.emoji}　ׅ　*${title}*　ׄᰙ`,
+                    '',
+                    ...lines,
+                    '',
+                    `╰─ 𓂃 Ranking aleatorio generado por ${botName}`
+                ].join('\n'),
+                mentions
+            })
 
             logger.event(`${botName} | Top ${finalAmount} ${category} | ${from}`)
             return true
