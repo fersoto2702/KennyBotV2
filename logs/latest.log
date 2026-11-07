@@ -1387399,3 +1387399,829 @@ https://chat.whatsapp.com/HB0gfxLUzIjAznkIF6UhDH?s=cl&p=a&iam=2
 [14:25:05] [INFO] Socket cerrado | main
 [14:25:05] [INFO] Socket cerrado | brazil
 [14:25:05] [OK] Todas las sesiones fueron cerradas
+[14:26:40] [OK] UnifiedRateLimiter cargado
+[14:26:40] [OK] Comando cargado: ban
+[14:26:40] [OK] Comando cargado: unban
+[14:26:40] [OK] Comando cargado: antilink
+[14:26:40] [OK] Comando cargado: card
+[14:26:40] [OK] Comando cargado: cardinfo
+[14:26:40] [OK] Comando cargado: claim
+[14:26:40] [OK] Comando cargado: collection
+[14:26:40] [OK] Comando cargado: antibot
+[14:26:40] [OK] Comando cargado: antifake
+[14:26:40] [OK] Comando cargado: autolevelup
+[14:26:40] [OK] Comando cargado: adivinanumero
+[14:26:40] [OK] Comando cargado: adivinanza
+[14:26:40] [OK] Comando cargado: ahorcado
+[14:26:40] [OK] Comando cargado: crush
+[14:26:40] [OK] Comando cargado: dado
+[14:26:40] [OK] Comando cargado: fusion
+[14:26:40] [OK] Comando cargado: moneda
+[14:26:40] [OK] Comando cargado: personalidad
+[14:26:40] [OK] Comando cargado: ppt
+[14:26:41] [OK] Comando cargado: qc
+[14:26:41] [OK] Comando cargado: rate
+[14:26:41] [OK] Comando cargado: reto
+[14:26:41] [OK] Comando cargado: ship
+[14:26:41] [OK] Comando cargado: top
+[14:26:41] [OK] Comando cargado: trivia
+[14:26:41] [OK] Comando cargado: verdad
+[14:26:41] [OK] Comando cargado: facebook
+[14:26:41] [OK] Comando cargado: instagram
+[14:26:41] [OK] Comando cargado: pinterest
+[14:26:42] [OK] Comando cargado: play
+[14:26:42] [OK] Comando cargado: spotify
+[14:26:42] [OK] Comando cargado: tiktok
+[14:26:42] [OK] Comando cargado: ytmp3
+[14:26:42] [OK] Comando cargado: ytmp4
+[14:26:42] [OK] Comando cargado: balance
+[14:26:42] [OK] Comando cargado: buy
+[14:26:42] [WARN] Comando duplicado ignorado: buy (crime.js)
+[14:26:42] [OK] Comando cargado: daily
+[14:26:42] [OK] Comando cargado: deposit
+[14:26:42] [OK] Comando cargado: gamble
+[14:26:42] [OK] Comando cargado: inventory
+[14:26:42] [OK] Comando cargado: leaderboardmoney
+[14:26:42] [OK] Comando cargado: open
+[14:26:42] [OK] Comando cargado: pay
+[14:26:42] [OK] Comando cargado: rob
+[14:26:42] [OK] Comando cargado: shop
+[14:26:42] [OK] Comando cargado: slots
+[14:26:42] [OK] Comando cargado: withdraw
+[14:26:42] [OK] Comando cargado: work
+[14:26:42] [OK] Comando cargado: equip
+[14:26:42] [OK] Comando cargado: events
+[14:26:42] [OK] Comando cargado: brat
+[14:26:45] [OK] Comando cargado: exportstats
+[14:26:45] [OK] Comando cargado: inactive
+[14:26:45] [OK] Comando cargado: msgstats
+[14:26:45] [OK] Comando cargado: topmessages
+[14:26:45] [OK] Comando cargado: groups
+[14:26:45] [OK] Comando cargado: add
+[14:26:45] [OK] Comando cargado: admins
+[14:26:45] [OK] Comando cargado: demote
+[14:26:45] [OK] Comando cargado: goodbye
+[14:26:45] [OK] Comando cargado: hidetag
+[14:26:45] [OK] Comando cargado: kick
+[14:26:45] [OK] Comando cargado: link
+[14:26:45] [OK] Comando cargado: mute
+[14:26:45] [OK] Comando cargado: promote
+[14:26:45] [OK] Comando cargado: resetgoodbye
+[14:26:45] [OK] Comando cargado: resetwelcome
+[14:26:45] [OK] Comando cargado: setgoodbye
+[14:26:45] [OK] Comando cargado: setwelcome
+[14:26:46] [OK] Comando cargado: tagall
+[14:26:46] [OK] Comando cargado: unwarn
+[14:26:46] [OK] Comando cargado: warn
+[14:26:46] [OK] Comando cargado: warnings
+[14:26:46] [OK] Comando cargado: welcome
+[14:26:46] [OK] Comando cargado: ia
+[14:26:46] [OK] Comando cargado: join
+[14:26:46] [WARN] Alias duplicado "top" en leaderboard.js
+[14:26:46] [OK] Comando cargado: leaderboard
+[14:26:46] [WARN] Alias duplicado "rank" en level.js
+[14:26:46] [OK] Comando cargado: level
+[14:26:46] [WARN] Comando duplicado ignorado: rank (rank.js)
+[14:26:46] [OK] Comando cargado: menu
+[14:26:46] [OK] Comando cargado: myclub
+[14:26:46] [OK] Comando cargado: objectives
+[14:26:46] [OK] Comando cargado: openpack
+[14:26:46] [OK] Comando cargado: packs
+[14:26:46] [OK] Comando cargado: pick
+[14:26:46] [OK] Comando cargado: ping
+[14:26:46] [OK] Comando cargado: addpremium
+[14:26:46] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[14:26:46] [OK] Comando cargado: delpremium
+[14:26:46] [OK] Comando cargado: profile
+[14:26:46] [OK] Comando cargado: sticker
+[14:26:46] [OK] Comando cargado: addjoinmsg
+[14:26:46] [OK] Comando cargado: clearjoinmsg
+[14:26:46] [OK] Comando cargado: deljoinmsg
+[14:26:46] [OK] Comando cargado: listjoinmsg
+[14:26:46] [INFO] Iniciando sistema multi-bot...
+[14:26:46] [INFO] Instancias configuradas: main, brazil
+[14:26:46] [OK] MySQL conectado y tabla lista
+[14:26:46] [OK] Base de datos inicializada
+[14:26:46] [INFO] Iniciando 2 instancia(s): main, brazil
+[14:26:47] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[14:26:47] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[14:26:47] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[14:26:47] [OK] KennyBot | SocketManager cargado
+[14:26:48] [OK] KennyBot conectado
+[14:26:48] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[14:26:49] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[14:27:08] [EVENT] [main] 240775984054326 -> Murió, pensé wu el +52 le estaban bajando xd
+[14:27:09] [EVENT] [main] 30760622928040 -> En su multi
+[14:27:09] [EVENT] KennyBot | PassiveCoins: 240775984054326 +9
+[14:27:09] [EVENT] KennyBot | PassiveCoins: 30760622928040 +8
+[14:27:11] [EVENT] [brazil] 149693216600278 -> Que tal
+[14:27:11] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 149693216600278 +2
+[14:27:12] [EVENT] [main] 240775984054326 -> Yes
+[14:27:21] [EVENT] [brazil] 90276706144311 -> Bien y usted¿?
+[14:27:21] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 90276706144311 +4
+[14:27:29] [EVENT] [brazil] 124962878828787 -> Me hueles a Neit.
+[14:27:29] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 124962878828787 +8
+[14:27:30] [EVENT] [brazil] 170639805661185 -> Está feo y no me gusta
+[14:27:30] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 170639805661185 +5
+[14:27:30] [EVENT] [brazil] 170639805661185 -> PUAJJAAJJ
+[14:28:29] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Group participant update | add | 120363413442440433@g.us
+[14:28:29] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Group participant update | add | 120363343360264412@g.us
+[14:28:29] [INFO] KennyBot | Group participant update | add | 120363343360264412@g.us
+[14:28:42] [EVENT] [brazil] 267267728257237 -> @159021919113260 amorf, no ignores
+[14:28:42] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 267267728257237 +3
+[14:28:45] [EVENT] [brazil] 37586030600297 -> @17386765824182 denle la bienvenidaaaa.
+[14:28:45] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +10
+[14:28:48] [EVENT] [brazil] 37586030600297 -> .tag
+[14:28:48] [CMD] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | hidetag → 37586030600297
+[14:28:49] [EVENT] Hidetag publicado en 120363413442440433 por 37586030600297 | 48 menciones | texto
+[14:29:03] [EVENT] [brazil] 271408479350863 -> Kien kiere
+[14:29:03] [EVENT] [main] 271408479350863 -> Kien kiere
+[14:29:03] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 271408479350863 +8
+[14:29:03] [EVENT] KennyBot | PassiveCoins: 271408479350863 +6
+[14:29:04] [EVENT] [brazil] 271408479350863 -> Jugar
+[14:29:04] [EVENT] [main] 271408479350863 -> Jugar
+[14:29:09] [EVENT] [brazil] 271408479350863 -> 99 noches kon el venado
+[14:29:09] [EVENT] [main] 271408479350863 -> 99 noches kon el venado
+[14:29:26] [EVENT] [brazil] 114895056015445 -> alo
+[14:29:26] [EVENT] [main] 114895056015445 -> alo
+[14:29:26] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 114895056015445 +3
+[14:29:26] [EVENT] KennyBot | PassiveCoins: 114895056015445 +7
+[14:29:34] [EVENT] [brazil] 159021919113260 -> Jolaaa.
+[14:29:34] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 159021919113260 +8
+[14:29:38] [EVENT] [brazil] 159021919113260 -> Como estas?
+[14:29:41] [EVENT] [brazil] 271408479350863 -> Adio
+[14:29:41] [EVENT] [main] 271408479350863 -> Adio
+[14:29:49] [EVENT] [brazil] 177898216538250 -> YO
+[14:29:49] [EVENT] [main] 177898216538250 -> YO
+[14:29:49] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 177898216538250 +4
+[14:29:49] [EVENT] KennyBot | PassiveCoins: 177898216538250 +1
+[14:29:50] [EVENT] [brazil] 177898216538250 -> YO
+[14:29:50] [EVENT] [main] 177898216538250 -> YO
+[14:29:50] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:29:50] [EVENT] [brazil] 177898216538250 -> YO
+[14:29:50] [EVENT] [main] 177898216538250 -> YO
+[14:29:50] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:29:51] [EVENT] [brazil] 177898216538250 -> YO
+[14:29:51] [EVENT] [main] 177898216538250 -> YO
+[14:29:51] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:29:51] [EVENT] [brazil] 159021919113260 -> Otei anol.
+[14:29:51] [EVENT] [brazil] 177898216538250 -> YO
+[14:29:51] [EVENT] [main] 177898216538250 -> YO
+[14:29:51] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:29:58] [EVENT] [brazil] 271408479350863 -> Vente
+[14:29:58] [EVENT] [main] 271408479350863 -> Vente
+[14:29:58] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:30:03] [EVENT] [brazil] 177898216538250 -> Y quien mas jugará?
+[14:30:04] [EVENT] [main] 177898216538250 -> Y quien mas jugará?
+[14:30:07] [EVENT] [brazil] 267267728257237 -> Eso es, sumiso
+[14:30:08] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 267267728257237 +2
+[14:30:09] [EVENT] [brazil] 271408479350863 -> Mi
+[14:30:09] [EVENT] [main] 271408479350863 -> Mi
+[14:30:09] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 271408479350863 +10
+[14:30:09] [EVENT] KennyBot | PassiveCoins: 271408479350863 +3
+[14:30:09] [EVENT] [brazil] 267267728257237 -> Digo
+[14:30:10] [EVENT] [brazil] 271408479350863 -> Ija
+[14:30:10] [EVENT] [main] 271408479350863 -> Ija
+[14:30:10] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:30:11] [EVENT] [brazil] 271408479350863 -> Pro
+[14:30:11] [EVENT] [main] 271408479350863 -> Pro
+[14:30:13] [EVENT] [brazil] 271408479350863 -> Pearl
+[14:30:13] [EVENT] [main] 271408479350863 -> Pearl
+[14:30:17] [EVENT] [brazil] 159021919113260 -> El culo suyo.
+[14:30:24] [EVENT] [main] 205459055198351 -> VIDA.
+[14:30:24] [EVENT] KennyBot | PassiveCoins: 205459055198351 +9
+[14:30:29] [EVENT] [brazil] 114895056015445 -> ojalá los coma el lobo 🥰
+[14:30:29] [EVENT] [main] 114895056015445 -> ojalá los coma el lobo 🥰
+[14:30:29] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 114895056015445 +3
+[14:30:29] [EVENT] KennyBot | PassiveCoins: 114895056015445 +3
+[14:30:31] [EVENT] [main] 205459055198351 -> Zev, me eres infiel.
+[14:30:31] [EVENT] [brazil] 114895056015445 -> bendiciones
+[14:30:31] [EVENT] [main] 114895056015445 -> bendiciones
+[14:30:31] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:30:32] [EVENT] [brazil] 267267728257237 -> ...
+[14:30:34] [EVENT] [brazil] 177898216538250 -> Okei déjame ver si mi ija juega
+[14:30:34] [EVENT] [main] 177898216538250 -> Okei déjame ver si mi ija juega
+[14:30:36] [EVENT] [brazil] 271408479350863 -> Ese es tu
+[14:30:36] [EVENT] [main] 271408479350863 -> Ese es tu
+[14:30:42] [EVENT] [brazil] 271408479350863 -> Pq te
+[14:30:42] [EVENT] [main] 271408479350863 -> Pq te
+[14:30:46] [EVENT] [brazil] 271408479350863 -> Reflejas
+[14:30:46] [EVENT] [main] 271408479350863 -> Reflejas
+[14:30:52] [EVENT] [brazil] 271408479350863 -> En nosotros
+[14:30:52] [EVENT] [main] 271408479350863 -> En nosotros
+[14:30:52] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:31:01] [EVENT] [brazil] 267267728257237 -> Quien es mi bebito lindo?
+[14:31:06] [EVENT] [brazil] 159021919113260 -> Akaiza miralo.
+[14:31:06] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 159021919113260 +9
+[14:31:08] [EVENT] [main] 177898216538250 -> NDHSKSHS EL ES EVREN
+[14:31:08] [EVENT] KennyBot | PassiveCoins: 177898216538250 +3
+[14:31:09] [EVENT] [main] 44105388294173 -> Es Zevv??
+[14:31:09] [EVENT] KennyBot | PassiveCoins: 44105388294173 +8
+[14:31:13] [EVENT] [main] 177898216538250 -> MI AMOI
+[14:31:19] [EVENT] [brazil] 159021919113260 -> Nadie.
+[14:31:20] [EVENT] [main] 177898216538250 -> Mi bebe
+[14:31:22] [EVENT] [main] 177898216538250 -> Mio
+[14:31:23] [EVENT] [main] 177898216538250 -> KSKKSJSS
+[14:31:33] [EVENT] [brazil] 177898216538250 -> KSKSKSJ
+[14:31:33] [EVENT] [main] 177898216538250 -> KSKSKSJ
+[14:31:33] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:31:33] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 177898216538250 +7
+[14:31:36] [EVENT] [brazil] 37586030600297 -> De dónde salistes?
+[14:31:36] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +1
+[14:31:37] [EVENT] [main] 44105388294173 -> Me hablas así??
+[14:31:40] [EVENT] [brazil] 271408479350863 -> Unete
+[14:31:40] [EVENT] [main] 271408479350863 -> Unete
+[14:31:40] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 271408479350863 +6
+[14:31:40] [EVENT] KennyBot | PassiveCoins: 271408479350863 +7
+[14:31:41] [EVENT] [brazil] 271408479350863 -> Ya
+[14:31:41] [EVENT] [main] 271408479350863 -> Ya
+[14:31:42] [EVENT] [brazil] 271408479350863 -> Apura
+[14:31:42] [EVENT] [main] 271408479350863 -> Apura
+[14:31:45] [EVENT] [brazil] 267267728257237 -> ...
+[14:31:45] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 267267728257237 +10
+[14:31:54] [EVENT] [brazil] 267267728257237 -> Responde
+[14:31:58] [EVENT] [brazil] 177898216538250 -> Voy
+[14:31:58] [EVENT] [main] 177898216538250 -> Voy
+[14:31:58] [ERROR] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Activity/Card DB Error: Error: Deadlock found when trying to get lock; try restarting transaction
+    at registerValidMessage (C:\Users\Ferna\KennyBotV2\src\database\repositories\activityRepository.js:309:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async module.exports (C:\Users\Ferna\KennyBotV2\eventos\messages.js:945:21)
+    at async EventEmitter.<anonymous> (C:\Users\Ferna\KennyBotV2\index.js:1436:21)
+[14:32:03] [EVENT] [brazil] 159021919113260 -> Te voy casar con alguien.
+[14:32:04] [EVENT] [brazil] 17386765824182 -> Ps de donde más?
+[14:32:04] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 17386765824182 +4
+[14:32:06] [EVENT] [main] 177898216538250 -> Mi amoi
+[14:32:11] [EVENT] [brazil] 90276706144311 -> Yia te dije ke hay le cortarle el pito.
+[14:32:11] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 90276706144311 +5
+[14:32:13] [EVENT] [main] 205459055198351 -> Vete.
+[14:32:13] [EVENT] KennyBot | PassiveCoins: 205459055198351 +7
+[14:32:13] [EVENT] [brazil] 267267728257237 -> ....
+[14:32:16] [EVENT] [main] 205459055198351 -> Ya nada.
+[14:32:19] [EVENT] [brazil] 5708716204094 -> Haciendo de todos, menos mi banner
+[14:32:19] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 5708716204094 +2
+[14:32:20] [EVENT] [brazil] 5708716204094 -> Murió
+[14:32:21] [EVENT] [brazil] 37586030600297 -> OH
+[14:32:29] [EVENT] [brazil] 159021919113260 -> Eso ayúdame.
+[14:32:29] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 159021919113260 +2
+[14:32:34] [EVENT] [brazil] 17386765824182 -> Bueno
+[14:32:35] [EVENT] [brazil] 159021919113260 -> Ronan pon el pito.
+[14:32:39] [EVENT] [main] 177898216538250 -> Jugare roblox
+[14:32:39] [EVENT] KennyBot | PassiveCoins: 177898216538250 +2
+[14:32:40] [EVENT] [brazil] 17386765824182 -> Puedo como Jungkook?
+[14:32:41] [EVENT] [brazil] 269020225871977 -> Pauajjajaja
+[14:32:41] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 269020225871977 +9
+[14:32:41] [EVENT] [brazil] 159021919113260 -> Te lo vamos a cortar.
+[14:32:43] [EVENT] [brazil] 17386765824182 -> O Seungmin?
+[14:32:46] [EVENT] [brazil] 90276706144311 -> Kon gusto ziziz.
+[14:32:46] [EVENT] [brazil] 269020225871977 -> Estoy buscando ideas
+[14:32:48] [EVENT] [brazil] 177898216538250 -> Vamonos
+[14:32:48] [EVENT] [main] 177898216538250 -> Vamonos
+[14:32:48] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 177898216538250 +4
+[14:32:57] [EVENT] [main] 44105388294173 -> Con otro.
+[14:32:57] [EVENT] KennyBot | PassiveCoins: 44105388294173 +4
+[14:33:02] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Group participant update | add | 120363343360264412@g.us
+[14:33:02] [INFO] KennyBot | Group participant update | add | 120363343360264412@g.us
+[14:33:03] [EVENT] [brazil] 269020225871977 -> Siok , no es lo mimo un banner que un icon
+[14:33:04] [EVENT] [brazil] 159021919113260 -> Eso anol.
+[14:33:06] [EVENT] [brazil] 267267728257237 -> .........
+[14:33:07] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 267267728257237 +9
+[14:33:19] [EVENT] [brazil] 159021919113260 -> Ronan y zevrath pongan el pipí.
+[14:33:39] [EVENT] [brazil] 267267728257237 -> Esok
+[14:33:59] [EVENT] [brazil] 159021919113260 -> Cortemos esos pipís.
+[14:34:00] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 159021919113260 +6
+[14:34:00] [EVENT] [brazil] 90276706144311 -> Ohziziz
+[14:34:01] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 90276706144311 +9
+[14:34:18] [EVENT] [brazil] 90276706144311 -> No les va doler les ponemos anestesia ziziz.
+[14:34:35] [EVENT] [main] 205459055198351 -> Con el otro.
+[14:34:35] [EVENT] KennyBot | PassiveCoins: 205459055198351 +1
+[14:35:02] [EVENT] [brazil] 37586030600297 -> Esto no es teams beby.
+[14:35:02] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +2
+[14:35:05] [EVENT] [brazil] 159021919113260 -> Eso eso.
+[14:35:05] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 159021919113260 +6
+[14:35:09] [EVENT] [brazil] 159021919113260 -> Anestesia de la buena.
+[14:35:11] [EVENT] [brazil] 159021919113260 -> Sipis.
+[14:35:12] [EVENT] [brazil] 37586030600297 -> Elije quién tu quieras
+[14:35:12] [EVENT] [brazil] 90276706144311 -> Ohzizi
+[14:35:12] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 90276706144311 +6
+[14:35:12] [EVENT] [brazil] 17386765824182 -> Ya vi
+[14:35:13] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 17386765824182 +8
+[14:35:16] [EVENT] [brazil] 17386765824182 -> Seungmin
+[14:35:20] [EVENT] [brazil] 37586030600297 -> No tenemos caritas reservadas
+[14:35:22] [EVENT] [brazil] 37586030600297 -> Okey
+[14:35:22] [EVENT] [brazil] 90276706144311 -> Un ptazo y quedan dormidos.
+[14:35:24] [EVENT] [brazil] 37586030600297 -> Okey
+[14:35:30] [EVENT] [brazil] 159021919113260 -> Por eso
+[14:35:32] [EVENT] [brazil] 17386765824182 -> YA VI WE
+[14:35:35] [EVENT] [main] 177898216538250 -> ...
+[14:35:35] [EVENT] KennyBot | PassiveCoins: 177898216538250 +4
+[14:35:39] [EVENT] [main] 177898216538250 -> Che par de celosos
+[14:35:40] [EVENT] [main] 177898216538250 -> Alv
+[14:35:41] [EVENT] [brazil] 159021919113260 -> Pon el pipi.
+[14:35:45] [EVENT] [main] 177898216538250 -> Ya no juego
+[14:35:49] [EVENT] [brazil] 90276706144311 -> Ohsisis.
+[14:35:58] [EVENT] [brazil] 267267728257237 -> Te escribí al privado
+[14:35:58] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 267267728257237 +6
+[14:35:58] [EVENT] [brazil] 37586030600297 -> No me grites que lloro. 😕
+[14:36:02] [EVENT] [brazil] 37586030600297 -> Nene
+[14:36:02] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +1
+[14:36:28] [EVENT] [main] 44105388294173 -> Ya le dijiste al otro que no?
+[14:36:28] [EVENT] KennyBot | PassiveCoins: 44105388294173 +10
+[14:36:50] [EVENT] [main] 177898216538250 -> Ya voy, vamos a hablar en priv
+[14:36:50] [EVENT] KennyBot | PassiveCoins: 177898216538250 +8
+[14:36:52] [EVENT] [brazil] 17386765824182 -> JAJAJAJAJAJ
+[14:36:52] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 17386765824182 +9
+[14:36:57] [EVENT] [brazil] 17386765824182 -> Esque pensé que era team
+[14:37:02] [EVENT] [main] 44105388294173 -> Vete.
+[14:37:11] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Group participant update | add | 120363396588335312@g.us
+[14:37:13] [EVENT] [brazil] 31414061895814 -> 🫧     *`Wєℓ¢σмє`* ⩍     *`𝗍𖹭`* 🎐
+
+			⽇   *@17386765824182* ৲৲  🎑
+
+> © 𑁯 *Sƚ⍺ꭇ𝗌𝗅ı𝗀𝗁𝗍𝗌 Tᧉ⍺𝗆* ⫏
+[14:37:13] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 31414061895814 +10
+[14:37:22] [EVENT] [brazil] 159021919113260 -> Oki, sigue esperando.
+[14:37:22] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 159021919113260 +6
+[14:37:38] [EVENT] [brazil] 159021919113260 -> Se me pierden los chat.
+[14:37:39] [EVENT] [brazil] 17386765824182 -> Gracias
+[14:38:01] [EVENT] [brazil] 31414061895814 -> 🫧     *`Wєℓ¢σмє`* ⩍     *`𝗍𖹭`* 🎐
+
+			⽇   *@17386765824182* ৲৲  🎑
+
+> © 𑁯 *Sƚ⍺ꭇ𝗌𝗅ı𝗀𝗁𝗍𝗌 Tᧉ⍺𝗆* ⫏
+[14:39:20] [EVENT] [brazil] 212829302960141 -> Hola Yaya^^
+[14:39:20] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 212829302960141 +1
+[14:40:16] [EVENT] [brazil] 57510266446079 -> ㅤ
+ㅤ
+ㅤㅤㅤּㅤㅤㅤㅤㅤ ㅤ 🇬🇪ㅤㅤㅤㅤㅤㅤּㅤㅤㅤㅤㅤㅤㅤㅤ
+
+
+
+ㅤㅤㅤㅤㅤㅤㅤ 𝖕𝖗𝖊𝖘𝖈𝖔𝖙𝖙
+ㅤㅤ ㅤ ㅤ `ㅤ 𝖉𝖞𝖓𝖆𝖘𝖙𝖞ㅤㅤ`
+
+
+
+ㅤㅤㅤ  ㅤㅤㅤㅤㅤㅤㅤㅤㅤ ㅤㅤ      ㅤ       ㅤ        ㅤ  ㅤ  ㅤㅤㅤㅤㅤ
+⁚ㅤㅤㅤㅤㅤㅤㅤདཌㅤㅤㅤㅤㅤㅤㅤ⁚
+
+
+
+
+
+
+    ㅤ    𝖤𝗇𝗍𝗋𝖾 𝖾𝗅 𝗅𝗎𝗃𝗈 𝗒 𝗅𝖺    
+            𝗌𝗈𝖿𝗂𝗌𝗍𝗂𝖼𝖺𝖼𝗂𝗈́𝗇, *𝗉𝗋𝖾𝗌𝖼𝗈𝗍𝗍* 
+            𝗆𝖺𝗋𝖼𝖺  𝗎𝗇𝖺 𝖾𝗌𝖾𝗇𝖼𝗂𝖺 ㅤㅤ
+            𝖽𝗈𝗇𝖽𝖾 𝗅𝖺 𝖽𝗂𝗌𝗍𝗂𝗇𝖼𝗂𝗈́𝗇 ㅤ
+ㅤㅤㅤ𝗇𝗎𝗇𝖼𝖺 𝗉𝖺𝗌𝖺 𝖽𝖾 𝗆𝗈𝖽𝖺. 
+
+ㅤㅤㅤㅤㅤㅤ 
+ㅤㅤㅤㅤ    
+
+
+
+
+ㅤㅤㅤㅤㅤㅤ  
+
+
+ㅤㅤּㅤㅤ𝗰𝗼𝗺𝗲 𝘄𝗶𝘁𝗵 𝘂𝘀ㅤㅤּ
+
+
+
+                    
+         └ ㅤ𝖠𝖢𝖢𝖤𝖲𝖲ㅤㅤ ┐ 
+ 
+> https://chat.whatsapp.com/CqsLlZUpq4lAiBxMpYSFaI?s=cl&p=a&iam=2
+
+                  
+
+©           ‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎‎ ㅤㅤㅤ
+            ㅤ
+
+
+           𝐫𝐨𝐜𝐤𝐬𝐭𝐚ֳ𝐫 𝐜𝐫𝐞𝐚𝐭𝐨𝐫.𝖼𝗈𝗆
+[14:40:16] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 57510266446079 +8
+[14:44:58] [EVENT] [brazil] 240432269258994 -> Qué tal princesa?
+[14:44:58] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 240432269258994 +10
+[14:45:15] [EVENT] [main] 177898216538250 -> Hola amor
+[14:45:15] [EVENT] KennyBot | PassiveCoins: 177898216538250 +10
+[14:46:05] [EVENT] [main] 65082344108240 -> .tag la actividad de hoy 7 cosas que adoren de mi
+[14:46:05] [EVENT] KennyBot | PassiveCoins: 65082344108240 +4
+[14:46:05] [CMD] KennyBot | hidetag → 65082344108240
+[14:46:06] [EVENT] Hidetag usado en 120363428619841201 por 65082344108240 | 23 menciones | texto
+[14:46:15] [EVENT] [main] 65082344108240 -> JAJAJAAJAJAJAJ
+[14:46:38] [EVENT] [main] 44105388294173 -> Ninguno.
+[14:46:39] [EVENT] KennyBot | PassiveCoins: 44105388294173 +3
+[14:46:39] [EVENT] [main] 6258438500556 -> hey.
+[14:46:39] [EVENT] KennyBot | PassiveCoins: 6258438500556 +6
+[14:46:43] [EVENT] [main] 177898216538250 -> Tu edicion
+Tu familia
+Tu perro
+Tu forma de editar 
+Tu forma de ser
+Tu mamá
+[14:46:43] [EVENT] KennyBot | PassiveCoins: 177898216538250 +2
+[14:46:54] [EVENT] [main] 65082344108240 -> .tag El primero que los saque le dono 3 robux
+[14:46:54] [CMD] KennyBot | hidetag → 65082344108240
+[14:46:54] [EVENT] Hidetag usado en 120363428619841201 por 65082344108240 | 23 menciones | texto
+[14:47:00] [EVENT] [main] 177898216538250 -> Mejor mielda
+[14:47:10] [EVENT] [main] 177898216538250 -> Wyleric me puede dar mas @6258438500556
+[14:47:18] [EVENT] [main] 65082344108240 -> Y quien e mi mamá?
+[14:47:18] [EVENT] KennyBot | PassiveCoins: 65082344108240 +5
+[14:47:21] [EVENT] [main] 6258438500556 -> sí.
+[14:47:33] [EVENT] [main] 177898216538250 -> Vite
+[14:47:37] [EVENT] [main] 65082344108240 -> Soy tacaña con los robux
+[14:47:39] [EVENT] [main] 65082344108240 -> Gracias
+[14:47:59] [EVENT] [main] 65082344108240 -> Luego quiero un avatar nuevo y y no tengo
+[14:48:01] [EVENT] [brazil] 138577707053189 -> Mal.
+[14:48:01] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 138577707053189 +2
+[14:48:02] [EVENT] [brazil] 138577707053189 -> JJASKKSKS
+[14:48:08] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Group participant update | add | 120363413442440433@g.us
+[14:48:08] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Group participant update | add | 120363343360264412@g.us
+[14:48:08] [INFO] KennyBot | Group participant update | add | 120363343360264412@g.us
+[14:48:19] [EVENT] [main] 65082344108240 -> Ya no esta naim el patrocinador de mi roblox
+[14:48:20] [EVENT] KennyBot | PassiveCoins: 65082344108240 +5
+[14:48:25] [EVENT] [brazil] 37586030600297 -> @23240286146594 denle la bienvenida
+[14:48:25] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +4
+[14:48:27] [EVENT] [brazil] 37586030600297 -> .tav
+[14:48:30] [EVENT] [brazil] 37586030600297 -> .tag
+[14:48:30] [CMD] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | hidetag → 37586030600297
+[14:48:31] [EVENT] Hidetag publicado en 120363413442440433 por 37586030600297 | 49 menciones | texto
+[14:48:34] [EVENT] [brazil] 37586030600297 -> Que vergüenza 😔
+[14:48:38] [EVENT] [brazil] 37586030600297 -> Nmms
+[14:48:46] [EVENT] [brazil] 188270612869136 -> Mañana.
+[14:48:47] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 188270612869136 +10
+[14:48:56] [EVENT] [brazil] 138577707053189 -> @17386765824182 bienvenido y al otro también.
+[14:50:36] [INFO] Cerrando KennyBot...
+[14:50:36] [INFO] Deteniendo main...
+[14:50:36] [INFO] Deteniendo brazil...
+[14:50:36] [INFO] Socket cerrado | main
+[14:50:36] [INFO] Socket cerrado | brazil
+[14:50:36] [OK] Todas las sesiones fueron cerradas
+[14:50:45] [OK] UnifiedRateLimiter cargado
+[14:50:45] [OK] Comando cargado: ban
+[14:50:45] [OK] Comando cargado: unban
+[14:50:45] [OK] Comando cargado: antilink
+[14:50:45] [OK] Comando cargado: card
+[14:50:45] [OK] Comando cargado: cardinfo
+[14:50:45] [OK] Comando cargado: claim
+[14:50:45] [OK] Comando cargado: collection
+[14:50:45] [OK] Comando cargado: antibot
+[14:50:45] [OK] Comando cargado: antifake
+[14:50:45] [OK] Comando cargado: autolevelup
+[14:50:45] [OK] Comando cargado: adivinanumero
+[14:50:45] [OK] Comando cargado: adivinanza
+[14:50:45] [OK] Comando cargado: ahorcado
+[14:50:45] [OK] Comando cargado: crush
+[14:50:45] [OK] Comando cargado: dado
+[14:50:45] [OK] Comando cargado: fusion
+[14:50:45] [OK] Comando cargado: moneda
+[14:50:45] [OK] Comando cargado: personalidad
+[14:50:45] [OK] Comando cargado: ppt
+[14:50:47] [OK] Comando cargado: qc
+[14:50:47] [OK] Comando cargado: rate
+[14:50:47] [OK] Comando cargado: reto
+[14:50:47] [OK] Comando cargado: ship
+[14:50:47] [OK] Comando cargado: top
+[14:50:47] [OK] Comando cargado: trivia
+[14:50:47] [OK] Comando cargado: verdad
+[14:50:47] [OK] Comando cargado: facebook
+[14:50:47] [OK] Comando cargado: instagram
+[14:50:47] [OK] Comando cargado: pinterest
+[14:50:48] [OK] Comando cargado: play
+[14:50:48] [OK] Comando cargado: spotify
+[14:50:48] [OK] Comando cargado: tiktok
+[14:50:48] [OK] Comando cargado: ytmp3
+[14:50:48] [OK] Comando cargado: ytmp4
+[14:50:48] [OK] Comando cargado: balance
+[14:50:48] [OK] Comando cargado: buy
+[14:50:48] [WARN] Comando duplicado ignorado: buy (crime.js)
+[14:50:48] [OK] Comando cargado: daily
+[14:50:48] [OK] Comando cargado: deposit
+[14:50:48] [OK] Comando cargado: gamble
+[14:50:49] [OK] Comando cargado: inventory
+[14:50:49] [OK] Comando cargado: leaderboardmoney
+[14:50:49] [OK] Comando cargado: open
+[14:50:49] [OK] Comando cargado: pay
+[14:50:49] [OK] Comando cargado: rob
+[14:50:49] [OK] Comando cargado: shop
+[14:50:49] [OK] Comando cargado: slots
+[14:50:49] [OK] Comando cargado: withdraw
+[14:50:49] [OK] Comando cargado: work
+[14:50:49] [OK] Comando cargado: equip
+[14:50:49] [OK] Comando cargado: events
+[14:50:49] [OK] Comando cargado: brat
+[14:50:52] [OK] Comando cargado: exportstats
+[14:50:52] [OK] Comando cargado: inactive
+[14:50:52] [OK] Comando cargado: msgstats
+[14:50:52] [OK] Comando cargado: topmessages
+[14:50:52] [OK] Comando cargado: groups
+[14:50:52] [OK] Comando cargado: add
+[14:50:52] [OK] Comando cargado: admins
+[14:50:52] [OK] Comando cargado: demote
+[14:50:52] [OK] Comando cargado: goodbye
+[14:50:52] [OK] Comando cargado: hidetag
+[14:50:52] [OK] Comando cargado: kick
+[14:50:52] [OK] Comando cargado: link
+[14:50:52] [OK] Comando cargado: mute
+[14:50:52] [OK] Comando cargado: promote
+[14:50:52] [OK] Comando cargado: resetgoodbye
+[14:50:52] [OK] Comando cargado: resetwelcome
+[14:50:52] [OK] Comando cargado: setgoodbye
+[14:50:52] [OK] Comando cargado: setwelcome
+[14:50:52] [OK] Comando cargado: tagall
+[14:50:52] [OK] Comando cargado: unwarn
+[14:50:52] [OK] Comando cargado: warn
+[14:50:52] [OK] Comando cargado: warnings
+[14:50:52] [OK] Comando cargado: welcome
+[14:50:52] [OK] Comando cargado: ia
+[14:50:52] [OK] Comando cargado: join
+[14:50:52] [WARN] Alias duplicado "top" en leaderboard.js
+[14:50:52] [OK] Comando cargado: leaderboard
+[14:50:52] [WARN] Alias duplicado "rank" en level.js
+[14:50:52] [OK] Comando cargado: level
+[14:50:52] [WARN] Comando duplicado ignorado: rank (rank.js)
+[14:50:52] [OK] Comando cargado: menu
+[14:50:52] [OK] Comando cargado: myclub
+[14:50:52] [OK] Comando cargado: objectives
+[14:50:52] [OK] Comando cargado: openpack
+[14:50:52] [OK] Comando cargado: packs
+[14:50:52] [OK] Comando cargado: pick
+[14:50:52] [OK] Comando cargado: ping
+[14:50:52] [OK] Comando cargado: addpremium
+[14:50:52] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[14:50:52] [OK] Comando cargado: delpremium
+[14:50:52] [OK] Comando cargado: profile
+[14:50:52] [OK] Comando cargado: sticker
+[14:50:52] [OK] Comando cargado: addjoinmsg
+[14:50:52] [OK] Comando cargado: clearjoinmsg
+[14:50:52] [OK] Comando cargado: deljoinmsg
+[14:50:52] [OK] Comando cargado: listjoinmsg
+[14:50:53] [INFO] Iniciando sistema multi-bot...
+[14:50:53] [INFO] Instancias configuradas: main, brazil
+[14:50:53] [OK] MySQL conectado y tabla lista
+[14:50:53] [OK] Base de datos inicializada
+[14:50:53] [INFO] Iniciando 2 instancia(s): main, brazil
+[14:50:54] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[14:50:54] [OK] KennyBot | SocketManager cargado
+[14:50:54] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[14:50:54] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[14:50:55] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[14:50:56] [OK] KennyBot conectado
+[14:50:57] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[14:51:19] [EVENT] [brazil] 45986298769601 -> Eh hola
+[14:51:19] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 45986298769601 +1
+[14:51:48] [EVENT] [brazil] 37586030600297 -> https://chat.whatsapp.com/FexGFtsaM4uCfiE5slBAGB
+
+
+
+
+@all únanse al grupo de recepción.
+[14:51:48] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +3
+[14:52:13] [EVENT] [brazil] 159021919113260 -> @all Bienvenidxs pónganse en 4 qué ahí les va el pipí imaginario.
+[14:52:13] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 159021919113260 +1
+[14:52:25] [EVENT] [brazil] 37586030600297 -> DIOS MÍO 😭
+[14:52:27] [EVENT] [brazil] 45986298769601 -> Que
+[14:52:27] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 45986298769601 +10
+[14:52:40] [EVENT] [brazil] 45986298769601 -> No quiero
+[14:52:49] [EVENT] [brazil] 37586030600297 -> Dió
+[14:52:50] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +5
+[14:52:51] [EVENT] [brazil] 37586030600297 -> Únanse
+[14:53:02] [EVENT] [brazil] 45986298769601 -> Y si me doxean
+[14:53:04] [EVENT] [brazil] 37586030600297 -> Te amo sisisi
+[14:53:11] [EVENT] [brazil] 23240286146594 -> JAJAJAJ
+[14:53:11] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 23240286146594 +5
+[14:53:14] [EVENT] [brazil] 240432269258994 -> Por?
+[14:53:14] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 240432269258994 +6
+[14:53:17] [EVENT] [brazil] 37586030600297 -> Mm,nolohagaran.
+[14:53:28] [EVENT] [brazil] 37586030600297 -> Verdad que son buena onda?
+[14:53:41] [EVENT] [brazil] 45986298769601 -> Además con eso de que me acusaron de comprar votos
+[14:53:41] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 45986298769601 +10
+[14:53:44] [EVENT] [brazil] 45986298769601 -> Uno nunca sabe
+[14:53:49] [EVENT] [brazil] 45986298769601 -> Sigo averiguando que pasó ahí
+[14:54:02] [EVENT] [brazil] 138577707053189 -> Mañana con más calma. 💜
+[14:54:02] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 138577707053189 +4
+[14:54:05] [EVENT] [brazil] 37586030600297 -> Yo compró votos. 💆🏻
+[14:54:05] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +7
+[14:54:11] [EVENT] [brazil] 45986298769601 -> KSKKSKSKSKSKS
+[14:54:20] [EVENT] [brazil] 45986298769601 -> Es que se pasaron 2.2k votos
+[14:54:21] [EVENT] [brazil] 37586030600297 -> WOOW
+[14:54:28] [EVENT] [brazil] 45986298769601 -> Mientras yo comía sushi tranquilamente
+[14:54:28] [EVENT] [brazil] 37586030600297 -> E diavlo nena
+[14:54:32] [EVENT] [brazil] 37586030600297 -> 😻😻😻😻
+[14:54:45] [EVENT] [brazil] 212829302960141 -> JAJAA
+[14:54:45] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 212829302960141 +8
+[14:54:46] [EVENT] [brazil] 138577707053189 -> Tengo hambre y mi mamá no viene.
+[14:54:58] [EVENT] [brazil] 34626764574769 -> Hola
+[14:54:58] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 34626764574769 +7
+[14:55:02] [EVENT] [brazil] 45986298769601 -> Y yo comiendo sushi
+[14:55:03] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 45986298769601 +10
+[14:55:08] [EVENT] [brazil] 37586030600297 -> Hola nena
+[14:55:08] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +6
+[14:55:12] [EVENT] [brazil] 45986298769601 -> Luego que hice trampa
+[14:55:19] [EVENT] [brazil] 37586030600297 -> Normal
+[14:55:27] [EVENT] [brazil] 246866784600161 -> Ke 😔
+[14:55:27] [EVENT] [main] 41554563579946 -> Te voy a funar
+[14:55:27] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 246866784600161 +2
+[14:55:27] [EVENT] KennyBot | PassiveCoins: 41554563579946 +10
+[14:55:31] [EVENT] [brazil] 45986298769601 -> Cuando yo saqué a la familia de la votación cuando vi los votos
+[14:55:35] [EVENT] [brazil] 246866784600161 -> Po claro
+[14:55:40] [EVENT] [brazil] 45986298769601 -> Fue lo primero que hice
+[14:55:49] [EVENT] [brazil] 45986298769601 -> Porque claramente NO SUPE FE DONFE SALIERON
+[14:55:55] [EVENT] [brazil] 246866784600161 -> Lo mismo que tú
+[14:55:57] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Group participant update | add | 120363343360264412@g.us
+[14:55:57] [INFO] KennyBot | Group participant update | add | 120363343360264412@g.us
+[14:56:11] [EVENT] [main] 20165609701517 -> Quien tradea +56 +52 +58 @all
+[14:56:11] [EVENT] KennyBot | PassiveCoins: 20165609701517 +3
+[14:56:11] [EVENT] [brazil] 163823709327454 -> Te está quedando muy chuli
+[14:56:11] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 163823709327454 +5
+[14:56:12] [EVENT] [brazil] 246866784600161 -> Han habido avisos de bombas en aviones en España 🥀
+[14:56:14] [EVENT] [brazil] 37586030600297 -> Pásame el links para ver.
+[14:56:14] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 37586030600297 +7
+[14:56:17] [EVENT] [brazil] 246866784600161 -> Y cruceros
+[14:56:18] [EVENT] [brazil] 37586030600297 -> Si te funan
+[14:56:22] [EVENT] [brazil] 37586030600297 -> Me funan a mi
+[14:56:24] [EVENT] [brazil] 37586030600297 -> 🫰🏻
+[14:56:28] [EVENT] [brazil] 246866784600161 -> El país que llegue a 2030 gana
+[14:56:28] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 246866784600161 +6
+[14:56:28] [EVENT] [brazil] 45986298769601 -> Ya no pasó nada de eso
+[14:56:28] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 45986298769601 +5
+[14:56:29] [EVENT] [brazil] 163823709327454 -> Q dices
+[14:56:37] [EVENT] [brazil] 246866784600161 -> Todos están en la ruina
+[14:56:39] [EVENT] [brazil] 45986298769601 -> Porque jack era admin de ese canal y vio que la mayoría eran de personas
+[14:56:41] [EVENT] [brazil] 45986298769601 -> No de fk
+[14:56:42] [EVENT] [brazil] 37586030600297 -> Vieron aprendan de lealtad
+[14:56:42] [INFO] Cerrando KennyBot...
+[14:56:42] [INFO] Deteniendo main...
+[14:56:42] [INFO] Deteniendo brazil...
+[14:56:42] [INFO] Socket cerrado | main
+[14:56:42] [INFO] Socket cerrado | brazil
+[14:56:42] [OK] Todas las sesiones fueron cerradas
+[14:57:09] [OK] UnifiedRateLimiter cargado
+[14:57:09] [OK] Comando cargado: ban
+[14:57:09] [OK] Comando cargado: unban
+[14:57:09] [OK] Comando cargado: antilink
+[14:57:10] [OK] Comando cargado: card
+[14:57:10] [OK] Comando cargado: cardinfo
+[14:57:10] [OK] Comando cargado: claim
+[14:57:10] [OK] Comando cargado: collection
+[14:57:10] [OK] Comando cargado: antibot
+[14:57:10] [OK] Comando cargado: antifake
+[14:57:10] [OK] Comando cargado: autolevelup
+[14:57:10] [OK] Comando cargado: adivinanumero
+[14:57:10] [OK] Comando cargado: adivinanza
+[14:57:10] [OK] Comando cargado: ahorcado
+[14:57:10] [OK] Comando cargado: crush
+[14:57:10] [OK] Comando cargado: dado
+[14:57:10] [OK] Comando cargado: fusion
+[14:57:10] [OK] Comando cargado: moneda
+[14:57:10] [OK] Comando cargado: personalidad
+[14:57:10] [OK] Comando cargado: ppt
+[14:57:13] [OK] Comando cargado: qc
+[14:57:13] [OK] Comando cargado: rate
+[14:57:13] [OK] Comando cargado: reto
+[14:57:13] [OK] Comando cargado: ship
+[14:57:13] [OK] Comando cargado: top
+[14:57:13] [OK] Comando cargado: trivia
+[14:57:13] [OK] Comando cargado: verdad
+[14:57:13] [OK] Comando cargado: facebook
+[14:57:13] [OK] Comando cargado: instagram
+[14:57:13] [OK] Comando cargado: pinterest
+[14:57:15] [OK] Comando cargado: play
+[14:57:15] [OK] Comando cargado: spotify
+[14:57:15] [OK] Comando cargado: tiktok
+[14:57:16] [OK] Comando cargado: ytmp3
+[14:57:16] [OK] Comando cargado: ytmp4
+[14:57:16] [OK] Comando cargado: balance
+[14:57:16] [OK] Comando cargado: buy
+[14:57:16] [WARN] Comando duplicado ignorado: buy (crime.js)
+[14:57:16] [OK] Comando cargado: daily
+[14:57:16] [OK] Comando cargado: deposit
+[14:57:16] [OK] Comando cargado: gamble
+[14:57:16] [OK] Comando cargado: inventory
+[14:57:16] [OK] Comando cargado: leaderboardmoney
+[14:57:16] [OK] Comando cargado: open
+[14:57:16] [OK] Comando cargado: pay
+[14:57:16] [OK] Comando cargado: rob
+[14:57:16] [OK] Comando cargado: shop
+[14:57:16] [OK] Comando cargado: slots
+[14:57:16] [OK] Comando cargado: withdraw
+[14:57:16] [OK] Comando cargado: work
+[14:57:16] [OK] Comando cargado: equip
+[14:57:16] [OK] Comando cargado: events
+[14:57:16] [OK] Comando cargado: brat
+[14:57:18] [OK] Comando cargado: exportstats
+[14:57:18] [OK] Comando cargado: inactive
+[14:57:18] [OK] Comando cargado: msgstats
+[14:57:18] [OK] Comando cargado: topmessages
+[14:57:18] [OK] Comando cargado: groups
+[14:57:18] [OK] Comando cargado: add
+[14:57:18] [OK] Comando cargado: admins
+[14:57:18] [OK] Comando cargado: demote
+[14:57:18] [OK] Comando cargado: goodbye
+[14:57:18] [OK] Comando cargado: hidetag
+[14:57:18] [OK] Comando cargado: kick
+[14:57:18] [OK] Comando cargado: link
+[14:57:18] [OK] Comando cargado: mute
+[14:57:18] [OK] Comando cargado: promote
+[14:57:18] [OK] Comando cargado: resetgoodbye
+[14:57:18] [OK] Comando cargado: resetwelcome
+[14:57:19] [OK] Comando cargado: setgoodbye
+[14:57:19] [OK] Comando cargado: setwelcome
+[14:57:19] [OK] Comando cargado: tagall
+[14:57:19] [OK] Comando cargado: unwarn
+[14:57:19] [OK] Comando cargado: warn
+[14:57:19] [OK] Comando cargado: warnings
+[14:57:19] [OK] Comando cargado: welcome
+[14:57:19] [OK] Comando cargado: ia
+[14:57:19] [OK] Comando cargado: join
+[14:57:19] [WARN] Alias duplicado "top" en leaderboard.js
+[14:57:19] [OK] Comando cargado: leaderboard
+[14:57:19] [WARN] Alias duplicado "rank" en level.js
+[14:57:19] [OK] Comando cargado: level
+[14:57:19] [WARN] Comando duplicado ignorado: rank (rank.js)
+[14:57:19] [OK] Comando cargado: menu
+[14:57:19] [OK] Comando cargado: myclub
+[14:57:19] [OK] Comando cargado: objectives
+[14:57:19] [OK] Comando cargado: openpack
+[14:57:19] [OK] Comando cargado: packs
+[14:57:19] [OK] Comando cargado: pick
+[14:57:19] [OK] Comando cargado: ping
+[14:57:19] [OK] Comando cargado: addpremium
+[14:57:19] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[14:57:19] [OK] Comando cargado: delpremium
+[14:57:19] [OK] Comando cargado: profile
+[14:57:19] [OK] Comando cargado: sticker
+[14:57:19] [OK] Comando cargado: addjoinmsg
+[14:57:19] [OK] Comando cargado: clearjoinmsg
+[14:57:19] [OK] Comando cargado: deljoinmsg
+[14:57:19] [OK] Comando cargado: listjoinmsg
+[14:57:19] [INFO] Iniciando sistema multi-bot...
+[14:57:19] [INFO] Instancias configuradas: main, brazil
+[14:57:19] [OK] MySQL conectado y tabla lista
+[14:57:19] [OK] Base de datos inicializada
+[14:57:20] [INFO] Iniciando 2 instancia(s): main, brazil
+[14:57:20] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[14:57:20] [OK] KennyBot | SocketManager cargado
+[14:57:20] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[14:57:21] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[14:57:22] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[14:57:23] [EVENT] [brazil] 246866784600161 -> Están haciendo una competición de quién está más jodido
+[14:57:23] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 246866784600161 +2
+[14:57:23] [OK] KennyBot conectado
+[14:57:24] [EVENT] [brazil] 163823709327454 -> A mi no me paran de salir cosas de Paraguay ahora
+[14:57:24] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 163823709327454 +8
+[14:57:25] [EVENT] [brazil] 246866784600161 -> Salió en las noticias
+[14:57:27] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[14:57:28] [EVENT] [brazil] 246866784600161 -> Y en mi móvil
+[14:57:30] [EVENT] [main] 64008551972915 -> Xddd
+[14:57:30] [EVENT] [brazil] 246866784600161 -> .
+[14:57:31] [EVENT] KennyBot | PassiveCoins: 64008551972915 +6
+[14:57:33] [EVENT] [brazil] 246866784600161 -> A mí tampoco
+[14:57:44] [EVENT] [brazil] 163823709327454 -> Adubillah
+[14:57:58] [EVENT] [brazil] 163823709327454 -> Violetta
+[14:57:59] [EVENT] [brazil] 246866784600161 -> No me lo esperaba se Paraguay la verdad
+[14:58:01] [EVENT] [brazil] 163823709327454 -> Q opinas
+[14:58:05] [EVENT] [brazil] 163823709327454 -> La sociedad está jodida
+[14:58:07] [INFO] Cerrando KennyBot...
+[14:58:07] [INFO] Deteniendo main...
+[14:58:07] [INFO] Deteniendo brazil...
+[14:58:07] [INFO] Socket cerrado | main
+[14:58:07] [INFO] Socket cerrado | brazil
+[14:58:07] [OK] Todas las sesiones fueron cerradas

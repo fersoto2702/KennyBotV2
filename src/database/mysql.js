@@ -14,9 +14,7 @@ const config = {
 const pool = mysql.createPool(config)
 
 async function initDB() {
-
     try {
-
         const conn = await pool.getConnection()
 
         await conn.execute(`
@@ -36,148 +34,208 @@ async function initDB() {
         conn.release()
 
         logger.success('MySQL conectado y tabla lista')
-
     } catch (err) {
         logger.error(`MySQL init error: ${err.message}`)
     }
-
 }
 
 async function registerMessage(grupo, usuario) {
-
     try {
-
         const today = new Date().toISOString().split('T')[0]
         const now = Date.now()
 
         await pool.execute(`
-            INSERT INTO mensajes (grupo, usuario, cantidad, fecha, ultimo_mensaje)
+            INSERT INTO mensajes (
+                grupo,
+                usuario,
+                cantidad,
+                fecha,
+                ultimo_mensaje
+            )
             VALUES (?, ?, 1, ?, ?)
             ON DUPLICATE KEY UPDATE
                 cantidad = cantidad + 1,
                 ultimo_mensaje = ?
-        `, [grupo, usuario, today, now, now])
-
+        `, [
+            grupo,
+            usuario,
+            today,
+            now,
+            now
+        ])
     } catch (err) {
         logger.error(`MySQL registerMessage: ${err.message}`)
     }
-
 }
 
-async function getTopMessages(grupo, days = 7, limit = 10) {
-
+async function getTopMessages(
+    grupo,
+    days = 7,
+    limit = 10
+) {
     try {
-
         const [rows] = await pool.execute(`
             SELECT
                 usuario,
-                SUM(cantidad) as total,
-                MAX(ultimo_mensaje) as ultimo
+                SUM(cantidad) AS total,
+                MAX(ultimo_mensaje) AS ultimo
             FROM mensajes
             WHERE grupo = ?
-            AND fecha >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+              AND fecha >= DATE_SUB(
+                    CURDATE(),
+                    INTERVAL ? DAY
+              )
             GROUP BY usuario
             ORDER BY total DESC
             LIMIT ?
-        `, [grupo, days, limit])
+        `, [
+            grupo,
+            days,
+            limit
+        ])
 
         return rows
-
     } catch (err) {
         logger.error(`MySQL getTopMessages: ${err.message}`)
         return []
     }
-
 }
 
-async function getInactive(grupo, days = 7, limit = 10) {
-
+/*
+ * Devuelve TODOS los usuarios registrados del grupo,
+ * ordenados desde los menos activos.
+ *
+ * Ya no usa período de días.
+ * Ya no usa límite por defecto.
+ *
+ * Orden:
+ * 1. Menor cantidad total de mensajes.
+ * 2. En empate, quien lleva más tiempo sin hablar.
+ */
+async function getInactive(
+    grupo
+) {
     try {
-
         const [rows] = await pool.execute(`
             SELECT
                 usuario,
-                SUM(cantidad) as total,
-                MAX(ultimo_mensaje) as ultimo
+                SUM(cantidad) AS total,
+                MAX(ultimo_mensaje) AS ultimo
             FROM mensajes
             WHERE grupo = ?
-            AND fecha >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
             GROUP BY usuario
-            ORDER BY total ASC
-            LIMIT ?
-        `, [grupo, days, limit])
+            ORDER BY
+                total ASC,
+                ultimo ASC
+        `, [
+            grupo
+        ])
 
         return rows
-
     } catch (err) {
         logger.error(`MySQL getInactive: ${err.message}`)
         return []
     }
-
 }
 
-async function getUserStats(grupo, usuario, days = 7) {
-
+async function getUserStats(
+    grupo,
+    usuario,
+    days = 7
+) {
     try {
-
         const [rows] = await pool.execute(`
             SELECT
-                SUM(cantidad) as total,
-                MAX(ultimo_mensaje) as ultimo
+                SUM(cantidad) AS total,
+                MAX(ultimo_mensaje) AS ultimo
             FROM mensajes
             WHERE grupo = ?
-            AND usuario = ?
-            AND fecha >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
-        `, [grupo, usuario, days])
+              AND usuario = ?
+              AND fecha >= DATE_SUB(
+                    CURDATE(),
+                    INTERVAL ? DAY
+              )
+        `, [
+            grupo,
+            usuario,
+            days
+        ])
 
         const [ranking] = await pool.execute(`
-            SELECT usuario, SUM(cantidad) as total
+            SELECT
+                usuario,
+                SUM(cantidad) AS total
             FROM mensajes
             WHERE grupo = ?
-            AND fecha >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+              AND fecha >= DATE_SUB(
+                    CURDATE(),
+                    INTERVAL ? DAY
+              )
             GROUP BY usuario
             ORDER BY total DESC
-        `, [grupo, days])
+        `, [
+            grupo,
+            days
+        ])
 
-        const position = ranking.findIndex(r => r.usuario === usuario) + 1
+        const position =
+            ranking.findIndex(
+                row =>
+                    row.usuario ===
+                    usuario
+            ) + 1
 
         return {
-            total: rows[0]?.total || 0,
-            ultimo: rows[0]?.ultimo || null,
+            total:
+                rows[0]?.total ||
+                0,
+
+            ultimo:
+                rows[0]?.ultimo ||
+                null,
+
             position
         }
-
     } catch (err) {
         logger.error(`MySQL getUserStats: ${err.message}`)
-        return { total: 0, ultimo: null, position: 0 }
-    }
 
+        return {
+            total: 0,
+            ultimo: null,
+            position: 0
+        }
+    }
 }
 
-async function getAllStats(grupo, days = 30) {
-
+async function getAllStats(
+    grupo,
+    days = 30
+) {
     try {
-
         const [rows] = await pool.execute(`
             SELECT
                 usuario,
-                SUM(cantidad) as total,
-                MAX(ultimo_mensaje) as ultimo,
-                MIN(fecha) as primera_fecha
+                SUM(cantidad) AS total,
+                MAX(ultimo_mensaje) AS ultimo,
+                MIN(fecha) AS primera_fecha
             FROM mensajes
             WHERE grupo = ?
-            AND fecha >= DATE_SUB(CURDATE(), INTERVAL ? DAY)
+              AND fecha >= DATE_SUB(
+                    CURDATE(),
+                    INTERVAL ? DAY
+              )
             GROUP BY usuario
             ORDER BY total DESC
-        `, [grupo, days])
+        `, [
+            grupo,
+            days
+        ])
 
         return rows
-
     } catch (err) {
         logger.error(`MySQL getAllStats: ${err.message}`)
         return []
     }
-
 }
 
 module.exports = {
