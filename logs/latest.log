@@ -1388225,3 +1388225,141 @@ Tu mamá
 [14:58:07] [INFO] Socket cerrado | main
 [14:58:07] [INFO] Socket cerrado | brazil
 [14:58:07] [OK] Todas las sesiones fueron cerradas
+[14:59:16] [OK] UnifiedRateLimiter cargado
+[14:59:16] [OK] Comando cargado: ban
+[14:59:16] [OK] Comando cargado: unban
+[14:59:16] [OK] Comando cargado: antilink
+[14:59:16] [OK] Comando cargado: card
+[14:59:16] [OK] Comando cargado: cardinfo
+[14:59:16] [OK] Comando cargado: claim
+[14:59:16] [OK] Comando cargado: collection
+[14:59:16] [OK] Comando cargado: antibot
+[14:59:16] [OK] Comando cargado: antifake
+[14:59:16] [OK] Comando cargado: autolevelup
+[14:59:16] [OK] Comando cargado: adivinanumero
+[14:59:16] [OK] Comando cargado: adivinanza
+[14:59:16] [OK] Comando cargado: ahorcado
+[14:59:16] [OK] Comando cargado: crush
+[14:59:16] [OK] Comando cargado: dado
+[14:59:16] [OK] Comando cargado: fusion
+[14:59:16] [OK] Comando cargado: moneda
+[14:59:16] [OK] Comando cargado: personalidad
+[14:59:16] [OK] Comando cargado: ppt
+[14:59:17] [OK] Comando cargado: qc
+[14:59:17] [OK] Comando cargado: rate
+[14:59:17] [OK] Comando cargado: reto
+[14:59:17] [OK] Comando cargado: ship
+[14:59:17] [OK] Comando cargado: top
+[14:59:17] [OK] Comando cargado: trivia
+[14:59:17] [OK] Comando cargado: verdad
+[14:59:17] [OK] Comando cargado: facebook
+[14:59:17] [OK] Comando cargado: instagram
+[14:59:17] [OK] Comando cargado: pinterest
+[14:59:19] [OK] Comando cargado: play
+[14:59:19] [OK] Comando cargado: spotify
+[14:59:19] [OK] Comando cargado: tiktok
+[14:59:19] [OK] Comando cargado: ytmp3
+[14:59:19] [OK] Comando cargado: ytmp4
+[14:59:19] [OK] Comando cargado: balance
+[14:59:19] [OK] Comando cargado: buy
+[14:59:19] [WARN] Comando duplicado ignorado: buy (crime.js)
+[14:59:19] [OK] Comando cargado: daily
+[14:59:19] [OK] Comando cargado: deposit
+[14:59:19] [OK] Comando cargado: gamble
+[14:59:19] [OK] Comando cargado: inventory
+[14:59:19] [OK] Comando cargado: leaderboardmoney
+[14:59:19] [OK] Comando cargado: open
+[14:59:19] [OK] Comando cargado: pay
+[14:59:19] [OK] Comando cargado: rob
+[14:59:19] [OK] Comando cargado: shop
+[14:59:19] [OK] Comando cargado: slots
+[14:59:19] [OK] Comando cargado: withdraw
+[14:59:19] [OK] Comando cargado: work
+[14:59:19] [OK] Comando cargado: equip
+[14:59:19] [OK] Comando cargado: events
+[14:59:19] [OK] Comando cargado: brat
+[14:59:22] [OK] Comando cargado: exportstats
+[14:59:22] [OK] Comando cargado: inactive
+[14:59:22] [OK] Comando cargado: msgstats
+[14:59:22] [OK] Comando cargado: topmessages
+[14:59:22] [OK] Comando cargado: groups
+[14:59:22] [OK] Comando cargado: add
+[14:59:22] [OK] Comando cargado: admins
+[14:59:22] [OK] Comando cargado: demote
+[14:59:22] [OK] Comando cargado: goodbye
+[14:59:22] [OK] Comando cargado: hidetag
+[14:59:22] [OK] Comando cargado: kick
+[14:59:22] [OK] Comando cargado: link
+[14:59:22] [OK] Comando cargado: mute
+[14:59:22] [OK] Comando cargado: promote
+[14:59:22] [OK] Comando cargado: resetgoodbye
+[14:59:22] [OK] Comando cargado: resetwelcome
+[14:59:22] [OK] Comando cargado: setgoodbye
+[14:59:22] [OK] Comando cargado: setwelcome
+[14:59:22] [OK] Comando cargado: tagall
+[14:59:22] [OK] Comando cargado: unwarn
+[14:59:22] [OK] Comando cargado: warn
+[14:59:22] [OK] Comando cargado: warnings
+[14:59:22] [OK] Comando cargado: welcome
+[14:59:22] [OK] Comando cargado: ia
+[14:59:22] [OK] Comando cargado: join
+[14:59:22] [WARN] Alias duplicado "top" en leaderboard.js
+[14:59:22] [OK] Comando cargado: leaderboard
+[14:59:22] [WARN] Alias duplicado "rank" en level.js
+[14:59:22] [OK] Comando cargado: level
+[14:59:22] [WARN] Comando duplicado ignorado: rank (rank.js)
+[14:59:22] [OK] Comando cargado: menu
+[14:59:22] [OK] Comando cargado: myclub
+[14:59:22] [OK] Comando cargado: objectives
+[14:59:22] [OK] Comando cargado: openpack
+[14:59:22] [OK] Comando cargado: packs
+[14:59:22] [OK] Comando cargado: pick
+[14:59:22] [OK] Comando cargado: ping
+[14:59:22] [OK] Comando cargado: addpremium
+[14:59:22] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[14:59:22] [OK] Comando cargado: delpremium
+[14:59:22] [OK] Comando cargado: profile
+[14:59:22] [OK] Comando cargado: sticker
+[14:59:22] [OK] Comando cargado: addjoinmsg
+[14:59:22] [OK] Comando cargado: clearjoinmsg
+[14:59:22] [OK] Comando cargado: deljoinmsg
+[14:59:22] [OK] Comando cargado: listjoinmsg
+[14:59:22] [INFO] Iniciando sistema multi-bot...
+[14:59:22] [INFO] Instancias configuradas: main, brazil
+[14:59:22] [OK] MySQL conectado y tabla lista
+[14:59:22] [OK] Base de datos inicializada
+[14:59:22] [INFO] Iniciando 2 instancia(s): main, brazil
+[14:59:23] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[14:59:23] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[14:59:23] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[14:59:23] [OK] KennyBot | SocketManager cargado
+[14:59:24] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[14:59:25] [OK] KennyBot conectado
+[14:59:26] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[14:59:28] [EVENT] [brazil] 4046446420184 -> Voy
+[14:59:28] [EVENT] [main] 4046446420184 -> Voy
+[14:59:28] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 4046446420184 +4
+[14:59:28] [EVENT] KennyBot | PassiveCoins: 4046446420184 +10
+[14:59:39] [WARN] Global Role Sync: 31646124363853@lid | INCOMPLETE_GROUP_METADATA
+[14:59:40] [EVENT] [brazil] 4046446420184 -> Yao
+[14:59:40] [EVENT] [main] 4046446420184 -> Yao
+[14:59:42] [EVENT] [brazil] 45986298769601 -> Si eres, tu leal a mi yo leal a ti
+[14:59:42] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 45986298769601 +8
+[14:59:53] [EVENT] [brazil] 31646124363853 -> .
+[14:59:53] [EVENT] [main] 31646124363853 -> .
+[14:59:53] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 31646124363853 +7
+[14:59:53] [EVENT] KennyBot | PassiveCoins: 31646124363853 +2
+[15:00:29] [EVENT] [brazil] 188270612869136 -> Hola.
+[15:00:29] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 188270612869136 +10
+[15:00:49] [EVENT] [brazil] 45986298769601 -> MIREN ES LUPITO
+[15:00:49] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 45986298769601 +8
+[15:00:58] [EVENT] [main] 4046446420184 -> Eso
+[15:00:58] [EVENT] [brazil] 4046446420184 -> Eso
+[15:00:58] [EVENT] KennyBot | PassiveCoins: 4046446420184 +7
+[15:00:58] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 4046446420184 +3
+[15:01:06] [INFO] Cerrando KennyBot...
+[15:01:06] [INFO] Deteniendo main...
+[15:01:06] [INFO] Deteniendo brazil...
+[15:01:06] [INFO] Socket cerrado | main
+[15:01:06] [INFO] Socket cerrado | brazil
+[15:01:06] [OK] Todas las sesiones fueron cerradas
