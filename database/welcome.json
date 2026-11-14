@@ -19,5 +19,19 @@
     "welcomeMessage": "Bienvenido/a {user} a *{group}*.\n\nAhora somos *{members}* miembros.",
     "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
     "updatedAt": 1793416470102
+  },
+  "120363432621470637@g.us": {
+    "welcome": false,
+    "goodbye": false,
+    "welcomeMessage": "Bienvenido/a {user} a *{group}*.\n\nAhora somos *{members}* miembros.",
+    "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
+    "updatedAt": 1794244732923
+  },
+  "120363414298231609@g.us": {
+    "welcome": false,
+    "goodbye": false,
+    "welcomeMessage": "\"Bienvenidos a nuestra familia de retrasados\"",
+    "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
+    "updatedAt": 1794409389492
   }
 }

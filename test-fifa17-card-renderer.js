@@ -460,7 +460,9 @@ function buildCondensedSvg({ player, attributes, statNames, colors, config }) {
 
     paths.push(
         textToPath({
-            chain: display,
+            chain: rating.weight === 'bold'
+                ? bold
+                : display,
             text: player.rating,
             x: rating.x,
             y: rating.y,
@@ -947,7 +949,7 @@ async function main() {
             .png()
             .toBuffer()
 
-    const resizedPlayer =
+    let resizedPlayer =
         await sharp(trimmedPlayer)
             .resize({
                 height: PLAYER_HEIGHT,
@@ -955,6 +957,30 @@ async function main() {
             })
             .png()
             .toBuffer()
+
+    if (cardStyle.playerImage?.extendBottom) {
+        const resizedMetadata =
+            await sharp(resizedPlayer)
+                .metadata()
+
+        const missingHeight =
+            Math.round(
+                cardStyle.playerImage.visibleBottom -
+                cardStyle.playerImage.y -
+                resizedMetadata.height
+            )
+
+        if (missingHeight > 0) {
+            resizedPlayer =
+                await sharp(resizedPlayer)
+                    .extend({
+                        bottom: missingHeight,
+                        extendWith: 'copy'
+                    })
+                    .png()
+                    .toBuffer()
+        }
+    }
 
     const playerMetadata =
         await sharp(resizedPlayer)

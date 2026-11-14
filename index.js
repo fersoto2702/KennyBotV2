@@ -1,5 +1,11 @@
 process.setMaxListeners(50)
 
+try {
+
+    require('dotenv').config()
+
+} catch {}
+
 const {
     default: makeWASocket,
     useMultiFileAuthState,
@@ -33,8 +39,12 @@ const {
 } = require('./src/system/socketManager')
 
 const {
-    initDB
+    initDB,
+    pool
 } = require('./src/database/mysql')
+
+const startPanelApi =
+    require('./src/utils/panel-api')
 
 const {
     runRewardMaintenance
@@ -106,6 +116,9 @@ let specialCardMaintenanceInterval =
 
 let objectiveMaintenanceInterval =
     null
+
+let panelApiStarted =
+    false
 
 const botStates =
     new Map()
@@ -1498,6 +1511,67 @@ async function bootstrap() {
         logger.success(
             'Base de datos inicializada'
         )
+
+        if (
+            !panelApiStarted
+        ) {
+
+            panelApiStarted =
+                true
+
+            try {
+
+                startPanelApi({
+
+                    pool,
+
+                    token:
+                        process.env.PANEL_TOKEN,
+
+                    origin:
+                        process.env.PANEL_ORIGIN,
+
+                    commandsDir:
+                        require('path').join(
+                            __dirname,
+                            'comandos'
+                        ),
+
+                    getSock: () => {
+
+                        for (
+                            const state
+                            of botStates.values()
+                        ) {
+
+                            if (
+                                state.sock &&
+                                state.connected
+                            ) {
+
+                                return state.sock
+
+                            }
+
+                        }
+
+                        return null
+
+                    },
+
+                    hooks: {}
+
+                })
+
+            } catch (err) {
+
+                logger.error(
+                    `Panel API no inició: ${err.message}`
+                )
+
+            }
+
+        }
 
         await executeRewardMaintenance()
 
