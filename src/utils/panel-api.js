@@ -161,6 +161,7 @@ function startPanelApi({
     getSock = () => null,
     commandsDir,
     hooks = {},
+    stateFile = null,
     port = Number(process.env.PANEL_PORT) || 4000,
     host = process.env.PANEL_HOST || '127.0.0.1',
     logger = console
@@ -196,6 +197,45 @@ function startPanelApi({
         lastCpu = process.cpuUsage()
         lastTime = now
     }, 3000).unref()
+
+
+    /* ───────── etiquetas del tablero de grupos (solo del panel) ───────── */
+
+    function readState() {
+        try {
+            if (stateFile && fs.existsSync(stateFile)) {
+                return JSON.parse(fs.readFileSync(stateFile, 'utf8'))
+            }
+        } catch (err) {
+            logger.error?.(`Panel API: no pude leer ${stateFile}: ${err.message}`)
+        }
+
+        return {}
+    }
+
+
+    function saveGroupStatus(jid, status) {
+        if (!stateFile) {
+            const err = new Error('Acción no disponible: falta la opción "stateFile" en startPanelApi')
+
+            err.code = 501
+
+            throw err
+        }
+
+        if (![ 'active', 'watch', 'muted' ].includes(status)) {
+            throw new Error('Estado de grupo inválido')
+        }
+
+        fs.mkdirSync(path.dirname(stateFile), { recursive: true })
+
+        const state = readState()
+
+        state.groups = state.groups || {}
+        state.groups[jid] = { ...(state.groups[jid] || {}), status }
+
+        fs.writeFileSync(stateFile, JSON.stringify(state, null, 2), 'utf8')
+    }
 
 
     /* ───────── nombres de grupos (con caché de 60 s) ───────── */
@@ -298,6 +338,8 @@ function startPanelApi({
 
         const info = await groupInfo()
 
+        const saved = readState().groups || {}
+
         return rows.map(r => {
             const settings = hooks.groupSettings?.(r.grupo) || {}
 
@@ -306,9 +348,8 @@ function startPanelApi({
                 name: info[r.grupo]?.name || mask(r.grupo),
                 members: info[r.grupo]?.size || Number(r.vistos),
                 today: Number(r.hoy),
-                welcome: !!settings.welcome,
-                antilink: !!settings.antilink,
-                status: settings.status || 'active'
+                features: settings.features || {},
+                status: saved[r.grupo]?.status || settings.status || 'active'
             }
         })
     }
@@ -471,9 +512,9 @@ function startPanelApi({
                 const body = await readBody(req)
 
                 if (parts[0] === 'reload') {
-                    await need('reload')()
+                    const result = await need('reload')()
 
-                    return send(res, 200, { ok: true }, cors)
+                    return send(res, 200, { ok: true, ...(result || {}) }, cors)
                 }
 
                 if (parts[0] === 'restart') {
@@ -495,7 +536,13 @@ function startPanelApi({
                 }
 
                 if (parts[0] === 'groups' && parts[1]) {
-                    await need('setGroup')(parts[1], body)
+                    if (body.status !== undefined) {
+                        saveGroupStatus(parts[1], body.status)
+                    }
+
+                    if (body.features && Object.keys(body.features).length) {
+                        await need('setGroup')(parts[1], { features: body.features })
+                    }
 
                     groupCache.at = 0
 

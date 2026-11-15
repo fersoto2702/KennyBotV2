@@ -47,6 +47,21 @@ const startPanelApi =
     require('./src/utils/panel-api')
 
 const {
+    isEnabled: isToggleEnabled,
+    setToggle
+} = require('./src/utils/toggles')
+
+const {
+    reloadAll
+} = require('./src/utils/reloadCommands')
+
+const PANEL_FEATURES = [
+    'antibot',
+    'antifake',
+    'autolevelup'
+]
+
+const {
     runRewardMaintenance
 } = require(
     './src/services/rewardMaintenanceService'
@@ -1537,6 +1552,13 @@ async function bootstrap() {
                             'comandos'
                         ),
 
+                    stateFile:
+                        require('path').join(
+                            __dirname,
+                            'database',
+                            'panel-state.json'
+                        ),
+
                     getSock: () => {
 
                         for (
@@ -1559,7 +1581,80 @@ async function bootstrap() {
 
                     },
 
-                    hooks: {}
+                    hooks: {
+
+                        reload:
+                            async () =>
+                                reloadAll(),
+
+                        groupSettings:
+                            jid => {
+
+                                const features =
+                                    {}
+
+                                for (
+                                    const feature
+                                    of PANEL_FEATURES
+                                ) {
+
+                                    features[
+                                        feature
+                                    ] =
+                                        isToggleEnabled(
+                                            jid,
+                                            feature
+                                        )
+
+                                }
+
+                                return {
+                                    features
+                                }
+
+                            },
+
+                        setGroup:
+                            async (
+                                jid,
+                                patch
+                            ) => {
+
+                                const features =
+                                    patch?.features ||
+                                    {}
+
+                                for (
+                                    const [
+                                        feature,
+                                        enabled
+                                    ]
+                                    of Object.entries(
+                                        features
+                                    )
+                                ) {
+
+                                    if (
+                                        !PANEL_FEATURES.includes(
+                                            feature
+                                        )
+                                    ) {
+
+                                        continue
+
+                                    }
+
+                                    setToggle(
+                                        jid,
+                                        feature,
+                                        !!enabled
+                                    )
+
+                                }
+
+                            }
+
+                    }
 
                 })
 
