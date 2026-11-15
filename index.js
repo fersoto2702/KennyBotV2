@@ -1652,6 +1652,52 @@ async function bootstrap() {
 
                                 }
 
+                            },
+
+                        restart:
+                            async () => {
+
+                                logger.warn(
+                                    'Reinicio solicitado desde el panel'
+                                )
+
+                                if (
+                                    process.env.pm_id !==
+                                    undefined
+                                ) {
+
+                                    process.exit(0)
+
+                                }
+
+                                const {
+                                    spawn
+                                } = require('child_process')
+
+                                spawn(
+                                    process.argv[0],
+                                    [
+                                        ...process.execArgv,
+                                        ...process.argv.slice(1)
+                                    ],
+                                    {
+                                        cwd:
+                                            process.cwd(),
+
+                                        env:
+                                            process.env,
+
+                                        stdio:
+                                            'inherit',
+
+                                        detached:
+                                            true
+                                    }
+                                )
+                                    .unref()
+
+                                process.exit(0)
+
                             }
 
                     }

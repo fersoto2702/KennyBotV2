@@ -1517737,3 +1517737,149 @@ Por boco y sapooo mascota
 [21:36:50] [INFO] Socket cerrado | main
 [21:36:50] [INFO] Socket cerrado | brazil
 [21:36:50] [OK] Todas las sesiones fueron cerradas
+[21:38:37] [OK] UnifiedRateLimiter cargado
+[21:38:37] [OK] Comando cargado: ban
+[21:38:37] [OK] Comando cargado: unban
+[21:38:37] [OK] Comando cargado: antilink
+[21:38:38] [OK] Comando cargado: card
+[21:38:38] [OK] Comando cargado: cardinfo
+[21:38:38] [OK] Comando cargado: claim
+[21:38:38] [OK] Comando cargado: collection
+[21:38:38] [OK] Comando cargado: antibot
+[21:38:38] [OK] Comando cargado: antifake
+[21:38:38] [OK] Comando cargado: autolevelup
+[21:38:38] [OK] Comando cargado: adivinanumero
+[21:38:38] [OK] Comando cargado: adivinanza
+[21:38:38] [OK] Comando cargado: ahorcado
+[21:38:38] [OK] Comando cargado: crush
+[21:38:38] [OK] Comando cargado: dado
+[21:38:38] [OK] Comando cargado: fusion
+[21:38:38] [OK] Comando cargado: moneda
+[21:38:38] [OK] Comando cargado: personalidad
+[21:38:38] [OK] Comando cargado: ppt
+[21:38:39] [OK] Comando cargado: qc
+[21:38:39] [OK] Comando cargado: rate
+[21:38:39] [OK] Comando cargado: reto
+[21:38:39] [OK] Comando cargado: ship
+[21:38:39] [OK] Comando cargado: top
+[21:38:39] [OK] Comando cargado: trivia
+[21:38:39] [OK] Comando cargado: verdad
+[21:38:39] [OK] Comando cargado: facebook
+[21:38:39] [OK] Comando cargado: instagram
+[21:38:39] [OK] Comando cargado: pinterest
+[21:38:42] [OK] Comando cargado: play
+[21:38:42] [OK] Comando cargado: spotify
+[21:38:42] [OK] Comando cargado: tiktok
+[21:38:42] [OK] Comando cargado: ytmp3
+[21:38:42] [OK] Comando cargado: ytmp4
+[21:38:42] [OK] Comando cargado: balance
+[21:38:42] [OK] Comando cargado: buy
+[21:38:42] [WARN] Comando duplicado ignorado: buy (crime.js)
+[21:38:42] [OK] Comando cargado: daily
+[21:38:42] [OK] Comando cargado: deposit
+[21:38:42] [OK] Comando cargado: gamble
+[21:38:42] [OK] Comando cargado: inventory
+[21:38:42] [OK] Comando cargado: leaderboardmoney
+[21:38:42] [OK] Comando cargado: open
+[21:38:42] [OK] Comando cargado: pay
+[21:38:42] [OK] Comando cargado: rob
+[21:38:42] [OK] Comando cargado: shop
+[21:38:42] [OK] Comando cargado: slots
+[21:38:42] [OK] Comando cargado: withdraw
+[21:38:42] [OK] Comando cargado: work
+[21:38:42] [OK] Comando cargado: equip
+[21:38:42] [OK] Comando cargado: events
+[21:38:42] [OK] Comando cargado: brat
+[21:38:46] [OK] Comando cargado: exportstats
+[21:38:46] [OK] Comando cargado: inactive
+[21:38:46] [OK] Comando cargado: msgstats
+[21:38:46] [OK] Comando cargado: topmessages
+[21:38:46] [OK] Comando cargado: groups
+[21:38:46] [OK] Comando cargado: add
+[21:38:46] [OK] Comando cargado: admins
+[21:38:46] [OK] Comando cargado: demote
+[21:38:46] [OK] Comando cargado: goodbye
+[21:38:46] [OK] Comando cargado: hidetag
+[21:38:46] [OK] Comando cargado: kick
+[21:38:46] [OK] Comando cargado: link
+[21:38:46] [OK] Comando cargado: mute
+[21:38:46] [OK] Comando cargado: promote
+[21:38:46] [OK] Comando cargado: resetgoodbye
+[21:38:46] [OK] Comando cargado: resetwelcome
+[21:38:46] [OK] Comando cargado: setgoodbye
+[21:38:46] [OK] Comando cargado: setwelcome
+[21:38:46] [OK] Comando cargado: tagall
+[21:38:46] [OK] Comando cargado: unwarn
+[21:38:46] [OK] Comando cargado: warn
+[21:38:46] [OK] Comando cargado: warnings
+[21:38:46] [OK] Comando cargado: welcome
+[21:38:46] [OK] Comando cargado: ia
+[21:38:46] [OK] Comando cargado: join
+[21:38:46] [WARN] Alias duplicado "top" en leaderboard.js
+[21:38:46] [OK] Comando cargado: leaderboard
+[21:38:46] [WARN] Alias duplicado "rank" en level.js
+[21:38:46] [OK] Comando cargado: level
+[21:38:46] [WARN] Comando duplicado ignorado: rank (rank.js)
+[21:38:46] [OK] Comando cargado: menu
+[21:38:46] [OK] Comando cargado: myclub
+[21:38:46] [OK] Comando cargado: objectives
+[21:38:46] [OK] Comando cargado: openpack
+[21:38:46] [OK] Comando cargado: packs
+[21:38:46] [OK] Comando cargado: pick
+[21:38:46] [OK] Comando cargado: ping
+[21:38:46] [OK] Comando cargado: addpremium
+[21:38:46] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[21:38:46] [OK] Comando cargado: delpremium
+[21:38:46] [OK] Comando cargado: profile
+[21:38:46] [OK] Comando cargado: sticker
+[21:38:46] [OK] Comando cargado: addjoinmsg
+[21:38:46] [OK] Comando cargado: clearjoinmsg
+[21:38:46] [OK] Comando cargado: deljoinmsg
+[21:38:46] [OK] Comando cargado: listjoinmsg
+[21:38:47] [INFO] Iniciando sistema multi-bot...
+[21:38:47] [INFO] Instancias configuradas: main, brazil
+[21:38:47] [OK] MySQL conectado y tabla lista
+[21:38:47] [OK] Base de datos inicializada
+[21:38:47] [INFO] Iniciando 2 instancia(s): main, brazil
+[21:38:47] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[21:38:47] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[21:38:47] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[21:38:47] [OK] KennyBot | SocketManager cargado
+[21:38:49] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[21:38:50] [OK] KennyBot conectado
+[21:38:51] [EVENT] [main] 112533293822182 -> Perdí num canales
+[21:38:51] [EVENT] KennyBot | PassiveCoins: 112533293822182 +5
+[21:38:54] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[21:39:00] [EVENT] [main] 112533293822182 -> Terrible
+[21:39:15] [EVENT] [main] 112533293822182 -> Debí haberme comprado una caja
+[21:40:18] [EVENT] [main] 112533293822182 -> Avisas, si no me voy a dormir
+[21:40:18] [EVENT] KennyBot | PassiveCoins: 112533293822182 +4
+[21:41:02] [EVENT] [main] 218331189665821 -> Kiazco
+[21:41:02] [EVENT] KennyBot | PassiveCoins: 218331189665821 +4
+[21:41:07] [EVENT] [main] 218331189665821 -> Eso nomás lo fumo yoo pa trabajar
+[21:42:06] [EVENT] [main] 112533293822182 -> También hueles tussy?
+[21:42:06] [EVENT] KennyBot | PassiveCoins: 112533293822182 +8
+[21:42:57] [EVENT] [main] 9063253438484 -> Árabe yo jamás había sentido lo que sentí
+[21:42:58] [EVENT] KennyBot | PassiveCoins: 9063253438484 +7
+[21:43:17] [EVENT] [main] 112533293822182 -> Estabas drogada
+[21:43:18] [EVENT] KennyBot | PassiveCoins: 112533293822182 +10
+[21:43:52] [EVENT] [main] 112533293822182 -> @8844210114719 no send call?
+[21:43:53] [EVENT] [main] 112533293822182 -> Dormiré
+[21:44:30] [EVENT] [main] 218331189665821 -> JAJAJAJA yo mismo lo preparo bro
+[21:44:30] [EVENT] KennyBot | PassiveCoins: 218331189665821 +2
+[21:44:41] [EVENT] [main] 218331189665821 -> Que si crack
+[21:45:12] [EVENT] [main] 209668156739682 -> Regrese
+[21:45:12] [EVENT] KennyBot | PassiveCoins: 209668156739682 +1
+[21:45:16] [EVENT] [brazil] 181789473648694 -> – 𝕱𝐀𝐌𝐈𝐋𝐈𝐀𝐒 𝐂𝐎𝐌𝐎 𝐏𝐄𝐑𝐒𝐎𝐍𝐀𝐉𝐄𝐒 𝐃𝐄 𝐁𝐑𝐀𝐓𝐙.
+[21:45:16] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 181789473648694 +10
+[21:45:26] [EVENT] [main] 209668156739682 -> Que se hace
+[21:45:29] [EVENT] [brazil] 152983094452258 -> Seh
+[21:45:29] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 152983094452258 +4
+[21:45:29] [EVENT] [main] 9063253438484 -> Eso me dijeron
+[21:45:29] [EVENT] KennyBot | PassiveCoins: 9063253438484 +4
+[21:45:31] [INFO] Cerrando KennyBot...
+[21:45:31] [INFO] Deteniendo main...
+[21:45:31] [INFO] Deteniendo brazil...
+[21:45:31] [INFO] Socket cerrado | main
+[21:45:31] [INFO] Socket cerrado | brazil
+[21:45:31] [OK] Todas las sesiones fueron cerradas
