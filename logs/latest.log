@@ -1517883,3 +1517883,300 @@ Por boco y sapooo mascota
 [21:45:31] [INFO] Socket cerrado | main
 [21:45:31] [INFO] Socket cerrado | brazil
 [21:45:31] [OK] Todas las sesiones fueron cerradas
+[21:46:22] [OK] UnifiedRateLimiter cargado
+[21:46:22] [OK] Comando cargado: ban
+[21:46:22] [OK] Comando cargado: unban
+[21:46:22] [OK] Comando cargado: antilink
+[21:46:22] [OK] Comando cargado: card
+[21:46:22] [OK] Comando cargado: cardinfo
+[21:46:22] [OK] Comando cargado: claim
+[21:46:22] [OK] Comando cargado: collection
+[21:46:22] [OK] Comando cargado: antibot
+[21:46:22] [OK] Comando cargado: antifake
+[21:46:22] [OK] Comando cargado: autolevelup
+[21:46:22] [OK] Comando cargado: adivinanumero
+[21:46:22] [OK] Comando cargado: adivinanza
+[21:46:22] [OK] Comando cargado: ahorcado
+[21:46:22] [OK] Comando cargado: crush
+[21:46:22] [OK] Comando cargado: dado
+[21:46:22] [OK] Comando cargado: fusion
+[21:46:22] [OK] Comando cargado: moneda
+[21:46:22] [OK] Comando cargado: personalidad
+[21:46:22] [OK] Comando cargado: ppt
+[21:46:23] [OK] Comando cargado: qc
+[21:46:23] [OK] Comando cargado: rate
+[21:46:23] [OK] Comando cargado: reto
+[21:46:23] [OK] Comando cargado: ship
+[21:46:23] [OK] Comando cargado: top
+[21:46:23] [OK] Comando cargado: trivia
+[21:46:23] [OK] Comando cargado: verdad
+[21:46:23] [OK] Comando cargado: facebook
+[21:46:23] [OK] Comando cargado: instagram
+[21:46:23] [OK] Comando cargado: pinterest
+[21:46:24] [OK] Comando cargado: play
+[21:46:24] [OK] Comando cargado: spotify
+[21:46:24] [OK] Comando cargado: tiktok
+[21:46:24] [OK] Comando cargado: ytmp3
+[21:46:24] [OK] Comando cargado: ytmp4
+[21:46:24] [OK] Comando cargado: balance
+[21:46:24] [OK] Comando cargado: buy
+[21:46:24] [WARN] Comando duplicado ignorado: buy (crime.js)
+[21:46:24] [OK] Comando cargado: daily
+[21:46:24] [OK] Comando cargado: deposit
+[21:46:24] [OK] Comando cargado: gamble
+[21:46:24] [OK] Comando cargado: inventory
+[21:46:24] [OK] Comando cargado: leaderboardmoney
+[21:46:24] [OK] Comando cargado: open
+[21:46:24] [OK] Comando cargado: pay
+[21:46:24] [OK] Comando cargado: rob
+[21:46:24] [OK] Comando cargado: shop
+[21:46:24] [OK] Comando cargado: slots
+[21:46:24] [OK] Comando cargado: withdraw
+[21:46:24] [OK] Comando cargado: work
+[21:46:24] [OK] Comando cargado: equip
+[21:46:24] [OK] Comando cargado: events
+[21:46:24] [OK] Comando cargado: brat
+[21:46:25] [OK] Comando cargado: exportstats
+[21:46:25] [OK] Comando cargado: inactive
+[21:46:25] [OK] Comando cargado: msgstats
+[21:46:25] [OK] Comando cargado: topmessages
+[21:46:25] [OK] Comando cargado: groups
+[21:46:25] [OK] Comando cargado: add
+[21:46:25] [OK] Comando cargado: admins
+[21:46:25] [OK] Comando cargado: demote
+[21:46:25] [OK] Comando cargado: goodbye
+[21:46:25] [OK] Comando cargado: hidetag
+[21:46:25] [OK] Comando cargado: kick
+[21:46:25] [OK] Comando cargado: link
+[21:46:25] [OK] Comando cargado: mute
+[21:46:25] [OK] Comando cargado: promote
+[21:46:25] [OK] Comando cargado: resetgoodbye
+[21:46:25] [OK] Comando cargado: resetwelcome
+[21:46:25] [OK] Comando cargado: setgoodbye
+[21:46:25] [OK] Comando cargado: setwelcome
+[21:46:25] [OK] Comando cargado: tagall
+[21:46:25] [OK] Comando cargado: unwarn
+[21:46:25] [OK] Comando cargado: warn
+[21:46:25] [OK] Comando cargado: warnings
+[21:46:25] [OK] Comando cargado: welcome
+[21:46:25] [OK] Comando cargado: ia
+[21:46:25] [OK] Comando cargado: join
+[21:46:25] [WARN] Alias duplicado "top" en leaderboard.js
+[21:46:25] [OK] Comando cargado: leaderboard
+[21:46:25] [WARN] Alias duplicado "rank" en level.js
+[21:46:25] [OK] Comando cargado: level
+[21:46:25] [WARN] Comando duplicado ignorado: rank (rank.js)
+[21:46:25] [OK] Comando cargado: menu
+[21:46:26] [OK] Comando cargado: myclub
+[21:46:26] [OK] Comando cargado: objectives
+[21:46:26] [OK] Comando cargado: openpack
+[21:46:26] [OK] Comando cargado: packs
+[21:46:26] [OK] Comando cargado: pick
+[21:46:26] [OK] Comando cargado: ping
+[21:46:26] [OK] Comando cargado: addpremium
+[21:46:26] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[21:46:26] [OK] Comando cargado: delpremium
+[21:46:26] [OK] Comando cargado: profile
+[21:46:26] [OK] Comando cargado: sticker
+[21:46:26] [OK] Comando cargado: addjoinmsg
+[21:46:26] [OK] Comando cargado: clearjoinmsg
+[21:46:26] [OK] Comando cargado: deljoinmsg
+[21:46:26] [OK] Comando cargado: listjoinmsg
+[21:46:26] [INFO] Iniciando sistema multi-bot...
+[21:46:26] [INFO] Instancias configuradas: main, brazil
+[21:46:26] [OK] MySQL conectado y tabla lista
+[21:46:26] [OK] Base de datos inicializada
+[21:46:26] [INFO] Iniciando 2 instancia(s): main, brazil
+[21:46:26] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[21:46:26] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[21:46:26] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[21:46:26] [OK] KennyBot | SocketManager cargado
+[21:46:28] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[21:46:29] [OK] KennyBot conectado
+[21:46:29] [EVENT] [main] 231233170759884 -> Hola
+[21:46:29] [EVENT] KennyBot | PassiveCoins: 231233170759884 +2
+[21:46:31] [EVENT] [main] 209668156739682 -> Dónde esta mi hermano
+[21:46:31] [EVENT] KennyBot | PassiveCoins: 209668156739682 +5
+[21:46:32] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 3
+[21:46:34] [EVENT] [main] 231233170759884 -> El único canal q me quedo
+[21:46:49] [OK] Hot Reload: ban
+[21:46:49] [OK] Hot Reload: unban
+[21:46:49] [OK] Hot Reload: antilink
+[21:46:49] [OK] Hot Reload: card
+[21:46:49] [OK] Hot Reload: cardinfo
+[21:46:49] [OK] Hot Reload: claim
+[21:46:49] [OK] Hot Reload: collection
+[21:46:49] [OK] Hot Reload: antibot
+[21:46:49] [OK] Hot Reload: antifake
+[21:46:49] [OK] Hot Reload: autolevelup
+[21:46:49] [OK] Hot Reload: adivinanumero
+[21:46:49] [OK] Hot Reload: adivinanza
+[21:46:49] [OK] Hot Reload: ahorcado
+[21:46:49] [OK] Hot Reload: crush
+[21:46:49] [OK] Hot Reload: dado
+[21:46:49] [OK] Hot Reload: fusion
+[21:46:49] [OK] Hot Reload: moneda
+[21:46:49] [OK] Hot Reload: personalidad
+[21:46:49] [OK] Hot Reload: ppt
+[21:46:49] [OK] Hot Reload: qc
+[21:46:49] [OK] Hot Reload: rate
+[21:46:49] [OK] Hot Reload: reto
+[21:46:49] [OK] Hot Reload: ship
+[21:46:49] [OK] Hot Reload: top
+[21:46:49] [OK] Hot Reload: trivia
+[21:46:49] [OK] Hot Reload: verdad
+[21:46:49] [OK] Hot Reload: facebook
+[21:46:49] [OK] Hot Reload: instagram
+[21:46:49] [OK] Hot Reload: pinterest
+[21:46:49] [OK] Hot Reload: play
+[21:46:49] [OK] Hot Reload: spotify
+[21:46:49] [OK] Hot Reload: tiktok
+[21:46:49] [OK] Hot Reload: ytmp3
+[21:46:49] [OK] Hot Reload: ytmp4
+[21:46:49] [OK] Hot Reload: balance
+[21:46:49] [OK] Hot Reload: buy
+[21:46:49] [OK] Hot Reload: buy
+[21:46:49] [OK] Hot Reload: daily
+[21:46:49] [OK] Hot Reload: deposit
+[21:46:49] [OK] Hot Reload: gamble
+[21:46:49] [OK] Hot Reload: inventory
+[21:46:49] [OK] Hot Reload: leaderboardmoney
+[21:46:49] [OK] Hot Reload: open
+[21:46:49] [OK] Hot Reload: pay
+[21:46:49] [OK] Hot Reload: rob
+[21:46:49] [OK] Hot Reload: shop
+[21:46:49] [OK] Hot Reload: slots
+[21:46:49] [OK] Hot Reload: withdraw
+[21:46:49] [OK] Hot Reload: work
+[21:46:49] [OK] Hot Reload: equip
+[21:46:49] [OK] Hot Reload: events
+[21:46:49] [OK] Hot Reload: brat
+[21:46:49] [OK] Hot Reload: exportstats
+[21:46:50] [OK] Hot Reload: inactive
+[21:46:50] [OK] Hot Reload: msgstats
+[21:46:50] [OK] Hot Reload: topmessages
+[21:46:50] [OK] Hot Reload: groups
+[21:46:50] [OK] Hot Reload: add
+[21:46:50] [OK] Hot Reload: admins
+[21:46:50] [OK] Hot Reload: demote
+[21:46:50] [OK] Hot Reload: goodbye
+[21:46:50] [OK] Hot Reload: hidetag
+[21:46:50] [OK] Hot Reload: kick
+[21:46:50] [OK] Hot Reload: link
+[21:46:50] [OK] Hot Reload: mute
+[21:46:50] [OK] Hot Reload: promote
+[21:46:50] [OK] Hot Reload: resetgoodbye
+[21:46:50] [OK] Hot Reload: resetwelcome
+[21:46:50] [OK] Hot Reload: setgoodbye
+[21:46:50] [OK] Hot Reload: setwelcome
+[21:46:50] [OK] Hot Reload: tagall
+[21:46:50] [OK] Hot Reload: unwarn
+[21:46:50] [OK] Hot Reload: warn
+[21:46:50] [OK] Hot Reload: warnings
+[21:46:50] [OK] Hot Reload: welcome
+[21:46:50] [OK] Hot Reload: ia
+[21:46:50] [OK] Hot Reload: join
+[21:46:50] [OK] Hot Reload: leaderboard
+[21:46:50] [OK] Hot Reload: level
+[21:46:50] [OK] Hot Reload: rank
+[21:46:50] [OK] Hot Reload: menu
+[21:46:50] [OK] Hot Reload: myclub
+[21:46:50] [OK] Hot Reload: objectives
+[21:46:50] [OK] Hot Reload: openpack
+[21:46:50] [OK] Hot Reload: packs
+[21:46:50] [OK] Hot Reload: pick
+[21:46:50] [OK] Hot Reload: ping
+[21:46:50] [OK] Hot Reload: addpremium
+[21:46:50] [OK] Hot Reload: addpremium
+[21:46:50] [OK] Hot Reload: delpremium
+[21:46:50] [OK] Hot Reload: profile
+[21:46:50] [OK] Hot Reload: sticker
+[21:46:50] [OK] Hot Reload: addjoinmsg
+[21:46:50] [OK] Hot Reload: clearjoinmsg
+[21:46:50] [OK] Hot Reload: deljoinmsg
+[21:46:50] [OK] Hot Reload: listjoinmsg
+[21:48:17] [EVENT] [brazil] 199295475122379 -> Ola
+[21:48:18] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 199295475122379 +5
+[21:48:24] [EVENT] [brazil] 199295475122379 -> Hoy soy feliz
+[21:48:28] [EVENT] [brazil] 199295475122379 -> Hice mi video más pro
+[21:48:44] [EVENT] [main] 102641900236851 -> 𝐻𝑜𝑙𝑎 𝑝𝑟𝑒𝑐𝑖𝑜𝑠𝑎
+[21:48:44] [EVENT] KennyBot | PassiveCoins: 102641900236851 +9
+[21:53:01] [EVENT] [brazil] 138577707053189 -> Didii
+[21:53:01] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 138577707053189 +3
+[21:54:50] [EVENT] [main] 209668156739682 -> +51 967 088 769
+
+Le llegan los mensajes
+[21:54:50] [EVENT] KennyBot | PassiveCoins: 209668156739682 +7
+[21:54:51] [EVENT] [main] 209668156739682 -> ??
+[21:55:26] [EVENT] [main] 152313230581775 -> Deja pregunto
+[21:55:26] [EVENT] KennyBot | PassiveCoins: 152313230581775 +8
+[21:55:31] [EVENT] [brazil] 147438375555223 -> Holaaa.
+[21:55:31] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 147438375555223 +10
+[21:55:40] [EVENT] [main] 31646124363853 -> Si
+[21:55:40] [EVENT] KennyBot | PassiveCoins: 31646124363853 +7
+[21:55:57] [EVENT] [brazil] 138577707053189 -> Que tal, nenita?
+[21:55:57] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 138577707053189 +5
+[21:56:23] [EVENT] [brazil] 147438375555223 -> Ahí y tu?
+[21:56:33] [EVENT] [main] 152313230581775 -> Si
+[21:56:33] [EVENT] KennyBot | PassiveCoins: 152313230581775 +7
+[21:57:09] [EVENT] [main] 231233170759884 -> Lleva a grupos vro
+[21:57:09] [EVENT] KennyBot | PassiveCoins: 231233170759884 +5
+[21:57:41] [EVENT] [main] 152313230581775 -> K gruoos
+[21:57:41] [EVENT] KennyBot | PassiveCoins: 152313230581775 +3
+[21:57:42] [EVENT] [main] 152313230581775 -> Xd
+[21:57:50] [EVENT] [main] 152313230581775 -> Ya no le llegan
+[21:57:50] [EVENT] [main] 231233170759884 -> Los andes
+[21:57:56] [EVENT] [main] 231233170759884 -> q
+[21:58:03] [EVENT] [main] 152313230581775 -> @209668156739682 habrá desactivado o habla bloqueado
+[21:58:08] [EVENT] [main] 152313230581775 -> No ando en ningúno
+[21:58:27] [EVENT] [main] 231233170759884 -> Eche
+[21:58:27] [EVENT] KennyBot | PassiveCoins: 231233170759884 +9
+[21:59:36] [EVENT] [brazil] 138577707053189 -> Igual, ya ando en mis desgracias otra vez
+[21:59:36] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 138577707053189 +9
+[22:04:57] [EVENT] [brazil] 124636310290534 -> OHDIOS
+[22:04:57] [EVENT] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | PassiveCoins: 124636310290534 +2
+[22:05:05] [EVENT] [brazil] 124636310290534 -> Muy bien, sigue así
+[22:07:07] [EVENT] [main] 280122447908995 -> Ahi si ya valio
+[22:07:07] [EVENT] KennyBot | PassiveCoins: 280122447908995 +9
+[22:07:20] [EVENT] [main] 280122447908995 -> Jajajaja
+[22:07:33] [EVENT] [main] 209668156739682 -> Va
+[22:07:33] [EVENT] KennyBot | PassiveCoins: 209668156739682 +5
+[22:07:36] [EVENT] [main] 209668156739682 -> Si
+[22:07:37] [EVENT] [main] 209668156739682 -> Va
+[22:08:00] [EVENT] [main] 231233170759884 -> Kien Mira si le llegan?
+[22:08:00] [EVENT] KennyBot | PassiveCoins: 231233170759884 +3
+[22:08:01] [EVENT] [main] 231233170759884 -> +52 232 135 1725
+[22:08:39] [EVENT] [main] 209668156739682 -> ‼️⚠️ ATENCIÓN ⚠️‼️
+
+🤬⚠️🚫 LL4M4R Y BL@QU4AR Y R4P@RT4R 20 o 15 VECES EST4 NÚMERO 😡⚠️‼️
+
+https://wa.me/+51967088769?text=te%20bloqueare%20acosador😡
+
+
+‼️⚠️ 4C@SA Y AM3N@ZA A N1Ñ4S P3QU3Ñ4S ⛔️⚠️
+[22:08:39] [EVENT] KennyBot | PassiveCoins: 209668156739682 +5
+[22:08:45] [EVENT] [main] 209668156739682 -> @9063253438484
+[22:08:49] [EVENT] [main] 209668156739682 -> Un favor
+[22:09:43] [EVENT] [main] 209668156739682 -> @4046446420184
+[22:09:43] [EVENT] KennyBot | PassiveCoins: 209668156739682 +9
+[22:10:09] [EVENT] [main] 31646124363853 -> Yes
+[22:10:09] [EVENT] KennyBot | PassiveCoins: 31646124363853 +8
+[22:10:17] [EVENT] [main] 4046446420184 -> Voy
+[22:10:17] [EVENT] KennyBot | PassiveCoins: 4046446420184 +4
+[22:10:48] [EVENT] [main] 29897972002882 -> Sigue el canal de 𝙎𝙏𝙄𝘾𝙆𝙀𝙍𝙎 𝙔 𝙁𝙊𝙉𝘿𝙊𝙎 💖 en WhatsApp: https://whatsapp.com/channel/0029VbE0N0dEQIarVieCQs2N
+[22:10:48] [EVENT] KennyBot | PassiveCoins: 29897972002882 +1
+[22:11:25] [EVENT] [main] 9063253438484 -> Dime
+[22:11:25] [EVENT] KennyBot | PassiveCoins: 9063253438484 +7
+[22:11:36] [EVENT] [main] 209668156739682 -> Tienes Admin en mis canales
+[22:11:36] [EVENT] KennyBot | PassiveCoins: 209668156739682 +9
+[22:11:38] [EVENT] [main] 9063253438484 -> No tengo plata
+[22:11:40] [EVENT] [main] 9063253438484 -> Aviso
+[22:11:45] [EVENT] [main] 9063253438484 -> Si obvio en unos
+[22:12:44] [EVENT] [main] 94176502915179 -> Si le llegan
+[22:12:44] [EVENT] KennyBot | PassiveCoins: 94176502915179 +9
+[22:21:57] [INFO] Cerrando KennyBot...
+[22:21:57] [INFO] Deteniendo main...
+[22:21:57] [INFO] Deteniendo brazil...
+[22:21:57] [INFO] Socket cerrado | main
+[22:21:57] [INFO] Socket cerrado | brazil
+[22:21:57] [OK] Todas las sesiones fueron cerradas

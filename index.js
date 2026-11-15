@@ -61,6 +61,89 @@ const PANEL_FEATURES = [
     'autolevelup'
 ]
 
+const PANEL_MAX_WARNS =
+    3
+
+const PANEL_WARNS_PATH =
+    require('path').join(
+        __dirname,
+        'database',
+        'warns.json'
+    )
+
+function panelReadWarns() {
+
+    try {
+
+        const data =
+            JSON.parse(
+                require('fs').readFileSync(
+                    PANEL_WARNS_PATH,
+                    'utf8'
+                )
+            )
+
+        return (
+            data &&
+            typeof data === 'object' &&
+            !Array.isArray(data)
+        )
+            ? data
+            : {}
+
+    } catch {
+
+        return {}
+
+    }
+
+}
+
+function panelSaveWarns(
+    warns
+) {
+
+    require('fs').writeFileSync(
+        PANEL_WARNS_PATH,
+        JSON.stringify(
+            warns,
+            null,
+            2
+        ),
+        'utf8'
+    )
+
+}
+
+function panelNumber(
+    jid
+) {
+
+    return String(
+        jid || ''
+    )
+        .split('@')[0]
+        .split(':')[0]
+
+}
+
+function panelFindWarnKey(
+    warns,
+    number
+) {
+
+    return Object.keys(
+        warns
+    ).find(
+        key =>
+            panelNumber(
+                key
+            ) ===
+            number
+    ) || null
+
+}
+
 const {
     runRewardMaintenance
 } = require(
@@ -1651,6 +1734,208 @@ async function bootstrap() {
                                     )
 
                                 }
+
+                            },
+
+                        warns:
+                            async () => {
+
+                                const warns =
+                                    panelReadWarns()
+
+                                return Object.entries(
+                                    warns
+                                )
+                                    .map(
+                                        ([
+                                            key,
+                                            value
+                                        ]) => ({
+
+                                            id:
+                                                key,
+
+                                            user:
+                                                panelNumber(
+                                                    key
+                                                ),
+
+                                            group:
+                                                'Todos los grupos',
+
+                                            reason:
+                                                '—',
+
+                                            count:
+                                                Number(
+                                                    value?.warns
+                                                ) || 0,
+
+                                            max:
+                                                PANEL_MAX_WARNS
+
+                                        })
+                                    )
+                                    .filter(
+                                        warn =>
+                                            warn.count > 0
+                                    )
+
+                            },
+
+                        addWarn:
+                            async (
+                                user
+                            ) => {
+
+                                const number =
+                                    String(
+                                        user || ''
+                                    )
+                                        .replace(
+                                            /\D/g,
+                                            ''
+                                        )
+
+                                if (
+                                    number.length < 8
+                                ) {
+
+                                    throw new Error(
+                                        'Escribe el número completo con lada'
+                                    )
+
+                                }
+
+                                const warns =
+                                    panelReadWarns()
+
+                                let key =
+                                    panelFindWarnKey(
+                                        warns,
+                                        number
+                                    )
+
+                                if (
+                                    !key
+                                ) {
+
+                                    try {
+
+                                        for (
+                                            const state
+                                            of botStates.values()
+                                        ) {
+
+                                            const lid =
+                                                await state.sock
+                                                    ?.signalRepository
+                                                    ?.lidMapping
+                                                    ?.getLIDForPN?.(
+                                                        `${number}@s.whatsapp.net`
+                                                    )
+
+                                            if (
+                                                lid
+                                            ) {
+
+                                                key =
+                                                    panelFindWarnKey(
+                                                        warns,
+                                                        panelNumber(
+                                                            lid
+                                                        )
+                                                    ) ||
+                                                    String(
+                                                        lid
+                                                    )
+
+                                                break
+
+                                            }
+
+                                        }
+
+                                    } catch {}
+
+                                }
+
+                                if (
+                                    !key
+                                ) {
+
+                                    key =
+                                        `${number}@s.whatsapp.net`
+
+                                }
+
+                                const current =
+                                    Number(
+                                        warns[key]?.warns
+                                    ) || 0
+
+                                warns[key] = {
+                                    ...(warns[key] || {}),
+                                    warns:
+                                        Math.min(
+                                            PANEL_MAX_WARNS,
+                                            current + 1
+                                        )
+                                }
+
+                                panelSaveWarns(
+                                    warns
+                                )
+
+                            },
+
+                        removeWarn:
+                            async id => {
+
+                                const warns =
+                                    panelReadWarns()
+
+                                const key =
+                                    panelFindWarnKey(
+                                        warns,
+                                        panelNumber(
+                                            id
+                                        )
+                                    )
+
+                                if (
+                                    !key
+                                ) {
+
+                                    throw new Error(
+                                        'Ese warn ya no existe'
+                                    )
+
+                                }
+
+                                const next =
+                                    (
+                                        Number(
+                                            warns[key]?.warns
+                                        ) || 0
+                                    ) - 1
+
+                                if (
+                                    next <= 0
+                                ) {
+
+                                    delete warns[key]
+
+                                } else {
+
+                                    warns[key].warns =
+                                        next
+
+                                }
+
+                                panelSaveWarns(
+                                    warns
+                                )
 
                             },
 
