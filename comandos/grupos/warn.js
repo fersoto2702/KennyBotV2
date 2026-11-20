@@ -903,6 +903,31 @@ module.exports = {
             )
 
 
+            /*
+                Registro de actividad del panel (si el panel está activo).
+            */
+
+            try {
+
+                global.panelAudit?.({
+
+                    user:
+                        `whatsapp:${getNumber(sender)}`,
+
+                    action:
+                        'warn',
+
+                    target:
+                        getNumber(targetJid),
+
+                    detail:
+                        `${total}/${MAX_WARNS} · ${reason} · grupo ${getNumber(from)}`
+
+                })
+
+            } catch {}
+
+
             const bar =
                 createWarnBar(
                     total
@@ -1153,6 +1178,27 @@ module.exports = {
                 `AutoKick por warns: ${getNumber(targetJid)} de ${from.split('@')[0]}`
 
             )
+
+
+            try {
+
+                global.panelAudit?.({
+
+                    user:
+                        'bot',
+
+                    action:
+                        'autokick',
+
+                    target:
+                        getNumber(targetJid),
+
+                    detail:
+                        `expulsado por ${MAX_WARNS} warns · grupo ${getNumber(from)}`
+
+                })
+
+            } catch {}
 
 
             return await sock.sendMessage(
