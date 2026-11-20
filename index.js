@@ -115,6 +115,122 @@ function panelSaveWarns(
 
 }
 
+const panelStatsCache = {
+    at: 0,
+    levels: {},
+    economy: {}
+}
+
+function panelReadJson(
+    name
+) {
+
+    try {
+
+        const data =
+            JSON.parse(
+                require('fs').readFileSync(
+                    require('path').join(
+                        __dirname,
+                        'database',
+                        name
+                    ),
+                    'utf8'
+                )
+            )
+
+        return (
+            data &&
+            typeof data === 'object' &&
+            !Array.isArray(data)
+        )
+            ? data
+            : {}
+
+    } catch {
+
+        return {}
+
+    }
+
+}
+
+function panelUserStats(
+    jid
+) {
+
+    if (
+        Date.now() -
+        panelStatsCache.at >
+        3000
+    ) {
+
+        panelStatsCache.levels =
+            panelReadJson(
+                'levels.json'
+            )
+
+        panelStatsCache.economy =
+            panelReadJson(
+                'economy.json'
+            )
+
+        panelStatsCache.at =
+            Date.now()
+
+    }
+
+    const number =
+        panelNumber(
+            jid
+        )
+
+    const find =
+        database =>
+            Object.keys(
+                database
+            ).find(
+                key =>
+                    panelNumber(
+                        key
+                    ) ===
+                    number
+            )
+
+    const levelKey =
+        find(
+            panelStatsCache.levels
+        )
+
+    const economyKey =
+        find(
+            panelStatsCache.economy
+        )
+
+    const level =
+        panelStatsCache.levels[levelKey] ||
+        {}
+
+    const economy =
+        panelStatsCache.economy[economyKey] ||
+        {}
+
+    return {
+
+        level:
+            Number(level.level) || 0,
+
+        xp:
+            Number(level.xp) || 0,
+
+        coins:
+            (Number(economy.coins) || 0) +
+            (Number(economy.bank) || 0)
+
+    }
+
+}
+
 function panelNumber(
     jid
 ) {
@@ -1208,6 +1324,34 @@ async function startBot(
                 sock
             )
 
+        /* Panel: cuenta cada mensaje que el bot envía (detector de bot mudo) */
+        {
+
+            const sendOriginal =
+                sock.sendMessage.bind(
+                    sock
+                )
+
+            sock.sendMessage =
+                async (
+                    ...args
+                ) => {
+
+                    const result =
+                        await sendOriginal(
+                            ...args
+                        )
+
+                    global.panelActivity?.sent(
+                        profileId
+                    )
+
+                    return result
+
+                }
+
+        }
+
         botState.sock =
             sock
 
@@ -1544,12 +1688,40 @@ async function startBot(
 
                     }
 
+                    global.panelActivity?.incoming({
+
+                        profile:
+                            profileId,
+
+                        jid:
+                            msg.key?.remoteJid,
+
+                        fromMe:
+                            msg.key?.fromMe,
+
+                        name:
+                            msg.pushName,
+
+                        text:
+                            msg.message.conversation ||
+                            msg.message.extendedTextMessage?.text ||
+                            msg.message.imageMessage?.caption ||
+                            msg.message.videoMessage?.caption ||
+                            ''
+
+                    })
+
                     await messagesEvent(
                         sock,
                         messages
                     )
 
                 } catch (err) {
+
+                    global.panelActivity?.error(
+                        profileId,
+                        err.message
+                    )
 
                     logger.error(
                         `${profile.name} | Messages Error: ${err.stack || err.message}`
@@ -1619,7 +1791,8 @@ async function bootstrap() {
 
             try {
 
-                startPanelApi({
+                const panelApi =
+                    startPanelApi({
 
                     pool,
 
@@ -1628,6 +1801,19 @@ async function bootstrap() {
 
                     origin:
                         process.env.PANEL_ORIGIN,
+
+                    alerts: {
+
+                        telegramToken:
+                            process.env.ALERT_TELEGRAM_TOKEN,
+
+                        telegramChat:
+                            process.env.ALERT_TELEGRAM_CHAT,
+
+                        waNumber:
+                            process.env.ALERT_WA_NUMBER
+
+                    },
 
                     commandsDir:
                         require('path').join(
@@ -1669,6 +1855,46 @@ async function bootstrap() {
                         reload:
                             async () =>
                                 reloadAll(),
+
+                        notifyWhatsApp:
+                            async (
+                                number,
+                                text,
+                                options = {}
+                            ) => {
+
+                                for (
+                                    const [
+                                        id,
+                                        state
+                                    ]
+                                    of botStates.entries()
+                                ) {
+
+                                    if (
+                                        id === options.exclude ||
+                                        !state.sock ||
+                                        !state.connected
+                                    ) {
+
+                                        continue
+
+                                    }
+
+                                    await state.sock.sendMessage(
+                                        `${String(number).replace(/\D/g, '')}@s.whatsapp.net`,
+                                        {
+                                            text
+                                        }
+                                    )
+
+                                    return true
+
+                                }
+
+                                return false
+
+                            },
 
                         groupSettings:
                             jid => {
@@ -1736,6 +1962,58 @@ async function bootstrap() {
                                 }
 
                             },
+
+                        economyTotal:
+                            () => {
+
+                                const economy =
+                                    panelReadJson(
+                                        'economy.json'
+                                    )
+
+                                return Object.values(
+                                    economy
+                                ).reduce(
+                                    (
+                                        total,
+                                        entry
+                                    ) =>
+                                        total +
+                                        (Number(entry?.coins) || 0) +
+                                        (Number(entry?.bank) || 0),
+                                    0
+                                )
+
+                            },
+
+                        profiles:
+                            () =>
+                                [
+                                    ...botStates.entries()
+                                ].map(
+                                    ([
+                                        id,
+                                        state
+                                    ]) => ({
+
+                                        id,
+
+                                        name:
+                                            id,
+
+                                        connected:
+                                            Boolean(
+                                                state?.connected
+                                            )
+
+                                    })
+                                ),
+
+                        userStats:
+                            jid =>
+                                panelUserStats(
+                                    jid
+                                ),
 
                         warns:
                             async () => {
@@ -1988,6 +2266,17 @@ async function bootstrap() {
                     }
 
                 })
+
+                /*
+                    Permite que el bot escriba en el registro de actividad
+                    del panel (por ejemplo desde warn.js).
+                */
+
+                global.panelAudit =
+                    panelApi.audit.log
+
+                global.panelActivity =
+                    panelApi.activity
 
             } catch (err) {
 

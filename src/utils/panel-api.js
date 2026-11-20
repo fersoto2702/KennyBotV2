@@ -1,39 +1,27 @@
 /*
- * API del panel de KennyBot.
+ * API del panel de KennyBot (v2: usuarios, registro, tiempo real, editor).
  *
  * Sirve los datos que el panel (React) lee y recibe sus acciones.
- * No necesita instalar nada: usa el módulo http de Node.
+ * No necesita instalar nada: usa solo módulos de Node.
  *
- * ─────────────────────────────────────────────
- * Uso en tu index.js (después de crear el socket):
+ * Archivos que van juntos:
+ *     src/utils/panel-api.js            (este archivo)
+ *     src/utils/panel/auth.js           usuarios y sesiones
+ *     src/utils/panel/audit.js          registro de actividad
+ *     src/utils/panel/alerts.js         alertas por Telegram / WhatsApp
+ *     src/utils/panel/editor.js         editor de comandos (apagado por defecto)
+ *     src/utils/panel/replies.js        respuestas rápidas
+ *     tools/panel-user.js               crear usuarios desde la terminal
+ *     tools/watchdog.js                 vigilante externo (proceso aparte)
  *
- *     const { pool } = require('./database/mysql')      // ajusta la ruta
- *     const startPanelApi = require('./panel-api')
+ * SEGURIDAD
+ *   - Este servidor puede reiniciar tu bot, así que exige iniciar sesión.
+ *   - Escucha solo en 127.0.0.1. Para usarlo desde internet, ponlo detrás de
+ *     HTTPS (ver DEPLOY.md). Nunca abras el puerto 4000 directamente.
+ *   - Mientras no exista ningún usuario, funciona el PANEL_TOKEN de antes
+ *     (modo transición). En cuanto creas un usuario, ese token se desactiva.
  *
- *     startPanelApi({
- *         pool,
- *         token: process.env.PANEL_TOKEN,
- *         origin: process.env.PANEL_ORIGIN,              // ej. https://tuweb.com
- *         getSock: () => sock,
- *         commandsDir: path.join(__dirname, 'comandos'),
- *
- *         hooks: {
- *             reload:  async () => { ... hot reload ... },
- *             restart: async () => { ... },
- *         }
- *     })
- *
- * Todos los hooks son opcionales. Si falta uno, esa acción
- * responde 501 y el panel lo muestra como error claro.
- * ─────────────────────────────────────────────
- *
- * IMPORTANTE: este servidor puede reiniciar tu bot.
- * Por eso exige un token en cada petición (Authorization: Bearer ...).
- * Genera uno largo, por ejemplo:
- *
- *     node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
- *
- * y guárdalo en tu .env como PANEL_TOKEN. Nunca lo pongas en el código.
+ * Todos los hooks son opcionales. Si falta uno, esa acción responde 501.
  */
 
 const http = require('http')
@@ -41,6 +29,13 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
+
+const createAuth = require('./panel/auth')
+const createAudit = require('./panel/audit')
+const createAlerts = require('./panel/alerts')
+const createEditor = require('./panel/editor')
+const createReplies = require('./panel/replies')
+const createActivity = require('./panel/activity')
 
 
 /* Nombre visible de cada carpeta de /comandos en el panel */
@@ -55,7 +50,8 @@ const FOLDER_LABELS = {
     levels: 'Niveles',
     premium: 'Premium',
     profile: 'Perfil',
-    welcome: 'Bienvenida'
+    welcome: 'Bienvenida',
+    personalizados: 'Personalizados'
 }
 
 
@@ -157,20 +153,50 @@ function safeEqual(a, b) {
 function startPanelApi({
     pool,
     token,
+    secret = process.env.PANEL_SECRET,
     origin,
     getSock = () => null,
     commandsDir,
     hooks = {},
     stateFile = null,
+    usersFile = path.join(process.cwd(), 'database', 'panel-users.json'),
+    auditFile = path.join(process.cwd(), 'database', 'panel-audit.log'),
+    backupDir = path.join(process.cwd(), 'database', 'panel-backups'),
+    repliesFile = path.join(process.cwd(), 'database', 'panel-replies.json'),
+    alerts: alertsConfig = {},
+    allowEdit = process.env.PANEL_ALLOW_EDIT === '1',
+    trustProxy = process.env.PANEL_TRUST_PROXY === '1',
+    sessionHours = Number(process.env.PANEL_SESSION_HOURS) || 12,
     port = Number(process.env.PANEL_PORT) || 4000,
     host = process.env.PANEL_HOST || '127.0.0.1',
     logger = console
 }) {
-    if (!token || token.length < 16) {
+    const signingKey = secret || token
+
+    if (!signingKey || signingKey.length < 16) {
         throw new Error(
-            'PANEL_TOKEN falta o es muy corto (mínimo 16 caracteres). ' +
-            'El panel puede reiniciar el bot, así que no se inicia sin token.'
+            'Falta PANEL_SECRET (o PANEL_TOKEN) de al menos 16 caracteres. ' +
+            'El panel puede reiniciar el bot, así que no se inicia sin eso.'
         )
+    }
+
+    const auth = createAuth({ usersFile, secret: signingKey, sessionHours })
+    const audit = createAudit({ file: auditFile, logger })
+
+    const editor = commandsDir ? createEditor({ commandsDir, backupDir, allowEdit }) : null
+
+    const replies = commandsDir
+        ? createReplies({
+            file: repliesFile,
+            commandsDir,
+            existingNames: () => scanCommands(commandsDir).flatMap(c => [ c.name ])
+        })
+        : null
+
+    const origins = String(origin || '').split(',').map(o => o.trim()).filter(Boolean)
+
+    if (auth.hasUsers() && !origins.length) {
+        logger.warn?.('Panel API: define PANEL_ORIGIN con la dirección de tu panel para limitar quién puede llamar a la API.')
     }
 
     const startedAt = Date.now()
@@ -415,6 +441,18 @@ function startPanelApi({
             leaderboard: top
         }
 
+        if (hooks.economyTotal) {
+            json.bot.coins = await hooks.economyTotal()
+        }
+
+        if (hooks.profiles) {
+            json.bot.profiles = await hooks.profiles()
+        }
+
+        if (hooks.cards) {
+            json.cards = await hooks.cards()
+        }
+
         if (hooks.commands) {
             json.commands = await hooks.commands()
         } else if (commandsDir) {
@@ -427,11 +465,138 @@ function startPanelApi({
             json.warns = await hooks.warns()
         }
 
+        json.activity = activity.snapshot(muteOpts)
+
         return json
     }
 
 
+    /* ───────── estado ligero para el tiempo real ───────── */
+
+    function liveStatus() {
+        return {
+            online: true,
+            uptimeSec: Math.floor((Date.now() - startedAt) / 1000),
+            ramUsed: Math.round(process.memoryUsage().rss / 1048576),
+            cpu: cpuPct,
+            queue: hooks.queueSize?.() ?? 0,
+            at: Date.now()
+        }
+    }
+
+
+    /* ───────── actividad (mapa, radio, perfiles, bot mudo) ───────── */
+
+    const activity = createActivity({
+        prefixes: String(process.env.BOT_PREFIXES || '.').split(',').map(x => x.trim()).filter(Boolean),
+        onCommand: event => broadcast('cmd', event)
+    })
+
+    const muteOpts = {
+        minCmds: Number(process.env.MUTE_MIN_COMMANDS) || 3,
+        afterSec: Number(process.env.MUTE_AFTER_SEC) || 120
+    }
+
+
+    /* ───────── alertas ───────── */
+
+    const alerts = createAlerts({
+        getMute: id => activity.muteState(id, muteOpts),
+        getProfiles: hooks.profiles,
+        notifyWhatsApp: hooks.notifyWhatsApp,
+        telegramToken: alertsConfig.telegramToken,
+        telegramChat: alertsConfig.telegramChat,
+        waNumber: alertsConfig.waNumber,
+        graceSec: alertsConfig.graceSec,
+        logger,
+        onAlert: ({ text, results }) => {
+            audit.log({
+                user: 'sistema',
+                action: 'alert',
+                detail: `${text} → ${results.map(r => `${r.channel}:${r.ok ? 'ok' : r.reason}`).join(', ')}`
+            })
+
+            broadcast('alert', { text, at: Date.now() })
+        }
+    })
+
+
+    /* ───────── tiempo real (Server-Sent Events) ───────── */
+
+    const clients = new Set()
+
+    function broadcast(event, data) {
+        const msg = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
+
+        for (const res of clients) {
+            try { res.write(msg) } catch {}
+        }
+    }
+
+    audit.on(entry => broadcast('audit', entry))
+
+    setInterval(() => {
+        if (!clients.size) {
+            return
+        }
+
+        broadcast('status', liveStatus())
+
+        broadcast('activity', activity.snapshot(muteOpts))
+
+        if (hooks.profiles) {
+            Promise.resolve(hooks.profiles()).then(p => broadcast('profiles', p)).catch(() => {})
+        }
+    }, 5000).unref()
+
+    setInterval(() => {
+        for (const res of clients) {
+            try { res.write(': ping\n\n') } catch {}
+        }
+    }, 20000).unref()
+
+
     /* ───────── servidor ───────── */
+
+    function clientIp(req) {
+        if (trustProxy) {
+            const fwd = req.headers['cf-connecting-ip'] || String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+
+            if (fwd) {
+                return fwd
+            }
+        }
+
+        return req.socket.remoteAddress || 'desconocida'
+    }
+
+
+    function headersFor(req) {
+        const h = {
+            'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Vary': 'Origin',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY',
+            'Referrer-Policy': 'no-referrer',
+            'Cache-Control': 'no-store'
+        }
+
+        const o = req.headers.origin
+
+        if (!origins.length) {
+            h['Access-Control-Allow-Origin'] = '*'
+        } else if (o && origins.includes(o)) {
+            h['Access-Control-Allow-Origin'] = o
+        }
+
+        if (req.headers['x-forwarded-proto'] === 'https') {
+            h['Strict-Transport-Security'] = 'max-age=31536000'
+        }
+
+        return h
+    }
+
 
     function send(res, code, body, cors) {
         res.writeHead(code, {
@@ -443,14 +608,14 @@ function startPanelApi({
     }
 
 
-    function readBody(req) {
+    function readBody(req, limit = 100000) {
         return new Promise((resolve, reject) => {
             let raw = ''
 
             req.on('data', chunk => {
                 raw += chunk
 
-                if (raw.length > 100000) {
+                if (raw.length > limit) {
                     reject(new Error('Cuerpo demasiado grande'))
                     req.destroy()
                 }
@@ -467,13 +632,11 @@ function startPanelApi({
     }
 
 
+    const httpError = (code, message) => Object.assign(new Error(message), { code })
+
+
     const server = http.createServer(async (req, res) => {
-        const cors = {
-            'Access-Control-Allow-Origin': origin || '*',
-            'Access-Control-Allow-Headers': 'Authorization, Content-Type',
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Vary': 'Origin'
-        }
+        const cors = headersFor(req)
 
         if (req.method === 'OPTIONS') {
             res.writeHead(204, cors)
@@ -481,92 +644,343 @@ function startPanelApi({
             return res.end()
         }
 
-        const auth = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
-
-        if (!safeEqual(auth, token)) {
-            return send(res, 401, { error: 'Token inválido o ausente' }, cors)
-        }
-
         const url = new URL(req.url, 'http://x')
 
         const parts = url.pathname.split('/').filter(Boolean).map(decodeURIComponent)
 
-        const need = name => {
-            if (!hooks[name]) {
-                const err = new Error(`Acción no disponible: falta el hook "${name}" en startPanelApi`)
-
-                err.code = 501
-
-                throw err
-            }
-
-            return hooks[name]
-        }
+        const ip = clientIp(req)
 
         try {
-            if (req.method === 'GET' && parts[0] === 'stats') {
-                return send(res, 200, await stats(), cors)
+            /* ── rutas públicas ── */
+
+            if (req.method === 'GET' && parts[0] === 'health') {
+                return send(res, 200, { ok: true }, cors)
             }
 
+            if (req.method === 'POST' && parts[0] === 'login') {
+                const body = await readBody(req, 4000)
+
+                try {
+                    const session = await auth.login(body.user, body.password, ip)
+
+                    audit.log({ user: session.user, role: session.role, ip, action: 'login' })
+
+                    return send(res, 200, session, cors)
+                } catch (err) {
+                    audit.log({ user: String(body.user || '?').slice(0, 32), ip, action: 'login', ok: false, detail: err.message })
+
+                    throw err
+                }
+            }
+
+
+            /* ── a partir de aquí hace falta sesión ── */
+
+            const bearer = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')
+
+            let session = auth.check(bearer)
+
+            if (!session && token && bearer && safeEqual(bearer, token)) {
+                if (!auth.hasUsers() || process.env.PANEL_ALLOW_STATIC_TOKEN === '1') {
+                    session = { user: 'token', role: 'admin' }
+                }
+            }
+
+            if (!session) {
+                return send(res, 401, { error: 'Sesión inválida o vencida. Inicia sesión de nuevo.' }, cors)
+            }
+
+            const allow = action => {
+                if (!auth.can(session.role, action)) {
+                    throw httpError(403, `Tu rol (${session.role}) no puede hacer esto.`)
+                }
+            }
+
+            const need = name => {
+                if (!hooks[name]) {
+                    throw httpError(501, `Acción no disponible: falta el hook "${name}" en startPanelApi`)
+                }
+
+                return hooks[name]
+            }
+
+            const note = (action, target, detail) => audit.log({
+                user: session.user,
+                role: session.role,
+                ip,
+                action,
+                target,
+                detail
+            })
+
+
+            /* ── lecturas ── */
+
+            if (req.method === 'GET') {
+                if (parts[0] === 'me') {
+                    return send(res, 200, {
+                        user: session.user,
+                        role: session.role,
+                        editor: Boolean(editor?.enabled) && auth.can(session.role, 'edit'),
+                        alerts: alerts.status()
+                    }, cors)
+                }
+
+                if (parts[0] === 'stats') {
+                    return send(res, 200, await stats(), cors)
+                }
+
+                if (parts[0] === 'events') {
+                    if (clients.size >= 20) {
+                        throw httpError(429, 'Demasiadas conexiones en vivo')
+                    }
+
+                    res.writeHead(200, {
+                        ...cors,
+                        'Content-Type': 'text/event-stream; charset=utf-8',
+                        'Cache-Control': 'no-cache, no-transform',
+                        'Connection': 'keep-alive',
+                        'X-Accel-Buffering': 'no'
+                    })
+
+                    res.write('retry: 5000\n\n')
+
+                    clients.add(res)
+
+                    req.on('close', () => clients.delete(res))
+
+                    res.write(`event: activity\ndata: ${JSON.stringify(activity.snapshot(muteOpts))}\n\n`)
+
+                    return res.write(`event: status\ndata: ${JSON.stringify(liveStatus())}\n\n`)
+                }
+
+                if (parts[0] === 'audit') {
+                    allow('audit')
+
+                    return send(res, 200, {
+                        rows: audit.tail(Number(url.searchParams.get('limit')) || 100, {
+                            action: url.searchParams.get('action') || undefined
+                        })
+                    }, cors)
+                }
+
+                if (parts[0] === 'alerts' && parts[1] === 'status') {
+                    allow('alerts')
+
+                    return send(res, 200, alerts.status(), cors)
+                }
+
+                if (parts[0] === 'replies') {
+                    allow('edit')
+
+                    return send(res, 200, { rows: replies ? replies.list() : [] }, cors)
+                }
+
+                if (parts[0] === 'editor') {
+                    allow('edit')
+
+                    if (!editor) {
+                        throw httpError(501, 'El editor necesita la opción "commandsDir"')
+                    }
+
+                    if (!editor.enabled) {
+                        throw httpError(403, 'El editor está apagado. Pon PANEL_ALLOW_EDIT=1 en tu .env y reinicia el bot.')
+                    }
+
+                    if (parts[1] === 'files') {
+                        return send(res, 200, { rows: editor.list() }, cors)
+                    }
+
+                    if (parts[1] === 'file') {
+                        return send(res, 200, editor.read(url.searchParams.get('path')), cors)
+                    }
+
+                    if (parts[1] === 'backups') {
+                        return send(res, 200, { rows: editor.backups(url.searchParams.get('path')) }, cors)
+                    }
+                }
+            }
+
+
+            /* ── acciones ── */
+
             if (req.method === 'POST') {
-                const body = await readBody(req)
+                const big = parts[0] === 'editor'
+
+                const body = await readBody(req, big ? 450000 : 100000)
+
+                if (parts[0] === 'logout') {
+                    if (body.everywhere) {
+                        auth.revokeSessions(session.user)
+                    }
+
+                    note('logout', null, body.everywhere ? 'cerró todas sus sesiones' : null)
+
+                    return send(res, 200, { ok: true }, cors)
+                }
 
                 if (parts[0] === 'reload') {
+                    allow('reload')
+
                     const result = await need('reload')()
+
+                    note('reload', null, result?.total ? `${result.loaded}/${result.total} módulos` : null)
 
                     return send(res, 200, { ok: true, ...(result || {}) }, cors)
                 }
 
                 if (parts[0] === 'restart') {
+                    allow('restart')
+
+                    need('restart')
+
+                    note('restart')
+
                     send(res, 200, { ok: true }, cors)
 
-                    return setTimeout(() => need('restart')(), 300)
+                    return setTimeout(() => hooks.restart(), 300)
                 }
 
                 if (parts[0] === 'commands' && parts[1]) {
+                    allow('commands')
+
                     await need('setCommand')(parts[1], !!body.enabled)
+
+                    note('command', parts[1], body.enabled ? 'activado' : 'desactivado')
 
                     return send(res, 200, { ok: true }, cors)
                 }
 
                 if (parts[0] === 'commands') {
+                    allow('commands')
+
                     await need('createCommand')(body.name, body.category)
+
+                    note('command-create', body.name)
 
                     return send(res, 200, { ok: true }, cors)
                 }
 
                 if (parts[0] === 'groups' && parts[1]) {
+                    allow('groups')
+
+                    const changes = []
+
                     if (body.status !== undefined) {
                         saveGroupStatus(parts[1], body.status)
+
+                        changes.push(`estado: ${body.status}`)
                     }
 
                     if (body.features && Object.keys(body.features).length) {
                         await need('setGroup')(parts[1], { features: body.features })
+
+                        changes.push(Object.entries(body.features).map(([ k, v ]) => `${k}: ${v ? 'on' : 'off'}`).join(', '))
                     }
 
                     groupCache.at = 0
+
+                    note('group', mask(parts[1]), changes.join(' · '))
 
                     return send(res, 200, { ok: true }, cors)
                 }
 
                 if (parts[0] === 'warns' && parts[2] === 'remove') {
+                    allow('warns')
+
                     await need('removeWarn')(parts[1])
+
+                    note('warn-remove', mask(parts[1]))
 
                     return send(res, 200, { ok: true }, cors)
                 }
 
                 if (parts[0] === 'warns') {
+                    allow('warns')
+
                     await need('addWarn')(body.user, body.group, body.reason)
 
+                    note('warn-add', mask(body.user), body.reason)
+
                     return send(res, 200, { ok: true }, cors)
+                }
+
+                if (parts[0] === 'alerts' && parts[1] === 'test') {
+                    allow('alerts')
+
+                    const results = await alerts.test()
+
+                    note('alert-test', null, results.map(r => `${r.channel}:${r.ok ? 'ok' : r.reason}`).join(', '))
+
+                    return send(res, 200, { ok: results.some(r => r.ok), results }, cors)
+                }
+
+                if (parts[0] === 'replies') {
+                    allow('edit')
+
+                    if (!replies) {
+                        throw httpError(501, 'Las respuestas necesitan la opción "commandsDir"')
+                    }
+
+                    const result = parts[2] === 'delete'
+                        ? replies.remove(parts[1])
+                        : replies.save(body.name, body)
+
+                    let reload = null
+
+                    if (result.needsReload && hooks.reload) {
+                        reload = await hooks.reload()
+                    }
+
+                    note(parts[2] === 'delete' ? 'reply-delete' : 'reply-save', parts[2] === 'delete' ? parts[1] : body.name)
+
+                    return send(res, 200, { ok: true, reload }, cors)
+                }
+
+                if (parts[0] === 'editor') {
+                    allow('edit')
+
+                    if (!editor) {
+                        throw httpError(501, 'El editor necesita la opción "commandsDir"')
+                    }
+
+                    if (parts[1] === 'file') {
+                        const result = editor.save(body.path, body.content, { expectedMtime: body.mtime })
+
+                        let reload = null
+
+                        if (hooks.reload) {
+                            reload = await hooks.reload()
+                        }
+
+                        note('code-save', body.path, `${result.bytes} bytes${result.backup ? ' · copia ' + result.backup : ''}${reload?.failed ? ' · ' + reload.failed + ' módulo(s) con error' : ''}`)
+
+                        return send(res, 200, { ...result, reload }, cors)
+                    }
+
+                    if (parts[1] === 'restore') {
+                        const result = editor.restore(body.path, body.backup)
+
+                        const reload = hooks.reload ? await hooks.reload() : null
+
+                        note('code-restore', body.path, body.backup)
+
+                        return send(res, 200, { ...result, reload }, cors)
+                    }
                 }
             }
 
             send(res, 404, { error: 'No existe esa ruta' }, cors)
         } catch (err) {
-            logger.error?.(`Panel API ${req.method} ${url.pathname}: ${err.message}`)
+            const code = [ 401, 403, 409, 422, 429, 501 ].includes(err.code) ? err.code : 500
 
-            send(res, err.code === 501 ? 501 : 500, { error: err.message }, cors)
+            if (code === 500) {
+                logger.error?.(`Panel API ${req.method} ${url.pathname}: ${err.message}`)
+            }
+
+            if (!res.headersSent) {
+                send(res, code, { error: err.message }, cors)
+            }
         }
     })
 
@@ -575,7 +989,14 @@ function startPanelApi({
         logger.log?.(`Panel API lista en http://${host}:${port}`)
     })
 
-    return server
+    return {
+        server,
+        audit,
+        alerts,
+        auth,
+        activity,
+        broadcast
+    }
 }
 
 

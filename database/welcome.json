@@ -33,5 +33,12 @@
     "welcomeMessage": "\"Bienvenidos a nuestra familia de retrasados\"",
     "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
     "updatedAt": 1794409389492
+  },
+  "120363430131852950@g.us": {
+    "welcome": true,
+    "goodbye": false,
+    "welcomeMessage": "Bienvenido/a {user} a *{group}*.\n\nAhora somos *{members}* miembros.",
+    "goodbyeMessage": "Hasta luego {user}.\n\nAhora somos *{members}* miembros en *{group}*.",
+    "updatedAt": 1795013062704
   }
 }
