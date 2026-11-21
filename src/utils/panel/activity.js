@@ -15,6 +15,7 @@ const HOUR = 3600000
 function createActivity({
     prefixes = [ '.' ],
     keepEvents = 60,
+    onRecord = () => {},
     onCommand = () => {}
 } = {}) {
     const profiles = new Map()
@@ -87,7 +88,11 @@ function createActivity({
 
         const cmd = prefix ? body.slice(prefix.length).split(/\s+/)[0].toLowerCase() : ''
 
-        if (!cmd || !/^[a-z0-9_áéíóúñ]{1,24}$/i.test(cmd)) {
+        const valid = Boolean(cmd) && /^[a-z0-9_áéíóúñ]{1,24}$/i.test(cmd)
+
+        onRecord({ profile: id, jid, cmd: valid ? cmd : null })
+
+        if (!valid) {
             return null
         }
 
