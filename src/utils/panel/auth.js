@@ -24,7 +24,7 @@ const PERMISSIONS = {
     viewer: [ 'read' ]
 }
 
-const MIN_PASSWORD = 10
+const MIN_PASSWORD = 7
 
 
 function b64(buffer) {

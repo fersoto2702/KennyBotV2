@@ -1,0 +1,12 @@
+{
+  "users": {
+    "kenny": {
+      "role": "admin",
+      "salt": "qJQAcqDpwxxItu3Gk8uaew",
+      "hash": "OGK0YkbBQd7QX7ng7E6UaHVep3677MdOcKgqjvR9sSx2z8QHcpe4FQ-GcibQN0-78HkKnBBqqZkt18GpL63jTg",
+      "version": 2,
+      "createdAt": "2026-11-21T01:59:08.006Z",
+      "updatedAt": "2026-11-21T01:59:26.222Z"
+    }
+  }
+}
