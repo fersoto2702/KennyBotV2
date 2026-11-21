@@ -36,6 +36,15 @@ const createAlerts = require('./panel/alerts')
 const createEditor = require('./panel/editor')
 const createReplies = require('./panel/replies')
 const createActivity = require('./panel/activity')
+const createUptime = require('./panel/uptime')
+const createMaintenance = require('./panel/maintenance')
+const createBroadcasts = require('./panel/broadcasts')
+const createTemplates = require('./panel/templates')
+const createMetrics = require('./panel/metrics')
+const createReport = require('./panel/report')
+const createPublicStore = require('./panel/publicstore')
+const createCatalog = require('./panel/catalog')
+const startPublicApi = require('./public-api')
 
 
 /* Nombre visible de cada carpeta de /comandos en el panel */
@@ -163,6 +172,8 @@ function startPanelApi({
     auditFile = path.join(process.cwd(), 'database', 'panel-audit.log'),
     backupDir = path.join(process.cwd(), 'database', 'panel-backups'),
     repliesFile = path.join(process.cwd(), 'database', 'panel-replies.json'),
+    dataDir = path.join(process.cwd(), 'database'),
+    publicApi = process.env.PUBLIC_API !== '0',
     alerts: alertsConfig = {},
     allowEdit = process.env.PANEL_ALLOW_EDIT === '1',
     trustProxy = process.env.PANEL_TRUST_PROXY === '1',
@@ -467,6 +478,8 @@ function startPanelApi({
 
         json.activity = activity.snapshot(muteOpts)
 
+        json.maintenance = maintenance.state()
+
         return json
     }
 
@@ -485,12 +498,56 @@ function startPanelApi({
     }
 
 
+    /* ───────── métricas, disponibilidad y herramientas de operación ───────── */
+
+    const metrics = createMetrics({ file: path.join(dataDir, 'panel-metrics.json'), logger })
+
+    const prefixes = String(process.env.BOT_PREFIXES || '.').split(',').map(x => x.trim()).filter(Boolean)
+
+    const uptime = createUptime({
+        file: path.join(dataDir, 'panel-uptime.json'),
+        getProfiles: () => hooks.profiles?.() || [],
+        logger
+    })
+
+    const maintenance = createMaintenance({
+        file: path.join(dataDir, 'panel-maintenance.json'),
+        owners: () => [
+            ...String(process.env.OWNER_NUMBERS || '').split(','),
+            ...(hooks.owners?.() || [])
+        ].map(x => x.trim()).filter(Boolean),
+        prefixes
+    })
+
+    const templates = createTemplates({ file: path.join(dataDir, 'panel-templates.json'), logger })
+
+    const publicStore = createPublicStore({
+        configFile: path.join(dataDir, 'panel-public.json'),
+        profilesFile: path.join(dataDir, 'panel-public-profiles.json')
+    })
+
+    const catalog = commandsDir
+        ? createCatalog({ commandsDir, getConfig: () => publicStore.config() })
+        : { get: () => ({ prefix: '.', total: 0, categories: [], commands: [] }), refresh() {} }
+
+    const groupName = jid => groupCache.map[jid]?.name || mask(jid)
+
+
     /* ───────── actividad (mapa, radio, perfiles, bot mudo) ───────── */
 
     const activity = createActivity({
-        prefixes: String(process.env.BOT_PREFIXES || '.').split(',').map(x => x.trim()).filter(Boolean),
+        onRecord: e => metrics.record(e),
+        prefixes,
         onCommand: event => broadcast('cmd', event)
     })
+
+    const errorOriginal = activity.error
+
+    activity.error = (id, message) => {
+        errorOriginal(id, message)
+
+        metrics.error()
+    }
 
     const muteOpts = {
         minCmds: Number(process.env.MUTE_MIN_COMMANDS) || 3,
@@ -519,6 +576,108 @@ function startPanelApi({
             broadcast('alert', { text, at: Date.now() })
         }
     })
+
+
+    /* ───────── difusiones, reporte semanal y web pública ───────── */
+
+    const broadcasts = createBroadcasts({
+        file: path.join(dataDir, 'panel-broadcasts.json'),
+        send: async (profile, jid, text) => {
+            if (!hooks.sendText) {
+                throw new Error('Falta el hook sendText en index.js')
+            }
+
+            await hooks.sendText(profile, jid, text)
+        },
+        groupName,
+        logger,
+        onEvent: (kind, item) => {
+            const ok = Object.values(item.results || {}).filter(r => r.ok).length
+
+            audit.log({
+                user: 'sistema',
+                action: kind === 'start' ? 'broadcast-start' : 'broadcast-end',
+                target: item.id,
+                detail: kind === 'start' ? `${item.groups.length} grupos` : `${item.status}: ${ok}/${item.groups.length} enviados`
+            })
+
+            broadcast('broadcast', { id: item.id, status: item.status })
+        }
+    })
+
+
+    async function sendTelegram(text) {
+        const res = await fetch(`https://api.telegram.org/bot${alertsConfig.telegramToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: alertsConfig.telegramChat, text }),
+            signal: AbortSignal.timeout(15000)
+        })
+
+        if (!res.ok) {
+            throw new Error(`Telegram respondió ${res.status}`)
+        }
+    }
+
+
+    const report = createReport({
+        file: path.join(dataDir, 'panel-report.json'),
+        metrics,
+        uptime,
+        groupName,
+        logger,
+        canSend: channel => channel === 'telegram'
+            ? Boolean(alertsConfig.telegramToken && alertsConfig.telegramChat)
+            : Boolean(alertsConfig.waNumber && hooks.notifyWhatsApp),
+        sendTelegram,
+        sendWhatsApp: text => hooks.notifyWhatsApp(alertsConfig.waNumber, text),
+        warnsThisWeek: () => audit.tail(5000).filter(e => [ 'warn', 'warn-add' ].includes(e.action) && e.ok !== false && Date.now() - new Date(e.ts) < 7 * 86400000).length,
+        activeWarns: async () => ((await hooks.warns?.()) || []).reduce((a, w) => a + (w.count || 0), 0),
+        getData: async () => {
+            const start = utcDay(6)
+            const prevStart = utcDay(13)
+
+            const [rows] = await pool.execute(`
+                SELECT grupo, SUM(cantidad) AS total
+                FROM mensajes
+                WHERE fecha >= ?
+                GROUP BY grupo
+                ORDER BY total DESC
+                LIMIT 10
+            `, [ start ])
+
+            const [[sum]] = await pool.execute(`
+                SELECT
+                    SUM(CASE WHEN fecha >= ? THEN cantidad ELSE 0 END) AS cur,
+                    SUM(CASE WHEN fecha >= ? AND fecha < ? THEN cantidad ELSE 0 END) AS prev
+                FROM mensajes
+                WHERE fecha >= ?
+            `, [ start, prevStart, start, prevStart ])
+
+            await groupInfo()
+
+            return {
+                groups: rows.map(r => ({ jid: r.grupo, total: Number(r.total) })),
+                thisWeek: Number(sum?.cur) || 0,
+                lastWeek: Number(sum?.prev) || 0
+            }
+        }
+    })
+
+
+    const publicServer = publicApi
+        ? startPublicApi({
+            store: publicStore,
+            catalog,
+            uptime,
+            maintenance,
+            hooks: {
+                isOnline: () => (hooks.profiles?.() || []).some(p => p.connected),
+                publicProfile: jid => hooks.publicProfile?.(jid)
+            },
+            logger
+        })
+        : null
 
 
     /* ───────── tiempo real (Server-Sent Events) ───────── */
@@ -776,6 +935,44 @@ function startPanelApi({
                     return send(res, 200, { rows: replies ? replies.list() : [] }, cors)
                 }
 
+                if (parts[0] === 'maintenance') {
+                    allow('read')
+
+                    return send(res, 200, maintenance.state(), cors)
+                }
+
+                if (parts[0] === 'broadcasts') {
+                    allow('broadcast')
+
+                    return send(res, 200, { rows: broadcasts.list() }, cors)
+                }
+
+                if (parts[0] === 'templates') {
+                    allow('read')
+
+                    return send(res, 200, templates.all(), cors)
+                }
+
+                if (parts[0] === 'report') {
+                    allow('report')
+
+                    return send(res, 200, report.config(), cors)
+                }
+
+                if (parts[0] === 'public') {
+                    allow('public')
+
+                    catalog.refresh()
+
+                    return send(res, 200, {
+                        config: publicStore.config(),
+                        profiles: publicStore.count(),
+                        commands: catalog.get().total,
+                        publicApi: Boolean(publicServer),
+                        siteUrl: process.env.PUBLIC_SITE_URL || null
+                    }, cors)
+                }
+
                 if (parts[0] === 'editor') {
                     allow('edit')
 
@@ -817,6 +1014,114 @@ function startPanelApi({
                     note('logout', null, body.everywhere ? 'cerró todas sus sesiones' : null)
 
                     return send(res, 200, { ok: true }, cors)
+                }
+
+                if (parts[0] === 'maintenance') {
+                    allow('maintenance')
+
+                    const state = maintenance.set({ on: body.on, message: body.message, by: session.user })
+
+                    note('maintenance', null, state.on ? `encendido: ${state.message}` : 'apagado')
+
+                    broadcast('maintenance', state)
+
+                    return send(res, 200, state, cors)
+                }
+
+                if (parts[0] === 'broadcasts') {
+                    allow('broadcast')
+
+                    if (parts[1] === 'preview') {
+                        await groupInfo()
+
+                        return send(res, 200, broadcasts.preview(body), cors)
+                    }
+
+                    if (parts[1] === 'test') {
+                        const text = String(body.text || '').trim()
+
+                        if (!text) {
+                            throw httpError(400, 'Escribe el mensaje.')
+                        }
+
+                        if (!alertsConfig.waNumber || !hooks.notifyWhatsApp) {
+                            throw httpError(400, 'Falta ALERT_WA_NUMBER en tu .env: ahí se envía la prueba.')
+                        }
+
+                        const ok = await hooks.notifyWhatsApp(alertsConfig.waNumber, broadcasts.render(`🧪 Prueba de difusión\n\n${text}`, ''))
+
+                        note('broadcast-test')
+
+                        return send(res, 200, { ok }, cors)
+                    }
+
+                    if (parts[2] === 'cancel') {
+                        const item = broadcasts.cancel(parts[1])
+
+                        note('broadcast-cancel', item.id)
+
+                        return send(res, 200, item, cors)
+                    }
+
+                    await groupInfo()
+
+                    const item = broadcasts.create(body, session.user)
+
+                    note('broadcast-create', item.id, `${item.groups.length} grupos, ${new Date(item.at).toISOString()}`)
+
+                    return send(res, 200, item, cors)
+                }
+
+                if (parts[0] === 'templates' && parts[1]) {
+                    allow('groups')
+
+                    if (parts[2] === 'delete') {
+                        templates.remove(parts[1])
+
+                        note('template-delete', parts[1])
+
+                        return send(res, 200, templates.all(), cors)
+                    }
+
+                    templates.set(parts[1], body)
+
+                    note('template-save', parts[1])
+
+                    return send(res, 200, templates.all(), cors)
+                }
+
+                if (parts[0] === 'report') {
+                    allow('report')
+
+                    if (parts[1] === 'preview') {
+                        return send(res, 200, { text: await report.build() }, cors)
+                    }
+
+                    if (parts[1] === 'send') {
+                        const result = await report.sendNow()
+
+                        note('report-send', null, result.channels.join(', '))
+
+                        return send(res, 200, result, cors)
+                    }
+
+                    const cfg = report.setConfig(body)
+
+                    note('report-config', null, cfg.enabled ? `${report.dayName(cfg.weekday)} ${cfg.hour}:${String(cfg.minute).padStart(2, '0')}` : 'apagado')
+
+                    return send(res, 200, cfg, cors)
+                }
+
+                if (parts[0] === 'public') {
+                    allow('public')
+
+                    const config = publicStore.setConfig(body)
+
+                    catalog.refresh()
+
+                    note('public-config')
+
+                    return send(res, 200, { config }, cors)
                 }
 
                 if (parts[0] === 'reload') {
@@ -995,6 +1300,14 @@ function startPanelApi({
         alerts,
         auth,
         activity,
+        maintenance,
+        templates,
+        broadcasts,
+        report,
+        uptime,
+        metrics,
+        publicStore,
+        publicServer,
         broadcast
     }
 }

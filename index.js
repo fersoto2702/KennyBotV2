@@ -1621,10 +1621,27 @@ async function startBot(
 
                 try {
 
-                    await welcomeSystem(
-                        sock,
-                        update
-                    )
+                    /*
+                        Si el grupo tiene una plantilla de bienvenida activada
+                        en el panel, la manda ella y se salta la de siempre.
+                    */
+
+                    const handledByPanel =
+                        await global.panelTemplates?.welcome(
+                            sock,
+                            update
+                        )
+
+                    if (
+                        !handledByPanel
+                    ) {
+
+                        await welcomeSystem(
+                            sock,
+                            update
+                        )
+
+                    }
 
                 } catch (err) {
 
@@ -1688,6 +1705,13 @@ async function startBot(
 
                     }
 
+                    const panelText =
+                        msg.message.conversation ||
+                        msg.message.extendedTextMessage?.text ||
+                        msg.message.imageMessage?.caption ||
+                        msg.message.videoMessage?.caption ||
+                        ''
+
                     global.panelActivity?.incoming({
 
                         profile:
@@ -1703,13 +1727,60 @@ async function startBot(
                             msg.pushName,
 
                         text:
-                            msg.message.conversation ||
-                            msg.message.extendedTextMessage?.text ||
-                            msg.message.imageMessage?.caption ||
-                            msg.message.videoMessage?.caption ||
-                            ''
+                            panelText
 
                     })
+
+                    /*
+                        Modo mantenimiento: frena los comandos de todos
+                        menos del dueño, y avisa (sin repetir cada vez).
+                    */
+
+                    const maintenanceGate =
+                        global.panelMaintenance?.check({
+
+                            jid:
+                                msg.key?.remoteJid,
+
+                            fromMe:
+                                msg.key?.fromMe,
+
+                            sender:
+                                msg.key?.participant ||
+                                msg.participant,
+
+                            text:
+                                panelText
+
+                        })
+
+                    if (
+                        maintenanceGate?.block
+                    ) {
+
+                        if (
+                            maintenanceGate.reply
+                        ) {
+
+                            await sock.sendMessage(
+                                msg.key.remoteJid,
+                                {
+                                    text:
+                                        maintenanceGate.reply
+                                },
+                                {
+                                    quoted:
+                                        msg
+                                }
+                            ).catch(
+                                () => {}
+                            )
+
+                        }
+
+                        return
+
+                    }
 
                     await messagesEvent(
                         sock,
@@ -1855,6 +1926,117 @@ async function bootstrap() {
                         reload:
                             async () =>
                                 reloadAll(),
+
+                        owners:
+                            () =>
+                                [].concat(
+                                    settings.ownerNumber ||
+                                    []
+                                ),
+
+                        sendText:
+                            async (
+                                profileId,
+                                jid,
+                                text
+                            ) => {
+
+                                const state =
+                                    botStates.get(
+                                        profileId
+                                    )
+
+                                if (
+                                    !state?.sock ||
+                                    !state.connected
+                                ) {
+
+                                    throw new Error(
+                                        `El perfil ${profileId} no está conectado`
+                                    )
+
+                                }
+
+                                await state.sock.sendMessage(
+                                    jid,
+                                    {
+                                        text
+                                    }
+                                )
+
+                            },
+
+                        publicProfile:
+                            jid => {
+
+                                const number =
+                                    panelNumber(
+                                        jid
+                                    )
+
+                                const stats =
+                                    panelUserStats(
+                                        jid
+                                    )
+
+                                const warns =
+                                    panelReadWarns()
+
+                                const warnKey =
+                                    panelFindWarnKey(
+                                        warns,
+                                        number
+                                    )
+
+                                const badges =
+                                    panelReadJson(
+                                        'badges.json'
+                                    )
+
+                                const badgeKey =
+                                    Object.keys(
+                                        badges
+                                    ).find(
+                                        key =>
+                                            panelNumber(
+                                                key
+                                            ) ===
+                                            number
+                                    )
+
+                                return {
+
+                                    level:
+                                        stats.level,
+
+                                    xp:
+                                        stats.xp,
+
+                                    coins:
+                                        stats.coins,
+
+                                    badges:
+                                        Array.isArray(
+                                            badges[badgeKey]
+                                        )
+                                            ? badges[badgeKey].map(
+                                                String
+                                            )
+                                            : [],
+
+                                    warns:
+                                        warnKey
+                                            ? Number(
+                                                warns[warnKey]?.warns
+                                            ) || 0
+                                            : 0,
+
+                                    maxWarns:
+                                        PANEL_MAX_WARNS
+
+                                }
+
+                            },
 
                         notifyWhatsApp:
                             async (
@@ -2277,6 +2459,17 @@ async function bootstrap() {
 
                 global.panelActivity =
                     panelApi.activity
+
+                global.panelMaintenance =
+                    panelApi.maintenance
+
+                global.panelTemplates =
+                    panelApi.templates
+
+                /* Lo usan .perfilweb y .perfilprivado */
+
+                global.panelPublic =
+                    panelApi.publicStore
 
             } catch (err) {
 
