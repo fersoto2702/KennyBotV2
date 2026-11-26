@@ -53,11 +53,6 @@ const attachment =
 const PATCH_FLAG =
     Symbol.for('kennybot.soundSticker.v1')
 
-const SOUND_STICKER_FIT =
-    String(process.env.SOUND_STICKER_FIT || 'blur')
-        .trim()
-        .toLowerCase()
-
 const FFMPEG =
     process.env.FFMPEG_PATH || 'ffmpeg'
 
@@ -501,9 +496,7 @@ async function makeWebp(video, out, seconds) {
     for (const preset of presets) {
 
         const filter =
-            SOUND_STICKER_FIT === 'cover'
-                ? `fps=${preset.fps},scale=512:512:force_original_aspect_ratio=increase:flags=lanczos,crop=512:512:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuva420p`
-                : `fps=${preset.fps},split=2[background][foreground];[background]scale=512:512:force_original_aspect_ratio=increase:flags=lanczos,crop=512:512,boxblur=14:1[blurred];[foreground]scale=512:512:force_original_aspect_ratio=decrease:flags=lanczos[main];[blurred][main]overlay=(W-w)/2:(H-h)/2,setsar=1,format=yuva420p`
+            `fps=${preset.fps},scale=512:512:force_original_aspect_ratio=decrease:force_divisible_by=2:flags=lanczos,setsar=1,format=yuva420p`
 
         await callProgram(
             FFMPEG,
@@ -580,6 +573,79 @@ async function makeOgg(source, out, seconds) {
 
 }
 
+function getWebpDimensions(file) {
+
+    const bytes =
+        fs.readFileSync(file)
+
+    if (
+        bytes.toString('ascii', 0, 4) !== 'RIFF' ||
+        bytes.toString('ascii', 8, 12) !== 'WEBP'
+    ) {
+
+        throw new Error('El archivo no es un WebP válido.')
+
+    }
+
+    let offset = 12
+
+    while (offset + 8 <= bytes.length) {
+
+        const type =
+            bytes.toString('ascii', offset, offset + 4)
+
+        const length =
+            bytes.readUInt32LE(offset + 4)
+
+        const start = offset + 8
+        const end = start + length
+
+        if (end > bytes.length) {
+
+            break
+
+        }
+
+        if (type === 'VP8X' && length >= 10) {
+
+            return {
+                width: bytes.readUIntLE(start + 4, 3) + 1,
+                height: bytes.readUIntLE(start + 7, 3) + 1
+            }
+
+        }
+
+        if (type === 'VP8 ' && length >= 10) {
+
+            return {
+                width: bytes.readUInt16LE(start + 6) & 0x3fff,
+                height: bytes.readUInt16LE(start + 8) & 0x3fff
+            }
+
+        }
+
+        if (type === 'VP8L' && length >= 5 && bytes[start] === 0x2f) {
+
+            const b1 = bytes[start + 1]
+            const b2 = bytes[start + 2]
+            const b3 = bytes[start + 3]
+            const b4 = bytes[start + 4]
+
+            return {
+                width: 1 + (b1 | ((b2 & 0x3f) << 8)),
+                height: 1 + ((b2 >> 6) | (b3 << 2) | ((b4 & 0x0f) << 10))
+            }
+
+        }
+
+        offset = end + (length % 2)
+
+    }
+
+    throw new Error('No se pudieron identificar las dimensiones del WebP.')
+
+}
+
 async function sendSticker(
     sock,
     chat,
@@ -587,7 +653,8 @@ async function sendSticker(
     ogg,
     seconds,
     quoted,
-    isAnimated
+    isAnimated,
+    dimensions
 ) {
 
     soundStickerEncoderPatch()
@@ -660,8 +727,8 @@ async function sendSticker(
     s.isAnimated =
         Boolean(isAnimated)
 
-    s.width = 512
-    s.height = 512
+    s.width = dimensions.width
+    s.height = dimensions.height
 
     const k =
         Buffer.from(s.fileSha256)
@@ -862,6 +929,26 @@ async function makeAndSend(
             seconds
         )
 
+        const {
+            width,
+            height
+        } = getWebpDimensions(webp)
+
+        if (
+            !Number.isInteger(width) ||
+            !Number.isInteger(height) ||
+            width < 1 ||
+            height < 1 ||
+            width > 512 ||
+            height > 512
+        ) {
+
+            throw new Error(
+                'El tamaño del sticker está fuera del rango permitido.'
+            )
+
+        }
+
         await sendSticker(
             sock,
             from,
@@ -870,7 +957,8 @@ async function makeAndSend(
             seconds,
             sourceMsg,
             requested.type === 'video' ||
-                Boolean(requested.data.isAnimated)
+                Boolean(requested.data.isAnimated),
+            { width, height }
         )
 
     } finally {
