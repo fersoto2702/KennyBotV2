@@ -1,3 +1,5 @@
+'use strict'
+
 const fs =
     require('node:fs')
 
@@ -50,6 +52,11 @@ const attachment =
 
 const PATCH_FLAG =
     Symbol.for('kennybot.soundSticker.v1')
+
+const SOUND_STICKER_FIT =
+    String(process.env.SOUND_STICKER_FIT || 'blur')
+        .trim()
+        .toLowerCase()
 
 const FFMPEG =
     process.env.FFMPEG_PATH || 'ffmpeg'
@@ -493,6 +500,11 @@ async function makeWebp(video, out, seconds) {
 
     for (const preset of presets) {
 
+        const filter =
+            SOUND_STICKER_FIT === 'cover'
+                ? `fps=${preset.fps},scale=512:512:force_original_aspect_ratio=increase:flags=lanczos,crop=512:512:(in_w-out_w)/2:(in_h-out_h)/2,setsar=1,format=yuva420p`
+                : `fps=${preset.fps},split=2[background][foreground];[background]scale=512:512:force_original_aspect_ratio=increase:flags=lanczos,crop=512:512,boxblur=14:1[blurred];[foreground]scale=512:512:force_original_aspect_ratio=decrease:flags=lanczos[main];[blurred][main]overlay=(W-w)/2:(H-h)/2,setsar=1,format=yuva420p`
+
         await callProgram(
             FFMPEG,
             [
@@ -504,7 +516,7 @@ async function makeWebp(video, out, seconds) {
                 '-an',
                 '-map', '0:v:0',
                 '-vf',
-                `fps=${preset.fps},scale=512:512:force_original_aspect_ratio=decrease:flags=lanczos,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=black,format=yuva420p`,
+                filter,
                 '-c:v', 'libwebp_anim',
                 '-q:v', String(preset.q),
                 '-compression_level', '4',
