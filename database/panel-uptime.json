@@ -1,0 +1,127 @@
+{
+  "firstSeen": 1795230271605,
+  "lastBeat": 1795675279991,
+  "outages": [
+    {
+      "from": 1795329627894,
+      "to": 1795330355221,
+      "kind": "reinicio"
+    }
+  ],
+  "drops": [
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795285165029,
+      "to": 1795285180042
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795291549466,
+      "to": 1795291564475
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795298573402,
+      "to": 1795298588414
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795471001149,
+      "to": 1795471016158
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795475098202,
+      "to": 1795475113215
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795475728548,
+      "to": 1795475743562
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795479570677,
+      "to": 1795479585684
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795483098472,
+      "to": 1795483113479
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795509016836,
+      "to": 1795509031839
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795534651228,
+      "to": 1795534666229
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795540264094,
+      "to": 1795540279103
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795559068773,
+      "to": 1795559083787
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795562085393,
+      "to": 1795562100406
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795573717574,
+      "to": 1795573732574
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795632041806,
+      "to": 1795632056818
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795637144510,
+      "to": 1795637159513
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795642472440,
+      "to": 1795642487447
+    },
+    {
+      "profile": "main",
+      "name": "main",
+      "from": 1795646719779,
+      "to": 1795646734793
+    },
+    {
+      "profile": "brazil",
+      "name": "brazil",
+      "from": 1795647785367,
+      "to": 1795647800372
+    }
+  ]
+}

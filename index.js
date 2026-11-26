@@ -28,6 +28,9 @@ const settings =
 const messagesEvent =
     require('./eventos/messages')
 
+const soundSticker =
+    require('./src/system/soundSticker.JS')
+
 const cleanupTemp =
     require('./src/utils/cleanupTemp')
 
@@ -1782,10 +1785,31 @@ async function startBot(
 
                     }
 
-                    await messagesEvent(
-                        sock,
-                        messages
-                    )
+const soundStickerHandled =
+    await soundSticker.consumeAudio(
+        sock,
+        msg,
+        String(
+            msg.key.remoteJid
+        ).replace(
+            /:\d+@/,
+            '@'
+        )
+    )
+
+if (
+    soundStickerHandled
+) {
+
+    return
+
+}
+
+
+await messagesEvent(
+    sock,
+    messages
+)
 
                 } catch (err) {
 
