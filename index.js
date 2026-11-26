@@ -1,2785 +1,1101 @@
-process.setMaxListeners(50)
+process.setMaxListeners(50);
 
 try {
+    require('dotenv').config();
+}
+catch { }
 
-    require('dotenv').config()
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require('@whiskeysockets/baileys');
 
-} catch {}
+const P = require('pino');
 
-const {
-    default: makeWASocket,
-    useMultiFileAuthState,
-    DisconnectReason,
-    fetchLatestBaileysVersion
-} = require('@whiskeysockets/baileys')
+const qrcode = require('qrcode-terminal');
 
-const P =
-    require('pino')
+const welcomeSystem = require('./src/system/welcomeSystem');
 
-const qrcode =
-    require('qrcode-terminal')
+const settings = require('./src/config/settings');
 
-const welcomeSystem =
-    require('./src/system/welcomeSystem')
+const messagesEvent = require('./eventos/messages');
 
-const settings =
-    require('./src/config/settings')
+const soundSticker = require('./src/system/soundStickerCore');
 
-const messagesEvent =
-    require('./eventos/messages')
+const cleanupTemp = require('./src/utils/cleanupTemp');
 
-const soundSticker =
-    require('./src/system/soundSticker.JS')
+const logger = require('./src/utils/logger');
 
-const cleanupTemp =
-    require('./src/utils/cleanupTemp')
+const { patchSocket } = require('./src/system/socketManager');
 
-const logger =
-    require('./src/utils/logger')
+const { initDB, pool } = require('./src/database/mysql');
 
-const {
-    patchSocket
-} = require('./src/system/socketManager')
+const startPanelApi = require('./src/utils/panel-api');
 
-const {
-    initDB,
-    pool
-} = require('./src/database/mysql')
+const { isEnabled: isToggleEnabled, setToggle } = require('./src/utils/toggles');
 
-const startPanelApi =
-    require('./src/utils/panel-api')
-
-const {
-    isEnabled: isToggleEnabled,
-    setToggle
-} = require('./src/utils/toggles')
-
-const {
-    reloadAll
-} = require('./src/utils/reloadCommands')
+const { reloadAll } = require('./src/utils/reloadCommands');
 
 const PANEL_FEATURES = [
     'antibot',
     'antifake',
     'autolevelup'
-]
+];
 
-const PANEL_MAX_WARNS =
-    3
+const PANEL_MAX_WARNS = 3;
 
-const PANEL_WARNS_PATH =
-    require('path').join(
-        __dirname,
-        'database',
-        'warns.json'
-    )
+const PANEL_WARNS_PATH = require('path').join(__dirname, 'database', 'warns.json');
 
 function panelReadWarns() {
-
     try {
-
-        const data =
-            JSON.parse(
-                require('fs').readFileSync(
-                    PANEL_WARNS_PATH,
-                    'utf8'
-                )
-            )
-
-        return (
-            data &&
+        const data = JSON.parse(require('fs').readFileSync(PANEL_WARNS_PATH, 'utf8'));
+        return (data &&
             typeof data === 'object' &&
-            !Array.isArray(data)
-        )
+            !Array.isArray(data))
             ? data
-            : {}
-
-    } catch {
-
-        return {}
-
+            : {};
     }
-
+    catch {
+        return {};
+    }
 }
 
-function panelSaveWarns(
-    warns
-) {
-
-    require('fs').writeFileSync(
-        PANEL_WARNS_PATH,
-        JSON.stringify(
-            warns,
-            null,
-            2
-        ),
-        'utf8'
-    )
-
+function panelSaveWarns(warns) {
+    require('fs').writeFileSync(PANEL_WARNS_PATH, JSON.stringify(warns, null, 2), 'utf8');
 }
 
 const panelStatsCache = {
     at: 0,
     levels: {},
     economy: {}
-}
+};
 
-function panelReadJson(
-    name
-) {
-
+function panelReadJson(name) {
     try {
-
-        const data =
-            JSON.parse(
-                require('fs').readFileSync(
-                    require('path').join(
-                        __dirname,
-                        'database',
-                        name
-                    ),
-                    'utf8'
-                )
-            )
-
-        return (
-            data &&
+        const data = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, 'database', name), 'utf8'));
+        return (data &&
             typeof data === 'object' &&
-            !Array.isArray(data)
-        )
+            !Array.isArray(data))
             ? data
-            : {}
-
-    } catch {
-
-        return {}
-
+            : {};
     }
-
+    catch {
+        return {};
+    }
 }
 
-function panelUserStats(
-    jid
-) {
-
-    if (
-        Date.now() -
+function panelUserStats(jid) {
+    if (Date.now() -
         panelStatsCache.at >
-        3000
-    ) {
-
+        3000) {
         panelStatsCache.levels =
-            panelReadJson(
-                'levels.json'
-            )
-
+            panelReadJson('levels.json');
         panelStatsCache.economy =
-            panelReadJson(
-                'economy.json'
-            )
-
+            panelReadJson('economy.json');
         panelStatsCache.at =
-            Date.now()
-
+            Date.now();
     }
-
-    const number =
-        panelNumber(
-            jid
-        )
-
-    const find =
-        database =>
-            Object.keys(
-                database
-            ).find(
-                key =>
-                    panelNumber(
-                        key
-                    ) ===
-                    number
-            )
-
-    const levelKey =
-        find(
-            panelStatsCache.levels
-        )
-
-    const economyKey =
-        find(
-            panelStatsCache.economy
-        )
-
-    const level =
-        panelStatsCache.levels[levelKey] ||
-        {}
-
-    const economy =
-        panelStatsCache.economy[economyKey] ||
-        {}
-
+    const number = panelNumber(jid);
+    const find = database => Object.keys(database).find(key => panelNumber(key) ===
+        number);
+    const levelKey = find(panelStatsCache.levels);
+    const economyKey = find(panelStatsCache.economy);
+    const level = panelStatsCache.levels[levelKey] ||
+        {};
+    const economy = panelStatsCache.economy[economyKey] ||
+        {};
     return {
-
-        level:
-            Number(level.level) || 0,
-
-        xp:
-            Number(level.xp) || 0,
-
-        coins:
-            (Number(economy.coins) || 0) +
+        level: Number(level.level) || 0,
+        xp: Number(level.xp) || 0,
+        coins: (Number(economy.coins) || 0) +
             (Number(economy.bank) || 0)
-
-    }
-
+    };
 }
 
-function panelNumber(
-    jid
-) {
-
-    return String(
-        jid || ''
-    )
+function panelNumber(jid) {
+    return String(jid || '')
         .split('@')[0]
-        .split(':')[0]
-
+        .split(':')[0];
 }
 
-function panelFindWarnKey(
-    warns,
-    number
-) {
-
-    return Object.keys(
-        warns
-    ).find(
-        key =>
-            panelNumber(
-                key
-            ) ===
-            number
-    ) || null
-
+function panelFindWarnKey(warns, number) {
+    return Object.keys(warns).find(key => panelNumber(key) ===
+        number) || null;
 }
 
-const {
-    runRewardMaintenance
-} = require(
-    './src/services/rewardMaintenanceService'
-)
+const { runRewardMaintenance } = require('./src/services/rewardMaintenanceService');
 
-const {
-    runMilestoneMaintenance
-} = require(
-    './src/services/milestoneMaintenanceService'
-)
+const { runMilestoneMaintenance } = require('./src/services/milestoneMaintenanceService');
 
-const {
-    runSpecialCardMaintenance
-} = require(
-    './src/services/specialCardMaintenanceService'
-)
+const { runSpecialCardMaintenance } = require('./src/services/specialCardMaintenanceService');
 
-const {
-    runObjectiveMaintenance
-} = require(
-    './src/services/objectiveMaintenanceService'
-)
+const { runObjectiveMaintenance } = require('./src/services/objectiveMaintenanceService');
 
-const {
-    syncAllGlobalRoles,
-    syncGlobalRoleForMember,
-    isProductionRoleGroup
-} = require(
-    './src/services/globalRoleSyncService'
-)
+const { syncAllGlobalRoles, syncGlobalRoleForMember, isProductionRoleGroup } = require('./src/services/globalRoleSyncService');
 
-const usePairingCode =
-    false
+const usePairingCode = false;
 
-let cleanupStarted =
-    false
+let cleanupStarted = false;
 
-let rewardMaintenanceStarted =
-    false
+let rewardMaintenanceStarted = false;
 
-let milestoneMaintenanceStarted =
-    false
+let milestoneMaintenanceStarted = false;
 
-let specialCardMaintenanceStarted =
-    false
+let specialCardMaintenanceStarted = false;
 
-let objectiveMaintenanceStarted =
-    false
+let objectiveMaintenanceStarted = false;
 
-let shuttingDown =
-    false
+let shuttingDown = false;
 
-let bootstrapRetryTimer =
-    null
+let bootstrapRetryTimer = null;
 
-let cleanupInterval =
-    null
+let cleanupInterval = null;
 
-let rewardMaintenanceInterval =
-    null
+let rewardMaintenanceInterval = null;
 
-let milestoneMaintenanceInterval =
-    null
+let milestoneMaintenanceInterval = null;
 
-let specialCardMaintenanceInterval =
-    null
+let specialCardMaintenanceInterval = null;
 
-let objectiveMaintenanceInterval =
-    null
+let objectiveMaintenanceInterval = null;
 
-let panelApiStarted =
-    false
+let panelApiStarted = false;
 
-const botStates =
-    new Map()
+const botStates = new Map();
 
-function getBotProfile(
-    profileId
-) {
-
-    const profile =
-        settings?.bots?.[
-            profileId
-        ]
-
-    if (
-        !profile
-    ) {
-
-        throw new Error(
-            `Perfil de bot inexistente: ${profileId}`
-        )
-
+function getBotProfile(profileId) {
+    const profile = settings?.bots?.[profileId];
+    if (!profile) {
+        throw new Error(`Perfil de bot inexistente: ${profileId}`);
     }
-
-    return profile
-
+    return profile;
 }
 
-function getBotState(
-    profileId
-) {
-
-    if (
-        !botStates.has(
-            profileId
-        )
-    ) {
-
-        botStates.set(
-            profileId,
-            {
-                sock:
-                    null,
-
-                reconnecting:
-                    false,
-
-                reconnectTimer:
-                    null,
-
-                starting:
-                    false,
-
-                connected:
-                    false
-            }
-        )
-
+function getBotState(profileId) {
+    if (!botStates.has(profileId)) {
+        botStates.set(profileId, {
+            sock: null,
+            reconnecting: false,
+            reconnectTimer: null,
+            starting: false,
+            connected: false
+        });
     }
-
-    return botStates.get(
-        profileId
-    )
-
+    return botStates.get(profileId);
 }
 
 function getBotProfiles() {
-
-    return Object.keys(
-        settings?.bots || {}
-    )
-
+    return Object.keys(settings?.bots || {});
 }
 
 async function executeRewardMaintenance() {
-
     try {
-
-        const result =
-            await runRewardMaintenance()
-
-        if (
-            !result ||
-            !result.processed
-        ) {
-
-            if (
-                result?.reason &&
+        const result = await runRewardMaintenance();
+        if (!result ||
+            !result.processed) {
+            if (result?.reason &&
                 result.reason !==
-                'ALREADY_RUNNING'
-            ) {
-
-                logger.warn(
-                    `Reward Maintenance: ${result.reason}`
-                )
-
+                    'ALREADY_RUNNING') {
+                logger.warn(`Reward Maintenance: ${result.reason}`);
             }
-
-            return
-
+            return;
         }
-
-        const summary =
-            result.summary || {}
-
-        const awardsPrepared =
-            Number(
-                summary.awardsPrepared || 0
-            )
-
-        const rewardsDelivered =
-            Number(
-                summary.rewardsDelivered || 0
-            )
-
-        const preparationFailures =
-            Number(
-                summary.preparationFailures || 0
-            )
-
-        const processingFailures =
-            Number(
-                summary.processingFailures || 0
-            )
-
-        if (
-            awardsPrepared > 0 ||
+        const summary = result.summary || {};
+        const awardsPrepared = Number(summary.awardsPrepared || 0);
+        const rewardsDelivered = Number(summary.rewardsDelivered || 0);
+        const preparationFailures = Number(summary.preparationFailures || 0);
+        const processingFailures = Number(summary.processingFailures || 0);
+        if (awardsPrepared > 0 ||
             rewardsDelivered > 0 ||
             preparationFailures > 0 ||
-            processingFailures > 0
-        ) {
-
-            logger.info(
-                `Reward Maintenance | ` +
+            processingFailures > 0) {
+            logger.info(`Reward Maintenance | ` +
                 `Premios preparados: ${awardsPrepared} | ` +
                 `Recompensas entregadas: ${rewardsDelivered} | ` +
-                `Errores: ${
-                    preparationFailures +
-                    processingFailures
-                }`
-            )
-
+                `Errores: ${preparationFailures +
+                    processingFailures}`);
         }
-
-    } catch (err) {
-
-        logger.error(
-            `Reward Maintenance Error: ${err.stack || err.message}`
-        )
-
     }
-
+    catch (err) {
+        logger.error(`Reward Maintenance Error: ${err.stack || err.message}`);
+    }
 }
 
 async function executeMilestoneMaintenance() {
-
     try {
-
-        const result =
-            await runMilestoneMaintenance()
-
-        if (
-            !result ||
-            !result.processed
-        ) {
-
-            if (
-                result?.reason &&
+        const result = await runMilestoneMaintenance();
+        if (!result ||
+            !result.processed) {
+            if (result?.reason &&
                 result.reason !==
-                'ALREADY_RUNNING'
-            ) {
-
-                logger.warn(
-                    `Milestone Maintenance: ${result.reason}`
-                )
-
+                    'ALREADY_RUNNING') {
+                logger.warn(`Milestone Maintenance: ${result.reason}`);
             }
-
-            return
-
+            return;
         }
-
-        const awardsGranted =
-            Number(
-                result.awardsGranted || 0
-            )
-
-        const rewardsDelivered =
-            Number(
-                result.rewardsDelivered || 0
-            )
-
-        const failures =
-            Number(
-                result.failures || 0
-            )
-
-        if (
-            awardsGranted > 0 ||
+        const awardsGranted = Number(result.awardsGranted || 0);
+        const rewardsDelivered = Number(result.rewardsDelivered || 0);
+        const failures = Number(result.failures || 0);
+        if (awardsGranted > 0 ||
             rewardsDelivered > 0 ||
-            failures > 0
-        ) {
-
-            logger.info(
-                `Milestone Maintenance | ` +
+            failures > 0) {
+            logger.info(`Milestone Maintenance | ` +
                 `Miembros revisados: ${result.membersChecked || 0} | ` +
                 `Premios concedidos: ${awardsGranted} | ` +
                 `Recompensas entregadas: ${rewardsDelivered} | ` +
-                `Errores: ${failures}`
-            )
-
+                `Errores: ${failures}`);
         }
-
-    } catch (err) {
-
-        logger.error(
-            `Milestone Maintenance Error: ${err.stack || err.message}`
-        )
-
     }
-
+    catch (err) {
+        logger.error(`Milestone Maintenance Error: ${err.stack || err.message}`);
+    }
 }
 
 async function executeSpecialCardMaintenance() {
-
     try {
-
-        const result =
-            await runSpecialCardMaintenance()
-
-        if (
-            !result ||
-            !result.processed
-        ) {
-
-            if (
-                result?.reason &&
+        const result = await runSpecialCardMaintenance();
+        if (!result ||
+            !result.processed) {
+            if (result?.reason &&
                 result.reason !==
-                'ALREADY_RUNNING'
-            ) {
-
-                logger.warn(
-                    `Special Card Maintenance: ${result.reason}`
-                )
-
+                    'ALREADY_RUNNING') {
+                logger.warn(`Special Card Maintenance: ${result.reason}`);
             }
-
-            return
-
+            return;
         }
-
-        const changed =
-            Number(
-                result.changed || 0
-            )
-
-        const failed =
-            Number(
-                result.failed || 0
-            )
-
-        if (
-            changed > 0 ||
-            failed > 0
-        ) {
-
-            logger.info(
-                `Special Card Maintenance | ` +
+        const changed = Number(result.changed || 0);
+        const failed = Number(result.failed || 0);
+        if (changed > 0 ||
+            failed > 0) {
+            logger.info(`Special Card Maintenance | ` +
                 `Cartas revisadas: ${result.checked || 0} | ` +
                 `Cartas cambiadas: ${changed} | ` +
                 `Sin cambios: ${result.unchanged || 0} | ` +
-                `Errores: ${failed}`
-            )
-
+                `Errores: ${failed}`);
         }
-
-    } catch (err) {
-
-        logger.error(
-            `Special Card Maintenance Error: ${err.stack || err.message}`
-        )
-
     }
-
+    catch (err) {
+        logger.error(`Special Card Maintenance Error: ${err.stack || err.message}`);
+    }
 }
 
 async function executeObjectiveMaintenance() {
-
     try {
-
-        const result =
-            await runObjectiveMaintenance()
-
-        if (
-            !result ||
-            !result.processed
-        ) {
-
-            if (
-                result?.reason &&
+        const result = await runObjectiveMaintenance();
+        if (!result ||
+            !result.processed) {
+            if (result?.reason &&
                 result.reason !==
-                'ALREADY_RUNNING'
-            ) {
-
-                logger.warn(
-                    `Objective Maintenance: ${result.reason}`
-                )
-
+                    'ALREADY_RUNNING') {
+                logger.warn(`Objective Maintenance: ${result.reason}`);
             }
-
-            return
-
+            return;
         }
-
-        const eventsActivated =
-            Number(
-                result.eventsActivated || 0
-            )
-
-        const eventsFinished =
-            Number(
-                result.eventsFinished || 0
-            )
-
-        const objectivesExpired =
-            Number(
-                result.objectivesExpired || 0
-            )
-
-        const objectivesCancelled =
-            Number(
-                result.objectivesCancelled || 0
-            )
-
-        if (
-            eventsActivated > 0 ||
+        const eventsActivated = Number(result.eventsActivated || 0);
+        const eventsFinished = Number(result.eventsFinished || 0);
+        const objectivesExpired = Number(result.objectivesExpired || 0);
+        const objectivesCancelled = Number(result.objectivesCancelled || 0);
+        if (eventsActivated > 0 ||
             eventsFinished > 0 ||
             objectivesExpired > 0 ||
-            objectivesCancelled > 0
-        ) {
-
-            logger.info(
-                `Objective Maintenance | ` +
+            objectivesCancelled > 0) {
+            logger.info(`Objective Maintenance | ` +
                 `Eventos activados: ${eventsActivated} | ` +
                 `Eventos finalizados: ${eventsFinished} | ` +
                 `Objetivos expirados: ${objectivesExpired} | ` +
-                `Objetivos cancelados: ${objectivesCancelled}`
-            )
-
+                `Objetivos cancelados: ${objectivesCancelled}`);
         }
-
-    } catch (err) {
-
-        logger.error(
-            `Objective Maintenance Error: ${err.stack || err.message}`
-        )
-
     }
-
+    catch (err) {
+        logger.error(`Objective Maintenance Error: ${err.stack || err.message}`);
+    }
 }
 
-async function executeGlobalRoleSync(
-    sock
-) {
-
+async function executeGlobalRoleSync(sock) {
     try {
-
-        const result =
-            await syncAllGlobalRoles(
-                sock
-            )
-
-        if (
-            !result ||
-            !result.processed
-        ) {
-
-            if (
-                result?.reason
-            ) {
-
-                logger.warn(
-                    `Global Role Sync: ${result.reason} | ` +
+        const result = await syncAllGlobalRoles(sock);
+        if (!result ||
+            !result.processed) {
+            if (result?.reason) {
+                logger.warn(`Global Role Sync: ${result.reason} | ` +
                     `Grupos revisados: ${result.groupsChecked || 0} | ` +
-                    `Grupos con error: ${result.groupsFailed || 0}`
-                )
-
+                    `Grupos con error: ${result.groupsFailed || 0}`);
             }
-
-            return
-
+            return;
         }
-
-        const changed =
-            Number(
-                result.changed || 0
-            )
-
-        const failed =
-            Number(
-                result.failed || 0
-            )
-
-        if (
-            changed > 0 ||
-            failed > 0
-        ) {
-
-            logger.info(
-                `Global Role Sync | ` +
+        const changed = Number(result.changed || 0);
+        const failed = Number(result.failed || 0);
+        if (changed > 0 ||
+            failed > 0) {
+            logger.info(`Global Role Sync | ` +
                 `Grupos: ${result.groupsChecked || 0} | ` +
                 `Miembros: ${result.membersChecked || 0} | ` +
                 `Cambios: ${changed} | ` +
-                `Errores: ${failed}`
-            )
-
+                `Errores: ${failed}`);
         }
-
-    } catch (err) {
-
-        logger.error(
-            `Global Role Sync Error: ${err.stack || err.message}`
-        )
-
     }
-
+    catch (err) {
+        logger.error(`Global Role Sync Error: ${err.stack || err.message}`);
+    }
 }
 
 function startBackgroundTasks() {
-
-    if (
-        !cleanupStarted
-    ) {
-
+    if (!cleanupStarted) {
         cleanupStarted =
-            true
-
+            true;
         try {
-
-            cleanupTemp()
-
-        } catch (err) {
-
-            logger.error(
-                `Cleanup Error: ${err.stack || err.message}`
-            )
-
+            cleanupTemp();
         }
-
+        catch (err) {
+            logger.error(`Cleanup Error: ${err.stack || err.message}`);
+        }
         cleanupInterval =
-            setInterval(
-                () => {
-
-                    try {
-
-                        cleanupTemp()
-
-                    } catch (err) {
-
-                        logger.error(
-                            `Cleanup Error: ${err.stack || err.message}`
-                        )
-
-                    }
-
-                },
-                1000 * 60
-            )
-
-    }
-
-    if (
-        !rewardMaintenanceStarted
-    ) {
-
-        rewardMaintenanceStarted =
-            true
-
-        executeRewardMaintenance()
-
-        rewardMaintenanceInterval =
-            setInterval(
-                () => {
-
-                    executeRewardMaintenance()
-
-                },
-                1000 * 60 * 5
-            )
-
-    }
-
-    if (
-        !milestoneMaintenanceStarted
-    ) {
-
-        milestoneMaintenanceStarted =
-            true
-
-        milestoneMaintenanceInterval =
-            setInterval(
-                () => {
-
-                    executeMilestoneMaintenance()
-
-                },
-                1000 * 60 * 60 * 24
-            )
-
-    }
-
-    if (
-        !specialCardMaintenanceStarted
-    ) {
-
-        specialCardMaintenanceStarted =
-            true
-
-        executeSpecialCardMaintenance()
-
-        specialCardMaintenanceInterval =
-            setInterval(
-                () => {
-
-                    executeSpecialCardMaintenance()
-
-                },
-                1000 * 60 * 5
-            )
-
-    }
-
-    if (
-        !objectiveMaintenanceStarted
-    ) {
-
-        objectiveMaintenanceStarted =
-            true
-
-        executeObjectiveMaintenance()
-
-        objectiveMaintenanceInterval =
-            setInterval(
-                () => {
-
-                    executeObjectiveMaintenance()
-
-                },
-                1000 * 60 * 5
-            )
-
-    }
-
-}
-
-async function closeBotSocket(
-    profileId
-) {
-
-    const state =
-        getBotState(
-            profileId
-        )
-
-    const sock =
-        state.sock
-
-    state.sock =
-        null
-
-    state.connected =
-        false
-
-    state.starting =
-        false
-
-    if (!sock) {
-
-        return
-
-    }
-
-    try {
-
-        if (
-            typeof sock.clearQueue ===
-            'function'
-        ) {
-
-            sock.clearQueue()
-
-        }
-
-    } catch {}
-
-    try {
-
-        sock.ev
-            ?.removeAllListeners()
-
-    } catch {}
-
-    try {
-
-        sock.ws
-            ?.close()
-
-    } catch {}
-
-    logger.info(
-        `Socket cerrado | ${profileId}`
-    )
-
-}
-
-function scheduleReconnect(
-    profileId
-) {
-
-    if (
-        shuttingDown
-    ) {
-
-        return
-
-    }
-
-    let profile
-
-    try {
-
-        profile =
-            getBotProfile(
-                profileId
-            )
-
-    } catch (err) {
-
-        logger.error(
-            `${err.stack || err.message}`
-        )
-
-        return
-
-    }
-
-    const state =
-        getBotState(
-            profileId
-        )
-
-    if (
-        state.reconnecting
-    ) {
-
-        return
-
-    }
-
-    state.reconnecting =
-        true
-
-    logger.info(
-        `${profile.name} | Reconectando en 5 segundos...`
-    )
-
-    if (
-        state.reconnectTimer
-    ) {
-
-        clearTimeout(
-            state.reconnectTimer
-        )
-
-    }
-
-    state.reconnectTimer =
-        setTimeout(
-            async () => {
-
-                state.reconnectTimer =
-                    null
-
+            setInterval(() => {
                 try {
-
-                    await closeBotSocket(
-                        profileId
-                    )
-
-                } catch {}
-
-                state.reconnecting =
-                    false
-
-                await startBot(
-                    profileId
-                )
-
-            },
-            5000
-        )
-
+                    cleanupTemp();
+                }
+                catch (err) {
+                    logger.error(`Cleanup Error: ${err.stack || err.message}`);
+                }
+            }, 1000 * 60);
+    }
+    if (!rewardMaintenanceStarted) {
+        rewardMaintenanceStarted =
+            true;
+        executeRewardMaintenance();
+        rewardMaintenanceInterval =
+            setInterval(() => {
+                executeRewardMaintenance();
+            }, 1000 * 60 * 5);
+    }
+    if (!milestoneMaintenanceStarted) {
+        milestoneMaintenanceStarted =
+            true;
+        milestoneMaintenanceInterval =
+            setInterval(() => {
+                executeMilestoneMaintenance();
+            }, 1000 * 60 * 60 * 24);
+    }
+    if (!specialCardMaintenanceStarted) {
+        specialCardMaintenanceStarted =
+            true;
+        executeSpecialCardMaintenance();
+        specialCardMaintenanceInterval =
+            setInterval(() => {
+                executeSpecialCardMaintenance();
+            }, 1000 * 60 * 5);
+    }
+    if (!objectiveMaintenanceStarted) {
+        objectiveMaintenanceStarted =
+            true;
+        executeObjectiveMaintenance();
+        objectiveMaintenanceInterval =
+            setInterval(() => {
+                executeObjectiveMaintenance();
+            }, 1000 * 60 * 5);
+    }
 }
 
-async function handleGlobalRoleParticipantUpdate(
-    sock,
-    profile,
-    update
-) {
-
-    if (
-        profile.globalRoleSync !==
-        true
-    ) {
-
-        return
-
+async function closeBotSocket(profileId) {
+    const state = getBotState(profileId);
+    const sock = state.sock;
+    state.sock =
+        null;
+    state.connected =
+        false;
+    state.starting =
+        false;
+    if (!sock) {
+        return;
     }
-
-    if (
-        update.action !== 'promote' &&
-        update.action !== 'demote'
-    ) {
-
-        return
-
-    }
-
-    if (
-        !isProductionRoleGroup(
-            update.id
-        )
-    ) {
-
-        logger.info(
-            `Global Role Sync ignorado en grupo de prueba/no productivo: ${update.id}`
-        )
-
-        return
-
-    }
-
     try {
+        if (typeof sock.clearQueue ===
+            'function') {
+            sock.clearQueue();
+        }
+    }
+    catch { }
+    try {
+        sock.ev
+            ?.removeAllListeners();
+    }
+    catch { }
+    try {
+        sock.ws
+            ?.close();
+    }
+    catch { }
+    logger.info(`Socket cerrado | ${profileId}`);
+}
 
-        const affected =
-            Array.isArray(
-                update.participants
-            )
-                ? update.participants
-                : []
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    1500
-                )
-        )
-
-        for (
-            const participant
-            of affected
-        ) {
-
-            const participantId =
-                typeof participant ===
-                'string'
-                    ? participant
-                    : participant?.id
-
-            if (
-                !participantId
-            ) {
-
-                continue
-
-            }
-
+function scheduleReconnect(profileId) {
+    if (shuttingDown) {
+        return;
+    }
+    let profile;
+    try {
+        profile =
+            getBotProfile(profileId);
+    }
+    catch (err) {
+        logger.error(`${err.stack || err.message}`);
+        return;
+    }
+    const state = getBotState(profileId);
+    if (state.reconnecting) {
+        return;
+    }
+    state.reconnecting =
+        true;
+    logger.info(`${profile.name} | Reconectando en 5 segundos...`);
+    if (state.reconnectTimer) {
+        clearTimeout(state.reconnectTimer);
+    }
+    state.reconnectTimer =
+        setTimeout(async () => {
+            state.reconnectTimer =
+                null;
             try {
+                await closeBotSocket(profileId);
+            }
+            catch { }
+            state.reconnecting =
+                false;
+            await startBot(profileId);
+        }, 5000);
+}
 
-                const result =
-                    await syncGlobalRoleForMember(
-                        sock,
-                        participant
-                    )
-
-                if (
-                    !result ||
-                    !result.processed
-                ) {
-
-                    logger.warn(
-                        `Global Role Sync: ` +
+async function handleGlobalRoleParticipantUpdate(sock, profile, update) {
+    if (profile.globalRoleSync !==
+        true) {
+        return;
+    }
+    if (update.action !== 'promote' &&
+        update.action !== 'demote') {
+        return;
+    }
+    if (!isProductionRoleGroup(update.id)) {
+        logger.info(`Global Role Sync ignorado en grupo de prueba/no productivo: ${update.id}`);
+        return;
+    }
+    try {
+        const affected = Array.isArray(update.participants)
+            ? update.participants
+            : [];
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        for (const participant of affected) {
+            const participantId = typeof participant ===
+                'string'
+                ? participant
+                : participant?.id;
+            if (!participantId) {
+                continue;
+            }
+            try {
+                const result = await syncGlobalRoleForMember(sock, participant);
+                if (!result ||
+                    !result.processed) {
+                    logger.warn(`Global Role Sync: ` +
                         `${participantId} | ` +
-                        `${result?.reason || 'UNKNOWN'}`
-                    )
-
-                    continue
-
+                        `${result?.reason || 'UNKNOWN'}`);
+                    continue;
                 }
-
-                const previousType =
-                    result.result?.previousType ||
+                const previousType = result.result?.previousType ||
                     result.memberType ||
-                    'UNKNOWN'
-
-                const currentType =
-                    result.result?.memberType ||
+                    'UNKNOWN';
+                const currentType = result.result?.memberType ||
                     result.memberType ||
-                    'UNKNOWN'
-
-                if (
-                    result.result?.changed
-                ) {
-
-                    logger.event(
-                        `Global Role Sync: ` +
+                    'UNKNOWN';
+                if (result.result?.changed) {
+                    logger.event(`Global Role Sync: ` +
                         `${participantId} ` +
                         `${previousType} -> ` +
-                        `${currentType}`
-                    )
-
+                        `${currentType}`);
                 }
-
-            } catch (err) {
-
-                logger.error(
-                    `Global Role Sync Member ${participantId}: ${err.stack || err.message}`
-                )
-
             }
-
+            catch (err) {
+                logger.error(`Global Role Sync Member ${participantId}: ${err.stack || err.message}`);
+            }
         }
-
-    } catch (err) {
-
-        logger.error(
-            `${profile.name} | Global Role Sync Event Error: ${err.stack || err.message}`
-        )
-
     }
-
+    catch (err) {
+        logger.error(`${profile.name} | Global Role Sync Event Error: ${err.stack || err.message}`);
+    }
 }
 
-async function startBot(
-    profileId
-) {
-
-    if (
-        shuttingDown
-    ) {
-
-        return null
-
+async function startBot(profileId) {
+    if (shuttingDown) {
+        return null;
     }
-
-    let profile
-
+    let profile;
     try {
-
         profile =
-            getBotProfile(
-                profileId
-            )
-
-    } catch (err) {
-
-        logger.error(
-            `${err.stack || err.message}`
-        )
-
-        return null
-
+            getBotProfile(profileId);
     }
-
-    const botState =
-        getBotState(
-            profileId
-        )
-
-    if (
-        botState.starting
-    ) {
-
-        return botState.sock
-
+    catch (err) {
+        logger.error(`${err.stack || err.message}`);
+        return null;
     }
-
-    if (
-        botState.connected &&
-        botState.sock
-    ) {
-
-        return botState.sock
-
+    const botState = getBotState(profileId);
+    if (botState.starting) {
+        return botState.sock;
     }
-
+    if (botState.connected &&
+        botState.sock) {
+        return botState.sock;
+    }
     botState.starting =
-        true
-
+        true;
     try {
-
-        const authFolder =
-            String(
-                profile.authFolder || ''
-            )
-                .trim()
-
-        if (
-            !authFolder
-        ) {
-
-            throw new Error(
-                `El perfil ${profileId} no tiene authFolder`
-            )
-
+        const authFolder = String(profile.authFolder || '')
+            .trim();
+        if (!authFolder) {
+            throw new Error(`El perfil ${profileId} no tiene authFolder`);
         }
-
-        const {
-            state,
-            saveCreds
-        } =
-            await useMultiFileAuthState(
-                authFolder
-            )
-
-        const {
-            version
-        } =
-            await fetchLatestBaileysVersion()
-
-        logger.info(
-            `${profile.name} | Usando WA v${version.join('.')}`
-        )
-
-        let sock =
-            makeWASocket({
-
-                auth:
-                    state,
-
-                version,
-
-                logger:
-                    P({
-                        level:
-                            'silent'
-                    }),
-
-                printQRInTerminal:
-                    false,
-
-                browser: [
-                    'Ubuntu',
-                    'Chrome',
-                    '20.0.04'
-                ],
-
-                markOnlineOnConnect:
-                    false,
-
-                syncFullHistory:
-                    false,
-
-                fireInitQueries:
-                    false,
-
-                generateHighQualityLinkPreview:
-                    false,
-
-                connectTimeoutMs:
-                    60000,
-
-                defaultQueryTimeoutMs:
-                    60000,
-
-                keepAliveIntervalMs:
-                    30000
-
-            })
-
+        const { state, saveCreds } = await useMultiFileAuthState(authFolder);
+        const { version } = await fetchLatestBaileysVersion();
+        logger.info(`${profile.name} | Usando WA v${version.join('.')}`);
+        let sock = makeWASocket({
+            auth: state,
+            version,
+            logger: P({
+                level: 'silent'
+            }),
+            printQRInTerminal: false,
+            browser: [
+                'Ubuntu',
+                'Chrome',
+                '20.0.04'
+            ],
+            markOnlineOnConnect: false,
+            syncFullHistory: false,
+            fireInitQueries: false,
+            generateHighQualityLinkPreview: false,
+            connectTimeoutMs: 60000,
+            defaultQueryTimeoutMs: 60000,
+            keepAliveIntervalMs: 30000
+        });
         sock.botProfile =
-            profile
-
+            profile;
         sock.botProfileId =
-            profileId
-
+            profileId;
         sock =
-            patchSocket(
-                sock
-            )
-
-        /* Panel: cuenta cada mensaje que el bot envía (detector de bot mudo) */
+            patchSocket(sock);
         {
-
-            const sendOriginal =
-                sock.sendMessage.bind(
-                    sock
-                )
-
+            const sendOriginal = sock.sendMessage.bind(sock);
             sock.sendMessage =
-                async (
-                    ...args
-                ) => {
-
-                    const result =
-                        await sendOriginal(
-                            ...args
-                        )
-
-                    global.panelActivity?.sent(
-                        profileId
-                    )
-
-                    return result
-
-                }
-
+                async (...args) => {
+                    const result = await sendOriginal(...args);
+                    global.panelActivity?.sent(profileId);
+                    return result;
+                };
         }
-
         botState.sock =
-            sock
-
-        if (
-            usePairingCode &&
-            !state.creds.registered
-        ) {
-
-            const phoneNumber =
-                String(
-                    profile.phoneNumber || ''
-                )
-                    .replace(
-                        /\D/g,
-                        ''
-                    )
-
-            if (
-                !phoneNumber
-            ) {
-
-                logger.warn(
-                    `${profile.name} | No hay phoneNumber configurado para pairing code`
-                )
-
-            } else {
-
-                try {
-
-                    const code =
-                        await sock.requestPairingCode(
-                            phoneNumber
-                        )
-
-                    console.log(
-                        `\n📲 ${profile.name}\nCódigo de vinculación:\n${code}\n`
-                    )
-
-                } catch (err) {
-
-                    logger.error(
-                        `${profile.name} | Pairing Error: ${err.stack || err.message}`
-                    )
-
-                }
-
+            sock;
+        if (usePairingCode &&
+            !state.creds.registered) {
+            const phoneNumber = String(profile.phoneNumber || '')
+                .replace(/\D/g, '');
+            if (!phoneNumber) {
+                logger.warn(`${profile.name} | No hay phoneNumber configurado para pairing code`);
             }
-
+            else {
+                try {
+                    const code = await sock.requestPairingCode(phoneNumber);
+                    console.log(`\n📲 ${profile.name}\nCódigo de vinculación:\n${code}\n`);
+                }
+                catch (err) {
+                    logger.error(`${profile.name} | Pairing Error: ${err.stack || err.message}`);
+                }
+            }
         }
-
-        sock.ev.on(
-            'creds.update',
-            saveCreds
-        )
-
-        sock.ev.on(
-            'connection.update',
-            async update => {
-
-                try {
-
-                    const {
-                        connection,
-                        lastDisconnect,
-                        qr
-                    } =
-                        update
-
-                    if (
-                        qr &&
-                        !usePairingCode
-                    ) {
-
-                        console.log(
-                            '\n━━━━━━━━━━━━━━━━━━━━━━━━━━'
-                        )
-
-                        console.log(
-                            `📲 VINCULAR ${profile.name}`
-                        )
-
-                        console.log(
-                            `🌎 Perfil: ${profile.flag || ''} ${profileId}`
-                        )
-
-                        console.log(
-                            `📁 Sesión: ${profile.authFolder}`
-                        )
-
-                        console.log(
-                            '━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-                        )
-
-                        try {
-
-                            logger.qr()
-
-                        } catch {}
-
-                        qrcode.generate(
-                            qr,
-                            {
-                                small:
-                                    true
-                            }
-                        )
-
+        sock.ev.on('creds.update', saveCreds);
+        sock.ev.on('connection.update', async (update) => {
+            try {
+                const { connection, lastDisconnect, qr } = update;
+                if (qr &&
+                    !usePairingCode) {
+                    console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                    console.log(`📲 VINCULAR ${profile.name}`);
+                    console.log(`🌎 Perfil: ${profile.flag || ''} ${profileId}`);
+                    console.log(`📁 Sesión: ${profile.authFolder}`);
+                    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+                    try {
+                        logger.qr();
                     }
-
-                    if (
-                        connection ===
-                        'open'
-                    ) {
-
-                        if (
-                            botState.sock !==
-                            sock
-                        ) {
-
-                            return
-
-                        }
-
-                        botState.connected =
-                            true
-
+                    catch { }
+                    qrcode.generate(qr, {
+                        small: true
+                    });
+                }
+                if (connection ===
+                    'open') {
+                    if (botState.sock !==
+                        sock) {
+                        return;
+                    }
+                    botState.connected =
+                        true;
+                    botState.reconnecting =
+                        false;
+                    botState.starting =
+                        false;
+                    if (botState.reconnectTimer) {
+                        clearTimeout(botState.reconnectTimer);
+                        botState.reconnectTimer =
+                            null;
+                    }
+                    logger.success(`${profile.name} conectado`);
+                    logger.statusTable({
+                        Bot: profile.name,
+                        Perfil: `${profile.flag || ''} ${profileId}`,
+                        Owner: settings.ownerNumber?.[0] ||
+                            'No configurado',
+                        Sesión: profile.authFolder,
+                        Estado: 'Conectado ✅'
+                    });
+                    startBackgroundTasks();
+                    if (profile.globalRoleSync ===
+                        true) {
+                        await executeGlobalRoleSync(sock);
+                    }
+                }
+                if (connection ===
+                    'close') {
+                    if (botState.sock !==
+                        sock) {
+                        return;
+                    }
+                    botState.connected =
+                        false;
+                    botState.starting =
+                        false;
+                    const reason = lastDisconnect
+                        ?.error
+                        ?.output
+                        ?.statusCode;
+                    logger.warn(`${profile.name} desconectado: ${reason ?? 'desconocido'}`);
+                    if (reason ===
+                        DisconnectReason.loggedOut) {
+                        botState.sock =
+                            null;
                         botState.reconnecting =
-                            false
-
-                        botState.starting =
-                            false
-
-                        if (
-                            botState.reconnectTimer
-                        ) {
-
-                            clearTimeout(
-                                botState.reconnectTimer
-                            )
-
+                            false;
+                        if (botState.reconnectTimer) {
+                            clearTimeout(botState.reconnectTimer);
                             botState.reconnectTimer =
-                                null
-
+                                null;
                         }
-
-                        logger.success(
-                            `${profile.name} conectado`
-                        )
-
-                        logger.statusTable({
-
-                            Bot:
-                                profile.name,
-
-                            Perfil:
-                                `${profile.flag || ''} ${profileId}`,
-
-                            Owner:
-                                settings.ownerNumber?.[0] ||
-                                'No configurado',
-
-                            Sesión:
-                                profile.authFolder,
-
-                            Estado:
-                                'Conectado ✅'
-
-                        })
-
-                        startBackgroundTasks()
-
-                        if (
-                            profile.globalRoleSync ===
-                            true
-                        ) {
-
-                            await executeGlobalRoleSync(
-                                sock
-                            )
-
-                        }
-
+                        logger.error(`${profile.name} | Sesión cerrada.`);
+                        return;
                     }
-
-                    if (
-                        connection ===
-                        'close'
-                    ) {
-
-                        if (
-                            botState.sock !==
-                            sock
-                        ) {
-
-                            return
-
-                        }
-
-                        botState.connected =
-                            false
-
-                        botState.starting =
-                            false
-
-                        const reason =
-                            lastDisconnect
-                                ?.error
-                                ?.output
-                                ?.statusCode
-
-                        logger.warn(
-                            `${profile.name} desconectado: ${reason ?? 'desconocido'}`
-                        )
-
-                        if (
-                            reason ===
-                            DisconnectReason.loggedOut
-                        ) {
-
-                            botState.sock =
-                                null
-
-                            botState.reconnecting =
-                                false
-
-                            if (
-                                botState.reconnectTimer
-                            ) {
-
-                                clearTimeout(
-                                    botState.reconnectTimer
-                                )
-
-                                botState.reconnectTimer =
-                                    null
-
-                            }
-
-                            logger.error(
-                                `${profile.name} | Sesión cerrada.`
-                            )
-
-                            return
-
-                        }
-
-                        scheduleReconnect(
-                            profileId
-                        )
-
-                    }
-
-                } catch (err) {
-
-                    logger.error(
-                        `${profile.name} | Connection Update Error: ${err.stack || err.message}`
-                    )
-
+                    scheduleReconnect(profileId);
                 }
-
             }
-        )
-
-        sock.ev.on(
-            'group-participants.update',
-            async update => {
-
-                try {
-
-                    /*
-                        Si el grupo tiene una plantilla de bienvenida activada
-                        en el panel, la manda ella y se salta la de siempre.
-                    */
-
-                    const handledByPanel =
-                        await global.panelTemplates?.welcome(
-                            sock,
-                            update
-                        )
-
-                    if (
-                        !handledByPanel
-                    ) {
-
-                        await welcomeSystem(
-                            sock,
-                            update
-                        )
-
-                    }
-
-                } catch (err) {
-
-                    logger.error(
-                        `${profile.name} | Welcome Event Error: ${err.stack || err.message}`
-                    )
-
+            catch (err) {
+                logger.error(`${profile.name} | Connection Update Error: ${err.stack || err.message}`);
+            }
+        });
+        sock.ev.on('group-participants.update', async (update) => {
+            try {
+                const handledByPanel = await global.panelTemplates?.welcome(sock, update);
+                if (!handledByPanel) {
+                    await welcomeSystem(sock, update);
                 }
-
-                await handleGlobalRoleParticipantUpdate(
-                    sock,
-                    profile,
-                    update
-                )
-
             }
-        )
-
-        sock.ev.on(
-            'messages.upsert',
-            async ({
-                messages
-            }) => {
-
-                try {
-
-                    if (
-                        botState.sock !==
-                        sock
-                    ) {
-
-                        return
-
-                    }
-
-                    const msg =
-                        messages?.[0]
-
-                    if (
-                        !msg
-                    ) {
-
-                        return
-
-                    }
-
-                    if (
-                        !msg.message
-                    ) {
-
-                        return
-
-                    }
-
-                    if (
-                        msg.key?.remoteJid ===
-                        'status@broadcast'
-                    ) {
-
-                        return
-
-                    }
-
-                    const panelText =
-                        msg.message.conversation ||
-                        msg.message.extendedTextMessage?.text ||
-                        msg.message.imageMessage?.caption ||
-                        msg.message.videoMessage?.caption ||
-                        ''
-
-                    global.panelActivity?.incoming({
-
-                        profile:
-                            profileId,
-
-                        jid:
-                            msg.key?.remoteJid,
-
-                        fromMe:
-                            msg.key?.fromMe,
-
-                        name:
-                            msg.pushName,
-
-                        text:
-                            panelText
-
-                    })
-
-                    /*
-                        Modo mantenimiento: frena los comandos de todos
-                        menos del dueño, y avisa (sin repetir cada vez).
-                    */
-
-                    const maintenanceGate =
-                        global.panelMaintenance?.check({
-
-                            jid:
-                                msg.key?.remoteJid,
-
-                            fromMe:
-                                msg.key?.fromMe,
-
-                            sender:
-                                msg.key?.participant ||
-                                msg.participant,
-
-                            text:
-                                panelText
-
-                        })
-
-                    if (
-                        maintenanceGate?.block
-                    ) {
-
-                        if (
-                            maintenanceGate.reply
-                        ) {
-
-                            await sock.sendMessage(
-                                msg.key.remoteJid,
-                                {
-                                    text:
-                                        maintenanceGate.reply
-                                },
-                                {
-                                    quoted:
-                                        msg
-                                }
-                            ).catch(
-                                () => {}
-                            )
-
-                        }
-
-                        return
-
-                    }
-
-const soundStickerHandled =
-    await soundSticker.consumeAudio(
-        sock,
-        msg,
-        String(
-            msg.key.remoteJid
-        ).replace(
-            /:\d+@/,
-            '@'
-        )
-    )
-
-if (
-    soundStickerHandled
-) {
-
-    return
-
-}
-
-
-await messagesEvent(
-    sock,
-    messages
-)
-
-                } catch (err) {
-
-                    global.panelActivity?.error(
-                        profileId,
-                        err.message
-                    )
-
-                    logger.error(
-                        `${profile.name} | Messages Error: ${err.stack || err.message}`
-                    )
-
+            catch (err) {
+                logger.error(`${profile.name} | Welcome Event Error: ${err.stack || err.message}`);
+            }
+            await handleGlobalRoleParticipantUpdate(sock, profile, update);
+        });
+        sock.ev.on('messages.upsert', async ({ messages }) => {
+            try {
+                if (botState.sock !==
+                    sock) {
+                    return;
                 }
-
+                const msg = messages?.[0];
+                if (!msg) {
+                    return;
+                }
+                if (!msg.message) {
+                    return;
+                }
+                if (msg.key?.remoteJid ===
+                    'status@broadcast') {
+                    return;
+                }
+                const panelText = msg.message.conversation ||
+                    msg.message.extendedTextMessage?.text ||
+                    msg.message.imageMessage?.caption ||
+                    msg.message.videoMessage?.caption ||
+                    '';
+                global.panelActivity?.incoming({
+                    profile: profileId,
+                    jid: msg.key?.remoteJid,
+                    fromMe: msg.key?.fromMe,
+                    name: msg.pushName,
+                    text: panelText
+                });
+                const maintenanceGate = global.panelMaintenance?.check({
+                    jid: msg.key?.remoteJid,
+                    fromMe: msg.key?.fromMe,
+                    sender: msg.key?.participant ||
+                        msg.participant,
+                    text: panelText
+                });
+                if (maintenanceGate?.block) {
+                    if (maintenanceGate.reply) {
+                        await sock.sendMessage(msg.key.remoteJid, {
+                            text: maintenanceGate.reply
+                        }, {
+                            quoted: msg
+                        }).catch(() => { });
+                    }
+                    return;
+                }
+                const soundStickerHandled = await soundSticker.consumeAudio(sock, msg, String(msg.key.remoteJid).replace(/:\d+@/, '@'));
+                if (soundStickerHandled) {
+                    return;
+                }
+                await messagesEvent(sock, messages);
             }
-        )
-
+            catch (err) {
+                global.panelActivity?.error(profileId, err.message);
+                logger.error(`${profile.name} | Messages Error: ${err.stack || err.message}`);
+            }
+        });
         botState.starting =
-            false
-
-        return sock
-
-    } catch (err) {
-
-        botState.starting =
-            false
-
-        botState.connected =
-            false
-
-        logger.error(
-            `StartBot ${profile.name}: ${err.stack || err.message}`
-        )
-
-        scheduleReconnect(
-            profileId
-        )
-
-        return null
-
+            false;
+        return sock;
     }
-
+    catch (err) {
+        botState.starting =
+            false;
+        botState.connected =
+            false;
+        logger.error(`StartBot ${profile.name}: ${err.stack || err.message}`);
+        scheduleReconnect(profileId);
+        return null;
+    }
 }
 
 async function bootstrap() {
-
     try {
-
-        if (
-            bootstrapRetryTimer
-        ) {
-
-            clearTimeout(
-                bootstrapRetryTimer
-            )
-
+        if (bootstrapRetryTimer) {
+            clearTimeout(bootstrapRetryTimer);
             bootstrapRetryTimer =
-                null
-
+                null;
         }
-
-        await initDB()
-
-        logger.success(
-            'Base de datos inicializada'
-        )
-
-        if (
-            !panelApiStarted
-        ) {
-
+        await initDB();
+        logger.success('Base de datos inicializada');
+        if (!panelApiStarted) {
             panelApiStarted =
-                true
-
+                true;
             try {
-
-                const panelApi =
-                    startPanelApi({
-
+                const panelApi = startPanelApi({
                     pool,
-
-                    token:
-                        process.env.PANEL_TOKEN,
-
-                    origin:
-                        process.env.PANEL_ORIGIN,
-
+                    token: process.env.PANEL_TOKEN,
+                    origin: process.env.PANEL_ORIGIN,
                     alerts: {
-
-                        telegramToken:
-                            process.env.ALERT_TELEGRAM_TOKEN,
-
-                        telegramChat:
-                            process.env.ALERT_TELEGRAM_CHAT,
-
-                        waNumber:
-                            process.env.ALERT_WA_NUMBER
-
+                        telegramToken: process.env.ALERT_TELEGRAM_TOKEN,
+                        telegramChat: process.env.ALERT_TELEGRAM_CHAT,
+                        waNumber: process.env.ALERT_WA_NUMBER
                     },
-
-                    commandsDir:
-                        require('path').join(
-                            __dirname,
-                            'comandos'
-                        ),
-
-                    stateFile:
-                        require('path').join(
-                            __dirname,
-                            'database',
-                            'panel-state.json'
-                        ),
-
+                    commandsDir: require('path').join(__dirname, 'comandos'),
+                    stateFile: require('path').join(__dirname, 'database', 'panel-state.json'),
                     getSock: () => {
-
-                        for (
-                            const state
-                            of botStates.values()
-                        ) {
-
-                            if (
-                                state.sock &&
-                                state.connected
-                            ) {
-
-                                return state.sock
-
+                        for (const state of botStates.values()) {
+                            if (state.sock &&
+                                state.connected) {
+                                return state.sock;
                             }
-
                         }
-
-                        return null
-
+                        return null;
                     },
-
                     hooks: {
-
-                        reload:
-                            async () =>
-                                reloadAll(),
-
-                        owners:
-                            () =>
-                                [].concat(
-                                    settings.ownerNumber ||
-                                    []
-                                ),
-
-                        sendText:
-                            async (
-                                profileId,
-                                jid,
-                                text
-                            ) => {
-
-                                const state =
-                                    botStates.get(
-                                        profileId
-                                    )
-
-                                if (
-                                    !state?.sock ||
-                                    !state.connected
-                                ) {
-
-                                    throw new Error(
-                                        `El perfil ${profileId} no está conectado`
-                                    )
-
-                                }
-
-                                await state.sock.sendMessage(
-                                    jid,
-                                    {
-                                        text
-                                    }
-                                )
-
-                            },
-
-                        publicProfile:
-                            jid => {
-
-                                const number =
-                                    panelNumber(
-                                        jid
-                                    )
-
-                                const stats =
-                                    panelUserStats(
-                                        jid
-                                    )
-
-                                const warns =
-                                    panelReadWarns()
-
-                                const warnKey =
-                                    panelFindWarnKey(
-                                        warns,
-                                        number
-                                    )
-
-                                const badges =
-                                    panelReadJson(
-                                        'badges.json'
-                                    )
-
-                                const badgeKey =
-                                    Object.keys(
-                                        badges
-                                    ).find(
-                                        key =>
-                                            panelNumber(
-                                                key
-                                            ) ===
-                                            number
-                                    )
-
-                                return {
-
-                                    level:
-                                        stats.level,
-
-                                    xp:
-                                        stats.xp,
-
-                                    coins:
-                                        stats.coins,
-
-                                    badges:
-                                        Array.isArray(
-                                            badges[badgeKey]
-                                        )
-                                            ? badges[badgeKey].map(
-                                                String
-                                            )
-                                            : [],
-
-                                    warns:
-                                        warnKey
-                                            ? Number(
-                                                warns[warnKey]?.warns
-                                            ) || 0
-                                            : 0,
-
-                                    maxWarns:
-                                        PANEL_MAX_WARNS
-
-                                }
-
-                            },
-
-                        notifyWhatsApp:
-                            async (
-                                number,
-                                text,
-                                options = {}
-                            ) => {
-
-                                for (
-                                    const [
-                                        id,
-                                        state
-                                    ]
-                                    of botStates.entries()
-                                ) {
-
-                                    if (
-                                        id === options.exclude ||
-                                        !state.sock ||
-                                        !state.connected
-                                    ) {
-
-                                        continue
-
-                                    }
-
-                                    await state.sock.sendMessage(
-                                        `${String(number).replace(/\D/g, '')}@s.whatsapp.net`,
-                                        {
-                                            text
-                                        }
-                                    )
-
-                                    return true
-
-                                }
-
-                                return false
-
-                            },
-
-                        groupSettings:
-                            jid => {
-
-                                const features =
-                                    {}
-
-                                for (
-                                    const feature
-                                    of PANEL_FEATURES
-                                ) {
-
-                                    features[
-                                        feature
-                                    ] =
-                                        isToggleEnabled(
-                                            jid,
-                                            feature
-                                        )
-
-                                }
-
-                                return {
-                                    features
-                                }
-
-                            },
-
-                        setGroup:
-                            async (
-                                jid,
-                                patch
-                            ) => {
-
-                                const features =
-                                    patch?.features ||
-                                    {}
-
-                                for (
-                                    const [
-                                        feature,
-                                        enabled
-                                    ]
-                                    of Object.entries(
-                                        features
-                                    )
-                                ) {
-
-                                    if (
-                                        !PANEL_FEATURES.includes(
-                                            feature
-                                        )
-                                    ) {
-
-                                        continue
-
-                                    }
-
-                                    setToggle(
-                                        jid,
-                                        feature,
-                                        !!enabled
-                                    )
-
-                                }
-
-                            },
-
-                        economyTotal:
-                            () => {
-
-                                const economy =
-                                    panelReadJson(
-                                        'economy.json'
-                                    )
-
-                                return Object.values(
-                                    economy
-                                ).reduce(
-                                    (
-                                        total,
-                                        entry
-                                    ) =>
-                                        total +
-                                        (Number(entry?.coins) || 0) +
-                                        (Number(entry?.bank) || 0),
-                                    0
-                                )
-
-                            },
-
-                        profiles:
-                            () =>
-                                [
-                                    ...botStates.entries()
-                                ].map(
-                                    ([
-                                        id,
-                                        state
-                                    ]) => ({
-
-                                        id,
-
-                                        name:
-                                            id,
-
-                                        connected:
-                                            Boolean(
-                                                state?.connected
-                                            )
-
-                                    })
-                                ),
-
-                        userStats:
-                            jid =>
-                                panelUserStats(
-                                    jid
-                                ),
-
-                        warns:
-                            async () => {
-
-                                const warns =
-                                    panelReadWarns()
-
-                                return Object.entries(
-                                    warns
-                                )
-                                    .map(
-                                        ([
-                                            key,
-                                            value
-                                        ]) => ({
-
-                                            id:
-                                                key,
-
-                                            user:
-                                                panelNumber(
-                                                    key
-                                                ),
-
-                                            group:
-                                                'Todos los grupos',
-
-                                            reason:
-                                                '—',
-
-                                            count:
-                                                Number(
-                                                    value?.warns
-                                                ) || 0,
-
-                                            max:
-                                                PANEL_MAX_WARNS
-
-                                        })
-                                    )
-                                    .filter(
-                                        warn =>
-                                            warn.count > 0
-                                    )
-
-                            },
-
-                        addWarn:
-                            async (
-                                user
-                            ) => {
-
-                                const number =
-                                    String(
-                                        user || ''
-                                    )
-                                        .replace(
-                                            /\D/g,
-                                            ''
-                                        )
-
-                                if (
-                                    number.length < 8
-                                ) {
-
-                                    throw new Error(
-                                        'Escribe el número completo con lada'
-                                    )
-
-                                }
-
-                                const warns =
-                                    panelReadWarns()
-
-                                let key =
-                                    panelFindWarnKey(
-                                        warns,
-                                        number
-                                    )
-
-                                if (
-                                    !key
-                                ) {
-
-                                    try {
-
-                                        for (
-                                            const state
-                                            of botStates.values()
-                                        ) {
-
-                                            const lid =
-                                                await state.sock
-                                                    ?.signalRepository
-                                                    ?.lidMapping
-                                                    ?.getLIDForPN?.(
-                                                        `${number}@s.whatsapp.net`
-                                                    )
-
-                                            if (
-                                                lid
-                                            ) {
-
-                                                key =
-                                                    panelFindWarnKey(
-                                                        warns,
-                                                        panelNumber(
-                                                            lid
-                                                        )
-                                                    ) ||
-                                                    String(
-                                                        lid
-                                                    )
-
-                                                break
-
-                                            }
-
-                                        }
-
-                                    } catch {}
-
-                                }
-
-                                if (
-                                    !key
-                                ) {
-
-                                    key =
-                                        `${number}@s.whatsapp.net`
-
-                                }
-
-                                const current =
-                                    Number(
-                                        warns[key]?.warns
-                                    ) || 0
-
-                                warns[key] = {
-                                    ...(warns[key] || {}),
-                                    warns:
-                                        Math.min(
-                                            PANEL_MAX_WARNS,
-                                            current + 1
-                                        )
-                                }
-
-                                panelSaveWarns(
-                                    warns
-                                )
-
-                            },
-
-                        removeWarn:
-                            async id => {
-
-                                const warns =
-                                    panelReadWarns()
-
-                                const key =
-                                    panelFindWarnKey(
-                                        warns,
-                                        panelNumber(
-                                            id
-                                        )
-                                    )
-
-                                if (
-                                    !key
-                                ) {
-
-                                    throw new Error(
-                                        'Ese warn ya no existe'
-                                    )
-
-                                }
-
-                                const next =
-                                    (
-                                        Number(
-                                            warns[key]?.warns
-                                        ) || 0
-                                    ) - 1
-
-                                if (
-                                    next <= 0
-                                ) {
-
-                                    delete warns[key]
-
-                                } else {
-
-                                    warns[key].warns =
-                                        next
-
-                                }
-
-                                panelSaveWarns(
-                                    warns
-                                )
-
-                            },
-
-                        restart:
-                            async () => {
-
-                                logger.warn(
-                                    'Reinicio solicitado desde el panel'
-                                )
-
-                                if (
-                                    process.env.pm_id !==
-                                    undefined
-                                ) {
-
-                                    process.exit(0)
-
-                                }
-
-                                const {
-                                    spawn
-                                } = require('child_process')
-
-                                spawn(
-                                    process.argv[0],
-                                    [
-                                        ...process.execArgv,
-                                        ...process.argv.slice(1)
-                                    ],
-                                    {
-                                        cwd:
-                                            process.cwd(),
-
-                                        env:
-                                            process.env,
-
-                                        stdio:
-                                            'inherit',
-
-                                        detached:
-                                            true
-                                    }
-                                )
-                                    .unref()
-
-                                process.exit(0)
-
+                        reload: async () => reloadAll(),
+                        owners: () => [].concat(settings.ownerNumber ||
+                            []),
+                        sendText: async (profileId, jid, text) => {
+                            const state = botStates.get(profileId);
+                            if (!state?.sock ||
+                                !state.connected) {
+                                throw new Error(`El perfil ${profileId} no está conectado`);
                             }
-
+                            await state.sock.sendMessage(jid, {
+                                text
+                            });
+                        },
+                        publicProfile: jid => {
+                            const number = panelNumber(jid);
+                            const stats = panelUserStats(jid);
+                            const warns = panelReadWarns();
+                            const warnKey = panelFindWarnKey(warns, number);
+                            const badges = panelReadJson('badges.json');
+                            const badgeKey = Object.keys(badges).find(key => panelNumber(key) ===
+                                number);
+                            return {
+                                level: stats.level,
+                                xp: stats.xp,
+                                coins: stats.coins,
+                                badges: Array.isArray(badges[badgeKey])
+                                    ? badges[badgeKey].map(String)
+                                    : [],
+                                warns: warnKey
+                                    ? Number(warns[warnKey]?.warns) || 0
+                                    : 0,
+                                maxWarns: PANEL_MAX_WARNS
+                            };
+                        },
+                        notifyWhatsApp: async (number, text, options = {}) => {
+                            for (const [id, state] of botStates.entries()) {
+                                if (id === options.exclude ||
+                                    !state.sock ||
+                                    !state.connected) {
+                                    continue;
+                                }
+                                await state.sock.sendMessage(`${String(number).replace(/\D/g, '')}@s.whatsapp.net`, {
+                                    text
+                                });
+                                return true;
+                            }
+                            return false;
+                        },
+                        groupSettings: jid => {
+                            const features = {};
+                            for (const feature of PANEL_FEATURES) {
+                                features[feature] =
+                                    isToggleEnabled(jid, feature);
+                            }
+                            return {
+                                features
+                            };
+                        },
+                        setGroup: async (jid, patch) => {
+                            const features = patch?.features ||
+                                {};
+                            for (const [feature, enabled] of Object.entries(features)) {
+                                if (!PANEL_FEATURES.includes(feature)) {
+                                    continue;
+                                }
+                                setToggle(jid, feature, !!enabled);
+                            }
+                        },
+                        economyTotal: () => {
+                            const economy = panelReadJson('economy.json');
+                            return Object.values(economy).reduce((total, entry) => total +
+                                (Number(entry?.coins) || 0) +
+                                (Number(entry?.bank) || 0), 0);
+                        },
+                        profiles: () => [
+                            ...botStates.entries()
+                        ].map(([id, state]) => ({
+                            id,
+                            name: id,
+                            connected: Boolean(state?.connected)
+                        })),
+                        userStats: jid => panelUserStats(jid),
+                        warns: async () => {
+                            const warns = panelReadWarns();
+                            return Object.entries(warns)
+                                .map(([key, value]) => ({
+                                id: key,
+                                user: panelNumber(key),
+                                group: 'Todos los grupos',
+                                reason: '—',
+                                count: Number(value?.warns) || 0,
+                                max: PANEL_MAX_WARNS
+                            }))
+                                .filter(warn => warn.count > 0);
+                        },
+                        addWarn: async (user) => {
+                            const number = String(user || '')
+                                .replace(/\D/g, '');
+                            if (number.length < 8) {
+                                throw new Error('Escribe el número completo con lada');
+                            }
+                            const warns = panelReadWarns();
+                            let key = panelFindWarnKey(warns, number);
+                            if (!key) {
+                                try {
+                                    for (const state of botStates.values()) {
+                                        const lid = await state.sock
+                                            ?.signalRepository
+                                            ?.lidMapping
+                                            ?.getLIDForPN?.(`${number}@s.whatsapp.net`);
+                                        if (lid) {
+                                            key =
+                                                panelFindWarnKey(warns, panelNumber(lid)) ||
+                                                    String(lid);
+                                            break;
+                                        }
+                                    }
+                                }
+                                catch { }
+                            }
+                            if (!key) {
+                                key =
+                                    `${number}@s.whatsapp.net`;
+                            }
+                            const current = Number(warns[key]?.warns) || 0;
+                            warns[key] = {
+                                ...(warns[key] || {}),
+                                warns: Math.min(PANEL_MAX_WARNS, current + 1)
+                            };
+                            panelSaveWarns(warns);
+                        },
+                        removeWarn: async (id) => {
+                            const warns = panelReadWarns();
+                            const key = panelFindWarnKey(warns, panelNumber(id));
+                            if (!key) {
+                                throw new Error('Ese warn ya no existe');
+                            }
+                            const next = (Number(warns[key]?.warns) || 0) - 1;
+                            if (next <= 0) {
+                                delete warns[key];
+                            }
+                            else {
+                                warns[key].warns =
+                                    next;
+                            }
+                            panelSaveWarns(warns);
+                        },
+                        restart: async () => {
+                            logger.warn('Reinicio solicitado desde el panel');
+                            if (process.env.pm_id !==
+                                undefined) {
+                                process.exit(0);
+                            }
+                            const { spawn } = require('child_process');
+                            spawn(process.argv[0], [
+                                ...process.execArgv,
+                                ...process.argv.slice(1)
+                            ], {
+                                cwd: process.cwd(),
+                                env: process.env,
+                                stdio: 'inherit',
+                                detached: true
+                            })
+                                .unref();
+                            process.exit(0);
+                        }
                     }
-
-                })
-
-                /*
-                    Permite que el bot escriba en el registro de actividad
-                    del panel (por ejemplo desde warn.js).
-                */
-
+                });
                 global.panelAudit =
-                    panelApi.audit.log
-
+                    panelApi.audit.log;
                 global.panelActivity =
-                    panelApi.activity
-
+                    panelApi.activity;
                 global.panelMaintenance =
-                    panelApi.maintenance
-
+                    panelApi.maintenance;
                 global.panelTemplates =
-                    panelApi.templates
-
-                /* Lo usan .perfilweb y .perfilprivado */
-
+                    panelApi.templates;
                 global.panelPublic =
-                    panelApi.publicStore
-
-            } catch (err) {
-
-                logger.error(
-                    `Panel API no inició: ${err.message}`
-                )
-
+                    panelApi.publicStore;
             }
-
-        }
-
-        await executeRewardMaintenance()
-
-        await executeMilestoneMaintenance()
-
-        await executeSpecialCardMaintenance()
-
-        await executeObjectiveMaintenance()
-
-        const botProfiles =
-            getBotProfiles()
-
-        if (
-            botProfiles.length ===
-            0
-        ) {
-
-            throw new Error(
-                'No hay perfiles de bot configurados'
-            )
-
-        }
-
-        logger.info(
-            `Iniciando ${botProfiles.length} instancia(s): ${botProfiles.join(', ')}`
-        )
-
-        const results =
-            await Promise.allSettled(
-                botProfiles.map(
-                    profileId =>
-                        startBot(
-                            profileId
-                        )
-                )
-            )
-
-        results.forEach(
-            (
-                result,
-                index
-            ) => {
-
-                const profileId =
-                    botProfiles[
-                        index
-                    ]
-
-                if (
-                    result.status ===
-                    'rejected'
-                ) {
-
-                    logger.error(
-                        `No se pudo iniciar ${profileId}: ${result.reason?.stack || result.reason?.message || result.reason}`
-                    )
-
-                }
-
+            catch (err) {
+                logger.error(`Panel API no inició: ${err.message}`);
             }
-        )
-
-    } catch (err) {
-
-        logger.error(
-            `Bootstrap Error: ${err.stack || err.message}`
-        )
-
-        if (
-            shuttingDown
-        ) {
-
-            return
-
         }
-
-        if (
-            bootstrapRetryTimer
-        ) {
-
-            clearTimeout(
-                bootstrapRetryTimer
-            )
-
+        await executeRewardMaintenance();
+        await executeMilestoneMaintenance();
+        await executeSpecialCardMaintenance();
+        await executeObjectiveMaintenance();
+        const botProfiles = getBotProfiles();
+        if (botProfiles.length ===
+            0) {
+            throw new Error('No hay perfiles de bot configurados');
         }
-
-        bootstrapRetryTimer =
-            setTimeout(
-                () => {
-
-                    bootstrapRetryTimer =
-                        null
-
-                    bootstrap()
-
-                },
-                5000
-            )
-
+        logger.info(`Iniciando ${botProfiles.length} instancia(s): ${botProfiles.join(', ')}`);
+        const results = await Promise.allSettled(botProfiles.map(profileId => startBot(profileId)));
+        results.forEach((result, index) => {
+            const profileId = botProfiles[index];
+            if (result.status ===
+                'rejected') {
+                logger.error(`No se pudo iniciar ${profileId}: ${result.reason?.stack || result.reason?.message || result.reason}`);
+            }
+        });
     }
-
+    catch (err) {
+        logger.error(`Bootstrap Error: ${err.stack || err.message}`);
+        if (shuttingDown) {
+            return;
+        }
+        if (bootstrapRetryTimer) {
+            clearTimeout(bootstrapRetryTimer);
+        }
+        bootstrapRetryTimer =
+            setTimeout(() => {
+                bootstrapRetryTimer =
+                    null;
+                bootstrap();
+            }, 5000);
+    }
 }
 
 async function shutdown() {
-
-    if (
-        shuttingDown
-    ) {
-
-        return
-
+    if (shuttingDown) {
+        return;
     }
-
     shuttingDown =
-        true
-
-    logger.info(
-        'Cerrando KennyBot...'
-    )
-
-    if (
-        bootstrapRetryTimer
-    ) {
-
-        clearTimeout(
-            bootstrapRetryTimer
-        )
-
+        true;
+    logger.info('Cerrando KennyBot...');
+    if (bootstrapRetryTimer) {
+        clearTimeout(bootstrapRetryTimer);
         bootstrapRetryTimer =
-            null
-
+            null;
     }
-
-    for (
-        const [
-            profileId,
-            state
-        ]
-        of botStates
-    ) {
-
-        if (
-            state.reconnectTimer
-        ) {
-
-            clearTimeout(
-                state.reconnectTimer
-            )
-
+    for (const [profileId, state] of botStates) {
+        if (state.reconnectTimer) {
+            clearTimeout(state.reconnectTimer);
             state.reconnectTimer =
-                null
-
+                null;
         }
-
         state.reconnecting =
-            false
-
+            false;
         state.starting =
-            false
-
-        logger.info(
-            `Deteniendo ${profileId}...`
-        )
-
+            false;
+        logger.info(`Deteniendo ${profileId}...`);
     }
-
-    if (
-        cleanupInterval
-    ) {
-
-        clearInterval(
-            cleanupInterval
-        )
-
+    if (cleanupInterval) {
+        clearInterval(cleanupInterval);
         cleanupInterval =
-            null
-
+            null;
     }
-
-    if (
-        rewardMaintenanceInterval
-    ) {
-
-        clearInterval(
-            rewardMaintenanceInterval
-        )
-
+    if (rewardMaintenanceInterval) {
+        clearInterval(rewardMaintenanceInterval);
         rewardMaintenanceInterval =
-            null
-
+            null;
     }
-
-    if (
-        milestoneMaintenanceInterval
-    ) {
-
-        clearInterval(
-            milestoneMaintenanceInterval
-        )
-
+    if (milestoneMaintenanceInterval) {
+        clearInterval(milestoneMaintenanceInterval);
         milestoneMaintenanceInterval =
-            null
-
+            null;
     }
-
-    if (
-        specialCardMaintenanceInterval
-    ) {
-
-        clearInterval(
-            specialCardMaintenanceInterval
-        )
-
+    if (specialCardMaintenanceInterval) {
+        clearInterval(specialCardMaintenanceInterval);
         specialCardMaintenanceInterval =
-            null
-
+            null;
     }
-
-    if (
-        objectiveMaintenanceInterval
-    ) {
-
-        clearInterval(
-            objectiveMaintenanceInterval
-        )
-
+    if (objectiveMaintenanceInterval) {
+        clearInterval(objectiveMaintenanceInterval);
         objectiveMaintenanceInterval =
-            null
-
+            null;
     }
-
-    const profiles =
-        [
-            ...botStates.keys()
-        ]
-
-    await Promise.allSettled(
-        profiles.map(
-            profileId =>
-                closeBotSocket(
-                    profileId
-                )
-        )
-    )
-
-    logger.success(
-        'Todas las sesiones fueron cerradas'
-    )
-
-    process.exit(0)
-
+    const profiles = [
+        ...botStates.keys()
+    ];
+    await Promise.allSettled(profiles.map(profileId => closeBotSocket(profileId)));
+    logger.success('Todas las sesiones fueron cerradas');
+    process.exit(0);
 }
 
-process.once(
-    'SIGINT',
-    shutdown
-)
+process.once('SIGINT', shutdown);
 
-process.once(
-    'SIGTERM',
-    shutdown
-)
+process.once('SIGTERM', shutdown);
 
-logger.banner(
-    settings.botName
-)
+logger.banner(settings.botName);
 
-logger.info(
-    'Iniciando sistema multi-bot...'
-)
+logger.info('Iniciando sistema multi-bot...');
 
-logger.info(
-    `Instancias configuradas: ${
-        getBotProfiles()
-            .join(', ')
-    }`
-)
+logger.info(`Instancias configuradas: ${getBotProfiles()
+    .join(', ')}`);
 
-bootstrap()
+bootstrap();

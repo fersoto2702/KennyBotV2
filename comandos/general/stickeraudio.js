@@ -1,7 +1,7 @@
-'use strict'
+﻿'use strict'
 
 const soundSticker =
-    require('../../src/system/soundSticker.JS')
+    require('../../src/system/soundStickerCore')
 
 module.exports = {
 
