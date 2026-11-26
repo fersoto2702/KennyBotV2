@@ -1,30 +1,13 @@
-﻿'use strict'
-
-const soundSticker =
+﻿const soundSticker =
     require('../../src/system/soundStickerCore')
 
 module.exports = {
-
-    name:
-        'stickeraudio',
-
-    aliases: [
-        'soundsticker',
-        'stkaudio'
-    ],
-
-    category:
-        'general',
-
-    description:
-        'Crear stickers con sonido desde video o sticker + audio',
+    name: 'stickeraudio',
+    aliases: ['soundsticker', 'stkaudio'],
+    category: 'general',
+    description: 'Editor visual de stickers con sonido para WhatsApp, TikTok e Instagram',
 
     async execute(ctx) {
-
-        return await soundSticker.command(
-            ctx
-        )
-
+        return soundSticker.command(ctx)
     }
-
 }

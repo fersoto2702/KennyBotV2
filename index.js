@@ -19,6 +19,8 @@ const messagesEvent = require('./eventos/messages');
 
 const soundSticker = require('./src/system/soundStickerCore');
 
+const soundStickerEditor = require('./src/system/soundStickerEditor');
+
 const cleanupTemp = require('./src/utils/cleanupTemp');
 
 const logger = require('./src/utils/logger');
@@ -1097,5 +1099,11 @@ logger.info('Iniciando sistema multi-bot...');
 
 logger.info(`Instancias configuradas: ${getBotProfiles()
     .join(', ')}`);
+
+try {
+    soundStickerEditor.start();
+} catch (err) {
+    logger.error(`StickerEditor no inició: ${err.stack || err.message}`);
+}
 
 bootstrap();

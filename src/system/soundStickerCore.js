@@ -483,7 +483,190 @@ async function saveMedia(payload, type, file) {
 
 }
 
-async function makeWebp(video, out, seconds) {
+function parsePublicVideoUrl(value) {
+
+    let url
+
+    try {
+        url = new URL(String(value || ''))
+    } catch {
+        return null
+    }
+
+    if (url.protocol !== 'https:') {
+        return null
+    }
+
+    const host = url.hostname.toLowerCase()
+
+    const tiktok = host === 'tiktok.com' ||
+        host.endsWith('.tiktok.com')
+
+    const instagram = host === 'instagram.com' ||
+        host === 'www.instagram.com' ||
+        host === 'instagr.am' ||
+        host === 'www.instagr.am'
+
+    if (!tiktok && !instagram) {
+        return null
+    }
+
+    if (url.username || url.password) {
+        return null
+    }
+
+    return url.href
+
+}
+
+function parseStart(value) {
+
+    if (!value) return 0
+
+    const input = String(value).trim()
+
+    if (/^\d+(?:\.\d+)?$/.test(input)) {
+        return Number(input)
+    }
+
+    const parts = input.split(':')
+
+    if (parts.length === 2 && parts.every(p => /^\d+$/.test(p))) {
+        return Number(parts[0]) * 60 + Number(parts[1])
+    }
+
+    return NaN
+
+}
+
+async function downloadPublicVideo(url, dir) {
+
+    const executable =
+        process.env.YTDLP_PATH || 'yt-dlp'
+
+    const template =
+        path.join(dir, 'online.%(ext)s')
+
+    await callProgram(
+        executable,
+        [
+            '--no-playlist',
+            '--no-progress',
+            '--no-warnings',
+            '--no-config',
+            '--max-filesize', '20M',
+            '--socket-timeout', '20',
+            '--retries', '2',
+            '--format', 'b[ext=mp4]/b',
+            '--output', template,
+            '--', url
+        ],
+        110000
+    )
+
+    const files =
+        (await fsp.readdir(dir))
+            .filter(file => /^online\.[a-z0-9]+$/i.test(file))
+
+    if (files.length !== 1) {
+        throw new Error('No se pudo obtener un video público del enlace.')
+    }
+
+    const downloaded = path.join(dir, files[0])
+
+    if ((await fsp.stat(downloaded)).size > MAX_INPUT) {
+        throw new Error('El video supera el máximo permitido de 20 MB.')
+    }
+
+    return downloaded
+
+}
+
+async function downloadPublicAudio(url, dir) {
+
+    const executable =
+        process.env.YTDLP_PATH || 'yt-dlp'
+
+    const template =
+        path.join(dir, 'chosen-audio.%(ext)s')
+
+    await callProgram(
+        executable,
+        [
+            '--no-playlist',
+            '--no-progress',
+            '--no-warnings',
+            '--no-config',
+            '--max-filesize', '20M',
+            '--socket-timeout', '20',
+            '--retries', '2',
+            '--format', 'bestaudio/best',
+            '--output', template,
+            '--', url
+        ],
+        110000
+    )
+
+    const files =
+        (await fsp.readdir(dir))
+            .filter(file => /^chosen-audio\.[a-z0-9]+$/i.test(file))
+
+    if (files.length !== 1) {
+        throw new Error('No se pudo descargar el sonido del enlace.')
+    }
+
+    const downloaded = path.join(dir, files[0])
+
+    if ((await fsp.stat(downloaded)).size > MAX_INPUT) {
+        throw new Error('El archivo de sonido supera 20 MB.')
+    }
+
+    return downloaded
+
+}
+
+function normalizeSoundMode(value) {
+
+    const mode = String(value || '').trim().toLowerCase()
+
+    if (['sinsonido', 'sin-sonido', 'silencio', 'mute', 'mudo'].includes(mode)) {
+        return 'none'
+    }
+
+    if (['original', 'oficial', 'sonido', 'consonido'].includes(mode)) {
+        return 'original'
+    }
+
+    if (['personal', 'personalizado', 'elegir', 'custom'].includes(mode)) {
+        return 'custom'
+    }
+
+    return null
+
+}
+
+function videoFilter(preset, fit, framing = {}) {
+    const prefix = `fps=${preset.fps},`
+    if (fit === 'manual' || fit === 'recorte') {
+        const zoom = Math.min(3, Math.max(1, Number(framing.zoom) || 1))
+        const x = Math.min(1, Math.max(0, Number(framing.x) || 0.5))
+        const y = Math.min(1, Math.max(0, Number(framing.y) || 0.5))
+        const width = Math.ceil(512 * zoom / 2) * 2
+        return prefix +
+            `scale=${width}:${width}:force_original_aspect_ratio=increase:flags=lanczos,` +
+            `crop=512:512:(iw-512)*${x.toFixed(4)}:(ih-512)*${y.toFixed(4)},` +
+            'setsar=1,format=yuva420p'
+    }
+    if (fit === 'completo' || fit === 'margenes') {
+        return prefix +
+            'scale=512:512:force_original_aspect_ratio=decrease:flags=lanczos,' +
+            'pad=512:512:(ow-iw)/2:(oh-ih)/2:color=black,' +
+            'setsar=1,format=yuva420p'
+    }
+    return prefix + 'scale=512:512:flags=lanczos,setsar=1,format=yuva420p'
+}
+
+async function makeWebp(video, out, seconds, startAt = 0, fit = 'cuadrado', framing = {}) {
 
     const presets = [
         { fps: 12, q: 60 },
@@ -496,7 +679,7 @@ async function makeWebp(video, out, seconds) {
     for (const preset of presets) {
 
         const filter =
-            `fps=${preset.fps},scale=512:512:force_original_aspect_ratio=decrease:force_divisible_by=2:flags=lanczos,setsar=1,format=yuva420p`
+            videoFilter(preset, fit, framing)
 
         await callProgram(
             FFMPEG,
@@ -504,6 +687,7 @@ async function makeWebp(video, out, seconds) {
                 '-hide_banner',
                 '-loglevel', 'error',
                 '-y',
+                '-ss', startAt.toFixed(3),
                 '-i', video,
                 '-t', seconds.toFixed(3),
                 '-an',
@@ -539,7 +723,7 @@ async function makeWebp(video, out, seconds) {
 
 }
 
-async function makeOgg(source, out, seconds) {
+async function makeOgg(source, out, seconds, startAt = 0) {
 
     await callProgram(
         FFMPEG,
@@ -547,6 +731,7 @@ async function makeOgg(source, out, seconds) {
             '-hide_banner',
             '-loglevel', 'error',
             '-y',
+            '-ss', startAt.toFixed(3),
             '-i', source,
             '-map', '0:a:0',
             '-vn',
@@ -671,8 +856,8 @@ async function sendSticker(
         upload: sock.waUploadToServer
     }
 
-    const preparedAudio =
-        await prepareWAMessageMedia(
+    const preparedAudio = ogg
+        ? await prepareWAMessageMedia(
             {
                 audio: fs.readFileSync(ogg),
                 mimetype: 'audio/ogg; codecs=opus',
@@ -680,6 +865,7 @@ async function sendSticker(
             },
             options
         )
+        : null
 
     const preparedSticker =
         await prepareWAMessageMedia(
@@ -691,13 +877,13 @@ async function sendSticker(
         )
 
     const a =
-        preparedAudio.audioMessage
+        preparedAudio?.audioMessage
 
     const s =
         preparedSticker.stickerMessage
 
     if (
-        !a?.mediaKey ||
+        (ogg && !a?.mediaKey) ||
         !s?.fileSha256
     ) {
 
@@ -707,8 +893,8 @@ async function sendSticker(
 
     }
 
-    const audio =
-        proto.Message.AudioMessage.create({
+    const audio = ogg
+        ? proto.Message.AudioMessage.create({
             url: a.url,
             mimetype: 'audio/ogg; codecs=opus',
             fileSha256: a.fileSha256,
@@ -723,6 +909,7 @@ async function sendSticker(
             waveform:
                 Uint8Array.from(new Array(64).fill(24))
         })
+        : null
 
     s.isAnimated =
         Boolean(isAnimated)
@@ -734,14 +921,16 @@ async function sendSticker(
         Buffer.from(s.fileSha256)
             .toString('base64')
 
-    attachment.set(
-        k,
-        proto.Message.AudioMessage.encode(audio).finish()
-    )
+    if (audio) {
+
+        attachment.set(
+            k,
+            proto.Message.AudioMessage.encode(audio).finish()
+        )
+
+    }
 
     try {
-
-        // Inyecta AudioMessage al codificar StickerMessage.
 
         const who =
             chat.endsWith('@lid') && sock.user?.lid
@@ -755,7 +944,6 @@ async function sendSticker(
                     stickerMessage: s
                 },
                 {
-                    quoted,
                     userJid: who
                 }
             )
@@ -781,7 +969,8 @@ async function makeAndSend(
     from,
     requested,
     voice,
-    sourceMsg
+    sourceMsg,
+    options = {}
 ) {
 
     if (active.size >= 2) {
@@ -813,17 +1002,30 @@ async function makeAndSend(
     try {
 
         const visual =
-            path.join(
-                dir,
-                requested.type === 'video'
-                    ? 'source.mp4'
-                    : 'source.webp'
-            )
+            requested.type === 'url'
+                ? await downloadPublicVideo(requested.url, dir)
+                : requested.type === 'local'
+                    ? requested.filePath
+                : path.join(
+                    dir,
+                    requested.type === 'video'
+                        ? 'source.mp4'
+                        : 'source.webp'
+                )
+
+        const soundMode =
+            options.soundMode || 'original'
 
         const sourceAudio =
-            voice
-                ? path.join(dir, 'selected-audio')
-                : visual
+            soundMode === 'none'
+                ? null
+                : voice?.type === 'url'
+                    ? await downloadPublicAudio(voice.url, dir)
+                    : voice?.type === 'localAudio'
+                        ? voice.filePath
+                    : voice
+                        ? path.join(dir, 'selected-audio')
+                        : visual
 
         const webp =
             path.join(dir, 'sticker.webp')
@@ -831,13 +1033,17 @@ async function makeAndSend(
         const ogg =
             path.join(dir, 'audio.ogg')
 
-        await saveMedia(
-            requested.data,
-            requested.type,
-            visual
-        )
+        if (requested.type !== 'url' && requested.type !== 'local') {
 
-        if (voice) {
+            await saveMedia(
+                requested.data,
+                requested.type,
+                visual
+            )
+
+        }
+
+        if (voice && voice.type === 'audio') {
 
             await saveMedia(
                 voice.data,
@@ -850,49 +1056,54 @@ async function makeAndSend(
         const visualProbe =
             await readProbe(visual).catch(() => ({}))
 
-        const soundProbe =
-            await readProbe(sourceAudio)
+        const startAt =
+            Number(options.startAt) || 0
 
-        const audioAvailable =
-            soundProbe.streams?.some(
-                stream => stream.codec_type === 'audio'
-            )
+        const audioStart =
+            soundMode === 'original' ? startAt : Number(options.audioStart) || 0
 
-        if (!audioAvailable) {
+        const visualDuration =
+            durationOf(visualProbe) ||
+            Number(requested.data?.seconds) ||
+            0
 
-            throw new Error(
-                'El archivo no contiene una pista de audio.'
-            )
-
+        if (visualDuration && startAt >= visualDuration) {
+            throw new Error('El inicio supera la duración del video.')
         }
 
-        let seconds =
-            Math.min(
-                MAX_SECONDS,
-                durationOf(soundProbe) || MAX_SECONDS
-            )
+        const soundProbe = sourceAudio
+            ? await readProbe(sourceAudio)
+            : null
 
-        if (requested.type === 'video') {
-
-            seconds =
-                Math.min(
-                    seconds,
-                    durationOf(visualProbe) ||
-                    Number(requested.data.seconds) ||
-                    MAX_SECONDS
-                )
-
+        if (sourceAudio && !soundProbe.streams?.some(
+            stream => stream.codec_type === 'audio'
+        )) {
+            throw new Error('El archivo seleccionado no contiene sonido.')
         }
 
-        seconds =
-            Math.max(0.5, seconds)
+        const soundDuration = soundProbe
+            ? durationOf(soundProbe)
+            : 0
 
-        if (requested.type === 'video') {
+        const seconds = Math.min(
+            MAX_SECONDS,
+            soundDuration ? soundDuration - audioStart : MAX_SECONDS,
+            visualDuration ? visualDuration - startAt : MAX_SECONDS
+        )
+
+        if (!Number.isFinite(seconds) || seconds < 0.5) {
+            throw new Error('No queda suficiente video o sonido desde el segundo elegido.')
+        }
+
+        if (requested.type === 'video' || requested.type === 'url' || requested.type === 'local') {
 
             await makeWebp(
                 visual,
                 webp,
-                seconds
+                seconds,
+                startAt,
+                options.fit || 'cuadrado',
+                options.framing || {}
             )
 
         } else {
@@ -923,11 +1134,16 @@ async function makeAndSend(
 
         }
 
-        await makeOgg(
-            sourceAudio,
-            ogg,
-            seconds
-        )
+        if (sourceAudio) {
+
+            await makeOgg(
+                sourceAudio,
+                ogg,
+                seconds,
+                audioStart
+            )
+
+        }
 
         const {
             width,
@@ -953,11 +1169,13 @@ async function makeAndSend(
             sock,
             from,
             webp,
-            ogg,
+            sourceAudio ? ogg : null,
             seconds,
-            sourceMsg,
+            null,
             requested.type === 'video' ||
-                Boolean(requested.data.isAnimated),
+                requested.type === 'url' ||
+                requested.type === 'local' ||
+                Boolean(requested.data?.isAnimated),
             { width, height }
         )
 
@@ -990,14 +1208,76 @@ async function reply(sock, from, text, msg) {
 
 function infoText() {
 
-    return (
-        '🔊 *KENNYBOT V2 · STICKERS CON AUDIO*\n\n' +
-        '1️⃣ Video con sonido: responde al video con *.stickeraudio* (o envía el video con esa descripción).\n\n' +
-        '2️⃣ Sticker + audio elegido: responde al sticker con *.stickeraudio*; después envía el audio o nota de voz en este mismo chat (máximo 5 minutos).\n\n' +
-        '3️⃣ Video + audio diferente: responde al video con *.stickeraudio personal*; después envía el audio.\n\n' +
-        'Para cancelar: *.stickeraudio cancelar*.\n' +
-        `Máximo ${MAX_SECONDS} segundos por sticker. Función experimental.`
-    )
+    return [
+        '🎬 *KENNYBOT V2 · STICKERAUDIO*',
+        '',
+        '*Modos de sonido:*',
+        '🔇 sinsonido — sticker animado sin audio',
+        '🔊 original — audio incluido en el video',
+        '🎵 personal — elige un audio, nota de voz o enlace',
+        '',
+        '*Ejemplos:*',
+        '.stickeraudio <enlace> — abre el editor visual',
+        '.stickeraudio rapido <enlace> original — conversión automática',
+        '.stickeraudio <enlace> sinsonido',
+        '.stickeraudio <enlace> personal',
+        '.stickeraudio <enlace> 00:05 original margenes',
+        '',
+        'También puedes responder a un video con .stickeraudio original,',
+        '.stickeraudio sinsonido o .stickeraudio personal.',
+        '',
+        'Encuadre: cuadrado, recorte o margenes.',
+        'cuadrado muestra todo, pero deforma si no es 1:1;',
+        'recorte conserva las proporciones, pero corta bordes;',
+        'margenes conserva todo sin deformar y agrega relleno.',
+        '',
+        'Para elegir otro audio, envía el archivo o un enlace público',
+        'de Instagram/TikTok como siguiente mensaje.',
+        'Para cancelar: .stickeraudio cancelar.',
+        `Duración máxima: ${MAX_SECONDS} segundos.`
+    ].join('\n')
+
+}
+
+function commandOptions(args, hasLink) {
+
+    let startAt = 0
+    let soundMode = null
+    let fit = 'cuadrado'
+
+    for (const raw of args) {
+
+        const item = String(raw || '').trim().toLowerCase()
+        const mode = normalizeSoundMode(item)
+
+        if (mode) {
+            soundMode = mode
+            continue
+        }
+
+        if (['cuadrado', 'recorte', 'margenes'].includes(item)) {
+            fit = item
+            continue
+        }
+
+        if (/^\d+(?::\d{1,2})?(?:\.\d+)?$/.test(item)) {
+            startAt = parseStart(item)
+            continue
+        }
+
+        return null
+
+    }
+
+    if (!Number.isFinite(startAt) || startAt < 0 || startAt > 3600) {
+        return null
+    }
+
+    return {
+        startAt,
+        soundMode: soundMode || (hasLink ? 'original' : 'original'),
+        fit
+    }
 
 }
 
@@ -1010,72 +1290,80 @@ async function command({
 
     cleanExpired()
 
-    const key =
-        senderKey(sock, msg, from)
-
-    const action =
-        String(args[0] || '').toLowerCase()
+    const key = senderKey(sock, msg, from)
+    const action = String(args[0] || '').toLowerCase()
+    const quickMode = ['rapido', 'rápido', 'quick'].includes(action)
+    if (quickMode) args = args.slice(1)
 
     if (['cancelar', 'cancel', 'stop'].includes(action)) {
 
-        const found =
-            pending.delete(key)
+        const found = pending.delete(key)
 
         return reply(
             sock,
             from,
-            found
-                ? '✅ Operación cancelada.'
-                : 'No tienes ninguna operación pendiente.',
+            found ? '✅ Operación cancelada.' : 'No tienes ninguna operación pendiente.',
             msg
         )
 
     }
 
-    const chosen =
-        mediaOf(quotedOf(msg.message)) ||
-        mediaOf(msg.message)
+    const link = parsePublicVideoUrl(args[0])
+    const chosen = link
+        ? { type: 'url', url: link }
+        : mediaOf(quotedOf(msg.message)) || mediaOf(msg.message)
 
-    if (
-        !chosen ||
-        !['sticker', 'video'].includes(chosen.type)
-    ) {
+    const opts = commandOptions(link ? args.slice(1) : args, !!link)
 
+    if (!opts) {
+        return reply(sock, from, infoText(), msg)
+    }
+
+    if (!link && /^https?:\/\//i.test(String(args[0] || ''))) {
         return reply(
-            sock,
-            from,
-            infoText(),
+            sock, from,
+            'Solo se admiten enlaces públicos HTTPS de TikTok e Instagram.',
             msg
         )
+    }
 
+    if (!chosen || !['sticker', 'video', 'url'].includes(chosen.type)) {
+        return reply(sock, from, infoText(), msg)
     }
 
     if (isTooLarge(chosen.data)) {
+        return reply(sock, from, 'El archivo supera el máximo de 20 MB.', msg)
+    }
 
+    if (!quickMode) {
+        return require('./soundStickerEditor').launch({
+            sock, msg, from, chosen
+        })
+    }
+
+
+
+    if (chosen.type === 'sticker' && opts.soundMode === 'original') {
         return reply(
             sock,
             from,
-            'El archivo supera el máximo permitido (20 MB).',
+            'Para un sticker existente, usa .stickeraudio personal y envía un audio, o .stickeraudio sinsonido.',
             msg
         )
-
     }
 
-    if (
-        chosen.type === 'sticker' ||
-        action === 'personal'
-    ) {
+    if (opts.soundMode === 'custom') {
 
         pending.set(key, {
             requested: chosen,
-            expiry: Date.now() + WAIT_MS,
-            msg
+            options: opts,
+            expiry: Date.now() + WAIT_MS
         })
 
         return reply(
             sock,
             from,
-            '🎵 Imagen recibida. Envía ahora el *audio o nota de voz* que quieres utilizar en este chat. Tienes 5 minutos.\nPara cancelar: *.stickeraudio cancelar*',
+            '🎵 Envía ahora una nota de voz, un archivo de audio o un enlace público de TikTok/Instagram con el sonido que quieres. Tienes 5 minutos. Usa .stickeraudio cancelar para salir.',
             msg
         )
 
@@ -1083,26 +1371,29 @@ async function command({
 
     try {
 
-        await makeAndSend(
-            sock,
-            from,
-            chosen,
-            null,
-            msg
-        )
+        await makeAndSend(sock, from, chosen, null, msg, opts)
 
     } catch (error) {
 
         console.error('[stickeraudio]', error.message)
 
-        return reply(
-            sock,
-            from,
-            `❌ ${error.message}`,
-            msg
-        )
+        return reply(sock, from, `❌ ${error.message}`, msg)
 
     }
+
+    return true
+
+}
+
+function textOf(message) {
+
+    const m = unwrap(message)
+
+    return m.conversation ||
+        m.extendedTextMessage?.text ||
+        m.imageMessage?.caption ||
+        m.videoMessage?.caption ||
+        ''
 
 }
 
@@ -1110,25 +1401,18 @@ async function consumeAudio(sock, msg, from) {
 
     cleanExpired()
 
-    const key =
-        senderKey(sock, msg, from)
-
-    const task =
-        pending.get(key)
+    const key = senderKey(sock, msg, from)
+    const task = pending.get(key)
 
     if (!task) {
-
         return false
-
     }
 
-    const file =
-        mediaOf(msg.message)
+    const file = mediaOf(msg.message)
+    const url = parsePublicVideoUrl(textOf(msg.message).trim())
 
-    if (file?.type !== 'audio') {
-
+    if (file?.type !== 'audio' && !url) {
         return false
-
     }
 
     pending.delete(key)
@@ -1139,20 +1423,16 @@ async function consumeAudio(sock, msg, from) {
             sock,
             from,
             task.requested,
-            file,
-            msg
+            file?.type === 'audio' ? file : { type: 'url', url },
+            msg,
+            task.options
         )
 
     } catch (error) {
 
         console.error('[stickeraudio]', error.message)
 
-        await reply(
-            sock,
-            from,
-            `❌ ${error.message}`,
-            msg
-        )
+        await reply(sock, from, `❌ ${error.message}`, msg)
 
     }
 
@@ -1170,12 +1450,24 @@ module.exports = {
 
     soundStickerEncoderPatch,
 
+    makeAndSend,
+    saveMedia,
+    downloadPublicVideo,
+    downloadPublicAudio,
+    readProbe,
+    durationOf,
+    parsePublicVideoUrl,
     _test: {
         unwrap,
         mediaOf,
         quotedOf,
         senderKey,
-        cleanExpired
+        cleanExpired,
+        parsePublicVideoUrl,
+        parseStart,
+        videoFilter,
+        normalizeSoundMode,
+        commandOptions
     }
 
 }
