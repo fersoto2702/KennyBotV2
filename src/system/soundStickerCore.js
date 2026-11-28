@@ -1,5 +1,3 @@
-'use strict'
-
 const fs =
     require('node:fs')
 
@@ -11,6 +9,9 @@ const os =
 
 const path =
     require('node:path')
+
+const crypto =
+    require('node:crypto')
 
 const {
     spawn
@@ -30,6 +31,12 @@ const MAX_SECONDS =
             2,
             Number(process.env.SOUND_STICKER_MAX_SECONDS) || 10
         )
+    )
+
+const MAX_CONCURRENT =
+    Math.max(
+        1,
+        Number(process.env.SOUND_STICKER_MAX_CONCURRENT) || 2
     )
 
 const MAX_INPUT =
@@ -204,6 +211,29 @@ function cleanExpired() {
 
 }
 
+setInterval(cleanExpired, 60000).unref()
+
+function attachmentKey(message) {
+
+    if (!message?.fileSha256) {
+
+        return null
+
+    }
+
+    const sha =
+        Buffer.from(message.fileSha256)
+            .toString('base64')
+
+    const stamp =
+        message.mediaKeyTimestamp != null
+            ? String(message.mediaKeyTimestamp)
+            : ''
+
+    return `${sha}|${stamp}`
+
+}
+
 function soundStickerEncoderPatch() {
 
     const cls =
@@ -238,22 +268,17 @@ function soundStickerEncoderPatch() {
                 writer
             )
 
-        if (message?.fileSha256) {
+        const key =
+            attachmentKey(message)
 
-            const key =
-                Buffer.from(message.fileSha256)
-                    .toString('base64')
+        const bytes =
+            key ? attachment.get(key) : null
 
-            const bytes =
-                attachment.get(key)
+        if (bytes) {
 
-            if (bytes) {
-
-                output
-                    .uint32((26 << 3) | 2)
-                    .bytes(bytes)
-
-            }
+            output
+                .uint32((26 << 3) | 2)
+                .bytes(bytes)
 
         }
 
@@ -267,12 +292,27 @@ function soundStickerEncoderPatch() {
 
 }
 
+function friendlyMissingBinary(exe, error) {
+
+    if (error?.code === 'ENOENT') {
+
+        return new Error(
+            `No se encontró el ejecutable "${exe}" en el servidor.`
+        )
+
+    }
+
+    return error
+
+}
+
 function callProgram(exe, args, timeoutMs = 55000) {
 
     return new Promise((resolve, reject) => {
 
         let done = false
         let err = ''
+        let killTimer = null
 
         const proc =
             spawn(exe, args, {
@@ -283,7 +323,14 @@ function callProgram(exe, args, timeoutMs = 55000) {
         const timeout =
             setTimeout(() => {
 
-                proc.kill()
+                proc.kill('SIGTERM')
+
+                killTimer =
+                    setTimeout(() => {
+
+                        proc.kill('SIGKILL')
+
+                    }, 3000)
 
                 if (!done) {
 
@@ -312,11 +359,12 @@ function callProgram(exe, args, timeoutMs = 55000) {
         proc.on('error', error => {
 
             clearTimeout(timeout)
+            clearTimeout(killTimer)
 
             if (!done) {
 
                 done = true
-                reject(error)
+                reject(friendlyMissingBinary(exe, error))
 
             }
 
@@ -325,6 +373,7 @@ function callProgram(exe, args, timeoutMs = 55000) {
         proc.on('close', code => {
 
             clearTimeout(timeout)
+            clearTimeout(killTimer)
 
             if (!done) {
 
@@ -533,6 +582,10 @@ function parseStart(value) {
 
     if (parts.length === 2 && parts.every(p => /^\d+$/.test(p))) {
         return Number(parts[0]) * 60 + Number(parts[1])
+    }
+
+    if (parts.length === 3 && parts.every(p => /^\d+$/.test(p))) {
+        return Number(parts[0]) * 3600 + Number(parts[1]) * 60 + Number(parts[2])
     }
 
     return NaN
@@ -918,8 +971,7 @@ async function sendSticker(
     s.height = dimensions.height
 
     const k =
-        Buffer.from(s.fileSha256)
-            .toString('base64')
+        attachmentKey(s)
 
     if (audio) {
 
@@ -964,6 +1016,36 @@ async function sendSticker(
 
 }
 
+async function resolveSourceAudio(soundMode, voice, dir, visual) {
+
+    if (soundMode === 'none') {
+
+        return null
+
+    }
+
+    if (voice?.type === 'url') {
+
+        return downloadPublicAudio(voice.url, dir)
+
+    }
+
+    if (voice?.type === 'localAudio') {
+
+        return voice.filePath
+
+    }
+
+    if (voice) {
+
+        return path.join(dir, 'selected-audio')
+
+    }
+
+    return visual
+
+}
+
 async function makeAndSend(
     sock,
     from,
@@ -973,10 +1055,10 @@ async function makeAndSend(
     options = {}
 ) {
 
-    if (active.size >= 2) {
+    if (active.size >= MAX_CONCURRENT) {
 
         throw new Error(
-            'Hay dos stickers procesándose. Inténtalo de nuevo en unos segundos.'
+            `Hay ${MAX_CONCURRENT} stickers procesándose. Inténtalo de nuevo en unos segundos.`
         )
 
     }
@@ -1017,15 +1099,7 @@ async function makeAndSend(
             options.soundMode || 'original'
 
         const sourceAudio =
-            soundMode === 'none'
-                ? null
-                : voice?.type === 'url'
-                    ? await downloadPublicAudio(voice.url, dir)
-                    : voice?.type === 'localAudio'
-                        ? voice.filePath
-                    : voice
-                        ? path.join(dir, 'selected-audio')
-                        : visual
+            await resolveSourceAudio(soundMode, voice, dir, visual)
 
         const webp =
             path.join(dir, 'sticker.webp')
@@ -1260,7 +1334,7 @@ function commandOptions(args, hasLink) {
             continue
         }
 
-        if (/^\d+(?::\d{1,2})?(?:\.\d+)?$/.test(item)) {
+        if (/^\d+(?::\d{1,2}){0,2}(?:\.\d+)?$/.test(item)) {
             startAt = parseStart(item)
             continue
         }
@@ -1399,10 +1473,25 @@ function textOf(message) {
 
 async function consumeAudio(sock, msg, from) {
 
-    cleanExpired()
-
     const key = senderKey(sock, msg, from)
     const task = pending.get(key)
+
+    if (task && task.expiry <= Date.now()) {
+
+        pending.delete(key)
+
+        await reply(
+            sock,
+            from,
+            '⌛ Se agotó el tiempo para enviar el audio. Usa .stickeraudio de nuevo.',
+            msg
+        )
+
+        return true
+
+    }
+
+    cleanExpired()
 
     if (!task) {
         return false
@@ -1440,6 +1529,53 @@ async function consumeAudio(sock, msg, from) {
 
 }
 
+
+async function relayExistingSoundSticker(sock, chat, sticker) {
+
+    soundStickerEncoderPatch()
+
+    if (!chat.endsWith('@newsletter')) {
+        throw new Error('El destino no es un canal de WhatsApp.')
+    }
+
+    if (!sticker?.fileSha256 || !sticker?.mediaKey) {
+        throw new Error('Baileys no pudo leer los datos del sticker citado.')
+    }
+
+    const embeddedAudio = sticker.audioMessage || sticker.audio
+
+    if (!embeddedAudio?.mediaKey || !embeddedAudio?.fileSha256) {
+        throw new Error(
+            'Baileys no entregó el audio de este sticker citado. ' +
+            'Responde al video original para que KennyBot lo genere con sonido.'
+        )
+    }
+
+    const payload = proto.Message.StickerMessage.create({ ...sticker })
+    const hash = attachmentKey(payload)
+
+    attachment.set(
+        hash,
+        proto.Message.AudioMessage.encode(embeddedAudio).finish()
+    )
+
+    try {
+        const built = generateWAMessageFromContent(
+            chat,
+            { stickerMessage: payload },
+            { userJid: sock.user?.id }
+        )
+
+        await sock.relayMessage(
+            chat,
+            built.message,
+            { messageId: built.key.id }
+        )
+    } finally {
+        attachment.delete(hash)
+    }
+}
+
 module.exports = {
 
     command,
@@ -1451,6 +1587,7 @@ module.exports = {
     soundStickerEncoderPatch,
 
     makeAndSend,
+    relayExistingSoundSticker,
     saveMedia,
     downloadPublicVideo,
     downloadPublicAudio,
