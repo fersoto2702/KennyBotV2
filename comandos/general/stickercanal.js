@@ -25,15 +25,8 @@ function unwrap(message) {
 
 function mediaFrom(message) {
     const content = unwrap(message)
-
-    if (content.videoMessage) {
-        return { type: 'video', data: content.videoMessage }
-    }
-
-    if (content.stickerMessage) {
-        return { type: 'sticker', data: content.stickerMessage }
-    }
-
+    if (content.videoMessage) return { type: 'video', data: content.videoMessage }
+    if (content.stickerMessage) return { type: 'sticker', data: content.stickerMessage }
     return null
 }
 
@@ -49,7 +42,6 @@ function resolveMedia(msg) {
     ]) {
         const quoted = content[type]?.contextInfo?.quotedMessage
         const media = quoted ? mediaFrom(quoted) : null
-
         if (media) return media
     }
 
@@ -112,11 +104,9 @@ function mapError(error) {
     if (lower.includes('429') || lower.includes('rate')) {
         return 'WhatsApp limitó temporalmente los envíos. Inténtalo más tarde.'
     }
-
     if (lower.includes('403') || lower.includes('forbidden') || lower.includes('not-authorized')) {
         return 'WhatsApp rechazó la publicación. Comprueba los permisos de administrador de la sesión conectada.'
     }
-
     if (lower.includes('404') || lower.includes('item-not-found')) {
         return 'No se encontró el canal o su enlace dejó de ser válido.'
     }
@@ -128,13 +118,17 @@ function instructions() {
     return [
         '🔊 *KENNYBOT V2 · STICKER A CANAL*',
         '',
-        'Responde a un video con sonido o a un sticker sonoro usando:',
-        '',
+        '*Publicar sticker con sonido:*',
+        'Responde a un video con sonido o a un sticker sonoro y escribe:',
         '*.stickercanal https://whatsapp.com/channel/CODIGO*',
         '',
+        '*Diagnosticar el envío al canal (sin sticker):*',
+        '*.stickercanal https://whatsapp.com/channel/CODIGO prueba*',
+        '',
+        'La prueba envía únicamente un texto al canal.',
         'Solo se aceptan enlaces completos HTTPS de canales.',
-        'El número conectado a KennyBot debe tener permiso para publicar.',
-        'El sonido de stickers en canales es una función experimental.'
+        'La sesión conectada debe tener permisos para publicar.',
+        'Los stickers con sonido en canales son experimentales.'
     ].join('\n')
 }
 
@@ -144,7 +138,6 @@ async function reply(sock, chat, msg, text) {
 
 async function updateStatus(sock, chat, key, text) {
     if (!key) return
-
     try {
         await sock.sendMessage(chat, { text, edit: key })
     } catch (error) {
@@ -170,7 +163,7 @@ async function resolveChannel(sock, code) {
             role = viewerRole(byJid)
             name = byJid?.name || byJid?.result?.name || name
         } catch (error) {
-            console.warn('[stickercanal] La consulta del canal por JID no devolvió el rol:', error.message)
+            console.warn('[stickercanal] La consulta por JID no devolvió el rol:', error.message)
         }
     }
 
@@ -185,20 +178,20 @@ async function execute({ sock, msg, from, args = [] }) {
     }
 
     const code = channelCode(args[0])
+    const diagnostic = args.length === 2 && String(args[1]).toLowerCase() === 'prueba'
 
-    if (!code || args.length !== 1) {
+    if (!code || (args.length !== 1 && !diagnostic)) {
         return reply(sock, chat, msg, instructions())
     }
 
-    const chosen = resolveMedia(msg)
-
-    if (!chosen) {
+    // El modo de diagnóstico no exige responder a un video ni a un sticker.
+    const chosen = diagnostic ? null : resolveMedia(msg)
+    if (!diagnostic && !chosen) {
         return reply(sock, chat, msg, '❌ Responde a un video con sonido o a un sticker sonoro y escribe el comando con el enlace del canal.')
     }
 
     const id = senderId(msg)
     const waitMs = remainingCooldown(id)
-
     if (waitMs) {
         return reply(sock, chat, msg, `⏳ Espera ${Math.ceil(waitMs / 1000)} segundos antes de volver a publicar.`)
     }
@@ -219,15 +212,41 @@ async function execute({ sock, msg, from, args = [] }) {
 
     if (channel.role && !['ADMIN', 'OWNER'].includes(channel.role)) {
         return updateStatus(
-            sock,
-            chat,
-            status?.key,
+            sock, chat, status?.key,
             `🔒 La cuenta conectada figura como *${channel.role}* en este canal y no puede publicar.`
         )
     }
 
     if (!channel.role) {
         console.warn(`[stickercanal] Rol no disponible para ${channel.jid}. WhatsApp validará el permiso al publicar.`)
+    }
+
+    if (diagnostic) {
+        await updateStatus(sock, chat, status?.key, '⏳ Enviando un texto de diagnóstico al canal…')
+        lastUse.set(id, Date.now())
+
+        try {
+            const result = await sock.sendMessage(channel.jid, {
+                text: '🧪 Prueba de publicación KennyBot V2'
+            })
+
+            console.log('[stickercanal] Prueba de texto solicitada:', {
+                canal: channel.jid,
+                nombre: channel.name,
+                rol: channel.role || 'NO_DISPONIBLE',
+                messageId: result?.key?.id || 'NO_DISPONIBLE'
+            })
+
+            return updateStatus(
+                sock, chat, status?.key,
+                `🧪 Texto de prueba enviado a Baileys para *${channel.name}*.\n` +
+                'ℹ️ Comprueba manualmente si aparece en el canal. Que Baileys no devuelva un error no confirma la publicación.'
+            )
+        } catch (error) {
+            lastUse.delete(id)
+            console.error('[stickercanal] Error de prueba de texto:', error)
+            return updateStatus(sock, chat, status?.key, `❌ Falló la prueba de publicación.\n${mapError(error)}`)
+        }
     }
 
     await updateStatus(sock, chat, status?.key, '⏳ Preparando el sticker y solicitando su publicación…')
@@ -238,30 +257,21 @@ async function execute({ sock, msg, from, args = [] }) {
             if (typeof core.makeAndSend !== 'function') {
                 throw new Error('soundStickerCore no exporta makeAndSend().')
             }
-
-            await core.makeAndSend(
-                sock,
-                channel.jid,
-                chosen,
-                null,
-                msg,
-                { soundMode: 'original', fit: 'cuadrado' }
-            )
+            await core.makeAndSend(sock, channel.jid, chosen, null, msg, {
+                soundMode: 'original', fit: 'cuadrado'
+            })
         } else {
             if (typeof core.relayExistingSoundSticker !== 'function') {
                 throw new Error('soundStickerCore no exporta relayExistingSoundSticker().')
             }
-
             await core.relayExistingSoundSticker(sock, channel.jid, chosen.data)
         }
 
         console.log(`[stickercanal] Envío solicitado: ${channel.name} (${channel.jid})`)
-
         return updateStatus(
-            sock,
-            chat,
-            status?.key,
-            `✅ Envío solicitado al canal *${channel.name}*.\nℹ️ Comprueba que WhatsApp haya publicado el sticker con sonido.`
+            sock, chat, status?.key,
+            `✅ Envío solicitado al canal *${channel.name}*.\n` +
+            'ℹ️ Comprueba que WhatsApp haya publicado el sticker con sonido.'
         )
     } catch (error) {
         lastUse.delete(id)
@@ -274,6 +284,6 @@ module.exports = {
     name: 'stickercanal',
     aliases: ['stcanal'],
     category: 'general',
-    description: 'Publicar stickers con sonido mediante enlaces de canales de WhatsApp',
+    description: 'Publicar stickers con sonido mediante enlaces de canales de WhatsApp; modo prueba de texto',
     execute
 }

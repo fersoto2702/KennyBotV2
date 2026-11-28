@@ -1728534,3 +1728534,130 @@ Le pueden cantar, escribir las mañanitas o mandarle stikers
 [01:07:09] [INFO] Socket cerrado | main
 [01:07:09] [INFO] Socket cerrado | brazil
 [01:07:09] [OK] Todas las sesiones fueron cerradas
+[01:08:18] [OK] UnifiedRateLimiter cargado
+[01:08:18] [OK] Comando cargado: ban
+[01:08:18] [OK] Comando cargado: unban
+[01:08:18] [OK] Comando cargado: antilink
+[01:08:18] [OK] Comando cargado: card
+[01:08:18] [OK] Comando cargado: cardinfo
+[01:08:18] [OK] Comando cargado: claim
+[01:08:18] [OK] Comando cargado: collection
+[01:08:18] [OK] Comando cargado: antibot
+[01:08:18] [OK] Comando cargado: antifake
+[01:08:18] [OK] Comando cargado: autolevelup
+[01:08:18] [OK] Comando cargado: adivinanumero
+[01:08:18] [OK] Comando cargado: adivinanza
+[01:08:18] [OK] Comando cargado: ahorcado
+[01:08:18] [OK] Comando cargado: crush
+[01:08:18] [OK] Comando cargado: dado
+[01:08:18] [OK] Comando cargado: fusion
+[01:08:18] [OK] Comando cargado: moneda
+[01:08:18] [OK] Comando cargado: personalidad
+[01:08:18] [OK] Comando cargado: ppt
+[01:08:19] [OK] Comando cargado: qc
+[01:08:19] [OK] Comando cargado: rate
+[01:08:19] [OK] Comando cargado: reto
+[01:08:19] [OK] Comando cargado: ship
+[01:08:19] [OK] Comando cargado: top
+[01:08:19] [OK] Comando cargado: trivia
+[01:08:19] [OK] Comando cargado: verdad
+[01:08:19] [OK] Comando cargado: facebook
+[01:08:19] [OK] Comando cargado: instagram
+[01:08:19] [OK] Comando cargado: pinterest
+[01:08:20] [OK] Comando cargado: play
+[01:08:20] [OK] Comando cargado: spotify
+[01:08:20] [OK] Comando cargado: tiktok
+[01:08:20] [OK] Comando cargado: ytmp3
+[01:08:20] [OK] Comando cargado: ytmp4
+[01:08:20] [OK] Comando cargado: balance
+[01:08:20] [OK] Comando cargado: buy
+[01:08:20] [WARN] Comando duplicado ignorado: buy (crime.js)
+[01:08:20] [OK] Comando cargado: daily
+[01:08:20] [OK] Comando cargado: deposit
+[01:08:20] [OK] Comando cargado: gamble
+[01:08:20] [OK] Comando cargado: inventory
+[01:08:20] [OK] Comando cargado: leaderboardmoney
+[01:08:20] [OK] Comando cargado: open
+[01:08:20] [OK] Comando cargado: pay
+[01:08:20] [OK] Comando cargado: rob
+[01:08:20] [OK] Comando cargado: shop
+[01:08:20] [OK] Comando cargado: slots
+[01:08:20] [OK] Comando cargado: withdraw
+[01:08:20] [OK] Comando cargado: work
+[01:08:20] [OK] Comando cargado: equip
+[01:08:20] [OK] Comando cargado: events
+[01:08:20] [OK] Comando cargado: brat
+[01:08:21] [OK] Comando cargado: exportstats
+[01:08:21] [OK] Comando cargado: inactive
+[01:08:21] [OK] Comando cargado: msgstats
+[01:08:21] [OK] Comando cargado: stickeraudio
+[01:08:21] [OK] Comando cargado: stickercanal
+[01:08:21] [OK] Comando cargado: topmessages
+[01:08:21] [OK] Comando cargado: groups
+[01:08:21] [OK] Comando cargado: add
+[01:08:21] [OK] Comando cargado: admins
+[01:08:21] [OK] Comando cargado: demote
+[01:08:21] [OK] Comando cargado: goodbye
+[01:08:21] [OK] Comando cargado: hidetag
+[01:08:21] [OK] Comando cargado: kick
+[01:08:21] [OK] Comando cargado: link
+[01:08:21] [OK] Comando cargado: mute
+[01:08:21] [OK] Comando cargado: promote
+[01:08:21] [OK] Comando cargado: resetgoodbye
+[01:08:21] [OK] Comando cargado: resetwelcome
+[01:08:21] [OK] Comando cargado: setgoodbye
+[01:08:21] [OK] Comando cargado: setwelcome
+[01:08:21] [OK] Comando cargado: tagall
+[01:08:21] [OK] Comando cargado: unwarn
+[01:08:21] [OK] Comando cargado: warn
+[01:08:21] [OK] Comando cargado: warnings
+[01:08:21] [OK] Comando cargado: welcome
+[01:08:21] [OK] Comando cargado: ia
+[01:08:21] [OK] Comando cargado: join
+[01:08:21] [WARN] Alias duplicado "top" en leaderboard.js
+[01:08:21] [OK] Comando cargado: leaderboard
+[01:08:21] [WARN] Alias duplicado "rank" en level.js
+[01:08:21] [OK] Comando cargado: level
+[01:08:21] [WARN] Comando duplicado ignorado: rank (rank.js)
+[01:08:21] [OK] Comando cargado: menu
+[01:08:21] [OK] Comando cargado: myclub
+[01:08:21] [OK] Comando cargado: objectives
+[01:08:21] [OK] Comando cargado: openpack
+[01:08:21] [OK] Comando cargado: packs
+[01:08:21] [OK] Comando cargado: pick
+[01:08:21] [OK] Comando cargado: ping
+[01:08:21] [OK] Comando cargado: addpremium
+[01:08:21] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[01:08:21] [OK] Comando cargado: delpremium
+[01:08:21] [OK] Comando cargado: profile
+[01:08:21] [OK] Comando cargado: sticker
+[01:08:21] [OK] Comando cargado: addjoinmsg
+[01:08:21] [OK] Comando cargado: clearjoinmsg
+[01:08:21] [OK] Comando cargado: deljoinmsg
+[01:08:21] [OK] Comando cargado: listjoinmsg
+[01:08:21] [INFO] Iniciando sistema multi-bot...
+[01:08:21] [INFO] Instancias configuradas: main, brazil
+[01:08:22] [OK] MySQL conectado y tabla lista
+[01:08:22] [OK] Base de datos inicializada
+[01:08:22] [INFO] Iniciando 2 instancia(s): main, brazil
+[01:08:22] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[01:08:22] [OK] KennyBot | SocketManager cargado
+[01:08:22] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[01:08:22] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[01:08:23] [OK] KennyBot conectado
+[01:08:24] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[01:08:24] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 6
+[01:09:31] [EVENT] [main] SELF -> .stickercanal https://whatsapp.com/channel/0029VbDtftYJUM2itd6hY21E
+[01:09:31] [CMD] KennyBot | stickercanal → 202422597214258
+[01:12:59] [EVENT] [main] 21149224284218 -> Ya casi
+[01:12:59] [EVENT] KennyBot | PassiveCoins: 21149224284218 +2
+[01:14:21] [EVENT] [main] 29897972002882 -> Mmmm
+[01:14:22] [EVENT] KennyBot | PassiveCoins: 29897972002882 +7
+[01:14:27] [EVENT] [main] 28716621103214 -> Salu2.
+[01:14:27] [EVENT] KennyBot | PassiveCoins: 28716621103214 +8
+[01:16:44] [INFO] Cerrando KennyBot...
+[01:16:44] [INFO] Deteniendo main...
+[01:16:44] [INFO] Deteniendo brazil...
+[01:16:44] [INFO] Socket cerrado | main
+[01:16:44] [INFO] Socket cerrado | brazil
+[01:16:45] [OK] Todas las sesiones fueron cerradas
