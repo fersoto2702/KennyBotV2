@@ -19,6 +19,16 @@ const messagesEvent = require('./eventos/messages');
 
 const soundSticker = require('./src/system/soundStickerCore');
 
+// Instala el parche ANTES de crear sockets y recibir mensajes.
+// Necesario para intentar recuperar metadatos de stickers sonoros entrantes.
+try {
+    soundSticker.soundStickerEncoderPatch();
+    console.log('[stickercanal] Parche de stickers sonoros inicializado');
+} catch (error) {
+    console.error('[stickercanal] No se pudo instalar el parche:', error);
+    throw error;
+}
+
 const soundStickerEditor = require('./src/system/soundStickerEditor');
 
 const cleanupTemp = require('./src/utils/cleanupTemp');
