@@ -174,9 +174,7 @@ function instructions() {
         '*.stickercanal https://whatsapp.com/channel/CODIGO*',
         '',
         'También puedes enviar un video con el comando en su descripción.',
-        'Solo se acepta el enlace completo del canal (no el código suelto).',
-        'La cuenta de KennyBot debe ser administradora del canal.',
-        'Los stickers con audio en canales siguen siendo experimentales.'
+        'Solo se acepta el enlace completo del canal',
     ].join('\n')
 }
 
