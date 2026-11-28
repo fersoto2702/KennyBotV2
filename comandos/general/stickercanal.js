@@ -1,8 +1,10 @@
 const core = require('../../src/system/soundStickerCore')
 const settings = require('../../src/config/settings')
+const { downloadContentFromMessage } = require('@whiskeysockets/baileys')
 
 const COOLDOWN_MS = 15000
 const lastUse = new Map()
+const MAX_TEST_STICKER_BYTES = 1024 * 1024
 const CHANNEL_LINK = /^https:\/\/(?:www\.)?whatsapp\.com\/channel\/([A-Za-z0-9_-]{15,40})\/?(?:\?[^\s]*)?$/i
 
 function unwrap(message) {
@@ -126,6 +128,11 @@ function instructions() {
         '*.stickercanal https://whatsapp.com/channel/CODIGO prueba*',
         '',
         'La prueba envía únicamente un texto al canal.',
+        '',
+        '*Diagnosticar envío de sticker normal:*',
+        'Responde a un sticker y escribe:',
+        '*.stickercanal https://whatsapp.com/channel/CODIGO pruebasticker*',
+        'Se publicará como sticker normal, sin adjuntar audio.',
         'Solo se aceptan enlaces completos HTTPS de canales.',
         'La sesión conectada debe tener permisos para publicar.',
         'Los stickers con sonido en canales son experimentales.'
@@ -170,6 +177,32 @@ async function resolveChannel(sock, code) {
     return { jid, role, name }
 }
 
+async function downloadStickerForTest(payload) {
+    if (!payload?.mediaKey || (!payload?.directPath && !payload?.url)) {
+        throw new Error('El sticker citado no tiene datos suficientes para descargarse.')
+    }
+
+    const parts = []
+    let total = 0
+    const stream = await downloadContentFromMessage(payload, 'sticker')
+
+    for await (const part of stream) {
+        const buffer = Buffer.from(part)
+        total += buffer.length
+        if (total > MAX_TEST_STICKER_BYTES) {
+            throw new Error('El sticker supera el límite de 1 MB para la prueba.')
+        }
+        parts.push(buffer)
+    }
+
+    const file = Buffer.concat(parts)
+    if (!file.length || file.toString('ascii', 0, 4) !== 'RIFF' ||
+        file.toString('ascii', 8, 12) !== 'WEBP') {
+        throw new Error('El contenido descargado no es un sticker WebP válido.')
+    }
+    return file
+}
+
 async function execute({ sock, msg, from, args = [] }) {
     const chat = from || msg?.key?.remoteJid
 
@@ -179,8 +212,9 @@ async function execute({ sock, msg, from, args = [] }) {
 
     const code = channelCode(args[0])
     const diagnostic = args.length === 2 && String(args[1]).toLowerCase() === 'prueba'
+    const stickerTest = args.length === 2 && String(args[1]).toLowerCase() === 'pruebasticker'
 
-    if (!code || (args.length !== 1 && !diagnostic)) {
+    if (!code || (args.length !== 1 && !diagnostic && !stickerTest)) {
         return reply(sock, chat, msg, instructions())
     }
 
@@ -188,6 +222,10 @@ async function execute({ sock, msg, from, args = [] }) {
     const chosen = diagnostic ? null : resolveMedia(msg)
     if (!diagnostic && !chosen) {
         return reply(sock, chat, msg, '❌ Responde a un video con sonido o a un sticker sonoro y escribe el comando con el enlace del canal.')
+    }
+
+    if (stickerTest && chosen?.type !== 'sticker') {
+        return reply(sock, chat, msg, '❌ Para pruebasticker responde a un sticker (normal o sonoro), no a un video.')
     }
 
     const id = senderId(msg)
@@ -249,6 +287,34 @@ async function execute({ sock, msg, from, args = [] }) {
         }
     }
 
+    if (stickerTest) {
+        await updateStatus(sock, chat, status?.key, '⏳ Descargando el sticker y probando el envío sin audio…')
+        lastUse.set(id, Date.now())
+        try {
+            const stickerBuffer = await downloadStickerForTest(chosen.data)
+            // Se genera un nuevo mensaje multimedia normal. No se utiliza
+            // relayExistingSoundSticker ni el audio adjunto al sticker citado.
+            const result = await sock.sendMessage(channel.jid, { sticker: stickerBuffer })
+
+            console.log('[stickercanal] Prueba de sticker normal solicitada:', {
+                canal: channel.jid,
+                nombre: channel.name,
+                rol: channel.role || 'NO_DISPONIBLE',
+                bytes: stickerBuffer.length,
+                messageId: result?.key?.id || 'NO_DISPONIBLE'
+            })
+
+            return updateStatus(sock, chat, status?.key,
+                `🧪 Envío de sticker normal solicitado para *${channel.name}*.\n` +
+                'ℹ️ Comprueba manualmente si aparece en el canal. Esto no confirma su publicación.')
+        } catch (error) {
+            lastUse.delete(id)
+            console.error('[stickercanal] Error de prueba de sticker normal:', error)
+            return updateStatus(sock, chat, status?.key,
+                `❌ Falló la prueba del sticker normal.\n${mapError(error)}`)
+        }
+    }
+
     await updateStatus(sock, chat, status?.key, '⏳ Preparando el sticker y solicitando su publicación…')
     lastUse.set(id, Date.now())
 
@@ -284,6 +350,6 @@ module.exports = {
     name: 'stickercanal',
     aliases: ['stcanal'],
     category: 'general',
-    description: 'Publicar stickers con sonido mediante enlaces de canales de WhatsApp; modo prueba de texto',
+    description: 'Publicar stickers con sonido por enlace y probar texto o stickers normales en canales',
     execute
 }
