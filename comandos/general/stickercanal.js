@@ -1,3 +1,5 @@
+'use strict'
+
 const core = require('../../src/system/soundStickerCore')
 const settings = require('../../src/config/settings')
 
@@ -16,7 +18,6 @@ function unwrap(message) {
             current.documentWithCaptionMessage?.message
 
         if (!next) break
-
         current = next
     }
 
@@ -27,17 +28,11 @@ function directMedia(msg) {
     const content = unwrap(msg?.message)
 
     if (content.videoMessage) {
-        return {
-            type: 'video',
-            data: content.videoMessage
-        }
+        return { type: 'video', data: content.videoMessage }
     }
 
     if (content.stickerMessage) {
-        return {
-            type: 'sticker',
-            data: content.stickerMessage
-        }
+        return { type: 'sticker', data: content.stickerMessage }
     }
 
     return null
@@ -54,23 +49,16 @@ function quotedMedia(msg) {
         'documentMessage'
     ]) {
         const quoted = content[type]?.contextInfo?.quotedMessage
-
         if (!quoted) continue
 
         const message = unwrap(quoted)
 
         if (message.videoMessage) {
-            return {
-                type: 'video',
-                data: message.videoMessage
-            }
+            return { type: 'video', data: message.videoMessage }
         }
 
         if (message.stickerMessage) {
-            return {
-                type: 'sticker',
-                data: message.stickerMessage
-            }
+            return { type: 'sticker', data: message.stickerMessage }
         }
     }
 
@@ -83,22 +71,37 @@ function resolveMedia(msg) {
 
 function channelCode(value) {
     const input = String(value || '').trim()
+    const link = /^(?:https?:\/\/)?(?:www\.)?whatsapp\.com\/channel\/([A-Za-z0-9_-]+)\/?(?:\?.*)?$/i.exec(input)
 
-    const linkMatch = /^(?:https?:\/\/)?(?:www\.)?whatsapp\.com\/channel\/([A-Za-z0-9_-]+)\/?(?:\?.*)?$/i.exec(input)
-
-    if (linkMatch) return linkMatch[1]
-
-    const bareMatch = /^[A-Za-z0-9_-]{15,30}$/.exec(input)
-
-    return bareMatch ? bareMatch[0] : null
+    return link ? link[1] : null
 }
 
-function viewerRole(metadata) {
-    return String(
-        metadata?.viewer_metadata?.role ||
-        metadata?.viewerMetadata?.role ||
-        ''
-    ).toUpperCase()
+function extractRole(metadata) {
+    const candidates = [
+        metadata?.viewer_metadata?.role,
+        metadata?.viewerMetadata?.role,
+        metadata?.result?.viewer_metadata?.role,
+        metadata?.result?.viewerMetadata?.role,
+        metadata?.role
+    ]
+
+    for (const candidate of candidates) {
+        if (typeof candidate === 'string' && candidate.trim()) {
+            return candidate.trim().toUpperCase()
+        }
+    }
+
+    return null
+}
+
+function extractJid(metadata) {
+    const jid = String(metadata?.id || metadata?.result?.id || '')
+    return jid.endsWith('@newsletter') ? jid : null
+}
+
+function channelName(metadata) {
+    const name = metadata?.name || metadata?.thread_metadata?.name?.text || metadata?.result?.name
+    return typeof name === 'string' && name.trim() ? name.trim() : null
 }
 
 function isOwner(msg) {
@@ -121,39 +124,31 @@ function isOwner(msg) {
 }
 
 function senderId(msg) {
-    return String(
-        msg?.key?.participant ||
-        msg?.key?.remoteJid ||
-        ''
-    )
+    return String(msg?.key?.participant || msg?.key?.remoteJid || '')
 }
 
 function onCooldown(id) {
-    const last = lastUse.get(id)
-
-    if (!last) return 0
-
-    const remaining = COOLDOWN_MS - (Date.now() - last)
-
+    const remaining = COOLDOWN_MS - (Date.now() - (lastUse.get(id) || 0))
     return remaining > 0 ? remaining : 0
 }
 
 function mapError(error) {
-    const text = String(error?.data || error?.message || error || '').toLowerCase()
+    const raw = String(error?.data || error?.message || error || '')
+    const message = raw.toLowerCase()
 
-    if (text.includes('rate') || text.includes('429')) {
-        return 'Alcanzaste el límite de envíos de WhatsApp. Espera unos minutos y vuelve a intentarlo.'
+    if (message.includes('rate') || message.includes('429')) {
+        return 'WhatsApp limitó temporalmente los envíos. Intenta más tarde.'
     }
 
-    if (text.includes('not-authorized') || text.includes('403') || text.includes('forbidden')) {
-        return 'WhatsApp rechazó la publicación. Puede que ya no seas administrador del canal.'
+    if (message.includes('not-authorized') || message.includes('403') || message.includes('forbidden') || message.includes('unauthorized')) {
+        return 'WhatsApp rechazó la publicación por permisos. Confirma que el número de esta sesión de KennyBot figura como administrador.'
     }
 
-    if (text.includes('item-not-found') || text.includes('404')) {
-        return 'El canal no existe o el enlace ya no es válido.'
+    if (message.includes('item-not-found') || message.includes('404')) {
+        return 'No se encontró el canal o el enlace ya no es válido.'
     }
 
-    return String(error?.message || error).slice(0, 300)
+    return raw.slice(0, 300)
 }
 
 async function reply(sock, chat, msg, text) {
@@ -166,7 +161,8 @@ async function edit(sock, chat, key, text) {
     try {
         await sock.sendMessage(chat, { text, edit: key })
     } catch (error) {
-        console.error('[stickercanal] Edición:', error)
+        console.error('[stickercanal] No se pudo editar el estado:', error.message)
+        await sock.sendMessage(chat, { text }).catch(() => {})
     }
 }
 
@@ -174,21 +170,58 @@ function instructions() {
     return [
         '🔊 *KENNYBOT V2 · STICKER A CANAL*',
         '',
-        'Responde a un *video con audio* (o mándalo con el comando en el texto) y escribe:',
+        'Responde a un video con audio o a un sticker sonoro y escribe:',
         '*.stickercanal https://whatsapp.com/channel/CODIGO*',
         '',
-        'También acepta solo el código del canal, y stickers que conserven su pista de audio.',
-        '',
-        'La cuenta conectada debe ser ADMIN u OWNER del canal.',
-        'El envío de stickers con sonido a canales es experimental.'
+        'También puedes enviar un video con el comando en su descripción.',
+        'Solo se acepta el enlace completo del canal (no el código suelto).',
+        'La cuenta de KennyBot debe ser administradora del canal.',
+        'Los stickers con audio en canales siguen siendo experimentales.'
     ].join('\n')
+}
+
+async function readChannel(sock, code) {
+    const byInvite = await sock.newsletterMetadata('invite', code)
+    const channelJid = extractJid(byInvite)
+
+    if (!channelJid) {
+        throw new Error('WhatsApp no devolvió un identificador válido de canal.')
+    }
+
+    let metadata = byInvite
+    let role = extractRole(byInvite)
+
+    if (!['ADMIN', 'OWNER'].includes(role)) {
+        try {
+            const byJid = await sock.newsletterMetadata('jid', channelJid)
+            const secondRole = extractRole(byJid)
+
+            if (secondRole) role = secondRole
+            if (byJid) metadata = byJid
+        } catch (error) {
+            console.warn('[stickercanal] Consulta por JID:', error.message)
+        }
+    }
+
+    console.log('[stickercanal] Metadata:', {
+        channelJid,
+        role: role || 'NO_DISPONIBLE',
+        hasViewerMetadata: Boolean(metadata?.viewer_metadata || metadata?.viewerMetadata),
+        profile: String(sock?.botProfileId || 'main')
+    })
+
+    return {
+        channelJid,
+        role,
+        name: channelName(metadata) || channelName(byInvite) || channelJid
+    }
 }
 
 async function execute({ sock, msg, from, args = [] }) {
     const chat = from || msg?.key?.remoteJid
 
     if (!isOwner(msg)) {
-        return reply(sock, chat, msg, '🔒 Solo el propietario de KennyBot puede publicar en canales con este comando.')
+        return reply(sock, chat, msg, '🔒 Solo el propietario de KennyBot puede utilizar este comando.')
     }
 
     const code = channelCode(args[0])
@@ -200,88 +233,79 @@ async function execute({ sock, msg, from, args = [] }) {
     const chosen = resolveMedia(msg)
 
     if (!chosen) {
-        return reply(sock, chat, msg, '❌ Responde a un video con sonido, mándalo con el comando en el texto, o cita un sticker con audio que Baileys pueda reconocer.')
+        return reply(sock, chat, msg, '❌ Responde a un video con sonido o a un sticker con audio.')
     }
 
     const id = senderId(msg)
     const waitMs = onCooldown(id)
 
     if (waitMs > 0) {
-        return reply(sock, chat, msg, `⏳ Espera ${Math.ceil(waitMs / 1000)} s antes de publicar otro sticker en un canal.`)
+        return reply(sock, chat, msg, `⏳ Espera ${Math.ceil(waitMs / 1000)} s antes de volver a publicar.`)
     }
 
     if (typeof sock.newsletterMetadata !== 'function') {
-        return reply(sock, chat, msg, '❌ Tu versión de Baileys no ofrece newsletterMetadata().')
+        return reply(sock, chat, msg, '❌ Esta versión de Baileys no ofrece newsletterMetadata().')
     }
 
-    const status = await reply(sock, chat, msg, '⏳ Verificando permisos del canal…')
+    const status = await reply(sock, chat, msg, '⏳ Consultando el canal y los permisos de publicación…')
 
-    let metadata
+    let channel
 
     try {
-        metadata = await sock.newsletterMetadata('invite', code)
+        channel = await readChannel(sock, code)
     } catch (error) {
-        console.error('[stickercanal] Metadata:', error)
+        console.error('[stickercanal] Consulta:', error)
         return edit(sock, chat, status?.key, `❌ No pude consultar el canal. ${mapError(error)}`)
     }
 
-    const channelJid = String(metadata?.id || '')
-    const role = viewerRole(metadata)
-
-    if (!channelJid.endsWith('@newsletter')) {
-        return edit(sock, chat, status?.key, '❌ WhatsApp no devolvió un identificador válido de canal.')
+    if (channel.role && !['ADMIN', 'OWNER'].includes(channel.role)) {
+        return edit(sock, chat, status?.key, `🔒 WhatsApp informa el rol *${channel.role}* para esta sesión. El número conectado debe ser administrador.`)
     }
 
-    if (!['ADMIN', 'OWNER'].includes(role)) {
-        return edit(
-            sock,
-            chat,
-            status?.key,
-            role
-                ? `🔒 La cuenta conectada tiene el rol *${role}*; debe ser administradora del canal.`
-                : '🔒 No se pudo confirmar el rol de administrador. Por seguridad no se intentará publicar.'
-        )
-    }
+    const roleConfirmed = Boolean(channel.role)
 
-    await edit(sock, chat, status?.key, '⏳ Permisos confirmados. Generando y enviando el sticker…')
+    if (!roleConfirmed) {
+        await edit(sock, chat, status?.key, '⚠️ Baileys no informó el rol de esta cuenta. Se intentará publicar bajo autorización de WhatsApp; si la cuenta no es administradora, el servidor rechazará el envío.')
+    } else {
+        await edit(sock, chat, status?.key, '⏳ Administrador confirmado. Generando y enviando el sticker…')
+    }
 
     lastUse.set(id, Date.now())
 
     try {
         if (chosen.type === 'video') {
-            await core.makeAndSend(
-                sock,
-                channelJid,
-                chosen,
-                null,
-                msg,
-                {
-                    soundMode: 'original',
-                    fit: 'cuadrado'
-                }
-            )
+            if (typeof core.makeAndSend !== 'function') {
+                throw new Error('soundStickerCore.js no exporta makeAndSend(). Revisa la versión instalada.')
+            }
+
+            await core.makeAndSend(sock, channel.channelJid, chosen, null, msg, {
+                soundMode: 'original',
+                fit: 'cuadrado'
+            })
         } else {
-            await core.relayExistingSoundSticker(
-                sock,
-                channelJid,
-                chosen.data
-            )
+            if (typeof core.relayExistingSoundSticker !== 'function') {
+                throw new Error('soundStickerCore.js no exporta relayExistingSoundSticker(). Revisa la versión instalada.')
+            }
+
+            await core.relayExistingSoundSticker(sock, channel.channelJid, chosen.data)
         }
 
-        console.log(`[stickercanal] ${id} publicó en ${metadata?.name || channelJid} (${channelJid})`)
+        console.log(`[stickercanal] Envío solicitado por ${id} a ${channel.channelJid}`)
 
         return edit(
             sock,
             chat,
             status?.key,
-            `✅ Envío solicitado al canal *${metadata?.name || channelJid}*.\n` +
-            'ℹ️ Comprueba en WhatsApp que la publicación y su sonido sean visibles; el formato sigue siendo experimental.'
+            roleConfirmed
+                ? `✅ Envío solicitado al canal *${channel.name}*.\n` +
+                  'Comprueba que WhatsApp haya publicado el sticker y que el sonido se reproduzca.'
+                : `⚠️ Se envió la solicitud al canal *${channel.name}*, pero el rol de administrador no pudo confirmarse antes.\n` +
+                  'Revisa el canal: si no eres admin, WhatsApp pudo haberlo descartado en silencio.'
         )
     } catch (error) {
         lastUse.delete(id)
-        console.error('[stickercanal] Envío:', error)
-
-        return edit(sock, chat, status?.key, `❌ No se pudo publicar el sticker con audio.\n${mapError(error)}`)
+        console.error('[stickercanal] Publicación:', error)
+        return edit(sock, chat, status?.key, `❌ No se pudo publicar el sticker.\n${mapError(error)}`)
     }
 }
 
