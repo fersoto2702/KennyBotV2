@@ -1053,7 +1053,9 @@
         "stickeraudio": 1,
         "scanal": 1,
         "stikercanal": 1,
-        "stickercanal": 2
+        "stickercanal": 2,
+        "s": 1,
+        "saudio": 1
       },
       "groups": {
         "120363432621470637@g.us": {
@@ -1153,8 +1155,8 @@
           "cmds": 1
         },
         "120363432213150914@g.us": {
-          "msgs": 797,
-          "cmds": 4
+          "msgs": 803,
+          "cmds": 6
         },
         "120363430870503309@g.us": {
           "msgs": 12,

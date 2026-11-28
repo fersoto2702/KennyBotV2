@@ -355,52 +355,94 @@ function embeddedAudioFromWire(bytes) {
     return null
 }
 
-function soundStickerEncoderPatch() {
-    const cls = proto?.Message?.StickerMessage
+// Extrae un campo de tipo bytes de un mensaje protobuf sin alterar el esquema
+// de Baileys. Se utiliza para leer el envoltorio 134 que Baileys puede ignorar.
+function protobufBytesField(data, wanted) {
+    const bytes = Buffer.from(data || [])
+    let pos = 0
 
-    if (!cls || typeof cls.encode !== 'function' || typeof cls.decode !== 'function') {
-        throw new Error('Esta versión de Baileys no expone StickerMessage.encode/decode')
+    function readVarint() {
+        let value = 0
+        let multiplier = 1
+        for (let i = 0; i < 10; i++) {
+            if (pos >= bytes.length) throw new Error('Protobuf truncado')
+            const part = bytes[pos++]
+            if (i < 8) value += (part & 127) * multiplier
+            if ((part & 128) === 0) {
+                if (!Number.isSafeInteger(value)) throw new Error('Varint inválido')
+                return value
+            }
+            multiplier *= 128
+        }
+        throw new Error('Varint demasiado largo')
     }
 
-    if (!cls.encode[PATCH_FLAG]) {
-        const originalEncode = cls.encode
+    try {
+        while (pos < bytes.length) {
+            const tag = readVarint()
+            const field = Math.floor(tag / 8)
+            const wire = tag & 7
+            if (!field) return null
+            if (wire === 0) readVarint()
+            else if (wire === 1) pos += 8
+            else if (wire === 5) pos += 4
+            else if (wire === 2) {
+                const size = readVarint()
+                if (!Number.isSafeInteger(size) || size < 0 || pos + size > bytes.length) return null
+                if (field === wanted) return bytes.subarray(pos, pos + size)
+                pos += size
+            } else return null
+            if (pos > bytes.length) return null
+        }
+    } catch (_) { return null }
+    return null
+}
 
-        function patchedEncode(message, writer) {
-            const output = originalEncode.call(this, message, writer)
+// IMPORTANTE: el sonido usa DOS campos nuevos:
+// Message.134 > Message.1 > Message.26 (sticker) > StickerMessage.26 (audio).
+// Una modificación a StickerMessage.decode por sí sola no permite leer
+// un sticker que llega dentro de Message.134.
+function soundStickerEncoderPatch() {
+    const stickerClass = proto?.Message?.StickerMessage
+    const messageClass = proto?.Message
+
+    if (!stickerClass || !messageClass ||
+        typeof stickerClass.encode !== 'function' ||
+        typeof stickerClass.decode !== 'function' ||
+        typeof messageClass.encode !== 'function' ||
+        typeof messageClass.decode !== 'function') {
+        throw new Error('La versión de Baileys no expone los codecs protobuf necesarios.')
+    }
+
+    if (!stickerClass.encode[PATCH_FLAG]) {
+        const originalStickerEncode = stickerClass.encode
+        function patchedStickerEncode(message, writer) {
+            const output = originalStickerEncode.call(this, message, writer)
             const key = attachmentKey(message)
-            const bytes = key ? attachment.get(key) : null
-
-            if (bytes) output.uint32((26 << 3) | 2).bytes(bytes)
+            const audioBytes = key ? attachment.get(key) : null
+            if (audioBytes) {
+                output.uint32((24 << 3) | 0).uint32(0)
+                output.uint32((26 << 3) | 2).bytes(audioBytes)
+            }
             return output
         }
-
-        patchedEncode[PATCH_FLAG] = true
-        cls.encode = patchedEncode
+        patchedStickerEncode[PATCH_FLAG] = true
+        stickerClass.encode = patchedStickerEncode
     }
 
-    if (!cls.decode[PATCH_FLAG]) {
-        const originalDecode = cls.decode
-
-        function patchedDecode(reader, length) {
-            // Reader.pos cambia durante la decodificación. Guardamos el rango
-            // del StickerMessage exacto (no el mensaje contenedor).
+    if (!stickerClass.decode[PATCH_FLAG]) {
+        const originalStickerDecode = stickerClass.decode
+        function patchedStickerDecode(reader, length) {
+            const directBytes = reader && !reader.buf && (Buffer.isBuffer(reader) || reader instanceof Uint8Array)
+                ? Buffer.from(reader) : null
             const start = reader?.pos ?? 0
-            const result = originalDecode.call(this, reader, length)
-            const end = reader?.pos ?? 0
-            const raw = reader?.buf
-
+            const result = originalStickerDecode.call(this, reader, length)
+            const end = directBytes ? directBytes.length : (reader?.pos ?? 0)
+            const raw = directBytes || reader?.buf
             if (raw && end > start && end <= raw.length) {
                 const audio = embeddedAudioFromWire(raw.subarray(start, end))
                 if (audio) {
-                    // La propiedad no forma parte del esquema público de Baileys.
-                    Object.defineProperty(result, 'audioMessage', {
-                        value: audio,
-                        writable: true,
-                        configurable: true,
-                        enumerable: false
-                    })
-                    // IMPORTANTE: capturar al recibir, antes de que una respuesta
-                    // citada pueda perder el campo 26 experimental.
+                    result.audioMessage = audio
                     cacheStickerAudio(result, audio).catch(error => {
                         console.warn('[stickercanal] No se guardó audio entrante:', error.message)
                     })
@@ -409,10 +451,82 @@ function soundStickerEncoderPatch() {
             }
             return result
         }
-
-        patchedDecode[PATCH_FLAG] = true
-        cls.decode = patchedDecode
+        patchedStickerDecode[PATCH_FLAG] = true
+        stickerClass.decode = patchedStickerDecode
     }
+
+    if (!messageClass.decode[PATCH_FLAG]) {
+        const originalMessageDecode = messageClass.decode
+        function patchedMessageDecode(reader, length) {
+            // Guardar la porción exacta antes de que el decoder descarte 134.
+            const directBytes = reader && !reader.buf && (Buffer.isBuffer(reader) || reader instanceof Uint8Array)
+                ? Buffer.from(reader) : null
+            const start = reader?.pos ?? 0
+            const result = originalMessageDecode.call(this, reader, length)
+            const end = directBytes ? directBytes.length : (reader?.pos ?? 0)
+            const raw = directBytes || reader?.buf
+            if (raw && end > start && end <= raw.length) {
+                const outer = protobufBytesField(raw.subarray(start, end), 134)
+                const inner = outer && protobufBytesField(outer, 1)
+                if (inner) {
+                    try {
+                        const nested = messageClass.decode(inner)
+                        if (nested?.stickerMessage) {
+                            // La capa normalizada permite que .stickercanal y
+                            // la detección de mensajes citados lean el sticker.
+                            result.stickerMessage = nested.stickerMessage
+                        }
+                    } catch (error) {
+                        console.warn('[stickercanal] Envoltorio 134 ilegible:', error.message)
+                    }
+                }
+            }
+            return result
+        }
+        patchedMessageDecode[PATCH_FLAG] = true
+        messageClass.decode = patchedMessageDecode
+    }
+
+    if (!messageClass.encode[PATCH_FLAG]) {
+        const originalMessageEncode = messageClass.encode
+        function patchedMessageEncode(message, writer) {
+            const sticker = message?.stickerMessage
+            const key = sticker && attachmentKey(sticker)
+            const hasAudio = Boolean(key && attachment.has(key))
+            if (!hasAudio) return originalMessageEncode.call(this, message, writer)
+
+            // No enviamos el sticker como campo 26 del mensaje principal.
+            // El cliente WhatsApp espera Message.134 que envuelve el sticker.
+            const withoutSticker = { ...message }
+            delete withoutSticker.stickerMessage
+            const output = originalMessageEncode.call(this, withoutSticker, writer)
+
+            // Llamar al codec original evita envolver la misma estructura otra vez.
+            // El encoder de StickerMessage sí agrega aquí el audio en el campo 26.
+            const nested = originalMessageEncode.call(this, { stickerMessage: sticker }).finish()
+            const wrapped = Buffer.concat([
+                Buffer.from([0x0a]),
+                encodeVarint(nested.length),
+                Buffer.from(nested)
+            ])
+            output.uint32((134 << 3) | 2).bytes(wrapped)
+            return output
+        }
+        patchedMessageEncode[PATCH_FLAG] = true
+        messageClass.encode = patchedMessageEncode
+    }
+}
+
+function encodeVarint(num) {
+    const out = []
+    let n = num >>> 0
+    do {
+        let byte = n & 127
+        n >>>= 7
+        if (n) byte |= 128
+        out.push(byte)
+    } while (n)
+    return Buffer.from(out)
 }
 
 function friendlyMissingBinary(exe, error) {
@@ -1756,4 +1870,3 @@ module.exports = {
         commandOptions
     }
 
-}
