@@ -1727984,3 +1727984,165 @@ Le pueden cantar, escribir las mañanitas o mandarle stikers
 [00:31:59] [INFO] Socket cerrado | main
 [00:31:59] [INFO] Socket cerrado | brazil
 [00:31:59] [OK] Todas las sesiones fueron cerradas
+[00:32:41] [OK] UnifiedRateLimiter cargado
+[00:32:41] [OK] Comando cargado: ban
+[00:32:41] [OK] Comando cargado: unban
+[00:32:41] [OK] Comando cargado: antilink
+[00:32:41] [OK] Comando cargado: card
+[00:32:41] [OK] Comando cargado: cardinfo
+[00:32:41] [OK] Comando cargado: claim
+[00:32:41] [OK] Comando cargado: collection
+[00:32:41] [OK] Comando cargado: antibot
+[00:32:41] [OK] Comando cargado: antifake
+[00:32:41] [OK] Comando cargado: autolevelup
+[00:32:41] [OK] Comando cargado: adivinanumero
+[00:32:41] [OK] Comando cargado: adivinanza
+[00:32:41] [OK] Comando cargado: ahorcado
+[00:32:41] [OK] Comando cargado: crush
+[00:32:41] [OK] Comando cargado: dado
+[00:32:41] [OK] Comando cargado: fusion
+[00:32:41] [OK] Comando cargado: moneda
+[00:32:41] [OK] Comando cargado: personalidad
+[00:32:41] [OK] Comando cargado: ppt
+[00:32:41] [OK] Comando cargado: qc
+[00:32:41] [OK] Comando cargado: rate
+[00:32:41] [OK] Comando cargado: reto
+[00:32:41] [OK] Comando cargado: ship
+[00:32:41] [OK] Comando cargado: top
+[00:32:41] [OK] Comando cargado: trivia
+[00:32:41] [OK] Comando cargado: verdad
+[00:32:41] [OK] Comando cargado: facebook
+[00:32:41] [OK] Comando cargado: instagram
+[00:32:41] [OK] Comando cargado: pinterest
+[00:32:42] [OK] Comando cargado: play
+[00:32:42] [OK] Comando cargado: spotify
+[00:32:42] [OK] Comando cargado: tiktok
+[00:32:42] [OK] Comando cargado: ytmp3
+[00:32:42] [OK] Comando cargado: ytmp4
+[00:32:42] [OK] Comando cargado: balance
+[00:32:42] [OK] Comando cargado: buy
+[00:32:42] [WARN] Comando duplicado ignorado: buy (crime.js)
+[00:32:42] [OK] Comando cargado: daily
+[00:32:42] [OK] Comando cargado: deposit
+[00:32:42] [OK] Comando cargado: gamble
+[00:32:42] [OK] Comando cargado: inventory
+[00:32:42] [OK] Comando cargado: leaderboardmoney
+[00:32:42] [OK] Comando cargado: open
+[00:32:42] [OK] Comando cargado: pay
+[00:32:42] [OK] Comando cargado: rob
+[00:32:42] [OK] Comando cargado: shop
+[00:32:42] [OK] Comando cargado: slots
+[00:32:42] [OK] Comando cargado: withdraw
+[00:32:42] [OK] Comando cargado: work
+[00:32:42] [OK] Comando cargado: equip
+[00:32:42] [OK] Comando cargado: events
+[00:32:42] [OK] Comando cargado: brat
+[00:32:44] [OK] Comando cargado: exportstats
+[00:32:44] [OK] Comando cargado: inactive
+[00:32:44] [OK] Comando cargado: msgstats
+[00:32:44] [OK] Comando cargado: stickeraudio
+[00:32:44] [OK] Comando cargado: stickercanal
+[00:32:44] [OK] Comando cargado: topmessages
+[00:32:44] [OK] Comando cargado: groups
+[00:32:44] [OK] Comando cargado: add
+[00:32:44] [OK] Comando cargado: admins
+[00:32:44] [OK] Comando cargado: demote
+[00:32:44] [OK] Comando cargado: goodbye
+[00:32:44] [OK] Comando cargado: hidetag
+[00:32:44] [OK] Comando cargado: kick
+[00:32:44] [OK] Comando cargado: link
+[00:32:44] [OK] Comando cargado: mute
+[00:32:44] [OK] Comando cargado: promote
+[00:32:44] [OK] Comando cargado: resetgoodbye
+[00:32:44] [OK] Comando cargado: resetwelcome
+[00:32:44] [OK] Comando cargado: setgoodbye
+[00:32:44] [OK] Comando cargado: setwelcome
+[00:32:44] [OK] Comando cargado: tagall
+[00:32:44] [OK] Comando cargado: unwarn
+[00:32:44] [OK] Comando cargado: warn
+[00:32:44] [OK] Comando cargado: warnings
+[00:32:44] [OK] Comando cargado: welcome
+[00:32:45] [OK] Comando cargado: ia
+[00:32:45] [OK] Comando cargado: join
+[00:32:45] [WARN] Alias duplicado "top" en leaderboard.js
+[00:32:45] [OK] Comando cargado: leaderboard
+[00:32:45] [WARN] Alias duplicado "rank" en level.js
+[00:32:45] [OK] Comando cargado: level
+[00:32:45] [WARN] Comando duplicado ignorado: rank (rank.js)
+[00:32:45] [OK] Comando cargado: menu
+[00:32:45] [OK] Comando cargado: myclub
+[00:32:45] [OK] Comando cargado: objectives
+[00:32:45] [OK] Comando cargado: openpack
+[00:32:45] [OK] Comando cargado: packs
+[00:32:45] [OK] Comando cargado: pick
+[00:32:45] [OK] Comando cargado: ping
+[00:32:45] [OK] Comando cargado: addpremium
+[00:32:45] [WARN] Comando duplicado ignorado: addpremium (delpremium.js)
+[00:32:45] [OK] Comando cargado: delpremium
+[00:32:45] [OK] Comando cargado: profile
+[00:32:45] [OK] Comando cargado: sticker
+[00:32:45] [OK] Comando cargado: addjoinmsg
+[00:32:45] [OK] Comando cargado: clearjoinmsg
+[00:32:45] [OK] Comando cargado: deljoinmsg
+[00:32:45] [OK] Comando cargado: listjoinmsg
+[00:32:45] [INFO] Iniciando sistema multi-bot...
+[00:32:45] [INFO] Instancias configuradas: main, brazil
+[00:32:46] [OK] MySQL conectado y tabla lista
+[00:32:46] [OK] Base de datos inicializada
+[00:32:46] [INFO] Iniciando 2 instancia(s): main, brazil
+[00:32:46] [INFO] KennyBot | Usando WA v2.3000.1043857760
+[00:32:46] [OK] KennyBot | SocketManager cargado
+[00:32:46] [INFO] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | Usando WA v2.3000.1043857760
+[00:32:46] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 | SocketManager cargado
+[00:32:47] [OK] KennyBot conectado
+[00:32:47] [OK] 𝖦𝖮𝖫𝖣𝖤𝖭　〔🇧🇷〕　𝖤𝖬𝖯𝖨𝖱𝖤　𓂃　𝖡𝖮𝖳 𝖮𝖥𝖢 conectado
+[00:32:49] [WARN] Global Role Sync: INCOMPLETE_GROUP_METADATA | Grupos revisados: 10 | Grupos con error: 6
+[00:33:04] [EVENT] [main] 100743524692038 -> Por el +502
+[00:33:04] [EVENT] KennyBot | PassiveCoins: 100743524692038 +2
+[00:33:32] [EVENT] [main] 100743524692038 -> Gracias igual tu
+[00:34:12] [EVENT] [main] SELF -> .stickercanal https://whatsapp.com/channel/0029VbDtftYJUM2itd6hY21E
+[00:34:12] [CMD] KennyBot | stickercanal → 202422597214258
+[00:36:00] [EVENT] [main] 100743524692038 -> Así andaba yo batallando
+[00:36:00] [EVENT] KennyBot | PassiveCoins: 100743524692038 +3
+[00:37:49] [EVENT] [main] 21149224284218 -> Descansa
+[00:37:49] [EVENT] KennyBot | PassiveCoins: 21149224284218 +3
+[00:37:57] [EVENT] [main] 21149224284218 -> Quien es
+[00:38:02] [EVENT] [main] 100743524692038 -> Gracias hermano
+[00:38:02] [EVENT] KennyBot | PassiveCoins: 100743524692038 +3
+[00:38:12] [EVENT] [main] 21149224284218 -> Le doy un +66
+[00:38:17] [EVENT] [main] 21149224284218 -> Que deje de llorar
+[00:38:19] [EVENT] [main] 21149224284218 -> De cortesía
+[00:38:20] [EVENT] [main] 100743524692038 -> Tranqui
+[00:38:24] [EVENT] [main] 21149224284218 -> Vale
+[00:38:33] [EVENT] [main] 21149224284218 -> Perdón
+[00:38:37] [EVENT] [main] 21149224284218 -> Perdón hermano
+[00:38:51] [EVENT] [main] 21149224284218 -> Oye hermano
+[00:38:51] [EVENT] KennyBot | PassiveCoins: 21149224284218 +2
+[00:38:55] [EVENT] [main] 21149224284218 -> Te quiero un chingo
+[00:39:00] [EVENT] [main] 100743524692038 -> Yo soluciono va
+[00:39:11] [EVENT] [main] 21149224284218 -> Me conscientes un buen
+[00:39:16] [EVENT] [main] 100743524692038 -> Yo también te quiero machin manito
+[00:39:16] [EVENT] KennyBot | PassiveCoins: 100743524692038 +3
+[00:39:24] [EVENT] [main] 100743524692038 -> Y te fal aún más
+[00:39:33] [EVENT] [main] 100743524692038 -> Por consentir
+[00:39:43] [EVENT] [main] 21149224284218 -> Sabes
+[00:39:49] [EVENT] [main] 21149224284218 -> Ya se acabaron los problemas
+[00:39:50] [EVENT] [main] 100743524692038 -> Dime
+[00:39:55] [EVENT] [main] 21149224284218 -> Toca hacer negocio ahora
+[00:39:55] [EVENT] KennyBot | PassiveCoins: 21149224284218 +7
+[00:39:55] [EVENT] [main] 100743524692038 -> Lose mano
+[00:40:00] [EVENT] [main] 100743524692038 -> Va
+[00:40:03] [EVENT] [main] 21149224284218 -> Me haré mi estructura de promo
+[00:40:07] [EVENT] [main] 21149224284218 -> A ver qué encuentro
+[00:40:07] [EVENT] [main] 100743524692038 -> Mi hija me vende un 50k
+[00:40:13] [EVENT] [main] 100743524692038 -> Pero quiere 500
+[00:40:27] [EVENT] [main] 59988580032657 -> No sé oye nada mal
+[00:40:28] [EVENT] KennyBot | PassiveCoins: 59988580032657 +10
+[00:40:30] [EVENT] [main] 100743524692038 -> Primero y en diciembre me da pide 1000 más y da propiedad
+[00:40:30] [EVENT] KennyBot | PassiveCoins: 100743524692038 +6
+[00:40:37] [INFO] Cerrando KennyBot...
+[00:40:37] [INFO] Deteniendo main...
+[00:40:37] [INFO] Deteniendo brazil...
+[00:40:37] [INFO] Socket cerrado | main
+[00:40:37] [INFO] Socket cerrado | brazil
+[00:40:37] [OK] Todas las sesiones fueron cerradas
