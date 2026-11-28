@@ -392,14 +392,19 @@ function soundStickerEncoderPatch() {
             if (raw && end > start && end <= raw.length) {
                 const audio = embeddedAudioFromWire(raw.subarray(start, end))
                 if (audio) {
-                    // No es parte del esquema de Baileys: propiedad accesible
-                    // solamente durante la ejecución del bot.
+                    // La propiedad no forma parte del esquema público de Baileys.
                     Object.defineProperty(result, 'audioMessage', {
                         value: audio,
                         writable: true,
                         configurable: true,
                         enumerable: false
                     })
+                    // IMPORTANTE: capturar al recibir, antes de que una respuesta
+                    // citada pueda perder el campo 26 experimental.
+                    cacheStickerAudio(result, audio).catch(error => {
+                        console.warn('[stickercanal] No se guardó audio entrante:', error.message)
+                    })
+                    console.log('[stickercanal] Audio integrado detectado en sticker entrante')
                 }
             }
             return result
@@ -1675,11 +1680,17 @@ async function relayExistingSoundSticker(sock, chat, sticker) {
         await cachedStickerAudio(sticker)
 
     if (!embeddedAudio?.mediaKey || !embeddedAudio?.fileSha256) {
+        console.warn('[stickercanal] Sin audio recuperable:', {
+            stickerSha: Buffer.from(sticker.fileSha256).toString('hex').slice(0, 12),
+            audioEnMensaje: Boolean(sticker.audioMessage || sticker.audio),
+            cache: Boolean(await cachedStickerAudio(sticker))
+        })
         throw new Error(
             'No se encontró el audio original de este sticker. ' +
             'Los stickers generados con la versión anterior o por otros bots ' +
             'pueden no conservar el audio accesible al responderlos. ' +
-            'Genera uno nuevo con KennyBot V2 y vuelve a intentarlo.'
+            'Prueba con un sticker recibido después de iniciar el bot con el parche activo. ' +
+            'Si el audio no llega desde WhatsApp, no es posible reconstruirlo desde el WebP.'
         )
     }
 
