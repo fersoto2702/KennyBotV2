@@ -57,6 +57,64 @@ const active =
 const attachment =
     new Map()
 
+// Solo guarda la referencia cifrada subida a WhatsApp, no el archivo de audio.
+// Permite reutilizar stickers generados por KennyBot aunque reinicie el proceso.
+const SOUND_CACHE_DIR =
+    process.env.SOUND_STICKER_CACHE_DIR ||
+    path.join(process.cwd(), 'data', 'sound-sticker-cache')
+
+const SOUND_CACHE_MAX_AGE = 30 * 24 * 60 * 60 * 1000
+
+function soundCacheFile(sticker) {
+    if (!sticker?.fileSha256) return null
+
+    const hash = Buffer.from(sticker.fileSha256).toString('hex')
+    if (!/^[a-f0-9]{64}$/.test(hash)) return null
+
+    return path.join(SOUND_CACHE_DIR, `${hash}.json`)
+}
+
+async function cacheStickerAudio(sticker, audio) {
+    const file = soundCacheFile(sticker)
+    if (!file || !audio) return
+
+    const encoded = proto.Message.AudioMessage.encode(audio).finish()
+    await fsp.mkdir(SOUND_CACHE_DIR, { recursive: true, mode: 0o700 })
+
+    const temporary = `${file}.${crypto.randomBytes(6).toString('hex')}.tmp`
+    try {
+        await fsp.writeFile(temporary, JSON.stringify({
+            savedAt: Date.now(),
+            audio: Buffer.from(encoded).toString('base64')
+        }), { mode: 0o600 })
+        await fsp.rename(temporary, file)
+    } finally {
+        await fsp.rm(temporary, { force: true }).catch(() => {})
+    }
+}
+
+async function cachedStickerAudio(sticker) {
+    const file = soundCacheFile(sticker)
+    if (!file) return null
+
+    try {
+        const item = JSON.parse(await fsp.readFile(file, 'utf8'))
+        if (!Number.isFinite(item.savedAt) ||
+            Date.now() - item.savedAt > SOUND_CACHE_MAX_AGE ||
+            item.savedAt > Date.now() + 60000) {
+            await fsp.rm(file, { force: true }).catch(() => {})
+            return null
+        }
+        const audio = proto.Message.AudioMessage.decode(Buffer.from(item.audio, 'base64'))
+        return audio?.mediaKey && audio?.fileSha256 ? audio : null
+    } catch (error) {
+        if (error.code !== 'ENOENT') {
+            console.warn('[stickercanal] No se pudo recuperar audio en caché:', error.message)
+        }
+        return null
+    }
+}
+
 const PATCH_FLAG =
     Symbol.for('kennybot.soundSticker.v1')
 
@@ -234,62 +292,122 @@ function attachmentKey(message) {
 
 }
 
+// Baileys puede omitir el campo experimental 26 al decodificar el mensaje.
+// Recuperamos la referencia del audio directamente desde el protobuf recibido.
+// Este parche debe instalarse ANTES de que Baileys decodifique los mensajes.
+function embeddedAudioFromWire(bytes) {
+    if (!bytes?.length) return null
+
+    const buffer = Buffer.from(bytes)
+    let offset = 0
+
+    function varint() {
+        let n = 0
+        let shift = 0
+        for (let i = 0; i < 10; i++) {
+            if (offset >= buffer.length) throw new Error('Protobuf incompleto')
+            const byte = buffer[offset++]
+            if (shift < 53) n += (byte & 0x7f) * (2 ** shift)
+            if (!(byte & 0x80)) {
+                if (!Number.isSafeInteger(n)) throw new Error('Varint inválido')
+                return n
+            }
+            shift += 7
+        }
+        throw new Error('Varint demasiado largo')
+    }
+
+    try {
+        while (offset < buffer.length) {
+            const tag = varint()
+            const field = Math.floor(tag / 8)
+            const wire = tag & 7
+            if (!field) return null
+
+            if (wire === 0) {
+                varint()
+            } else if (wire === 1) {
+                offset += 8
+            } else if (wire === 5) {
+                offset += 4
+            } else if (wire === 2) {
+                const length = varint()
+                if (length < 0 || offset + length > buffer.length) return null
+                if (field === 26 && length > 0 && length < 65536) {
+                    try {
+                        const audio = proto.Message.AudioMessage.decode(
+                            buffer.subarray(offset, offset + length)
+                        )
+                        if (audio?.mediaKey && audio?.fileSha256) return audio
+                    } catch (_) {
+                        // El campo 26 no contiene un AudioMessage reconocible.
+                    }
+                }
+                offset += length
+            } else {
+                return null
+            }
+            if (offset > buffer.length) return null
+        }
+    } catch (_) {
+        return null
+    }
+    return null
+}
+
 function soundStickerEncoderPatch() {
+    const cls = proto?.Message?.StickerMessage
 
-    const cls =
-        proto?.Message?.StickerMessage
-
-    if (
-        !cls ||
-        typeof cls.encode !== 'function'
-    ) {
-
-        throw new Error(
-            'Baileys no expone StickerMessage.encode'
-        )
-
+    if (!cls || typeof cls.encode !== 'function' || typeof cls.decode !== 'function') {
+        throw new Error('Esta versión de Baileys no expone StickerMessage.encode/decode')
     }
 
-    if (cls.encode[PATCH_FLAG]) {
+    if (!cls.encode[PATCH_FLAG]) {
+        const originalEncode = cls.encode
 
-        return
+        function patchedEncode(message, writer) {
+            const output = originalEncode.call(this, message, writer)
+            const key = attachmentKey(message)
+            const bytes = key ? attachment.get(key) : null
 
-    }
-
-    const original =
-        cls.encode
-
-    function patched(message, writer) {
-
-        const output =
-            original.call(
-                this,
-                message,
-                writer
-            )
-
-        const key =
-            attachmentKey(message)
-
-        const bytes =
-            key ? attachment.get(key) : null
-
-        if (bytes) {
-
-            output
-                .uint32((26 << 3) | 2)
-                .bytes(bytes)
-
+            if (bytes) output.uint32((26 << 3) | 2).bytes(bytes)
+            return output
         }
 
-        return output
-
+        patchedEncode[PATCH_FLAG] = true
+        cls.encode = patchedEncode
     }
 
-    patched[PATCH_FLAG] = true
+    if (!cls.decode[PATCH_FLAG]) {
+        const originalDecode = cls.decode
 
-    cls.encode = patched
+        function patchedDecode(reader, length) {
+            // Reader.pos cambia durante la decodificación. Guardamos el rango
+            // del StickerMessage exacto (no el mensaje contenedor).
+            const start = reader?.pos ?? 0
+            const result = originalDecode.call(this, reader, length)
+            const end = reader?.pos ?? 0
+            const raw = reader?.buf
 
+            if (raw && end > start && end <= raw.length) {
+                const audio = embeddedAudioFromWire(raw.subarray(start, end))
+                if (audio) {
+                    // No es parte del esquema de Baileys: propiedad accesible
+                    // solamente durante la ejecución del bot.
+                    Object.defineProperty(result, 'audioMessage', {
+                        value: audio,
+                        writable: true,
+                        configurable: true,
+                        enumerable: false
+                    })
+                }
+            }
+            return result
+        }
+
+        patchedDecode[PATCH_FLAG] = true
+        cls.decode = patchedDecode
+    }
 }
 
 function friendlyMissingBinary(exe, error) {
@@ -1008,6 +1126,12 @@ async function sendSticker(
             }
         )
 
+        if (audio) {
+            await cacheStickerAudio(s, audio).catch(error => {
+                console.warn('[stickeraudio] Sticker enviado, pero no se guardó el audio para reutilizarlo:', error.message)
+            })
+        }
+
     } finally {
 
         attachment.delete(k)
@@ -1534,7 +1658,7 @@ async function relayExistingSoundSticker(sock, chat, sticker) {
 
     soundStickerEncoderPatch()
 
-    if (!chat.endsWith('@newsletter')) {
+    if (!String(chat).endsWith('@newsletter')) {
         throw new Error('El destino no es un canal de WhatsApp.')
     }
 
@@ -1542,17 +1666,26 @@ async function relayExistingSoundSticker(sock, chat, sticker) {
         throw new Error('Baileys no pudo leer los datos del sticker citado.')
     }
 
-    const embeddedAudio = sticker.audioMessage || sticker.audio
+    // El campo de audio experimental (número 26) puede perderse cuando
+    // Baileys decodifica el sticker citado. Recuperamos la referencia
+    // almacenada al crear el sticker, si no vino en el mensaje.
+    const embeddedAudio =
+        sticker.audioMessage ||
+        sticker.audio ||
+        await cachedStickerAudio(sticker)
 
     if (!embeddedAudio?.mediaKey || !embeddedAudio?.fileSha256) {
         throw new Error(
-            'Baileys no entregó el audio de este sticker citado. ' +
-            'Responde al video original para que KennyBot lo genere con sonido.'
+            'No se encontró el audio original de este sticker. ' +
+            'Los stickers generados con la versión anterior o por otros bots ' +
+            'pueden no conservar el audio accesible al responderlos. ' +
+            'Genera uno nuevo con KennyBot V2 y vuelve a intentarlo.'
         )
     }
 
     const payload = proto.Message.StickerMessage.create({ ...sticker })
     const hash = attachmentKey(payload)
+    if (!hash) throw new Error('No se pudo identificar el sticker.')
 
     attachment.set(
         hash,
@@ -1560,10 +1693,15 @@ async function relayExistingSoundSticker(sock, chat, sticker) {
     )
 
     try {
+        const who =
+            chat.endsWith('@lid') && sock.user?.lid
+                ? sock.user.lid
+                : sock.user?.id
+
         const built = generateWAMessageFromContent(
             chat,
             { stickerMessage: payload },
-            { userJid: sock.user?.id }
+            { userJid: who }
         )
 
         await sock.relayMessage(
