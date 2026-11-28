@@ -29,6 +29,7 @@ function mediaFrom(message) {
     const content = unwrap(message)
     if (content.videoMessage) return { type: 'video', data: content.videoMessage }
     if (content.stickerMessage) return { type: 'sticker', data: content.stickerMessage }
+    if (content.imageMessage) return { type: 'image', data: content.imageMessage }
     return null
 }
 
@@ -133,6 +134,10 @@ function instructions() {
         'Responde a un sticker y escribe:',
         '*.stickercanal https://whatsapp.com/channel/CODIGO pruebasticker*',
         'Se publicará como sticker normal, sin adjuntar audio.',
+        '',
+        '*Diagnosticar imagen normal:*',
+        'Responde a una imagen y escribe:',
+        '*.stickercanal https://whatsapp.com/channel/CODIGO pruebaimagen*',
         'Solo se aceptan enlaces completos HTTPS de canales.',
         'La sesión conectada debe tener permisos para publicar.',
         'Los stickers con sonido en canales son experimentales.'
@@ -203,6 +208,26 @@ async function downloadStickerForTest(payload) {
     return file
 }
 
+async function downloadImageForTest(payload) {
+    if (!payload?.mediaKey || (!payload?.directPath && !payload?.url)) {
+        throw new Error('La imagen citada no tiene datos suficientes para descargarse.')
+    }
+    const parts = []
+    let total = 0
+    const stream = await downloadContentFromMessage(payload, 'image')
+    for await (const part of stream) {
+        const buffer = Buffer.from(part)
+        total += buffer.length
+        if (total > 5 * 1024 * 1024) {
+            throw new Error('La imagen supera el límite de 5 MB para la prueba.')
+        }
+        parts.push(buffer)
+    }
+    const file = Buffer.concat(parts)
+    if (!file.length) throw new Error('No se pudo descargar la imagen citada.')
+    return file
+}
+
 async function execute({ sock, msg, from, args = [] }) {
     const chat = from || msg?.key?.remoteJid
 
@@ -213,8 +238,9 @@ async function execute({ sock, msg, from, args = [] }) {
     const code = channelCode(args[0])
     const diagnostic = args.length === 2 && String(args[1]).toLowerCase() === 'prueba'
     const stickerTest = args.length === 2 && String(args[1]).toLowerCase() === 'pruebasticker'
+    const imageTest = args.length === 2 && String(args[1]).toLowerCase() === 'pruebaimagen'
 
-    if (!code || (args.length !== 1 && !diagnostic && !stickerTest)) {
+    if (!code || (args.length !== 1 && !diagnostic && !stickerTest && !imageTest)) {
         return reply(sock, chat, msg, instructions())
     }
 
@@ -222,6 +248,10 @@ async function execute({ sock, msg, from, args = [] }) {
     const chosen = diagnostic ? null : resolveMedia(msg)
     if (!diagnostic && !chosen) {
         return reply(sock, chat, msg, '❌ Responde a un video con sonido o a un sticker sonoro y escribe el comando con el enlace del canal.')
+    }
+
+    if (imageTest && chosen?.type !== 'image') {
+        return reply(sock, chat, msg, '❌ Para pruebaimagen responde a una imagen JPG o PNG.')
     }
 
     if (stickerTest && chosen?.type !== 'sticker') {
@@ -284,6 +314,34 @@ async function execute({ sock, msg, from, args = [] }) {
             lastUse.delete(id)
             console.error('[stickercanal] Error de prueba de texto:', error)
             return updateStatus(sock, chat, status?.key, `❌ Falló la prueba de publicación.\n${mapError(error)}`)
+        }
+    }
+
+    if (imageTest) {
+        await updateStatus(sock, chat, status?.key, '⏳ Descargando la imagen y probando su publicación…')
+        lastUse.set(id, Date.now())
+        try {
+            const buffer = await downloadImageForTest(chosen.data)
+            // sendMessage en rc13 transmite internamente el JID del destino
+            // a generateWAMessageContent y prepareWAMessageMedia.
+            const result = await sock.sendMessage(channel.jid, {
+                image: buffer,
+                mimetype: chosen.data.mimetype || 'image/jpeg',
+                caption: '🧪 Prueba multimedia KennyBot V2'
+            })
+            console.log('[stickercanal] Prueba de imagen solicitada:', {
+                canal: channel.jid,
+                bytes: buffer.length,
+                messageId: result?.key?.id || 'NO_DISPONIBLE'
+            })
+            return updateStatus(sock, chat, status?.key,
+                '🧪 Envío de imagen solicitado. Comprueba si aparece en el canal. ' +
+                'Un ID de mensaje no confirma que WhatsApp la haya publicado.')
+        } catch (error) {
+            lastUse.delete(id)
+            console.error('[stickercanal] Error de prueba de imagen:', error)
+            return updateStatus(sock, chat, status?.key,
+                `❌ Falló la prueba de imagen.\n${mapError(error)}`)
         }
     }
 
@@ -350,6 +408,6 @@ module.exports = {
     name: 'stickercanal',
     aliases: ['stcanal'],
     category: 'general',
-    description: 'Publicar stickers con sonido por enlace y probar texto o stickers normales en canales',
+    description: 'Publicar stickers con sonido por enlace y probar texto, imagen o sticker en canales',
     execute
 }

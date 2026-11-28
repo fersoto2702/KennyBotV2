@@ -1,0 +1,29 @@
+PARCHE EXPERIMENTAL - Baileys 7.0.0-rc13 / newsletters
+
+Alcance: modifica SOLO las rutas de subida para medios preparados mediante prepareWAMessageMedia(message, { upload: sock.waUploadToServer, jid: canalJid }).
+No modifica la codificacion del mensaje ni asegura que WhatsApp publique stickers; especialmente no garantiza stickers sonoros de terceros.
+
+INSTALACION
+1. Deten KennyBot V2.
+2. Extrae este ZIP en una carpeta dentro de KennyBotV2, por ejemplo .\parche-newsletter\
+3. Desde PowerShell, situado en C:\Users\Ferna\KennyBotV2, ejecuta:
+   powershell -ExecutionPolicy Bypass -File .\parche-newsletter\instalar.ps1 -ProjectRoot .
+4. El script verifica rc13, que los archivos originales coincidan con los proporcionados, guarda respaldo en baileys-rc13-backup-... y copia los 3 archivos.
+5. Reinicia KennyBot.
+
+PRUEBA IMPORTANTE
+En el codigo que LLAMA a prepareWAMessageMedia para un canal, pasa jid: channel.jid.
+Ejemplo:
+  await sock.sendMessage(channel.jid, { sticker: stickerBuffer })
+La implementacion de sock.sendMessage deberia transferir el jid al preparador, pero hay que comprobar la estructura y la recepcion en el canal.
+Si utilizas prepareWAMessageMedia manualmente en soundStickerCore.sendSticker(), utiliza:
+  const options = { upload: sock.waUploadToServer, jid: chat }
+Sin jid la nueva ruta NO se activa. Reenviar un sticker existente solo con relayMessage no vuelve a subir su archivo y tampoco activa este parche.
+
+REVERSION
+Con el bot detenido, copia los tres archivos desde el respaldo creado por instalar.ps1 a las mismas rutas bajo node_modules\@whiskeysockets\baileys.
+Los cambios en node_modules se perderan con npm install o al reinstalar Baileys.
+
+PRECAUCION
+La fuente comunitaria GitHub Issue #2657 esta cerrada 'not planned' y no es una garantia de compatibilidad.
+Primero comprueba un sticker normal, luego audio. Una llamada sin excepcion no confirma publicacion.
